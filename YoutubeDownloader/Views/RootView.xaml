@@ -13,6 +13,7 @@
     Background="{DynamicResource MaterialDesignPaper}"
     FocusManager.FocusedElement="{Binding ElementName=QueryTextBox}"
     FontFamily="{DynamicResource MaterialDesignFont}"
+    Icon="/YoutubeDownloader;component/favicon.ico"
     SnapsToDevicePixels="True"
     TextElement.FontSize="13"
     TextElement.FontWeight="Regular"
