@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
+using MaterialDesignThemes.Wpf;
 using Stylet;
 using Tyrrrz.Extensions;
 using YoutubeDownloader.Models;
@@ -13,25 +14,56 @@ namespace YoutubeDownloader.ViewModels
     {
         private readonly IViewModelFactory _viewModelFactory;
         private readonly DialogManager _dialogManager;
+        private readonly UpdateService _updateService;
         private readonly QueryService _queryService;
 
         public bool IsBusy { get; private set; }
 
         public string Query { get; set; }
 
-        public BindableCollection<DownloadViewModel> Downloads { get; set; }
+        public BindableCollection<DownloadViewModel> Downloads { get; } = new BindableCollection<DownloadViewModel>();
 
-        public RootViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, QueryService queryService)
+        public SnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue();
+
+        public RootViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager,
+            UpdateService updateService, QueryService queryService)
         {
             _viewModelFactory = viewModelFactory;
             _dialogManager = dialogManager;
+            _updateService = updateService;
             _queryService = queryService;
-
-            Downloads = new BindableCollection<DownloadViewModel>();
 
             // Title
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             DisplayName = $"YoutubeDownloader v{version}";
+        }
+
+        protected override async void OnViewLoaded()
+        {
+            base.OnViewLoaded();
+
+            // Check for updates
+            var updateVersion = await _updateService.CheckPrepareUpdateAsync();
+
+            // If there are updates - notify the user and ask them if they want them installed immediately
+            if (updateVersion != null)
+            {
+                // Show notification
+                Notifications.Enqueue($"Update to YoutubeDownloader v{updateVersion} will be installed when you exit",
+                    "INSTALL NOW", () =>
+                    {
+                        _updateService.FinalizeUpdate(true);
+                        RequestClose();
+                    });
+            }
+        }
+
+        protected override void OnClose()
+        {
+            base.OnClose();
+
+            // Finalize updates if necessary
+            _updateService.FinalizeUpdate(false);
         }
 
         private void AddDownload(DownloadViewModel download)
