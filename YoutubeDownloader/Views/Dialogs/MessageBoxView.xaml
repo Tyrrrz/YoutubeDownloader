@@ -1,0 +1,53 @@
+﻿<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.MessageBoxView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="https://github.com/canton7/Stylet"
+    MinWidth="500"
+    d:DataContext="{d:DesignInstance Type=dialogs:MessageBoxViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    SnapsToDevicePixels="True"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource SecondaryTextBrush}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="8,16"
+            FontSize="19"
+            Foreground="{DynamicResource PrimaryTextBrush}"
+            Text="{Binding DisplayName}"
+            TextTrimming="CharacterEllipsis"
+            ToolTip="{Binding DisplayName}" />
+
+        <!--  Message  -->
+        <TextBlock
+            Grid.Row="1"
+            Margin="8,0,8,8"
+            Text="{Binding Message}"
+            TextWrapping="Wrap" />
+
+        <!--  Close  -->
+        <Button
+            Grid.Row="2"
+            Margin="8"
+            HorizontalAlignment="Right"
+            Command="{s:Action Close}"
+            Content="CLOSE"
+            Style="{DynamicResource MaterialDesignFlatButton}" />
+    </Grid>
+</UserControl>
