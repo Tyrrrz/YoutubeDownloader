@@ -1,0 +1,27 @@
+version: '{build}'
+
+image: Visual Studio 2017
+configuration: Release
+
+before_build:
+- ps: nuget restore
+
+build:
+  verbosity: minimal
+
+after_build:
+- ps: Deploy\Prepare.ps1
+
+artifacts:
+- path: Deploy\bin\YoutubeDownloader.zip
+  name: YoutubeDownloader.zip
+
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: sjQHWRw29AMiVMn3MtidtWnAzAf1mJ+mkJ/7h1B9TIAHhkFrqwMK7LtXV+uNJ9AO
+  artifact: YoutubeDownloader.zip
+  description: '[Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)'
+  on:
+    branch: master
+    appveyor_repo_tag: true
