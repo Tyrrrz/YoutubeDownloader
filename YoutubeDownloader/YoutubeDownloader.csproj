@@ -107,9 +107,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
@@ -135,27 +132,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="FodyWeavers.xml">
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AngleSharp">
-      <Version>0.9.10</Version>
-    </PackageReference>
-    <PackageReference Include="Fody">
-      <Version>3.2.17</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="MaterialDesignColors">
       <Version>1.1.3</Version>
     </PackageReference>
     <PackageReference Include="MaterialDesignThemes">
       <Version>2.5.0.1205</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="Onova">
       <Version>2.2.0</Version>
@@ -164,7 +145,7 @@
       <Version>1.0.0</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
-      <Version>2.5.14</Version>
+      <Version>2.6.0</Version>
     </PackageReference>
     <PackageReference Include="Stylet">
       <Version>1.1.22</Version>
@@ -176,7 +157,7 @@
       <Version>1.5.1</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode">
-      <Version>4.5.3</Version>
+      <Version>4.6.0</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode.Converter">
       <Version>1.0.1</Version>
