@@ -48,6 +48,8 @@
             HorizontalAlignment="Right"
             Command="{s:Action Close}"
             Content="CLOSE"
+            IsCancel="True"
+            IsDefault="True"
             Style="{DynamicResource MaterialDesignFlatButton}" />
     </Grid>
 </UserControl>

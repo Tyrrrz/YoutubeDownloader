@@ -24,9 +24,9 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             _dialogManager = dialogManager;
         }
 
-        public bool CanEnqueueDownload => SelectedVideos != null && SelectedVideos.Count > 0;
+        public bool CanConfirm => SelectedVideos != null && SelectedVideos.Count > 0;
 
-        public void EnqueueDownload()
+        public void Confirm()
         {
             // Prompt user for output directory path
             var dirPath = _dialogManager.PromptDirectoryPath();

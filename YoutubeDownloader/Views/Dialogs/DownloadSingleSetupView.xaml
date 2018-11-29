@@ -97,16 +97,18 @@
             <Button
                 Grid.Column="2"
                 Margin="8"
-                Command="{s:Action EnqueueDownload}"
+                Command="{s:Action Confirm}"
                 Content="DOWNLOAD"
+                IsDefault="True"
                 Style="{DynamicResource MaterialDesignFlatButton}" />
 
             <!--  Cancel  -->
             <Button
                 Grid.Column="3"
                 Margin="8"
-                Command="{s:Action Cancel}"
+                Command="{s:Action Close}"
                 Content="CANCEL"
+                IsCancel="True"
                 Style="{DynamicResource MaterialDesignFlatButton}" />
         </Grid>
     </Grid>

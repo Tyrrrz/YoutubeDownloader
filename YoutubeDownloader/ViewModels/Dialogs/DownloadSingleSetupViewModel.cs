@@ -19,9 +19,9 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             _dialogManager = dialogManager;
         }
 
-        public bool CanEnqueueDownload => Video != null;
+        public bool CanConfirm => Video != null;
 
-        public void EnqueueDownload()
+        public void Confirm()
         {
             // Prompt user for output file path
             var filter = $"{SelectedFormat.ToUpperInvariant()} file|*.{SelectedFormat}";

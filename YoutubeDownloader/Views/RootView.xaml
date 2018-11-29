@@ -22,7 +22,7 @@
     TextOptions.TextRenderingMode="Auto"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <materialDesign:DialogHost CloseOnClickAway="True" SnackbarMessageQueue="{Binding ElementName=Snackbar}">
+    <materialDesign:DialogHost CloseOnClickAway="True" SnackbarMessageQueue="{Binding Notifications}">
         <DockPanel>
             <!--  Toolbar  -->
             <Border
@@ -95,7 +95,7 @@
                     Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}" />
 
                 <!--  Notifications  -->
-                <materialDesign:Snackbar x:Name="Snackbar" MessageQueue="{Binding Notifications}" />
+                <materialDesign:Snackbar MessageQueue="{Binding Notifications}" />
             </Grid>
         </DockPanel>
     </materialDesign:DialogHost>

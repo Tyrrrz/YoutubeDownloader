@@ -15,7 +15,7 @@ namespace YoutubeDownloader.ViewModels.Framework
             _viewManager = viewManager;
         }
 
-        public async Task ShowDialogAsync(DialogScreen dialogScreen)
+        public async Task<T> ShowDialogAsync<T>(DialogScreen<T> dialogScreen)
         {
             // Get the view that renders this viewmodel
             var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
@@ -35,12 +35,6 @@ namespace YoutubeDownloader.ViewModels.Framework
 
             // Show view
             await DialogHost.Show(view, onDialogOpened);
-        }
-
-        public async Task<T> ShowDialogAsync<T>(DialogScreen<T> dialogScreen) where T : class
-        {
-            // Show the dialog
-            await ShowDialogAsync((DialogScreen) dialogScreen); // use the return-less overload
 
             // Return the result
             return dialogScreen.DialogResult;
@@ -54,7 +48,7 @@ namespace YoutubeDownloader.ViewModels.Framework
                 Filter = filter,
                 AddExtension = true,
                 FileName = initialFilePath,
-                DefaultExt = Path.GetExtension(initialFilePath)
+                DefaultExt = Path.GetExtension(initialFilePath) ?? ""
             };
 
             // Show dialog and return result

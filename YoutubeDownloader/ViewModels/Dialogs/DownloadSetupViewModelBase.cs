@@ -11,7 +11,7 @@ using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {
-    public abstract class DownloadSetupViewModelBase<T> : DialogScreen<T> where T : class
+    public abstract class DownloadSetupViewModelBase<T> : DialogScreen<T>
     {
         private readonly IViewModelFactory _viewModelFactory;
         private readonly DownloadService _downloadService;
@@ -59,11 +59,6 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 });
 
             return download;
-        }
-
-        public void Cancel()
-        {
-            Close();
         }
     }
 }

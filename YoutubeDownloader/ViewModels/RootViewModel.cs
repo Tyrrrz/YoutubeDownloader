@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using MaterialDesignThemes.Wpf;
 using Stylet;
@@ -17,13 +18,13 @@ namespace YoutubeDownloader.ViewModels
         private readonly UpdateService _updateService;
         private readonly QueryService _queryService;
 
+        public SnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(5));
+
         public bool IsBusy { get; private set; }
 
         public string Query { get; set; }
 
         public BindableCollection<DownloadViewModel> Downloads { get; } = new BindableCollection<DownloadViewModel>();
-
-        public SnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue();
 
         public RootViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager,
             UpdateService updateService, QueryService queryService)
@@ -45,16 +46,23 @@ namespace YoutubeDownloader.ViewModels
             // Check for updates
             var updateVersion = await _updateService.CheckPrepareUpdateAsync();
 
-            // If there are updates - notify the user and ask them if they want them installed immediately
-            if (updateVersion != null)
+            // Check and prepare update
+            try
             {
-                // Show notification
-                Notifications.Enqueue($"Update to YoutubeDownloader v{updateVersion} will be installed when you exit",
-                    "INSTALL NOW", () =>
-                    {
-                        _updateService.FinalizeUpdate(true);
-                        RequestClose();
-                    });
+                if (updateVersion != null)
+                {
+                    // Show notification
+                    Notifications.Enqueue($"Update to YoutubeDownloader v{updateVersion} will be installed when you exit",
+                        "INSTALL NOW", () =>
+                        {
+                            _updateService.FinalizeUpdate(true);
+                            RequestClose();
+                        });
+                }
+            }
+            catch
+            {
+                Notifications.Enqueue("Failed to perform application auto-update");
             }
         }
 
