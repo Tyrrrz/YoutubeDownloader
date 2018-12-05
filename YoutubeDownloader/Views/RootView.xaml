@@ -68,6 +68,16 @@
             </Border>
 
             <Grid>
+                <!--  Placeholder  -->
+                <TextBlock
+                    Margin="8,0,8,32"
+                    VerticalAlignment="Center"
+                    FontSize="18"
+                    Text="Copy-paste video/playlist URL or type in a search query to start downloading videos"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}" />
+
                 <!--  Downloads  -->
                 <ScrollViewer
                     HorizontalScrollBarVisibility="Disabled"
@@ -84,15 +94,6 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
-
-                <!--  Placeholder  -->
-                <TextBlock
-                    Margin="32"
-                    FontSize="15"
-                    Text="Copy-paste video/playlist URL or type in a search query to start downloading videos"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}" />
 
                 <!--  Notifications  -->
                 <materialDesign:Snackbar MessageQueue="{Binding Notifications}" />

@@ -36,81 +36,85 @@
             ToolTip="{Binding DisplayName}" />
 
         <!--  Videos  -->
-        <ListView
+        <Border
             Grid.Row="1"
-            Padding="8"
-            HorizontalContentAlignment="Stretch"
-            ItemsSource="{Binding AvailableVideos}"
-            ScrollViewer.CanContentScroll="False"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            SelectionMode="Multiple"
-            VirtualizingStackPanel.IsVirtualizing="False">
-            <i:Interaction.Behaviors>
-                <behaviors:VideoMultiSelectionListBoxBehavior SelectedItems="{Binding SelectedVideos}" />
-            </i:Interaction.Behaviors>
-            <ListView.ItemContainerStyle>
-                <Style BasedOn="{StaticResource {x:Type ListViewItem}}" TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Cursor" Value="Hand" />
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                    <Setter Property="Padding" Value="8,4,8,4" />
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+            BorderBrush="{DynamicResource DividerBrush}"
+            BorderThickness="0,1">
+            <ListView
+                Padding="8"
+                HorizontalContentAlignment="Stretch"
+                ItemsSource="{Binding AvailableVideos}"
+                ScrollViewer.CanContentScroll="False"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectionMode="Multiple"
+                VirtualizingStackPanel.IsVirtualizing="False">
+                <i:Interaction.Behaviors>
+                    <behaviors:VideoMultiSelectionListBoxBehavior SelectedItems="{Binding SelectedVideos}" />
+                </i:Interaction.Behaviors>
+                <ListView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource {x:Type ListViewItem}}" TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        <Setter Property="Padding" Value="8,4,8,4" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <!--  Thumbnail  -->
-                        <Image
-                            Grid.Column="0"
-                            Width="48"
-                            Height="48"
-                            Source="{Binding Thumbnails.LowResUrl}" />
+                            <!--  Thumbnail  -->
+                            <Image
+                                Grid.Column="0"
+                                Width="48"
+                                Height="48"
+                                Source="{Binding Thumbnails.LowResUrl}" />
 
-                        <!--  Info  -->
-                        <StackPanel
-                            Grid.Column="1"
-                            Margin="8,0,0,0"
-                            VerticalAlignment="Center"
-                            Orientation="Vertical">
-                            <!--  Title  -->
-                            <TextBlock
-                                FontSize="15"
-                                Foreground="{DynamicResource PrimaryTextBrush}"
-                                Text="{Binding Title}"
-                                TextTrimming="CharacterEllipsis"
-                                ToolTip="{Binding Title}" />
+                            <!--  Info  -->
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
+                                <!--  Title  -->
+                                <TextBlock
+                                    FontSize="15"
+                                    Foreground="{DynamicResource PrimaryTextBrush}"
+                                    Text="{Binding Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip="{Binding Title}" />
 
-                            <!--  Misc  -->
-                            <TextBlock
-                                Margin="0,4,0,0"
-                                Foreground="{DynamicResource SecondaryTextBrush}"
-                                TextTrimming="CharacterEllipsis">
-                                <Run Text="{Binding Duration, Mode=OneWay}" />
-                                <Run Text="/" />
-                                <Run Text="{Binding Author, Mode=OneWay}" />
-                                <Run Text="/" />
-                                <Run Text="{Binding UploadDate, StringFormat=\{0:MMM d\, yyyy\}, Mode=OneWay}" />
-                            </TextBlock>
-                        </StackPanel>
+                                <!--  Misc  -->
+                                <TextBlock
+                                    Margin="0,4,0,0"
+                                    Foreground="{DynamicResource SecondaryTextBrush}"
+                                    TextTrimming="CharacterEllipsis">
+                                    <Run Text="{Binding Duration, Mode=OneWay}" />
+                                    <Run Text="/" />
+                                    <Run Text="{Binding Author, Mode=OneWay}" />
+                                    <Run Text="/" />
+                                    <Run Text="{Binding UploadDate, StringFormat=\{0:MMM d\, yyyy\}, Mode=OneWay}" />
+                                </TextBlock>
+                            </StackPanel>
 
-                        <!--  Checkbox  -->
-                        <materialDesign:PackIcon
-                            Grid.Column="2"
-                            Width="24"
-                            Height="24"
-                            Margin="8,0,0,0"
-                            VerticalAlignment="Center"
-                            Kind="Check"
-                            Visibility="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Converter={x:Static s:BoolToVisibilityConverter.Instance}, Mode=OneWay}" />
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                            <!--  Checkbox  -->
+                            <materialDesign:PackIcon
+                                Grid.Column="2"
+                                Width="24"
+                                Height="24"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Kind="Check"
+                                Visibility="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Converter={x:Static s:BoolToVisibilityConverter.Instance}, Mode=OneWay}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
 
         <Grid Grid.Row="2" Margin="0,8,0,0">
             <Grid.ColumnDefinitions>
