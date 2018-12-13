@@ -77,11 +77,6 @@
                 Color="{DynamicResource InverseTextColor}" />
 
             <!--  Styles  -->
-            <Style TargetType="{x:Type Image}">
-                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
-                <Setter Property="RenderOptions.EdgeMode" Value="Aliased" />
-            </Style>
-
             <Style BasedOn="{StaticResource MaterialDesignLinearProgressBar}" TargetType="{x:Type ProgressBar}">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Foreground" Value="{DynamicResource SecondaryAccentBrush}" />

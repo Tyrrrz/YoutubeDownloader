@@ -14,6 +14,7 @@
     FocusManager.FocusedElement="{Binding ElementName=QueryTextBox}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     Icon="/YoutubeDownloader;component/favicon.ico"
+    RenderOptions.BitmapScalingMode="HighQuality"
     SnapsToDevicePixels="True"
     TextElement.FontSize="13"
     TextElement.FontWeight="Regular"
@@ -70,8 +71,7 @@
             <Grid>
                 <!--  Placeholder  -->
                 <TextBlock
-                    Margin="8,0,8,32"
-                    VerticalAlignment="Center"
+                    Margin="8,32"
                     FontSize="18"
                     Text="Copy-paste video/playlist URL or type in a search query to start downloading videos"
                     TextAlignment="Center"

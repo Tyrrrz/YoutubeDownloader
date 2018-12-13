@@ -10,6 +10,7 @@
     d:DataContext="{d:DesignInstance Type=components:DownloadViewModel}"
     d:DesignHeight="50"
     d:DesignWidth="400"
+    RenderOptions.BitmapScalingMode="HighQuality"
     SnapsToDevicePixels="True"
     TextElement.FontSize="13"
     TextElement.FontWeight="Regular"

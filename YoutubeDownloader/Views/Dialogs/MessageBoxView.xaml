@@ -10,6 +10,7 @@
     d:DataContext="{d:DesignInstance Type=dialogs:MessageBoxViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    RenderOptions.BitmapScalingMode="HighQuality"
     SnapsToDevicePixels="True"
     TextElement.FontSize="13"
     TextElement.FontWeight="Regular"
