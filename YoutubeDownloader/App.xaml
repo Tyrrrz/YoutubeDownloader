@@ -77,6 +77,18 @@
                 Color="{DynamicResource InverseTextColor}" />
 
             <!--  Styles  -->
+            <Style x:Key="MaterialDesignRoot" TargetType="{x:Type Control}">
+                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="TextElement.FontSize" Value="13" />
+                <Setter Property="TextElement.FontWeight" Value="Regular" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource SecondaryTextBrush}" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+            </Style>
+
             <Style BasedOn="{StaticResource MaterialDesignLinearProgressBar}" TargetType="{x:Type ProgressBar}">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Foreground" Value="{DynamicResource SecondaryAccentBrush}" />

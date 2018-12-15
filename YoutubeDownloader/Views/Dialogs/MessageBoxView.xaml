@@ -10,13 +10,7 @@
     d:DataContext="{d:DesignInstance Type=dialogs:MessageBoxViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    RenderOptions.BitmapScalingMode="HighQuality"
-    SnapsToDevicePixels="True"
-    TextElement.FontSize="13"
-    TextElement.FontWeight="Regular"
-    TextElement.Foreground="{DynamicResource SecondaryTextBrush}"
-    TextOptions.TextFormattingMode="Ideal"
-    TextOptions.TextRenderingMode="Auto"
+    Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>

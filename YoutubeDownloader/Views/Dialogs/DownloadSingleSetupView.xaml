@@ -8,13 +8,7 @@
     xmlns:s="https://github.com/canton7/Stylet"
     MinWidth="500"
     d:DataContext="{d:DesignInstance Type=dialogs:DownloadSingleSetupViewModel}"
-    RenderOptions.BitmapScalingMode="HighQuality"
-    SnapsToDevicePixels="True"
-    TextElement.FontSize="13"
-    TextElement.FontWeight="Regular"
-    TextElement.Foreground="{DynamicResource SecondaryTextBrush}"
-    TextOptions.TextFormattingMode="Ideal"
-    TextOptions.TextRenderingMode="Auto"
+    Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>

@@ -10,13 +10,7 @@
     d:DataContext="{d:DesignInstance Type=components:DownloadViewModel}"
     d:DesignHeight="50"
     d:DesignWidth="400"
-    RenderOptions.BitmapScalingMode="HighQuality"
-    SnapsToDevicePixels="True"
-    TextElement.FontSize="13"
-    TextElement.FontWeight="Regular"
-    TextElement.Foreground="{DynamicResource SecondaryTextBrush}"
-    TextOptions.TextFormattingMode="Ideal"
-    TextOptions.TextRenderingMode="Auto"
+    Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
     <Grid MinHeight="45">
         <Grid.RowDefinitions>

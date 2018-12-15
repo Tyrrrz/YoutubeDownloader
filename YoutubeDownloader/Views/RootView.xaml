@@ -10,65 +10,67 @@
     Width="600"
     Height="550"
     d:DataContext="{d:DesignInstance Type=viewModels:RootViewModel}"
-    Background="{DynamicResource MaterialDesignPaper}"
+    Background="{DynamicResource MaterialDesignBackground}"
     FocusManager.FocusedElement="{Binding ElementName=QueryTextBox}"
-    FontFamily="{DynamicResource MaterialDesignFont}"
     Icon="/YoutubeDownloader;component/favicon.ico"
-    RenderOptions.BitmapScalingMode="HighQuality"
-    SnapsToDevicePixels="True"
-    TextElement.FontSize="13"
-    TextElement.FontWeight="Regular"
-    TextElement.Foreground="{DynamicResource SecondaryTextBrush}"
-    TextOptions.TextFormattingMode="Ideal"
-    TextOptions.TextRenderingMode="Auto"
+    Style="{DynamicResource MaterialDesignRoot}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <materialDesign:DialogHost CloseOnClickAway="True" SnackbarMessageQueue="{Binding Notifications}">
-        <DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
             <!--  Toolbar  -->
             <Border
+                Grid.Row="0"
                 Background="{DynamicResource PrimaryHueMidBrush}"
                 DockPanel.Dock="Top"
                 TextElement.Foreground="{DynamicResource SecondaryInverseTextBrush}">
-                <StackPanel Orientation="Vertical">
-                    <!--  Query  -->
-                    <materialDesign:Card Margin="12">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                <!--  Query  -->
+                <materialDesign:Card Margin="12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <TextBox
-                                x:Name="QueryTextBox"
-                                Grid.Column="0"
-                                Margin="6"
-                                materialDesign:HintAssist.Hint="URL or search query"
-                                materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
-                                BorderThickness="0"
-                                FontSize="16"
-                                Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                                Grid.Column="1"
-                                Margin="0,6,6,6"
-                                Padding="4"
-                                Command="{s:Action ProcessQuery}"
-                                IsDefault="True"
-                                Style="{DynamicResource MaterialDesignFlatButton}">
-                                <materialDesign:PackIcon
-                                    Width="24"
-                                    Height="24"
-                                    Kind="ArrowRight" />
-                            </Button>
-                        </Grid>
-                    </materialDesign:Card>
-
-                    <!--  Progress  -->
-                    <ProgressBar Background="Transparent" IsIndeterminate="{Binding IsBusy}" />
-                </StackPanel>
+                        <TextBox
+                            x:Name="QueryTextBox"
+                            Grid.Column="0"
+                            Margin="6"
+                            materialDesign:HintAssist.Hint="URL or search query"
+                            materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                            BorderThickness="0"
+                            FontSize="16"
+                            Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button
+                            Grid.Column="1"
+                            Margin="0,6,6,6"
+                            Padding="4"
+                            Command="{s:Action ProcessQuery}"
+                            IsDefault="True"
+                            Style="{DynamicResource MaterialDesignFlatButton}">
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                Kind="ArrowRight" />
+                        </Button>
+                    </Grid>
+                </materialDesign:Card>
             </Border>
 
-            <Grid>
+            <!--  Progress  -->
+            <ProgressBar
+                Grid.Row="1"
+                Background="Transparent"
+                IsIndeterminate="{Binding IsBusy}" />
+
+            <!--  Content  -->
+            <Grid Grid.Row="2">
                 <!--  Placeholder  -->
                 <TextBlock
                     Margin="8,32"
@@ -98,6 +100,6 @@
                 <!--  Notifications  -->
                 <materialDesign:Snackbar MessageQueue="{Binding Notifications}" />
             </Grid>
-        </DockPanel>
+        </Grid>
     </materialDesign:DialogHost>
 </Window>
