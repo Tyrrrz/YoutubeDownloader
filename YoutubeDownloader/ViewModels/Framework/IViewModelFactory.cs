@@ -6,12 +6,14 @@ namespace YoutubeDownloader.ViewModels.Framework
     // Used to instantiate new view models while making use of dependency injection
     public interface IViewModelFactory
     {
-        DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel();
+        DownloadViewModel CreateDownloadViewModel();
 
-        MessageBoxViewModel CreateMessageBoxViewModel();
+        DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel();
 
         DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel();
 
-        DownloadViewModel CreateDownloadViewModel();
+        MessageBoxViewModel CreateMessageBoxViewModel();
+
+        SettingsViewModel CreateSettingsViewModel();
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows.Threading;
 using Stylet;
 using StyletIoC;
+using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Framework;
 
@@ -12,6 +13,9 @@ namespace YoutubeDownloader
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
             base.ConfigureIoC(builder);
+
+            // Bind settings as singleton
+            builder.Bind<SettingsService>().ToSelf().InSingletonScope();
 
             // Bind view model factory
             builder.Bind<IViewModelFactory>().ToAbstractFactory();

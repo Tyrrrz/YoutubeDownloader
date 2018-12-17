@@ -15,6 +15,7 @@ namespace YoutubeDownloader.ViewModels
     {
         private readonly IViewModelFactory _viewModelFactory;
         private readonly DialogManager _dialogManager;
+        private readonly SettingsService _settingsService;
         private readonly UpdateService _updateService;
         private readonly QueryService _queryService;
 
@@ -27,10 +28,11 @@ namespace YoutubeDownloader.ViewModels
         public BindableCollection<DownloadViewModel> Downloads { get; } = new BindableCollection<DownloadViewModel>();
 
         public RootViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager,
-            UpdateService updateService, QueryService queryService)
+            SettingsService settingsService, UpdateService updateService, QueryService queryService)
         {
             _viewModelFactory = viewModelFactory;
             _dialogManager = dialogManager;
+            _settingsService = settingsService;
             _updateService = updateService;
             _queryService = queryService;
 
@@ -42,6 +44,9 @@ namespace YoutubeDownloader.ViewModels
         protected override async void OnViewLoaded()
         {
             base.OnViewLoaded();
+
+            // Load settings
+            _settingsService.Load();
 
             // Check for updates
             var updateVersion = await _updateService.CheckPrepareUpdateAsync();
@@ -70,8 +75,22 @@ namespace YoutubeDownloader.ViewModels
         {
             base.OnClose();
 
+            // Save settings
+            _settingsService.Save();
+
             // Finalize updates if necessary
             _updateService.FinalizeUpdate(false);
+        }
+
+        public bool CanShowSettings => !IsBusy;
+
+        public async void ShowSettings()
+        {
+            // Create dialog
+            var dialog = _viewModelFactory.CreateSettingsViewModel();
+
+            // Show dialog
+            await _dialogManager.ShowDialogAsync(dialog);
         }
 
         private void AddDownload(DownloadViewModel download)

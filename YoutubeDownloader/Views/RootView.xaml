@@ -16,7 +16,7 @@
     Style="{DynamicResource MaterialDesignRoot}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <materialDesign:DialogHost CloseOnClickAway="True" SnackbarMessageQueue="{Binding Notifications}">
+    <materialDesign:DialogHost SnackbarMessageQueue="{Binding Notifications}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -25,19 +25,24 @@
             </Grid.RowDefinitions>
 
             <!--  Toolbar  -->
-            <Border
+            <Grid
                 Grid.Row="0"
                 Background="{DynamicResource PrimaryHueMidBrush}"
-                DockPanel.Dock="Top"
                 TextElement.Foreground="{DynamicResource SecondaryInverseTextBrush}">
-                <!--  Query  -->
-                <materialDesign:Card Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Query and process query button  -->
+                <materialDesign:Card Grid.Column="0" Margin="12,12,0,12">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
+                        <!--  Query  -->
                         <TextBox
                             x:Name="QueryTextBox"
                             Grid.Column="0"
@@ -47,6 +52,8 @@
                             BorderThickness="0"
                             FontSize="16"
                             Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--  Process query button  -->
                         <Button
                             Grid.Column="1"
                             Margin="0,6,6,6"
@@ -61,7 +68,20 @@
                         </Button>
                     </Grid>
                 </materialDesign:Card>
-            </Border>
+
+                <!--  Settings button  -->
+                <Button
+                    Grid.Column="1"
+                    Margin="6"
+                    Padding="4"
+                    Command="{s:Action ShowSettings}"
+                    Style="{DynamicResource MaterialDesignFlatDarkButton}">
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Settings" />
+                </Button>
+            </Grid>
 
             <!--  Progress  -->
             <ProgressBar
