@@ -16,7 +16,7 @@
     Style="{DynamicResource MaterialDesignRoot}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <materialDesign:DialogHost SnackbarMessageQueue="{Binding Notifications}">
+    <materialDesign:DialogHost SnackbarMessageQueue="{Binding Notifications}" Style="{DynamicResource MaterialDesignEmbeddedDialogHost}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
