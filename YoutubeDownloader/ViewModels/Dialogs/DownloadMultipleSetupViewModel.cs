@@ -17,9 +17,9 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public IReadOnlyList<Video> SelectedVideos { get; set; } = Array.Empty<Video>();
 
-        public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, DownloadService downloadService,
-            DialogManager dialogManager)
-            : base(viewModelFactory, downloadService)
+        public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
+            DownloadService downloadService, DialogManager dialogManager)
+            : base(viewModelFactory, settingsService, downloadService)
         {
             _dialogManager = dialogManager;
         }
@@ -44,7 +44,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 var filePath = Path.Combine(dirPath, fileName);
 
                 // Enqueue download
-                downloads.Add(EnqueueDownload(video, filePath));
+                downloads.Add(EnqueueDownload(video, filePath, SelectedFormat));
             }
 
             // Close dialog with result

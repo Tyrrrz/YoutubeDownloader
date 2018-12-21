@@ -14,19 +14,29 @@ namespace YoutubeDownloader.ViewModels.Dialogs
     public abstract class DownloadSetupViewModelBase<T> : DialogScreen<T>
     {
         private readonly IViewModelFactory _viewModelFactory;
+        private readonly SettingsService _settingsService;
         private readonly DownloadService _downloadService;
 
         public IReadOnlyList<string> AvailableFormats { get; } = new[] { "mp4", "mp3" };
 
         public string SelectedFormat { get; set; }
 
-        protected DownloadSetupViewModelBase(IViewModelFactory viewModelFactory, DownloadService downloadService)
+        protected DownloadSetupViewModelBase(IViewModelFactory viewModelFactory, SettingsService settingsService,
+            DownloadService downloadService)
         {
             _viewModelFactory = viewModelFactory;
+            _settingsService = settingsService;
             _downloadService = downloadService;
+        }
 
-            // Default format
-            SelectedFormat = AvailableFormats.FirstOrDefault();
+        protected override void OnViewLoaded()
+        {
+            base.OnViewLoaded();
+
+            // Persist preferences
+            SelectedFormat = AvailableFormats.Contains(_settingsService.LastFormat)
+                ? _settingsService.LastFormat
+                : AvailableFormats.FirstOrDefault();
         }
 
         protected string GetDefaultFileName(Video video, string format)
@@ -35,8 +45,11 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             return $"{cleanTitle}.{format}";
         }
 
-        protected DownloadViewModel EnqueueDownload(Video video, string filePath)
+        protected DownloadViewModel EnqueueDownload(Video video, string filePath, string format)
         {
+            // Persist preferences
+            _settingsService.LastFormat = format;
+
             // Prepare the viewmodel
             var download = _viewModelFactory.CreateDownloadViewModel();
             download.Video = video;
@@ -50,7 +63,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var cancellationToken = download.CancellationTokenSource.Token;
 
             // Start download
-            _downloadService.DownloadVideoAsync(download.Video.Id, download.FilePath, progressRouter, cancellationToken)
+            _downloadService.DownloadVideoAsync(download.Video.Id, download.FilePath, format, progressRouter, cancellationToken)
                 .ContinueWith(t =>
                 {
                     download.IsFinished = t.IsCompleted && !t.IsCanceled;

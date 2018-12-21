@@ -41,10 +41,10 @@ namespace YoutubeDownloader.Services
             {
                 // Release the lock
                 _semaphore.Release();
-            }            
+            }
         }
 
-        public async Task DownloadVideoAsync(string videoId, string filePath,
+        public async Task DownloadVideoAsync(string videoId, string filePath, string format,
             IProgress<double> progress, CancellationToken cancellationToken)
         {
             // Ensure throttling and increment concurrent download count
@@ -53,7 +53,7 @@ namespace YoutubeDownloader.Services
             try
             {
                 // Download the video
-                await _youtubeConverter.DownloadVideoAsync(videoId, filePath, progress, cancellationToken);
+                await _youtubeConverter.DownloadVideoAsync(videoId, filePath, format, progress, cancellationToken);
             }
             finally
             {

@@ -8,6 +8,8 @@ namespace YoutubeDownloader.Services
     {
         public int MaxConcurrentDownloadCount { get; set; } = Environment.ProcessorCount.Clamp(1, 10);
 
+        public string LastFormat { get; set; }
+
         public SettingsService()
         {
             Configuration.StorageSpace = StorageSpace.Instance;

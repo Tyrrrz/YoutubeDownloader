@@ -12,9 +12,9 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public Video Video { get; set; }
 
-        public DownloadSingleSetupViewModel(IViewModelFactory viewModelFactory, DownloadService downloadService,
-            DialogManager dialogManager)
-            : base(viewModelFactory, downloadService)
+        public DownloadSingleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
+            DownloadService downloadService, DialogManager dialogManager)
+            : base(viewModelFactory, settingsService, downloadService)
         {
             _dialogManager = dialogManager;
         }
@@ -33,7 +33,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 return;
 
             // Enqueue download
-            var download = EnqueueDownload(Video, filePath);
+            var download = EnqueueDownload(Video, filePath, SelectedFormat);
 
             // Close dialog with result
             Close(download);

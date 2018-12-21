@@ -37,7 +37,7 @@ namespace YoutubeDownloader.ViewModels
             _queryService = queryService;
 
             // Title
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             DisplayName = $"YoutubeDownloader v{version}";
         }
 
