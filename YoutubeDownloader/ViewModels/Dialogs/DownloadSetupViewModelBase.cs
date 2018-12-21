@@ -54,6 +54,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var download = _viewModelFactory.CreateDownloadViewModel();
             download.Video = video;
             download.FilePath = filePath;
+            download.Format = format;
             download.CancellationTokenSource = new CancellationTokenSource();
 
             // Set up progress router

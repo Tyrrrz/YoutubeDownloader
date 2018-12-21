@@ -12,6 +12,8 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public string FilePath { get; set; }
 
+        public string Format { get; set; }
+
         public string FileName => Path.GetFileName(FilePath);
 
         public double Progress { get; set; }
