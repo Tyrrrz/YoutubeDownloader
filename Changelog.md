@@ -1,3 +1,9 @@
+### v1.1.1 (22-Dec-2018)
+
+- The list of downloads is now always sorted chronologically.
+- When adding multiple downloads, the application will try to ensure unique file names by appending suffixes in order to avoid accidental overwrites.
+- Fixed an issue where adding multiple downloads would sometimes cause the application to crash.
+
 ### v1.1 (21-Dec-2018)
 
 - Improved UI in all screens.
