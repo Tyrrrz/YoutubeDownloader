@@ -56,6 +56,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             download.FilePath = filePath;
             download.Format = format;
             download.CancellationTokenSource = new CancellationTokenSource();
+            download.StartTime = DateTimeOffset.Now;
 
             // Set up progress router
             var progressRouter = new Progress<double>(p => download.Progress = p);
@@ -69,6 +70,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 {
                     download.IsFinished = t.IsCompleted && !t.IsCanceled;
                     download.IsCanceled = t.IsCanceled;
+                    download.EndTime = DateTimeOffset.Now;
                     download.CancellationTokenSource.Dispose();
                 });
 

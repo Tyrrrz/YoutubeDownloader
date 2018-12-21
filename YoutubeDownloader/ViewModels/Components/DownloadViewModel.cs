@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Stylet;
@@ -25,6 +26,10 @@ namespace YoutubeDownloader.ViewModels.Components
         public bool IsCanceled { get; set; }
 
         public bool IsRunning => !IsFinished && !IsCanceled;
+
+        public DateTimeOffset StartTime { get; set; }
+
+        public DateTimeOffset EndTime { get; set; }
 
         public bool CanCancel => IsRunning;
 

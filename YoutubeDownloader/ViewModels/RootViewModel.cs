@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MaterialDesignThemes.Wpf;
@@ -94,7 +93,7 @@ namespace YoutubeDownloader.ViewModels
             await _dialogManager.ShowDialogAsync(dialog);
         }
 
-        private void AddDownload(DownloadViewModel download, int index = 0)
+        private void AddDownload(DownloadViewModel download)
         {
             // Find an existing download for this file path
             var existingDownload = Downloads.FirstOrDefault(d => d.FilePath == download.FilePath);
@@ -108,14 +107,8 @@ namespace YoutubeDownloader.ViewModels
                 Downloads.Remove(existingDownload);
             }
 
-            // Add to list at given index
-            Downloads.Insert(index, download);
-        }
-
-        private void AddDownloads(IEnumerable<DownloadViewModel> downloads, int index = 0)
-        {
-            foreach (var download in downloads)
-                AddDownload(download, index++);
+            // Add to list
+            Downloads.Add(download);
         }
 
         public bool CanProcessQuery => !IsBusy && Query.IsNotBlank();
@@ -169,8 +162,7 @@ namespace YoutubeDownloader.ViewModels
                 var downloads = await _dialogManager.ShowDialogAsync(dialog);
 
                 // Add downloads to the list (can be null if user canceled)
-                if (downloads != null)
-                    AddDownloads(downloads);
+                downloads?.ForEach(AddDownload);
             }
 
             IsBusy = false;
