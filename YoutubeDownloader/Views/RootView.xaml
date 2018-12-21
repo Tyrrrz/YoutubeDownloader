@@ -111,7 +111,7 @@
                         ItemsSource="{Binding Downloads}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <ContentControl Margin="0,0,0,4" s:View.Model="{Binding}" />
+                                <ContentControl Margin="0,0,0,8" s:View.Model="{Binding}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

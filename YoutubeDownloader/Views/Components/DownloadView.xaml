@@ -12,100 +12,106 @@
     d:DesignWidth="400"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
-    <Grid MinHeight="45">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
+        <Grid MinHeight="45">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <!--  Info and buttons  -->
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <!--  Info and buttons  -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <!--  Thumbnail  -->
-            <Image
-                Grid.Column="0"
-                Width="32"
-                Source="{Binding Video.Thumbnails.LowResUrl}" />
+                <!--  Thumbnail  -->
+                <Image
+                    Grid.Column="0"
+                    Width="32"
+                    Margin="4,0,0,0"
+                    Source="{Binding Video.Thumbnails.LowResUrl}" />
 
-            <!--  File name/path  -->
-            <TextBlock
-                Grid.Column="1"
-                Margin="8,4"
-                VerticalAlignment="Center"
-                FontSize="15"
-                Foreground="{DynamicResource PrimaryTextBrush}"
-                Text="{Binding FileName}"
-                TextTrimming="CharacterEllipsis"
-                ToolTip="{Binding FilePath}" />
-
-            <!--  Progress and completion status  -->
-            <Grid
-                Grid.Column="2"
-                Margin="4"
-                VerticalAlignment="Center">
-                <TextBlock Text="{Binding Progress, StringFormat=\{0:P2\}}" Visibility="{Binding IsRunning, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+                <!--  File name/path  -->
                 <TextBlock
-                    Foreground="DarkRed"
-                    Text="Canceled"
-                    Visibility="{Binding IsCanceled, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+                    Grid.Column="1"
+                    Margin="8,4"
+                    VerticalAlignment="Center"
+                    FontSize="15"
+                    Foreground="{DynamicResource PrimaryTextBrush}"
+                    Text="{Binding FileName}"
+                    TextTrimming="CharacterEllipsis"
+                    ToolTip="{Binding FilePath}" />
+
+                <!--  Progress and completion status  -->
+                <Grid
+                    Grid.Column="2"
+                    Margin="4"
+                    VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Progress, StringFormat=\{0:P2\}}" Visibility="{Binding IsRunning, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+                    <TextBlock
+                        Foreground="DarkRed"
+                        Text="Canceled"
+                        Visibility="{Binding IsCanceled, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+                </Grid>
+
+                <StackPanel
+                    Grid.Column="3"
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <!--  Cancel  -->
+                    <Button
+                        Padding="4,0,4,0"
+                        VerticalAlignment="Center"
+                        Command="{s:Action Cancel}"
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        ToolTip="Cancel download"
+                        Visibility="{Binding CanCancel, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24 "
+                            Kind="CloseCircle" />
+                    </Button>
+
+                    <!--  Show file  -->
+                    <Button
+                        Padding="4,0,4,0"
+                        VerticalAlignment="Center"
+                        Command="{s:Action ShowFile}"
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        ToolTip="Navigate to file"
+                        Visibility="{Binding CanShowFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24 "
+                            Kind="FileFind" />
+                    </Button>
+
+                    <!--  Open file  -->
+                    <Button
+                        Padding="4,0,4,0"
+                        VerticalAlignment="Center"
+                        Command="{s:Action OpenFile}"
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        ToolTip="Play"
+                        Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24 "
+                            Kind="PlayCircle" />
+                    </Button>
+                </StackPanel>
             </Grid>
 
-            <StackPanel
-                Grid.Column="3"
-                Margin="4"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
-                <!--  Cancel  -->
-                <Button
-                    Padding="4,0,4,0"
-                    VerticalAlignment="Center"
-                    Command="{s:Action Cancel}"
-                    Style="{DynamicResource MaterialDesignFlatButton}"
-                    ToolTip="Cancel download"
-                    Visibility="{Binding CanCancel, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                    <materialDesign:PackIcon
-                        Width="24"
-                        Height="24 "
-                        Kind="CloseCircle" />
-                </Button>
-
-                <!--  Show file  -->
-                <Button
-                    Padding="4,0,4,0"
-                    VerticalAlignment="Center"
-                    Command="{s:Action ShowFile}"
-                    Style="{DynamicResource MaterialDesignFlatButton}"
-                    ToolTip="Navigate to file"
-                    Visibility="{Binding CanShowFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                    <materialDesign:PackIcon
-                        Width="24"
-                        Height="24 "
-                        Kind="FileFind" />
-                </Button>
-
-                <!--  Open file  -->
-                <Button
-                    Padding="4,0,4,0"
-                    VerticalAlignment="Center"
-                    Command="{s:Action OpenFile}"
-                    Style="{DynamicResource MaterialDesignFlatButton}"
-                    ToolTip="Play"
-                    Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                    <materialDesign:PackIcon
-                        Width="24"
-                        Height="24 "
-                        Kind="PlayCircle" />
-                </Button>
-            </StackPanel>
+            <!--  Progress bar  -->
+            <ProgressBar
+                Grid.Row="1"
+                Visibility="{Binding IsRunning, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
+                Value="{Binding Progress}" />
         </Grid>
-
-        <!--  Progress bar  -->
-        <ProgressBar Grid.Row="1" Value="{Binding Progress}" />
-    </Grid>
+    </materialDesign:Card>
 </UserControl>
