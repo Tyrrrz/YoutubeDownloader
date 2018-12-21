@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Tyrrrz.Extensions;
+using YoutubeDownloader.Internal;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
@@ -42,6 +43,9 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 // Generate file path
                 var fileName = GetDefaultFileName(video, SelectedFormat);
                 var filePath = Path.Combine(dirPath, fileName);
+
+                // Ensure file paths are unique because users will not be able to confirm overwrites
+                filePath = FileEx.MakeUniqueFilePath(filePath);
 
                 // Enqueue download
                 downloads.Add(EnqueueDownload(video, filePath, SelectedFormat));
