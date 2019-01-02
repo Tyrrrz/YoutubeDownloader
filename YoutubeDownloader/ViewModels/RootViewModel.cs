@@ -48,12 +48,10 @@ namespace YoutubeDownloader.ViewModels
             // Load settings
             _settingsService.Load();
 
-            // Check for updates
-            var updateVersion = await _updateService.CheckPrepareUpdateAsync();
-
             // Check and prepare update
             try
             {
+                var updateVersion = await _updateService.CheckPrepareUpdateAsync();
                 if (updateVersion != null)
                 {
                     // Show notification
