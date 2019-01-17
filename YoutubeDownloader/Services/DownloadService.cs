@@ -89,6 +89,7 @@ namespace YoutubeDownloader.Services
 
                 // Add to list
                 result.Add(new DownloadOption("mp3", audioStreamInfo));
+                result.Add(new DownloadOption("ogg", audioStreamInfo));
             }
 
             return result;

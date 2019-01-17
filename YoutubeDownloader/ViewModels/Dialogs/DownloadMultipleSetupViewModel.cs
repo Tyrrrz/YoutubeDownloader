@@ -16,7 +16,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public IReadOnlyList<Video> SelectedVideos { get; set; }
 
-        public IReadOnlyList<string> AvailableFormats { get; } = new[] {"mp4", "mp3"};
+        public IReadOnlyList<string> AvailableFormats { get; } = new[] {"mp4", "mp3", "ogg"};
 
         public string SelectedFormat { get; set; }
 
