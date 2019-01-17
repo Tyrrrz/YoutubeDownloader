@@ -126,7 +126,7 @@
                     VerticalAlignment="Center"
                     Text="Format:" />
                 <ComboBox
-                    MinWidth="100"
+                    MinWidth="150"
                     Margin="8"
                     VerticalAlignment="Center"
                     IsReadOnly="True"
@@ -144,7 +144,7 @@
                 <Button.Content>
                     <TextBlock>
                         <Run Text="DOWNLOAD" />
-                        <Run Text="(" /><Run Text="{Binding SelectedVideos.Count, Mode=OneWay}" /><Run Text=")" />
+                        <Run Text="(" /><Run Text="{Binding SelectedVideos.Count, FallbackValue=0, Mode=OneWay}" /><Run Text=")" />
                     </TextBlock>
                 </Button.Content>
             </Button>

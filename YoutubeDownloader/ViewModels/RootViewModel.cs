@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using MaterialDesignThemes.Wpf;
 using Stylet;
 using Tyrrrz.Extensions;
+using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
+using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels
 {
@@ -18,6 +23,7 @@ namespace YoutubeDownloader.ViewModels
         private readonly SettingsService _settingsService;
         private readonly UpdateService _updateService;
         private readonly QueryService _queryService;
+        private readonly DownloadService _downloadService;
 
         public SnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(5));
 
@@ -28,13 +34,15 @@ namespace YoutubeDownloader.ViewModels
         public BindableCollection<DownloadViewModel> Downloads { get; } = new BindableCollection<DownloadViewModel>();
 
         public RootViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager,
-            SettingsService settingsService, UpdateService updateService, QueryService queryService)
+            SettingsService settingsService, UpdateService updateService, QueryService queryService,
+            DownloadService downloadService)
         {
             _viewModelFactory = viewModelFactory;
             _dialogManager = dialogManager;
             _settingsService = settingsService;
             _updateService = updateService;
             _queryService = queryService;
+            _downloadService = downloadService;
 
             // Title
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
@@ -55,7 +63,8 @@ namespace YoutubeDownloader.ViewModels
                 if (updateVersion != null)
                 {
                     // Show notification
-                    Notifications.Enqueue($"Update to YoutubeDownloader v{updateVersion} will be installed when you exit",
+                    Notifications.Enqueue(
+                        $"Update to YoutubeDownloader v{updateVersion} will be installed when you exit",
                         "INSTALL NOW", () =>
                         {
                             _updateService.FinalizeUpdate(true);
@@ -91,10 +100,10 @@ namespace YoutubeDownloader.ViewModels
             await _dialogManager.ShowDialogAsync(dialog);
         }
 
-        private void AddDownload(DownloadViewModel download)
+        private DownloadViewModel CreateDownloadViewModel(Video video, string filePath, string format)
         {
             // Find an existing download for this file path
-            var existingDownload = Downloads.FirstOrDefault(d => d.FilePath == download.FilePath);
+            var existingDownload = Downloads.FirstOrDefault(d => d.FilePath == filePath);
 
             // If it exists - cancel and remove it
             if (existingDownload != null)
@@ -105,65 +114,147 @@ namespace YoutubeDownloader.ViewModels
                 Downloads.Remove(existingDownload);
             }
 
+            // Prepare the download viewmodel
+            var download = _viewModelFactory.CreateDownloadViewModel();
+            download.Video = video;
+            download.FilePath = filePath;
+            download.Format = format;
+            download.CancellationTokenSource = new CancellationTokenSource();
+            download.StartTime = DateTimeOffset.Now;
+
+            return download;
+        }
+
+        private void EnqueueDownload(Video video, DownloadOption downloadOption, string filePath)
+        {
+            // Create download
+            var download = CreateDownloadViewModel(video, filePath, downloadOption.Format);
+
+            // Set up progress router
+            var progressRouter = new Progress<double>(p => download.Progress = p);
+
+            // Get cancellation token
+            var cancellationToken = download.CancellationTokenSource.Token;
+
+            // Start download
+            _downloadService.DownloadVideoAsync(video.Id, filePath, downloadOption, progressRouter, cancellationToken)
+                .ContinueWith(t =>
+                {
+                    download.IsFinished = t.IsCompleted && !t.IsCanceled;
+                    download.IsCanceled = t.IsCanceled;
+                    download.EndTime = DateTimeOffset.Now;
+                    download.CancellationTokenSource.Dispose();
+                });
+
             // Add to list
             Downloads.Add(download);
+        }
+
+        private void EnqueueDownloads(IReadOnlyList<Video> videos, string dirPath, string format)
+        {
+            foreach (var video in videos)
+            {
+                // Generate file path
+                var fileName = $"{video.GetFileNameSafeTitle()}.{format}";
+                var filePath = Path.Combine(dirPath, fileName);
+
+                // Ensure file paths are unique because users will not be able to confirm overwrites
+                filePath = FileEx.MakeUniqueFilePath(filePath);
+
+                // Create download
+                var download = CreateDownloadViewModel(video, filePath, format);
+
+                // Set up progress router
+                var progressRouter = new Progress<double>(p => download.Progress = p);
+
+                // Get cancellation token
+                var cancellationToken = download.CancellationTokenSource.Token;
+
+                // Start download
+                _downloadService.DownloadVideoAsync(video.Id, filePath, format, progressRouter, cancellationToken)
+                    .ContinueWith(t =>
+                    {
+                        download.IsFinished = t.IsCompleted && !t.IsCanceled;
+                        download.IsCanceled = t.IsCanceled;
+                        download.EndTime = DateTimeOffset.Now;
+                        download.CancellationTokenSource.Dispose();
+                    });
+
+                // Add to list
+                Downloads.Add(download);
+            }
         }
 
         public bool CanProcessQuery => !IsBusy && Query.IsNotBlank();
 
         public async void ProcessQuery()
         {
-            IsBusy = true;
-
-            // Execute query
-            var executedQuery = await _queryService.ExecuteQueryAsync(Query);
-
-            // If no videos were found - tell the user
-            if (executedQuery.Videos.Count <= 0)
+            try
             {
-                // Create dialog
-                var dialog = _viewModelFactory.CreateMessageBoxViewModel();
-                dialog.DisplayName = "Nothing found";
-                dialog.Message = "Couldn't find any videos based on the query or URL you provided";
+                // Set busy state
+                IsBusy = true;
 
-                // Show dialog
-                await _dialogManager.ShowDialogAsync(dialog);
+                // Execute query
+                var executedQuery = await _queryService.ExecuteQueryAsync(Query);
+
+                // If no videos were found - tell the user
+                if (executedQuery.Videos.Count <= 0)
+                {
+                    // Create dialog
+                    var dialog = _viewModelFactory.CreateMessageBoxViewModel();
+                    dialog.DisplayName = "Nothing found";
+                    dialog.Message = "Couldn't find any videos based on the query or URL you provided";
+
+                    // Show dialog
+                    await _dialogManager.ShowDialogAsync(dialog);
+                }
+                // If only one video was found - show download setup for single video
+                else if (executedQuery.Videos.Count == 1)
+                {
+                    // Get single video
+                    var video = executedQuery.Videos.Single();
+
+                    // Get download options
+                    var downloadOptions = await _downloadService.GetVideoDownloadOptionsAsync(video.Id);
+
+                    // Create dialog
+                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel();
+                    dialog.DisplayName = executedQuery.Title;
+                    dialog.Video = video;
+                    dialog.AvailableDownloadOptions = downloadOptions;
+
+                    // Show dialog, if canceled - return
+                    if (await _dialogManager.ShowDialogAsync(dialog) != true)
+                        return;
+
+                    // Enqueue download
+                    EnqueueDownload(dialog.Video, dialog.SelectedDownloadOption, dialog.FilePath);
+                }
+                // If multiple videos were found - show download setup for multiple videos
+                else
+                {
+                    // Create dialog
+                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel();
+                    dialog.DisplayName = executedQuery.Title;
+                    dialog.AvailableVideos = executedQuery.Videos;
+
+                    // If this is a playlist - preselect all videos
+                    if (executedQuery.Query.Type == QueryType.Playlist)
+                        dialog.SelectedVideos = dialog.AvailableVideos;
+
+                    // Show dialog, if canceled - return
+                    if (await _dialogManager.ShowDialogAsync(dialog) != true)
+                        return;
+
+                    // Enqueue downloads
+                    EnqueueDownloads(dialog.SelectedVideos, dialog.DirPath, dialog.SelectedFormat);
+                }
             }
-            // If only one video was found - show download setup for single video
-            else if (executedQuery.Videos.Count == 1)
+            finally
             {
-                // Create dialog
-                var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel();
-                dialog.DisplayName = executedQuery.Title;
-                dialog.Video = executedQuery.Videos.Single();
-
-                // Show dialog and get download
-                var download = await _dialogManager.ShowDialogAsync(dialog);
-
-                // Add download to the list (can be null if user canceled)
-                if (download != null)
-                    AddDownload(download);
+                // Reset busy state
+                IsBusy = false;
             }
-            // If multiple videos were found - show download setup for multiple videos
-            else
-            {
-                // Create dialog
-                var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel();
-                dialog.DisplayName = executedQuery.Title;
-                dialog.AvailableVideos = executedQuery.Videos;
-
-                // If this is a playlist - preselect all videos
-                if (executedQuery.Query.Type == QueryType.Playlist)
-                    dialog.SelectedVideos = dialog.AvailableVideos;
-
-                // Show dialog and get downloads
-                var downloads = await _dialogManager.ShowDialogAsync(dialog);
-
-                // Add downloads to the list (can be null if user canceled)
-                downloads?.ForEach(AddDownload);
-            }
-
-            IsBusy = false;
         }
     }
 }

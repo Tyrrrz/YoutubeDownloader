@@ -1,28 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Tyrrrz.Extensions;
-using YoutubeDownloader.Internal;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {
-    public class DownloadMultipleSetupViewModel : DownloadSetupViewModelBase<IReadOnlyList<DownloadViewModel>>
+    public class DownloadMultipleSetupViewModel : DialogScreen
     {
+        private readonly SettingsService _settingsService;
         private readonly DialogManager _dialogManager;
 
-        public IReadOnlyList<Video> AvailableVideos { get; set; } = Array.Empty<Video>();
+        public IReadOnlyList<Video> AvailableVideos { get; set; }
 
-        public IReadOnlyList<Video> SelectedVideos { get; set; } = Array.Empty<Video>();
+        public IReadOnlyList<Video> SelectedVideos { get; set; }
 
-        public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
-            DownloadService downloadService, DialogManager dialogManager)
-            : base(viewModelFactory, settingsService, downloadService)
+        public IReadOnlyList<string> AvailableFormats { get; } = new[] {"mp4", "mp3"};
+
+        public string SelectedFormat { get; set; }
+
+        public string DirPath { get; set; }
+
+        public DownloadMultipleSetupViewModel(SettingsService settingsService, DialogManager dialogManager)
         {
+            _settingsService = settingsService;
             _dialogManager = dialogManager;
+        }
+
+        protected override void OnViewLoaded()
+        {
+            base.OnViewLoaded();
+
+            // Select last used format
+            SelectedFormat = AvailableFormats.Contains(_settingsService.LastFormat)
+                ? _settingsService.LastFormat
+                : AvailableFormats.FirstOrDefault();
         }
 
         public bool CanConfirm => SelectedVideos != null && SelectedVideos.Count > 0;
@@ -30,29 +43,17 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         public void Confirm()
         {
             // Prompt user for output directory path
-            var dirPath = _dialogManager.PromptDirectoryPath();
+            DirPath = _dialogManager.PromptDirectoryPath();
 
             // If canceled - return
-            if (dirPath.IsBlank())
+            if (DirPath.IsBlank())
                 return;
 
-            // Get downloads
-            var downloads = new List<DownloadViewModel>();
-            foreach (var video in SelectedVideos)
-            {
-                // Generate file path
-                var fileName = GetDefaultFileName(video, SelectedFormat);
-                var filePath = Path.Combine(dirPath, fileName);
+            // Save last used format
+            _settingsService.LastFormat = SelectedFormat;
 
-                // Ensure file paths are unique because users will not be able to confirm overwrites
-                filePath = FileEx.MakeUniqueFilePath(filePath);
-
-                // Enqueue download
-                downloads.Add(EnqueueDownload(video, filePath, SelectedFormat));
-            }
-
-            // Close dialog with result
-            Close(downloads);
+            // Close dialog
+            Close(true);
         }
     }
 }
