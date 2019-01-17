@@ -16,7 +16,7 @@ using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels
 {
-    public class RootViewModel : Screen
+    public class RootViewModel : Screen, IDisposable
     {
         private readonly IViewModelFactory _viewModelFactory;
         private readonly DialogManager _dialogManager;
@@ -24,6 +24,8 @@ namespace YoutubeDownloader.ViewModels
         private readonly UpdateService _updateService;
         private readonly QueryService _queryService;
         private readonly DownloadService _downloadService;
+
+        private readonly CancellationTokenSource _killSwitchCts = new CancellationTokenSource();
 
         public SnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(5));
 
@@ -133,8 +135,10 @@ namespace YoutubeDownloader.ViewModels
             // Set up progress router
             var progressRouter = new Progress<double>(p => download.Progress = p);
 
-            // Get cancellation token
-            var cancellationToken = download.CancellationTokenSource.Token;
+            // Create cancellation token based on download's own cancellation token and kill switch
+            var cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(
+                download.CancellationTokenSource.Token,
+                _killSwitchCts.Token).Token;
 
             // Start download
             _downloadService.DownloadVideoAsync(video.Id, filePath, downloadOption, progressRouter, cancellationToken)
@@ -167,8 +171,10 @@ namespace YoutubeDownloader.ViewModels
                 // Set up progress router
                 var progressRouter = new Progress<double>(p => download.Progress = p);
 
-                // Get cancellation token
-                var cancellationToken = download.CancellationTokenSource.Token;
+                // Create cancellation token based on download's own cancellation token and kill switch
+                var cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(
+                    download.CancellationTokenSource.Token,
+                    _killSwitchCts.Token).Token;
 
                 // Start download
                 _downloadService.DownloadVideoAsync(video.Id, filePath, format, progressRouter, cancellationToken)
@@ -255,6 +261,13 @@ namespace YoutubeDownloader.ViewModels
                 // Reset busy state
                 IsBusy = false;
             }
+        }
+
+        public void Dispose()
+        {
+            // Trigger kill switch to cancel all active downloads
+            _killSwitchCts.Cancel();
+            _killSwitchCts.Dispose();
         }
     }
 }
