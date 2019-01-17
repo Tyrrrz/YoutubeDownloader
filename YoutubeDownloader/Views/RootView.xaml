@@ -93,7 +93,7 @@
             <Grid Grid.Row="2">
                 <!--  Placeholder  -->
                 <TextBlock
-                    Margin="8,32"
+                    Margin="32"
                     FontSize="18"
                     Text="Copy-paste video/playlist URL or type in a search query to start downloading videos"
                     TextAlignment="Center"
