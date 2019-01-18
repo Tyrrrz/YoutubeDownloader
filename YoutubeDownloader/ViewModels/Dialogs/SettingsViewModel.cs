@@ -11,7 +11,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         public int MaxConcurrentDownloads
         {
             get => _settingsService.MaxConcurrentDownloadCount;
-            set => _settingsService.MaxConcurrentDownloadCount = value.Clamp(0, 20);
+            set => _settingsService.MaxConcurrentDownloadCount = value.Clamp(1, 10);
         }
 
         public SettingsViewModel(SettingsService settingsService)

@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Tyrrrz.Extensions;
+using YoutubeDownloader.Internal;
 using YoutubeDownloader.Services;
+using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {
-    public class DownloadMultipleSetupViewModel : DialogScreen
+    public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
     {
+        private readonly IViewModelFactory _viewModelFactory;
         private readonly SettingsService _settingsService;
         private readonly DialogManager _dialogManager;
 
@@ -20,10 +24,10 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public string SelectedFormat { get; set; }
 
-        public string DirPath { get; set; }
-
-        public DownloadMultipleSetupViewModel(SettingsService settingsService, DialogManager dialogManager)
+        public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
+            DialogManager dialogManager)
         {
+            _viewModelFactory = viewModelFactory;
             _settingsService = settingsService;
             _dialogManager = dialogManager;
         }
@@ -43,17 +47,38 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         public void Confirm()
         {
             // Prompt user for output directory path
-            DirPath = _dialogManager.PromptDirectoryPath();
+            var dirPath = _dialogManager.PromptDirectoryPath();
 
             // If canceled - return
-            if (DirPath.IsBlank())
+            if (dirPath.IsBlank())
                 return;
 
             // Save last used format
             _settingsService.LastFormat = SelectedFormat;
 
+            // Create download view models
+            var downloads = new List<DownloadViewModel>();
+            foreach (var video in SelectedVideos)
+            {
+                // Generate file path
+                var fileName = $"{video.GetFileNameSafeTitle()}.{SelectedFormat}";
+                var filePath = Path.Combine(dirPath, fileName);
+
+                // Ensure file paths are unique because users will not be able to confirm overwrites
+                filePath = FileEx.MakeUniqueFilePath(filePath);
+
+                // Create download view model
+                var download = _viewModelFactory.CreateDownloadViewModel();
+                download.Video = video;
+                download.FilePath = filePath;
+                download.Format = SelectedFormat;
+
+                // Add to list
+                downloads.Add(download);
+            }
+
             // Close dialog
-            Close(true);
+            Close(downloads);
         }
     }
 }

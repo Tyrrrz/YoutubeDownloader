@@ -4,13 +4,15 @@ using Tyrrrz.Extensions;
 using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
+using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {
-    public class DownloadSingleSetupViewModel : DialogScreen
+    public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
     {
+        private readonly IViewModelFactory _viewModelFactory;
         private readonly SettingsService _settingsService;
         private readonly DialogManager _dialogManager;
 
@@ -20,10 +22,10 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public DownloadOption SelectedDownloadOption { get; set; }
 
-        public string FilePath { get; set; }
-
-        public DownloadSingleSetupViewModel(SettingsService settingsService, DialogManager dialogManager)
+        public DownloadSingleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
+            DialogManager dialogManager)
         {
+            _viewModelFactory = viewModelFactory;
             _settingsService = settingsService;
             _dialogManager = dialogManager;
         }
@@ -47,17 +49,23 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             // Prompt user for output file path
             var filter = $"{format.ToUpperInvariant()} file|*.{format}";
             var defaultFileName = $"{Video.GetFileNameSafeTitle()}.{format}";
-            FilePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
+            var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
 
             // If canceled - return
-            if (FilePath.IsBlank())
+            if (filePath.IsBlank())
                 return;
 
             // Save last used format
             _settingsService.LastFormat = format;
 
+            // Create download view model
+            var download = _viewModelFactory.CreateDownloadViewModel();
+            download.Video = Video;
+            download.FilePath = filePath;
+            download.Format = format;
+
             // Close dialog
-            Close(true);
+            Close(download);
         }
     }
 }

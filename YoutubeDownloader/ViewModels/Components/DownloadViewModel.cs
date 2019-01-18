@@ -9,6 +9,8 @@ namespace YoutubeDownloader.ViewModels.Components
 {
     public class DownloadViewModel : PropertyChangedBase
     {
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
         public Video Video { get; set; }
 
         public string FilePath { get; set; }
@@ -19,38 +21,55 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public double Progress { get; set; }
 
-        public CancellationTokenSource CancellationTokenSource { get; set; }
+        public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
-        public bool IsFinished { get; set; }
+        public bool IsCompleted { get; private set; }
 
-        public bool IsCanceled { get; set; }
+        public bool IsCanceled { get; private set; }
 
-        public bool IsRunning => !IsFinished && !IsCanceled;
+        public bool IsRunning => !IsCompleted && !IsCanceled;
 
-        public DateTimeOffset StartTime { get; set; }
+        public void MarkAsCompleted()
+        {
+            _cancellationTokenSource.Dispose();
+            IsCompleted = true;
+        }
 
-        public DateTimeOffset EndTime { get; set; }
+        public IProgress<double> GetProgressRouter() => new Progress<double>(p => Progress = p);
 
         public bool CanCancel => IsRunning;
 
         public void Cancel()
         {
-            CancellationTokenSource.Cancel();
-            CancellationTokenSource.Dispose();
+            if (!CanCancel)
+                return;
+
+            // Cancel
+            _cancellationTokenSource.Cancel();
+            IsCanceled = true;
+
+            // Mark as completed
+            MarkAsCompleted();
         }
 
-        public bool CanShowFile => IsFinished;
+        public bool CanShowFile => IsCompleted && !IsCanceled;
 
         public void ShowFile()
         {
+            if (!CanShowFile)
+                return;
+
             // This opens explorer, navigates to the output directory and selects the video file
             Process.Start("explorer", $"/select, \"{FilePath}\"");
         }
 
-        public bool CanOpenFile => IsFinished;
+        public bool CanOpenFile => IsCompleted && !IsCanceled;
 
         public void OpenFile()
         {
+            if (!CanOpenFile)
+                return;
+
             // This opens the video file using the default player
             Process.Start(FilePath);
         }

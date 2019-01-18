@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using MaterialDesignThemes.Wpf;
 using Stylet;
 using Tyrrrz.Extensions;
-using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
-using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels
 {
-    public class RootViewModel : Screen, IDisposable
+    public class RootViewModel : Screen
     {
         private readonly IViewModelFactory _viewModelFactory;
         private readonly DialogManager _dialogManager;
@@ -24,8 +20,6 @@ namespace YoutubeDownloader.ViewModels
         private readonly UpdateService _updateService;
         private readonly QueryService _queryService;
         private readonly DownloadService _downloadService;
-
-        private readonly CancellationTokenSource _killSwitchCts = new CancellationTokenSource();
 
         public SnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(5));
 
@@ -87,6 +81,10 @@ namespace YoutubeDownloader.ViewModels
             // Save settings
             _settingsService.Save();
 
+            // Cancel all downloads
+            foreach (var download in Downloads)
+                download.Cancel();
+
             // Finalize updates if necessary
             _updateService.FinalizeUpdate(false);
         }
@@ -102,89 +100,45 @@ namespace YoutubeDownloader.ViewModels
             await _dialogManager.ShowDialogAsync(dialog);
         }
 
-        private DownloadViewModel CreateDownloadViewModel(Video video, string filePath, string format)
+        private void RemoveDownload(DownloadViewModel download)
         {
             // Find an existing download for this file path
-            var existingDownload = Downloads.FirstOrDefault(d => d.FilePath == filePath);
+            var existingDownload = Downloads.FirstOrDefault(d => d.FilePath == download.FilePath);
 
             // If it exists - cancel and remove it
             if (existingDownload != null)
             {
-                if (existingDownload.CanCancel)
-                    existingDownload.Cancel();
-
+                existingDownload.Cancel();
                 Downloads.Remove(existingDownload);
             }
-
-            // Prepare the download viewmodel
-            var download = _viewModelFactory.CreateDownloadViewModel();
-            download.Video = video;
-            download.FilePath = filePath;
-            download.Format = format;
-            download.CancellationTokenSource = new CancellationTokenSource();
-            download.StartTime = DateTimeOffset.Now;
-
-            return download;
         }
 
-        private void EnqueueDownload(Video video, DownloadOption downloadOption, string filePath)
+        private void EnqueueDownload(DownloadViewModel download, DownloadOption option)
         {
-            // Create download
-            var download = CreateDownloadViewModel(video, filePath, downloadOption.Format);
-
-            // Set up progress router
-            var progressRouter = new Progress<double>(p => download.Progress = p);
-
-            // Create cancellation token based on download's own cancellation token and kill switch
-            var cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(
-                download.CancellationTokenSource.Token,
-                _killSwitchCts.Token).Token;
+            // Remove an existing download
+            RemoveDownload(download);
 
             // Start download
-            _downloadService.DownloadVideoAsync(video.Id, filePath, downloadOption, progressRouter, cancellationToken)
-                .ContinueWith(t =>
-                {
-                    download.IsFinished = t.IsCompleted && !t.IsCanceled;
-                    download.IsCanceled = t.IsCanceled;
-                    download.EndTime = DateTimeOffset.Now;
-                    download.CancellationTokenSource.Dispose();
-                });
+            _downloadService.DownloadVideoAsync(download.Video.Id, download.FilePath, option,
+                    download.GetProgressRouter(), download.CancellationToken)
+                .ContinueWith(t => download.MarkAsCompleted());
 
             // Add to list
             Downloads.Add(download);
         }
 
-        private void EnqueueDownloads(IReadOnlyList<Video> videos, string dirPath, string format)
+        private void EnqueueDownloads(IReadOnlyList<DownloadViewModel> downloads)
         {
-            foreach (var video in videos)
+            foreach (var download in downloads)
             {
-                // Generate file path
-                var fileName = $"{video.GetFileNameSafeTitle()}.{format}";
-                var filePath = Path.Combine(dirPath, fileName);
-
-                // Ensure file paths are unique because users will not be able to confirm overwrites
-                filePath = FileEx.MakeUniqueFilePath(filePath);
-
-                // Create download
-                var download = CreateDownloadViewModel(video, filePath, format);
-
-                // Set up progress router
-                var progressRouter = new Progress<double>(p => download.Progress = p);
-
-                // Create cancellation token based on download's own cancellation token and kill switch
-                var cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(
-                    download.CancellationTokenSource.Token,
-                    _killSwitchCts.Token).Token;
+                // Remove an existing download
+                RemoveDownload(download);
 
                 // Start download
-                _downloadService.DownloadVideoAsync(video.Id, filePath, format, progressRouter, cancellationToken)
-                    .ContinueWith(t =>
-                    {
-                        download.IsFinished = t.IsCompleted && !t.IsCanceled;
-                        download.IsCanceled = t.IsCanceled;
-                        download.EndTime = DateTimeOffset.Now;
-                        download.CancellationTokenSource.Dispose();
-                    });
+                _downloadService
+                    .DownloadVideoAsync(download.Video.Id, download.FilePath, download.Format,
+                        download.GetProgressRouter(), download.CancellationToken)
+                    .ContinueWith(t => download.MarkAsCompleted());
 
                 // Add to list
                 Downloads.Add(download);
@@ -229,12 +183,15 @@ namespace YoutubeDownloader.ViewModels
                     dialog.Video = video;
                     dialog.AvailableDownloadOptions = downloadOptions;
 
-                    // Show dialog, if canceled - return
-                    if (await _dialogManager.ShowDialogAsync(dialog) != true)
+                    // Show dialog and get download
+                    var download = await _dialogManager.ShowDialogAsync(dialog);
+
+                    // If canceled - return
+                    if (download == null)
                         return;
 
                     // Enqueue download
-                    EnqueueDownload(dialog.Video, dialog.SelectedDownloadOption, dialog.FilePath);
+                    EnqueueDownload(download, dialog.SelectedDownloadOption);
                 }
                 // If multiple videos were found - show download setup for multiple videos
                 else
@@ -248,12 +205,15 @@ namespace YoutubeDownloader.ViewModels
                     if (executedQuery.Query.Type == QueryType.Playlist)
                         dialog.SelectedVideos = dialog.AvailableVideos;
 
-                    // Show dialog, if canceled - return
-                    if (await _dialogManager.ShowDialogAsync(dialog) != true)
+                    // Show dialog and get downloads
+                    var downloads = await _dialogManager.ShowDialogAsync(dialog);
+
+                    // If canceled - return
+                    if (downloads == null)
                         return;
 
                     // Enqueue downloads
-                    EnqueueDownloads(dialog.SelectedVideos, dialog.DirPath, dialog.SelectedFormat);
+                    EnqueueDownloads(downloads);
                 }
             }
             finally
@@ -261,13 +221,6 @@ namespace YoutubeDownloader.ViewModels
                 // Reset busy state
                 IsBusy = false;
             }
-        }
-
-        public void Dispose()
-        {
-            // Trigger kill switch to cancel all active downloads
-            _killSwitchCts.Cancel();
-            _killSwitchCts.Dispose();
         }
     }
 }
