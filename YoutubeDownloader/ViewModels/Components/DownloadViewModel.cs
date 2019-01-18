@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Stylet;
+using YoutubeDownloader.Models;
 using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels.Components
@@ -15,9 +16,11 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public string FilePath { get; set; }
 
+        public string FileName => Path.GetFileName(FilePath);
+
         public string Format { get; set; }
 
-        public string FileName => Path.GetFileName(FilePath);
+        public DownloadOption DownloadOption { get; set; }
 
         public double Progress { get; set; }
 

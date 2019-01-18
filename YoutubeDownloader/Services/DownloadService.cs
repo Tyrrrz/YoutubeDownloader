@@ -50,14 +50,34 @@ namespace YoutubeDownloader.Services
             }
         }
 
-        public async Task<IReadOnlyList<DownloadOption>> GetVideoDownloadOptionsAsync(string videoId)
+        public async Task DownloadVideoAsync(string videoId, string filePath, DownloadOption downloadOption,
+            IProgress<double> progress, CancellationToken cancellationToken)
+        {
+            // Ensure throttling and increment concurrent download count
+            await EnsureThrottlingAsync(cancellationToken);
+
+            try
+            {
+                // Download the video
+                await _youtubeConverter.DownloadAndProcessMediaStreamsAsync(downloadOption.MediaStreamInfos,
+                    filePath, downloadOption.Format,
+                    progress, cancellationToken);
+            }
+            finally
+            {
+                // Decrement concurrent download count
+                Interlocked.Decrement(ref _concurrentDownloadCount);
+            }
+        }
+
+        public async Task<IReadOnlyList<DownloadOption>> GetDownloadOptionsAsync(string videoId)
         {
             var result = new List<DownloadOption>();
 
             // Get media stream info set
             var mediaStreamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(videoId);
 
-            // Sort and filter video streams
+            // Sort video streams
             var videoStreamInfos = mediaStreamInfoSet.Video
                 .OrderByDescending(s => s.VideoQuality)
                 .ThenByDescending(s => s.Framerate)
@@ -95,37 +115,13 @@ namespace YoutubeDownloader.Services
             return result;
         }
 
-        public async Task DownloadVideoAsync(string videoId, string filePath, DownloadOption downloadOption,
-            IProgress<double> progress, CancellationToken cancellationToken)
+        public async Task<DownloadOption> GetBestDownloadOptionAsync(string videoId, string format)
         {
-            // Ensure throttling and increment concurrent download count
-            await EnsureThrottlingAsync(cancellationToken);
-
-            try
-            {
-                // Download the video
-                await _youtubeConverter.DownloadAndProcessMediaStreamsAsync(downloadOption.MediaStreamInfos,
-                    filePath, downloadOption.Format,
-                    progress, cancellationToken);
-            }
-            finally
-            {
-                // Decrement concurrent download count
-                Interlocked.Decrement(ref _concurrentDownloadCount);
-            }
-        }
-
-        public async Task DownloadVideoAsync(string videoId, string filePath, string format,
-            IProgress<double> progress, CancellationToken cancellationToken)
-        {
-            // Get download options
-            var downloadOptions = await GetVideoDownloadOptionsAsync(videoId);
+            // Get all download options
+            var downloadOptions = await GetDownloadOptionsAsync(videoId);
 
             // Get first download option for this format
-            var downloadOption = downloadOptions.FirstOrDefault(o => o.Format == format);
-
-            // Download the video
-            await DownloadVideoAsync(videoId, filePath, downloadOption, progress, cancellationToken);
+            return downloadOptions.FirstOrDefault(o => o.Format == format);
         }
     }
 }
