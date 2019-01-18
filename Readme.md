@@ -13,9 +13,9 @@ YoutubeDownloader is an application that lets you download videos from YouTube. 
 
 ## Features
 
-- Download specific videos or entire playlists
-- Search for videos directly
-- Convert videos to other formats (e.g. mp3)
+- Supports single videos, playlists and search queries
+- Variety of output formats: mp4, webm, mp3, ogg
+- Selectable video quality
 
 ## Screenshots
 
