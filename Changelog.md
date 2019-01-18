@@ -1,3 +1,13 @@
+### v1.2 (19-Jan-2019)
+
+- Added video quality selection when dowloading a single video. For playlists and search results, the highest video quality available for selected format is used.
+- Added support for `ogg` format.
+- Added support for `webm` format when dowloading a single video. May not always be available.
+- Updated the app icon to make it more distinct from YoutubeExplode.
+- Fixed an issue where child FFmpeg processes would not exit after the user closes the app while there are active downloads.
+- Fixed an issue where the app could sometimes crash when checking for updates.
+- Fixed an issue where it was possible to start multiple downloads to the same file path.
+
 ### v1.1.1 (22-Dec-2018)
 
 - The list of downloads is now always sorted chronologically.
