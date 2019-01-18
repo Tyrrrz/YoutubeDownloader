@@ -64,6 +64,9 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             download.FilePath = filePath;
             download.Format = format;
 
+            // Create empty file to "lock in" the file path
+            FileEx.CreateEmptyFile(filePath);
+
             // Close dialog
             Close(download);
         }

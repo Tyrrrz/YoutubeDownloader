@@ -31,5 +31,7 @@ namespace YoutubeDownloader.Internal
             // If number of attempts exceeded, just return original path
             return baseFilePath;
         }
+
+        public static void CreateEmptyFile(string filePath) => File.WriteAllText(filePath, "");
     }
 }

@@ -67,6 +67,9 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 // Ensure file paths are unique because users will not be able to confirm overwrites
                 filePath = FileEx.MakeUniqueFilePath(filePath);
 
+                // Create empty file to "lock in" the file path
+                FileEx.CreateEmptyFile(filePath);
+
                 // Create download view model
                 var download = _viewModelFactory.CreateDownloadViewModel();
                 download.Video = video;
