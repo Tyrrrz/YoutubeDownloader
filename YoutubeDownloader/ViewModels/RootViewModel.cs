@@ -147,9 +147,8 @@ namespace YoutubeDownloader.ViewModels
                 if (executedQuery.Videos.Count <= 0)
                 {
                     // Create dialog
-                    var dialog = _viewModelFactory.CreateMessageBoxViewModel();
-                    dialog.DisplayName = "Nothing found";
-                    dialog.Message = "Couldn't find any videos based on the query or URL you provided";
+                    var dialog = _viewModelFactory.CreateMessageBoxViewModel("Nothing found",
+                        "Couldn't find any videos based on the query or URL you provided");
 
                     // Show dialog
                     await _dialogManager.ShowDialogAsync(dialog);
@@ -165,10 +164,8 @@ namespace YoutubeDownloader.ViewModels
                     var downloadOptions = await _downloadService.GetDownloadOptionsAsync(video.Id);
 
                     // Create dialog
-                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel();
-                    dialog.DisplayName = executedQuery.Title;
-                    dialog.Video = video;
-                    dialog.AvailableDownloadOptions = downloadOptions;
+                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(executedQuery.Title,
+                        video, downloadOptions);
 
                     // Show dialog and get download
                     var download = await _dialogManager.ShowDialogAsync(dialog);
@@ -185,9 +182,8 @@ namespace YoutubeDownloader.ViewModels
                 else
                 {
                     // Create dialog
-                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel();
-                    dialog.DisplayName = executedQuery.Title;
-                    dialog.AvailableVideos = executedQuery.Videos;
+                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(executedQuery.Title,
+                        executedQuery.Videos);
 
                     // If this is a playlist - preselect all videos
                     if (executedQuery.Query.Type == QueryType.Playlist)

@@ -71,10 +71,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 FileEx.CreateEmptyFile(filePath);
 
                 // Create download view model
-                var download = _viewModelFactory.CreateDownloadViewModel();
-                download.Video = video;
-                download.FilePath = filePath;
-                download.Format = SelectedFormat;
+                var download = _viewModelFactory.CreateDownloadViewModel(video, filePath, SelectedFormat);
 
                 // Add to list
                 downloads.Add(download);

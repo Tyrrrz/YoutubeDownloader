@@ -77,6 +77,7 @@
     <Compile Include="ViewModels\Dialogs\DownloadMultipleSetupViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\DownloadSingleSetupViewModel.cs" />
     <Compile Include="ViewModels\Components\DownloadViewModel.cs" />
+    <Compile Include="ViewModels\Framework\Extensions.cs" />
     <Compile Include="ViewModels\RootViewModel.cs" />
     <Compile Include="ViewModels\Framework\IViewModelFactory.cs" />
     <Compile Include="ViewModels\Framework\DialogScreen.cs" />

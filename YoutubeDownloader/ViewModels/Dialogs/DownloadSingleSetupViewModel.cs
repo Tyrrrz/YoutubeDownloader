@@ -59,11 +59,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             _settingsService.LastFormat = format;
 
             // Create download view model
-            var download = _viewModelFactory.CreateDownloadViewModel();
-            download.Video = Video;
-            download.FilePath = filePath;
-            download.Format = format;
-            download.DownloadOption = SelectedDownloadOption;
+            var download = _viewModelFactory.CreateDownloadViewModel(Video, filePath, format, SelectedDownloadOption);
 
             // Create empty file to "lock in" the file path
             FileEx.CreateEmptyFile(filePath);
