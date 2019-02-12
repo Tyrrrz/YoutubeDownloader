@@ -185,8 +185,8 @@ namespace YoutubeDownloader.ViewModels
                     var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(executedQuery.Title,
                         executedQuery.Videos);
 
-                    // If this is a playlist - preselect all videos
-                    if (executedQuery.Query.Type == QueryType.Playlist)
+                    // If this is a playlist or channel - preselect all videos
+                    if (executedQuery.Query.Type == QueryType.Playlist || executedQuery.Query.Type == QueryType.Channel)
                         dialog.SelectedVideos = dialog.AvailableVideos;
 
                     // Show dialog and get downloads

@@ -4,6 +4,7 @@
     {
         Video,
         Playlist,
+        Channel,
         Search
     }
 }
