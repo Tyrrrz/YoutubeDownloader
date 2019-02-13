@@ -37,6 +37,12 @@ namespace YoutubeDownloader.Services
                 return new Query(QueryType.Video, videoId);
             }
 
+            // Channel ID
+            if (YoutubeClient.TryParseChannelId(query, out var channelId))
+            {
+                return new Query(QueryType.Channel, channelId);
+            }
+
             // Search
             {
                 return new Query(QueryType.Search, query);
@@ -51,7 +57,7 @@ namespace YoutubeDownloader.Services
                 var video = await _youtubeClient.GetVideoAsync(query.Value);
                 var title = video.Title;
 
-                return new ExecutedQuery(query, title, new[] {video});
+                return new ExecutedQuery(query, title, new[] { video });
             }
 
             // Playlist
@@ -61,6 +67,15 @@ namespace YoutubeDownloader.Services
                 var title = playlist.Title;
 
                 return new ExecutedQuery(query, title, playlist.Videos);
+            }
+
+            // Channel
+            if (query.Type == QueryType.Channel)
+            {
+                var videos = await _youtubeClient.GetChannelUploadsAsync(query.Value);
+                var title = $"Channel uploads";
+
+                return new ExecutedQuery(query, title, videos);
             }
 
             // Search
