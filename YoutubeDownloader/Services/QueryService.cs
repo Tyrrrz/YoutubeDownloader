@@ -72,10 +72,10 @@ namespace YoutubeDownloader.Services
             // Channel
             if (query.Type == QueryType.Channel)
             {
-                var playlist = await _youtubeClient.GetChannelUploadsAsync(query.Value);
-                var title = $"Total {playlist.Count} videos";
+                var videos = await _youtubeClient.GetChannelUploadsAsync(query.Value);
+                var title = $"Channel uploads";
 
-                return new ExecutedQuery(query, title, playlist);
+                return new ExecutedQuery(query, title, videos);
             }
 
             // Search
