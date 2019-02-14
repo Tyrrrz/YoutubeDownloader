@@ -1,3 +1,11 @@
+### v1.3 (14-Feb-2019)
+
+- Added ability to download videos by channel ID or URL.
+- Added ability to download videos by user URL.
+- Aggregated progress of all downloads is now shown in the main progress bar and in the taskbar.
+- Downloads that have been queued up but not yet started now show "Pending..." instead of "0.00%".
+- Selection list for multiple videos now uses Ctrl/Shift to select multiple items.
+
 ### v1.2 (19-Jan-2019)
 
 - Added video quality selection when dowloading a single video. For playlists and search results, the highest video quality available for selected format is used.
