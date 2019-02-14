@@ -16,7 +16,7 @@
         <Grid MinHeight="45">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1" />
             </Grid.RowDefinitions>
 
             <!--  Info and buttons  -->
@@ -47,16 +47,37 @@
                     ToolTip="{Binding FilePath}" />
 
                 <!--  Progress and completion status  -->
-                <Grid
+                <TextBlock
                     Grid.Column="2"
                     Margin="4"
                     VerticalAlignment="Center">
-                    <TextBlock Text="{Binding ProgressOperation.Progress, StringFormat=\{0:P2\}}" Visibility="{Binding IsRunning, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
-                    <TextBlock
-                        Foreground="DarkRed"
-                        Text="Canceled"
-                        Visibility="{Binding IsCanceled, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
-                </Grid>
+                    <TextBlock.Style>
+                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                            <Style.Triggers>
+                                <!--  Downloading  -->
+                                <DataTrigger Binding="{Binding IsCompleted}" Value="False">
+                                    <Setter Property="Text" Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P2\}}" />
+                                </DataTrigger>
+
+                                <!--  Pending  -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsCompleted}" Value="False" />
+                                        <Condition Binding="{Binding ProgressOperation.Progress}" Value="0" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}" />
+                                    <Setter Property="Text" Value="Pending..." />
+                                </MultiDataTrigger>
+
+                                <!--  Canceled  -->
+                                <DataTrigger Binding="{Binding IsCanceled}" Value="True">
+                                    <Setter Property="Foreground" Value="DarkRed" />
+                                    <Setter Property="Text" Value="Canceled" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
                 <StackPanel
                     Grid.Column="3"
@@ -110,7 +131,7 @@
             <!--  Progress bar  -->
             <ProgressBar
                 Grid.Row="1"
-                Visibility="{Binding IsRunning, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
+                Visibility="{Binding IsCompleted, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}"
                 Value="{Binding ProgressOperation.Progress, Mode=OneWay}" />
         </Grid>
     </materialDesign:Card>

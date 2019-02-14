@@ -30,8 +30,6 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public bool IsCanceled { get; private set; }
 
-        public bool IsRunning => !IsCompleted && !IsCanceled;
-
         public void MarkAsCompleted()
         {
             _cancellationTokenSource.Dispose();
@@ -39,7 +37,7 @@ namespace YoutubeDownloader.ViewModels.Components
             IsCompleted = true;
         }
 
-        public bool CanCancel => IsRunning;
+        public bool CanCancel => !IsCompleted && !IsCanceled;
 
         public void Cancel()
         {
