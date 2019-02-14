@@ -41,14 +41,13 @@
                 ItemsSource="{Binding AvailableVideos}"
                 ScrollViewer.CanContentScroll="False"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                SelectionMode="Multiple"
+                SelectionMode="Extended"
                 VirtualizingStackPanel.IsVirtualizing="False">
                 <i:Interaction.Behaviors>
                     <behaviors:VideoMultiSelectionListBoxBehavior SelectedItems="{Binding SelectedVideos}" />
                 </i:Interaction.Behaviors>
                 <ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource {x:Type ListViewItem}}" TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Cursor" Value="Hand" />
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                         <Setter Property="Padding" Value="8,4,8,4" />
                     </Style>
