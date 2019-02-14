@@ -5,6 +5,7 @@
         Video,
         Playlist,
         Channel,
+        User,
         Search
     }
 }
