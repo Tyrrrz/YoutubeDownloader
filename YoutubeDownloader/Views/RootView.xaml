@@ -16,6 +16,9 @@
     Style="{DynamicResource MaterialDesignRoot}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo ProgressState="Normal" ProgressValue="{Binding ProgressManager.Progress}" />
+    </Window.TaskbarItemInfo>
     <materialDesign:DialogHost SnackbarMessageQueue="{Binding Notifications}" Style="{DynamicResource MaterialDesignEmbeddedDialogHost}">
         <Grid>
             <Grid.RowDefinitions>
@@ -87,7 +90,8 @@
             <ProgressBar
                 Grid.Row="1"
                 Background="Transparent"
-                IsIndeterminate="{Binding IsBusy}" />
+                IsIndeterminate="{Binding IsProgressIndeterminate}"
+                Value="{Binding ProgressManager.Progress, Mode=OneWay}" />
 
             <!--  Content  -->
             <Grid Grid.Row="2">

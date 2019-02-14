@@ -51,7 +51,7 @@
                     Grid.Column="2"
                     Margin="4"
                     VerticalAlignment="Center">
-                    <TextBlock Text="{Binding Progress, StringFormat=\{0:P2\}}" Visibility="{Binding IsRunning, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+                    <TextBlock Text="{Binding ProgressOperation.Progress, StringFormat=\{0:P2\}}" Visibility="{Binding IsRunning, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
                     <TextBlock
                         Foreground="DarkRed"
                         Text="Canceled"
@@ -111,7 +111,7 @@
             <ProgressBar
                 Grid.Row="1"
                 Visibility="{Binding IsRunning, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
-                Value="{Binding Progress}" />
+                Value="{Binding ProgressOperation.Progress, Mode=OneWay}" />
         </Grid>
     </materialDesign:Card>
 </UserControl>

@@ -57,7 +57,7 @@ namespace YoutubeDownloader.Services
                 var video = await _youtubeClient.GetVideoAsync(query.Value);
                 var title = video.Title;
 
-                return new ExecutedQuery(query, title, new[] { video });
+                return new ExecutedQuery(query, title, new[] {video});
             }
 
             // Playlist
@@ -73,7 +73,7 @@ namespace YoutubeDownloader.Services
             if (query.Type == QueryType.Channel)
             {
                 var videos = await _youtubeClient.GetChannelUploadsAsync(query.Value);
-                var title = $"Channel uploads";
+                var title = "Channel uploads";
 
                 return new ExecutedQuery(query, title, videos);
             }

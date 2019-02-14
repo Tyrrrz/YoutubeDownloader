@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using Stylet;
+using Gress;
 using YoutubeDownloader.Models;
 using YoutubeExplode.Models;
+using PropertyChangedBase = Stylet.PropertyChangedBase;
 
 namespace YoutubeDownloader.ViewModels.Components
 {
@@ -22,7 +22,7 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public DownloadOption DownloadOption { get; set; }
 
-        public double Progress { get; set; }
+        public IProgressOperation ProgressOperation { get; set; }
 
         public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
@@ -35,10 +35,9 @@ namespace YoutubeDownloader.ViewModels.Components
         public void MarkAsCompleted()
         {
             _cancellationTokenSource.Dispose();
+            ProgressOperation.Dispose();
             IsCompleted = true;
         }
-
-        public IProgress<double> GetProgressRouter() => new Progress<double>(p => Progress = p);
 
         public bool CanCancel => IsRunning;
 

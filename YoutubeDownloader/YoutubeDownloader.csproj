@@ -144,6 +144,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Gress">
+      <Version>1.0.2</Version>
+    </PackageReference>
     <PackageReference Include="MaterialDesignColors">
       <Version>1.1.3</Version>
     </PackageReference>

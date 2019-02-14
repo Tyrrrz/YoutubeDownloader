@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Gress;
 using MaterialDesignThemes.Wpf;
 using Stylet;
 using Tyrrrz.Extensions;
@@ -20,9 +21,13 @@ namespace YoutubeDownloader.ViewModels
         private readonly QueryService _queryService;
         private readonly DownloadService _downloadService;
 
-        public SnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(5));
+        public ISnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(5));
+
+        public IProgressManager ProgressManager { get; } = new ProgressManager();
 
         public bool IsBusy { get; private set; }
+
+        public bool IsProgressIndeterminate { get; private set; }
 
         public string Query { get; set; }
 
@@ -108,6 +113,9 @@ namespace YoutubeDownloader.ViewModels
             // Add to list
             Downloads.Add(download);
 
+            // Create progress operation
+            download.ProgressOperation = ProgressManager.CreateOperation();
+
             // If download option is not set - get the best download option
             if (download.DownloadOption == null)
             {
@@ -119,8 +127,7 @@ namespace YoutubeDownloader.ViewModels
             try
             {
                 await _downloadService.DownloadVideoAsync(download.Video.Id, download.FilePath,
-                    download.DownloadOption,
-                    download.GetProgressRouter(), download.CancellationToken);
+                    download.DownloadOption, download.ProgressOperation, download.CancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -137,8 +144,9 @@ namespace YoutubeDownloader.ViewModels
         {
             try
             {
-                // Set busy state
+                // Enter busy state
                 IsBusy = true;
+                IsProgressIndeterminate = true;
 
                 // Execute query
                 var executedQuery = await _queryService.ExecuteQueryAsync(Query);
@@ -205,6 +213,7 @@ namespace YoutubeDownloader.ViewModels
             {
                 // Reset busy state
                 IsBusy = false;
+                IsProgressIndeterminate = false;
             }
         }
     }
