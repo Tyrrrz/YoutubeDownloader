@@ -99,7 +99,7 @@
                 <TextBlock
                     Margin="32"
                     FontSize="18"
-                    Text="Copy-paste video/playlist URL or type in a search query to start downloading videos"
+                    Text="Copy-paste URL or type in a search query to start downloading"
                     TextAlignment="Center"
                     TextWrapping="Wrap"
                     Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}" />
