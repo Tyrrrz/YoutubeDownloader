@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("YoutubeDownloader")]
-[assembly: AssemblyCopyright("Copyright © 2018 Alexey Golub")]
+[assembly: AssemblyCopyright("Copyright © Alexey Golub")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
