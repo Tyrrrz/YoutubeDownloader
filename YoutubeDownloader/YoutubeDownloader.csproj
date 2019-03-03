@@ -175,10 +175,10 @@
       <Version>1.3.3</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode">
-      <Version>4.6.5</Version>
+      <Version>4.6.6</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode.Converter">
-      <Version>1.4.0</Version>
+      <Version>1.4.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
