@@ -1,3 +1,8 @@
+### v1.3.1 (03-Mar-2019)
+
+- Fixed an issue where channel URLs were not recognized in some cases. The underlying issue was fixed in YoutubeExplode v4.6.5.
+- Fixed an issue where the application would crash sometimes because the progress reported was too high. The underlying issue was fixed in YoutubeExplode.Converter v1.4.1.
+
 ### v1.3 (14-Feb-2019)
 
 - Added ability to download videos by channel ID or URL.
