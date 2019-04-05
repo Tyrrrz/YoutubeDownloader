@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Tyrrrz.Extensions;
 using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
@@ -37,7 +36,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             // Select first download option matching last used format or first non-audio-only download option
             SelectedDownloadOption =
                 AvailableDownloadOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
-                AvailableDownloadOptions.OrderByDescending(o => o.Label.IsNotBlank()).FirstOrDefault();
+                AvailableDownloadOptions.OrderByDescending(o => o.Label != null).FirstOrDefault();
         }
 
         public bool CanConfirm => Video != null;
@@ -52,7 +51,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
 
             // If canceled - return
-            if (filePath.IsBlank())
+            if (filePath == null)
                 return;
 
             // Save last used format

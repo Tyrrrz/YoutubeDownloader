@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Tyrrrz.Extensions;
 using YoutubeDownloader.Internal;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
@@ -50,7 +49,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var dirPath = _dialogManager.PromptDirectoryPath();
 
             // If canceled - return
-            if (dirPath.IsBlank())
+            if (dirPath == null)
                 return;
 
             // Save last used format

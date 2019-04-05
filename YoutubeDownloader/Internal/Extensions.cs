@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Tyrrrz.Extensions;
 using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.Internal
@@ -7,6 +6,13 @@ namespace YoutubeDownloader.Internal
     internal static class Extensions
     {
         public static string GetFileNameSafeTitle(this Video video)
-            => video.Title.Replace(Path.GetInvalidFileNameChars(), '_');
+        {
+            var result = video.Title;
+
+            foreach (var invalidChar in Path.GetInvalidFileNameChars())
+                result = result.Replace(invalidChar, '_');
+
+            return result;
+        }
     }
 }
