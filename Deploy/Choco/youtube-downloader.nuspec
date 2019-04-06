@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>youtube-downloader</id>
+    <title>YoutubeDownloader</title>
+    <version>1.3.1</version>
+    <owners>Tyrrrz</owners>
+    <authors>Tyrrrz</authors>
+    <copyright>Copyright (C) Alexey Golub</copyright>
+    <summary>Downloads videos and playlists from YouTube</summary>
+    <description>YoutubeDownloader is an application that lets you download videos from YouTube. You can just copy-paste URLs of any videos or playlists and download them directly to a format of your choice. It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.</description>
+    <tags>youtube-downloader youtube download video playlist channel search gui</tags>
+    <projectSourceUrl>https://github.com/Tyrrrz/YoutubeDownloader</projectSourceUrl>
+    <packageSourceUrl>https://github.com/Tyrrrz/YoutubeDownloader</packageSourceUrl>
+    <projectUrl>http://tyrrrz.me/Projects/YoutubeDownloader</projectUrl>
+    <releaseNotes>https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md</releaseNotes>
+    <iconUrl>https://raw.githubusercontent.com/Tyrrrz/YoutubeDownloader/master/favicon.png</iconUrl>
+    <licenseUrl>https://raw.githubusercontent.com/Tyrrrz/YoutubeDownloader/master/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <bugTrackerUrl>https://github.com/Tyrrrz/YoutubeDownloader/issues</bugTrackerUrl>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
