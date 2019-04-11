@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Tyrrrz.Extensions;
 
 namespace YoutubeDownloader.Internal
 {
@@ -19,8 +20,9 @@ namespace YoutubeDownloader.Internal
             for (var i = 1; i <= maxAttempts; i++)
             {
                 // Assemble file path
-                var fileName = $"{baseFileNameWithoutExtension} ({i}){baseFileExtension}";
-                var filePath = baseDirPath != null ? Path.Combine(baseDirPath, fileName) : fileName;
+                var filePath = $"{baseFileNameWithoutExtension} ({i}){baseFileExtension}";
+                if (!baseDirPath.IsNullOrWhiteSpace())
+                    filePath = Path.Combine(baseDirPath, filePath);
 
                 // Check if file exists
                 if (!File.Exists(filePath))
