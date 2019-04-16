@@ -15,8 +15,6 @@ after_build:
 artifacts:
 - path: Deploy\Portable\bin\YoutubeDownloader.zip
   name: YoutubeDownloader.zip
-- path: Deploy\Choco\bin\youtube-downloader*.nupkg
-  name: YoutubeDownloader-Choco.nupkg
 
 deploy:
 - provider: GitHub
@@ -24,15 +22,6 @@ deploy:
     secure: sjQHWRw29AMiVMn3MtidtWnAzAf1mJ+mkJ/7h1B9TIAHhkFrqwMK7LtXV+uNJ9AO
   artifact: YoutubeDownloader.zip
   description: '[Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)'
-  on:
-    branch: master
-    appveyor_repo_tag: true
-- provider: NuGet
-  server: https://push.chocolatey.org/
-  api_key:
-    secure: aQVQ50i8GcwxMXTHf2ck5PijnOeVZY8Z9MEROQTvT49/7/az9w8ru8NCyEsV6H5I
-  artifact: YoutubeDownloader-Choco.nupkg
-  skip_symbols: true
   on:
     branch: master
     appveyor_repo_tag: true
