@@ -126,8 +126,8 @@ namespace YoutubeDownloader.ViewModels
             // Download
             try
             {
-                await _downloadService.DownloadVideoAsync(download.Video.Id, download.FilePath,
-                    download.DownloadOption, download.ProgressOperation, download.CancellationToken);
+                await _downloadService.DownloadVideoAsync(download.DownloadOption, download.FilePath,
+                    download.ProgressOperation, download.CancellationToken);
             }
             catch (OperationCanceledException)
             {

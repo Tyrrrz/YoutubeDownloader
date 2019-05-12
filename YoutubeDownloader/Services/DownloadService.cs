@@ -50,7 +50,7 @@ namespace YoutubeDownloader.Services
             }
         }
 
-        public async Task DownloadVideoAsync(string videoId, string filePath, DownloadOption downloadOption,
+        public async Task DownloadVideoAsync(DownloadOption downloadOption, string filePath,
             IProgress<double> progress, CancellationToken cancellationToken)
         {
             // Ensure throttling and increment concurrent download count
