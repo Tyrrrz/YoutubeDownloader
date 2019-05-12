@@ -1,3 +1,7 @@
+### v1.3.2 (12-May-2019)
+
+- Fixed an issue where the application crashed when trying to download videos. Updated to YoutubeExplode v4.7.
+
 ### v1.3.1 (03-Mar-2019)
 
 - Fixed an issue where channel URLs were not recognized in some cases. The underlying issue was fixed in YoutubeExplode v4.6.5.
