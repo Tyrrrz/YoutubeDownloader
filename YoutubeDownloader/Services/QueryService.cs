@@ -110,10 +110,9 @@ namespace YoutubeDownloader.Services
                 return new ExecutedQuery(query, title, videos);
             }
 
-            throw new ArgumentException($@"Could not parse query [{query}].", nameof(query));
+            throw new ArgumentException($"Could not parse query [{query}].", nameof(query));
         }
 
-        public Task<ExecutedQuery> ExecuteQueryAsync(string query)
-            => ExecuteQueryAsync(ParseQuery(query));
+        public Task<ExecutedQuery> ExecuteQueryAsync(string query) => ExecuteQueryAsync(ParseQuery(query));
     }
 }

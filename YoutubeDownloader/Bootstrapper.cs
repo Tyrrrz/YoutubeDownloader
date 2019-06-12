@@ -14,8 +14,11 @@ namespace YoutubeDownloader
         {
             base.ConfigureIoC(builder);
 
-            // Bind settings as singleton
+            // Bind SettingsService as singleton
             builder.Bind<SettingsService>().ToSelf().InSingletonScope();
+
+            // Bind DownloadService as singleton
+            builder.Bind<DownloadService>().ToSelf().InSingletonScope();
 
             // Bind view model factory
             builder.Bind<IViewModelFactory>().ToAbstractFactory();

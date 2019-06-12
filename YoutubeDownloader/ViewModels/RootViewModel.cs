@@ -105,37 +105,20 @@ namespace YoutubeDownloader.ViewModels
         }
 
         // This is async void on purpose because this is supposed to be always ran in background
-        private async void EnqueueDownload(DownloadViewModel download)
+        private void EnqueueAndStartDownload(DownloadViewModel download)
         {
-            // Cancel an existing download for this file path to prevent writing to the same file
-            Downloads.FirstOrDefault(d => d.FilePath == download.FilePath)?.Cancel();
+            // Cancel existing downloads for this file path to prevent writing to the same file
+            foreach (var existingDownload in Downloads.Where(d => d.FilePath == download.FilePath))
+                existingDownload.Cancel();
 
             // Add to list
             Downloads.Add(download);
 
-            // Create progress operation
-            download.ProgressOperation = ProgressManager.CreateOperation();
+            // Bind progress manager
+            download.ProgressManager = ProgressManager;
 
-            // If download option is not set - get the best download option
-            if (download.DownloadOption == null)
-            {
-                download.DownloadOption =
-                    await _downloadService.GetBestDownloadOptionAsync(download.Video.Id, download.Format);
-            }
-
-            // Download
-            try
-            {
-                await _downloadService.DownloadVideoAsync(download.DownloadOption, download.FilePath,
-                    download.ProgressOperation, download.CancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                // Ignore cancellations
-            }
-
-            // Mark download as completed
-            download.MarkAsCompleted();
+            // Start download
+            download.Start();
         }
 
         public bool CanProcessQuery => !IsBusy && !Query.IsNullOrWhiteSpace();
@@ -172,8 +155,7 @@ namespace YoutubeDownloader.ViewModels
                     var downloadOptions = await _downloadService.GetDownloadOptionsAsync(video.Id);
 
                     // Create dialog
-                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(executedQuery.Title,
-                        video, downloadOptions);
+                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(executedQuery.Title, video, downloadOptions);
 
                     // Show dialog and get download
                     var download = await _dialogManager.ShowDialogAsync(dialog);
@@ -183,15 +165,14 @@ namespace YoutubeDownloader.ViewModels
                         return;
 
                     // Enqueue download
-                    EnqueueDownload(download);
+                    EnqueueAndStartDownload(download);
                 }
 
                 // If multiple videos were found - show download setup for multiple videos
                 else
                 {
                     // Create dialog
-                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(executedQuery.Title,
-                        executedQuery.Videos);
+                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(executedQuery.Title, executedQuery.Videos);
 
                     // If this is not a search result - preselect all videos
                     if (executedQuery.Query.Type != QueryType.Search)
@@ -206,7 +187,7 @@ namespace YoutubeDownloader.ViewModels
 
                     // Enqueue downloads
                     foreach (var download in downloads)
-                        EnqueueDownload(download);
+                        EnqueueAndStartDownload(download);
                 }
             }
             finally

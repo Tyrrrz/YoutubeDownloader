@@ -55,14 +55,14 @@
                         <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
                             <Style.Triggers>
                                 <!--  Downloading  -->
-                                <DataTrigger Binding="{Binding IsCompleted}" Value="False">
+                                <DataTrigger Binding="{Binding IsActive}" Value="True">
                                     <Setter Property="Text" Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P2\}}" />
                                 </DataTrigger>
 
                                 <!--  Pending  -->
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsCompleted}" Value="False" />
+                                        <Condition Binding="{Binding IsActive}" Value="True" />
                                         <Condition Binding="{Binding ProgressOperation.Progress}" Value="0" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}" />
@@ -73,6 +73,13 @@
                                 <DataTrigger Binding="{Binding IsCanceled}" Value="True">
                                     <Setter Property="Foreground" Value="DarkRed" />
                                     <Setter Property="Text" Value="Canceled" />
+                                </DataTrigger>
+
+                                <!--  Failed  -->
+                                <DataTrigger Binding="{Binding IsFailed}" Value="True">
+                                    <Setter Property="Foreground" Value="DarkRed" />
+                                    <Setter Property="Text" Value="Failed" />
+                                    <Setter Property="ToolTip" Value="{Binding FailReason}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -96,6 +103,20 @@
                             Width="24"
                             Height="24 "
                             Kind="CloseCircle" />
+                    </Button>
+
+                    <!--  Restart  -->
+                    <Button
+                        Padding="4,0,4,0"
+                        VerticalAlignment="Center"
+                        Command="{s:Action Restart}"
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        ToolTip="Restart download"
+                        Visibility="{Binding CanRestart, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24 "
+                            Kind="Restart" />
                     </Button>
 
                     <!--  Show file  -->
@@ -131,7 +152,7 @@
             <!--  Progress bar  -->
             <ProgressBar
                 Grid.Row="1"
-                Visibility="{Binding IsCompleted, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}"
+                Visibility="{Binding IsActive, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
                 Value="{Binding ProgressOperation.Progress, Mode=OneWay}" />
         </Grid>
     </materialDesign:Card>
