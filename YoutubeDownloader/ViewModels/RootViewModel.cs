@@ -190,6 +190,14 @@ namespace YoutubeDownloader.ViewModels
                         EnqueueAndStartDownload(download);
                 }
             }
+            catch (Exception ex)
+            {
+                // Create dialog
+                var dialog = _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message);
+
+                // Show dialog
+                await _dialogManager.ShowDialogAsync(dialog);
+            }
             finally
             {
                 // Reset busy state
