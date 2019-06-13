@@ -1,3 +1,9 @@
+### v1.4 (13-Jun-2019)
+
+- Fixed an issue where the application crashed when an active download failed. Failure will now be reported in the UI with the option to restart download.
+- Fixed an issue where the application crashed when trying to download an unavailable video. Popup with the error message will now be shown instead.
+- Fixed an issue where the application crashed due to unknown encoding in some videos. Updated to YoutubeExplode v4.7.2.
+
 ### v1.3.2 (12-May-2019)
 
 - Fixed an issue where the application crashed when trying to download videos. Updated to YoutubeExplode v4.7.
