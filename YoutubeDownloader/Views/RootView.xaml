@@ -173,7 +173,7 @@
                                                 <Style.Triggers>
                                                     <!--  Downloading  -->
                                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                                        <Setter Property="Text" Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P2\}}" />
+                                                        <Setter Property="Text" Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P1\}}" />
                                                     </DataTrigger>
 
                                                     <!--  Pending  -->
@@ -232,7 +232,7 @@
                                             <materialDesign:PackIcon
                                                 Width="24"
                                                 Height="24 "
-                                                Kind="CloseCircle" />
+                                                Kind="CloseCircleOutline" />
                                         </Button>
 
                                         <!--  Restart  -->
@@ -260,7 +260,7 @@
                                             <materialDesign:PackIcon
                                                 Width="24"
                                                 Height="24 "
-                                                Kind="FileFind" />
+                                                Kind="FileFindOutline" />
                                         </Button>
 
                                         <!--  Open file  -->
@@ -274,7 +274,7 @@
                                             <materialDesign:PackIcon
                                                 Width="24"
                                                 Height="24 "
-                                                Kind="PlayCircle" />
+                                                Kind="PlayCircleOutline" />
                                         </Button>
                                     </StackPanel>
                                 </DataTemplate>
