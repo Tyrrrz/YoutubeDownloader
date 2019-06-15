@@ -53,6 +53,11 @@ namespace YoutubeDownloader.ViewModels.Components
             if (!CanStart)
                 return;
 
+            IsActive = true;
+            IsSuccessful = false;
+            IsCanceled = false;
+            IsFailed = false;
+
             Task.Run(async () =>
             {
                 // Create cancellation token source
@@ -63,16 +68,10 @@ namespace YoutubeDownloader.ViewModels.Components
 
                 try
                 {
-                    IsSuccessful = false;
-                    IsCanceled = false;
-                    IsFailed = false;
-                    IsActive = true;
-
                     // If download option is not set - get the best download option
                     if (DownloadOption == null)
                         DownloadOption = await _downloadService.GetBestDownloadOptionAsync(Video.Id, Format);
 
-                    // Download
                     await _downloadService.DownloadVideoAsync(DownloadOption, FilePath, ProgressOperation, _cancellationTokenSource.Token);
 
                     IsSuccessful = true;
@@ -128,7 +127,7 @@ namespace YoutubeDownloader.ViewModels.Components
             Process.Start(FilePath);
         }
 
-        public bool CanRestart => !IsActive && !IsSuccessful;
+        public bool CanRestart => CanStart && !IsSuccessful;
 
         public void Restart() => Start();
     }
