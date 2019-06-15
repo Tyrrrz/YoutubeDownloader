@@ -281,6 +281,13 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
+
+                    <!--  Context menu  -->
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="{s:Action ClearInactiveDownloads}" Header="Clear finished downloads" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                 </DataGrid>
 
                 <!--  Notifications  -->

@@ -205,5 +205,11 @@ namespace YoutubeDownloader.ViewModels
                 IsProgressIndeterminate = false;
             }
         }
+
+        public void ClearInactiveDownloads()
+        {
+            var inactiveDownloads = Downloads.Where(d => !d.IsActive).ToArray();
+            Downloads.RemoveRange(inactiveDownloads);
+        }
     }
 }
