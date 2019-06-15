@@ -41,8 +41,7 @@
                 ItemsSource="{Binding AvailableVideos}"
                 ScrollViewer.CanContentScroll="False"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                SelectionMode="Extended"
-                VirtualizingStackPanel.IsVirtualizing="False">
+                SelectionMode="Extended">
                 <i:Interaction.Behaviors>
                     <behaviors:VideoMultiSelectionListBoxBehavior SelectedItems="{Binding SelectedVideos}" />
                 </i:Interaction.Behaviors>

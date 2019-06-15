@@ -111,6 +111,7 @@
                     ColumnWidth="Auto"
                     HorizontalScrollBarVisibility="Disabled"
                     ItemsSource="{Binding Downloads}"
+                    ScrollViewer.CanContentScroll="False"
                     VerticalScrollBarVisibility="Auto"
                     Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                     <DataGrid.RowStyle>
@@ -128,6 +129,7 @@
                         </Style>
                     </DataGrid.RowStyle>
 
+                    <!--  Columns  -->
                     <DataGrid.Columns>
                         <!--  Thumbnail  -->
                         <DataGridTemplateColumn>
@@ -160,7 +162,7 @@
 
                         <!--  Status  -->
                         <DataGridTemplateColumn
-                            MinWidth="80"
+                            MinWidth="100"
                             Header="Status"
                             SortMemberPath="ProgressOperation.Progress">
                             <DataGridTemplateColumn.CellTemplate>
