@@ -105,6 +105,32 @@
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
             </Style>
 
+            <Style BasedOn="{StaticResource MaterialDesignDataGrid}" TargetType="{x:Type DataGrid}">
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="CanUserDeleteRows" Value="False" />
+                <Setter Property="CanUserReorderColumns" Value="True" />
+                <Setter Property="CanUserResizeColumns" Value="True" />
+                <Setter Property="CanUserSortColumns" Value="True" />
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="SelectionMode" Value="Single" />
+                <Setter Property="SelectionUnit" Value="FullRow" />
+            </Style>
+
+            <Style BasedOn="{StaticResource MaterialDesignDataGridRow}" TargetType="{x:Type DataGridRow}">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            </Style>
+
+            <Style BasedOn="{StaticResource MaterialDesignDataGridCell}" TargetType="{x:Type DataGridCell}">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{x:Null}" />
+                        <Setter Property="BorderBrush" Value="{x:Null}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
             <Style
                 x:Key="MaterialDesignFlatDarkButton"
                 BasedOn="{StaticResource MaterialDesignFlatButton}"

@@ -81,9 +81,6 @@
     <Compile Include="ViewModels\RootViewModel.cs" />
     <Compile Include="ViewModels\Framework\IViewModelFactory.cs" />
     <Compile Include="ViewModels\Framework\DialogScreen.cs" />
-    <Compile Include="Views\Components\DownloadView.xaml.cs">
-      <DependentUpon>DownloadView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Dialogs\DownloadMultipleSetupView.xaml.cs">
       <DependentUpon>DownloadMultipleSetupView.xaml</DependentUpon>
     </Compile>
@@ -118,10 +115,6 @@
     <Folder Include="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\Components\DownloadView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Dialogs\DownloadMultipleSetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
