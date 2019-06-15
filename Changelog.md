@@ -1,3 +1,10 @@
+### v1.5 (15-Jun-2019)
+
+- Changed the presentation of active downloads to use a data grid.
+- Added a context menu button to clear all finished downloads from the list.
+- Improved UI by making the general style more consistent.
+- Fixed an issue where a download sometimes failed due to a race condition in progress reporting. Updated to Gress v1.1.1.
+
 ### v1.4 (13-Jun-2019)
 
 - Fixed an issue where the application crashed when an active download failed. Failure will now be reported in the UI with the option to restart download.
