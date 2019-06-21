@@ -1,3 +1,9 @@
+### v1.5.1 (21-Jun-2019)
+
+- Fixed an issue where most videos failed to download due to recent YouTube changes. Updated to YoutubeExplode v4.7.3.
+- Popups can now be closed by clicking away.
+- Default max concurrent download count is now 2 instead of being devised from processor count. You can still tweak it as you want in settings.
+
 ### v1.5 (15-Jun-2019)
 
 - Changed the presentation of active downloads to use a data grid.
