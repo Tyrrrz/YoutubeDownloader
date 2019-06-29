@@ -1,3 +1,9 @@
+### v1.5.2 (29-Jun-2019)
+
+- Fixed an issue where some videos were missing from playlists. Updated to YoutubeExplode v4.7.4.
+- Fixed an issue where the application crashed when pressing the "play" button if there is no program associated with that file type. An error message is now shown instead.
+- Added a context menu button to remove specific download from the list.
+
 ### v1.5.1 (21-Jun-2019)
 
 - Fixed an issue where most videos failed to download due to recent YouTube changes. Updated to YoutubeExplode v4.7.3.
