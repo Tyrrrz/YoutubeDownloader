@@ -119,6 +119,20 @@
                     Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                     <DataGrid.RowStyle>
                         <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="{x:Type DataGridRow}">
+                            <!--  Context menu  -->
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem
+                                            Command="{s:Action RemoveDownload}"
+                                            CommandParameter="{Binding}"
+                                            Header="Remove download" />
+                                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove all finished downloads" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+
+                            <!--  Triggers  -->
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{x:Null}" />
@@ -284,13 +298,6 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
-
-                    <!--  Context menu  -->
-                    <DataGrid.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Command="{s:Action ClearInactiveDownloads}" Header="Clear finished downloads" />
-                        </ContextMenu>
-                    </DataGrid.ContextMenu>
                 </DataGrid>
 
                 <!--  Notifications  -->

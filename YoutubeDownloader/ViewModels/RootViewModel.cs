@@ -206,7 +206,13 @@ namespace YoutubeDownloader.ViewModels
             }
         }
 
-        public void ClearInactiveDownloads()
+        public void RemoveDownload(DownloadViewModel download)
+        {
+            download.Cancel();
+            Downloads.Remove(download);
+        }
+
+        public void RemoveInactiveDownloads()
         {
             var inactiveDownloads = Downloads.Where(d => !d.IsActive).ToArray();
             Downloads.RemoveRange(inactiveDownloads);
