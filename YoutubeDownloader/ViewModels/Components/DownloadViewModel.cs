@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Gress;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
+using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Models;
 using PropertyChangedBase = Stylet.PropertyChangedBase;
 
@@ -13,6 +14,8 @@ namespace YoutubeDownloader.ViewModels.Components
 {
     public class DownloadViewModel : PropertyChangedBase
     {
+        private readonly IViewModelFactory _viewModelFactory;
+        private readonly DialogManager _dialogManager;
         private readonly DownloadService _downloadService;
 
         private CancellationTokenSource _cancellationTokenSource;
@@ -41,8 +44,10 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public string FailReason { get; private set; }
 
-        public DownloadViewModel(DownloadService downloadService)
+        public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, DownloadService downloadService)
         {
+            _viewModelFactory = viewModelFactory;
+            _dialogManager = dialogManager;
             _downloadService = downloadService;
         }
 
@@ -107,24 +112,40 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public bool CanShowFile => IsSuccessful;
 
-        public void ShowFile()
+        public async void ShowFile()
         {
             if (!CanShowFile)
                 return;
 
-            // This opens explorer, navigates to the output directory and selects the video file
-            Process.Start("explorer", $"/select, \"{FilePath}\"");
+            try
+            {
+                // This opens explorer, navigates to the output directory and selects the video file
+                Process.Start("explorer", $"/select, \"{FilePath}\"");
+            }
+            catch (Exception ex)
+            {
+                var dialog = _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message);
+                await _dialogManager.ShowDialogAsync(dialog);
+            }
         }
 
         public bool CanOpenFile => IsSuccessful;
 
-        public void OpenFile()
+        public async void OpenFile()
         {
             if (!CanOpenFile)
                 return;
 
-            // This opens the video file using the default player
-            Process.Start(FilePath);
+            try
+            {
+                // This opens the video file using the default player
+                Process.Start(FilePath);
+            }
+            catch (Exception ex)
+            {
+                var dialog = _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message);
+                await _dialogManager.ShowDialogAsync(dialog);
+            }
         }
 
         public bool CanRestart => CanStart && !IsSuccessful;
