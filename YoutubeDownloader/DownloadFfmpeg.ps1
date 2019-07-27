@@ -9,7 +9,7 @@ if (Test-Path $ffmpegFilePath) {
 Write-Host "Downloading ffmpeg..."
 
 # Download the zip archive
-$url = "https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.0/ffmpeg-4.0.1-win-64.zip"
+$url = "https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.1/ffmpeg-4.1-win-64.zip"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $wc = New-Object System.Net.WebClient
 $wc.DownloadFile($url, "$ffmpegFilePath.zip")
@@ -18,7 +18,7 @@ $wc.Dispose()
 # Extract ffmpeg.exe from the archive
 Add-Type -Assembly System.IO.Compression.FileSystem
 $zip = [IO.Compression.ZipFile]::OpenRead("$ffmpegFilePath.zip")
-[System.IO.Compression.ZipFileExtensions]::ExtractToFile($zip.GetEntry("ffmpeg.exe"), $ffmpegFilePath)
+[IO.Compression.ZipFileExtensions]::ExtractToFile($zip.GetEntry("ffmpeg.exe"), $ffmpegFilePath)
 $zip.Dispose()
 
 # Delete the archive
