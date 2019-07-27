@@ -77,39 +77,73 @@ namespace YoutubeDownloader.Services
             // Get media stream info set
             var mediaStreamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(videoId);
 
-            // Sort video streams
-            var videoStreamInfos = mediaStreamInfoSet.Video
-                .OrderByDescending(s => s.VideoQuality)
-                .ThenByDescending(s => s.Framerate)
-                .ToArray();
-
-            // Add video download options
-            foreach (var videoStreamInfo in videoStreamInfos)
+            // Prefer adaptive streams if possible
+            if (mediaStreamInfoSet.Audio.Any() && mediaStreamInfoSet.Video.Any())
             {
-                // Get format
-                var format = videoStreamInfo.Container.GetFileExtension();
+                // Sort video streams
+                var videoStreamInfos = mediaStreamInfoSet.Video
+                    .OrderByDescending(s => s.VideoQuality)
+                    .ThenByDescending(s => s.Framerate)
+                    .ToArray();
 
-                // Get best audio stream, preferably with the same container
-                var audioStreamInfo = mediaStreamInfoSet.Audio
-                    .OrderByDescending(s => s.Container == videoStreamInfo.Container)
-                    .ThenByDescending(s => s.Bitrate)
-                    .FirstOrDefault();
+                // Add video download options
+                foreach (var videoStreamInfo in videoStreamInfos)
+                {
+                    // Get format
+                    var format = videoStreamInfo.Container.GetFileExtension();
 
-                // Add to list
-                result.Add(new DownloadOption(format, audioStreamInfo, videoStreamInfo));
+                    // Get best audio stream, preferably with the same container
+                    var audioStreamInfo = mediaStreamInfoSet.Audio
+                        .OrderByDescending(s => s.Container == videoStreamInfo.Container)
+                        .ThenByDescending(s => s.Bitrate)
+                        .First();
+
+                    // Add to list
+                    result.Add(new DownloadOption(format, audioStreamInfo, videoStreamInfo));
+                }
+
+                // Add audio-only download options
+                {
+                    // Get best audio stream, preferably with webm container
+                    var audioStreamInfo = mediaStreamInfoSet.Audio
+                        .OrderByDescending(s => s.Container == Container.WebM)
+                        .ThenByDescending(s => s.Bitrate)
+                        .First();
+
+                    // Add to list
+                    result.Add(new DownloadOption("mp3", audioStreamInfo));
+                    result.Add(new DownloadOption("ogg", audioStreamInfo));
+                }
             }
-
-            // Add audio-only download options
+            // Fallback to muxed streams
+            else if (mediaStreamInfoSet.Muxed.Any())
             {
-                // Get best audio stream, preferably with webm container
-                var audioStreamInfo = mediaStreamInfoSet.Audio
-                    .OrderByDescending(s => s.Container == Container.WebM)
-                    .ThenByDescending(s => s.Bitrate)
-                    .FirstOrDefault();
+                // Sort muxed streams
+                var muxedStreamInfos = mediaStreamInfoSet.Muxed
+                    .OrderByDescending(s => s.VideoQuality)
+                    .ToArray();
 
-                // Add to list
-                result.Add(new DownloadOption("mp3", audioStreamInfo));
-                result.Add(new DownloadOption("ogg", audioStreamInfo));
+                // Add video download options
+                foreach (var muxedStreamInfo in muxedStreamInfos)
+                {
+                    // Get format
+                    var format = muxedStreamInfo.Container.GetFileExtension();
+
+                    // Add to list
+                    result.Add(new DownloadOption(format, muxedStreamInfo));
+                }
+
+                // Add audio-only download options
+                {
+                    // Use best muxed stream as the audio stream, preferably with webm container
+                    var bestMuxedStreamInfo = muxedStreamInfos
+                        .OrderByDescending(s => s.Container == Container.WebM)
+                        .First();
+
+                    // Add to list
+                    result.Add(new DownloadOption("mp3", bestMuxedStreamInfo));
+                    result.Add(new DownloadOption("ogg", bestMuxedStreamInfo));
+                }
             }
 
             return result;

@@ -171,7 +171,7 @@
       <Version>4.7.6</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode.Converter">
-      <Version>1.4.2</Version>
+      <Version>1.4.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

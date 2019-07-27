@@ -28,6 +28,11 @@ namespace YoutubeDownloader.Models
         {
         }
 
+        public DownloadOption(string format, MuxedStreamInfo muxedStreamInfo)
+            : this(format, muxedStreamInfo.VideoQualityLabel, new[] {muxedStreamInfo})
+        {
+        }
+
         public override string ToString() => $"{Label} / {Format}";
     }
 }
