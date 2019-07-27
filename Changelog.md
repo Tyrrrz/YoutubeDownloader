@@ -1,3 +1,7 @@
+### v1.5.5 (27-Jul-2019)
+
+- Fixed an issue where some videos failed to download.
+
 ### v1.5.4 (10-Jul-2019)
 
 - Fixed an issue where an attempt to download any video resulted in an error. Updated to YoutubeExplode v4.7.6.
