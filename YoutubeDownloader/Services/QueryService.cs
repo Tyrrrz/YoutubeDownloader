@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using YoutubeDownloader.Models;
 using YoutubeExplode;
@@ -69,7 +70,7 @@ namespace YoutubeDownloader.Services
                 var video = await _youtubeClient.GetVideoAsync(query.Value);
                 var title = video.Title;
 
-                return new ExecutedQuery(query, title, new[] {video});
+                return new ExecutedQuery(query, title, new[] { video });
             }
 
             // Playlist
@@ -104,10 +105,29 @@ namespace YoutubeDownloader.Services
             // Search
             if (query.Type == QueryType.Search)
             {
-                var videos = await _youtubeClient.SearchVideosAsync(query.Value, 5);
-                var title = $"Search: {query.Value}";
+                if (query.Value.Split(';').Length > 1)
+                {
+                    var splitted = query.Value.Split(';');
 
-                return new ExecutedQuery(query, title, videos);
+                    List<YoutubeExplode.Models.Video> video = new List<YoutubeExplode.Models.Video>();
+
+                    for (int i = 0; i < splitted.Length; i++)
+                    {
+                        IReadOnlyList<YoutubeExplode.Models.Video> videos = await _youtubeClient.SearchVideosAsync(splitted[i], 1);
+                        video.Add(videos[0]);
+                    }
+
+                    var title = $"Search: BulkList";
+
+                    return new ExecutedQuery(query, title, video.AsReadOnly());
+                }
+                else
+                {
+                    var videos = await _youtubeClient.SearchVideosAsync(query.Value, 1);
+                    var title = $"Search: {query.Value}";
+
+                    return new ExecutedQuery(query, title, videos);
+                }
             }
 
             throw new ArgumentException($"Could not parse query [{query}].", nameof(query));
