@@ -134,6 +134,8 @@
                                             Header="Remove download" />
                                         <MenuItem Command="{s:Action RemoveInactiveDownloads}"
                                                   Header="Remove all finished downloads" />
+                                        <MenuItem Command="{s:Action RestartFailedDownloads}"
+                                                  Header="Restart all failed downloads" />
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>

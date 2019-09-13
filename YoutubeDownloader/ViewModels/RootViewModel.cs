@@ -228,5 +228,11 @@ namespace YoutubeDownloader.ViewModels
             var inactiveDownloads = Downloads.Where(d => !d.IsActive).ToArray();
             Downloads.RemoveRange(inactiveDownloads);
         }
+
+        public void RestartFailedDownloads()
+        {
+            foreach (var download in Downloads.Where(d => d.IsFailed))
+                download.Restart();
+        }
     }
 }
