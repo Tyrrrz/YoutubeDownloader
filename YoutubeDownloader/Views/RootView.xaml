@@ -133,7 +133,9 @@
                                             CommandParameter="{Binding}"
                                             Header="Remove download" />
                                         <MenuItem Command="{s:Action RemoveInactiveDownloads}"
-                                                  Header="Remove all finished downloads" />
+                                                  Header="Remove all inactive downloads" />
+                                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}"
+                                                  Header="Remove all successful downloads" />
                                         <MenuItem Command="{s:Action RestartFailedDownloads}"
                                                   Header="Restart all failed downloads" />
                                     </ContextMenu>
