@@ -47,6 +47,13 @@ namespace YoutubeDownloader.ViewModels
             // Title
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             DisplayName = $"YoutubeDownloader v{version}";
+
+            // Update busy state when progress manager changes
+            ProgressManager.Bind(o => o.IsActive, (sender, args) => IsBusy = ProgressManager.IsActive);
+            ProgressManager.Bind(o => o.IsActive,
+                (sender, args) => IsProgressIndeterminate = ProgressManager.IsActive && ProgressManager.Progress.IsEither(0, 1));
+            ProgressManager.Bind(o => o.Progress,
+                (sender, args) => IsProgressIndeterminate = ProgressManager.IsActive && ProgressManager.Progress.IsEither(0, 1));
         }
 
         protected override async void OnViewLoaded()
@@ -104,7 +111,6 @@ namespace YoutubeDownloader.ViewModels
             await _dialogManager.ShowDialogAsync(dialog);
         }
 
-        // This is async void on purpose because this is supposed to be always ran in background
         private void EnqueueAndStartDownload(DownloadViewModel download)
         {
             // Cancel existing downloads for this file path to prevent writing to the same file
@@ -125,17 +131,23 @@ namespace YoutubeDownloader.ViewModels
 
         public async void ProcessQuery()
         {
+            var operation = ProgressManager.CreateOperation();
+
             try
             {
-                // Enter busy state
-                IsBusy = true;
-                IsProgressIndeterminate = true;
+                // Split query into separate lines and parse them
+                var parsedQueries = _queryService.ParseMultilineQuery(Query);
 
-                // Execute query
-                var executedQuery = await _queryService.ExecuteQueryAsync(Query);
+                // Execute separate queries
+                var executedQueries = await _queryService.ExecuteQueriesAsync(parsedQueries, operation);
+
+                // Extract videos and other details
+                var videos = executedQueries.SelectMany(q => q.Videos).Distinct(v => v.Id).ToArray();
+                var dialogTitle = executedQueries.Count == 1 ? executedQueries.Single().Title : "Multiple queries";
+                var shouldPreselectAllVideos = executedQueries.All(q => q.Query.Type != QueryType.Search);
 
                 // If no videos were found - tell the user
-                if (executedQuery.Videos.Count <= 0)
+                if (videos.Length <= 0)
                 {
                     // Create dialog
                     var dialog = _viewModelFactory.CreateMessageBoxViewModel("Nothing found",
@@ -146,16 +158,16 @@ namespace YoutubeDownloader.ViewModels
                 }
 
                 // If only one video was found - show download setup for single video
-                else if (executedQuery.Videos.Count == 1)
+                else if (videos.Length == 1)
                 {
                     // Get single video
-                    var video = executedQuery.Videos.Single();
+                    var video = videos.Single();
 
                     // Get download options
                     var downloadOptions = await _downloadService.GetDownloadOptionsAsync(video.Id);
 
                     // Create dialog
-                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(executedQuery.Title, video, downloadOptions);
+                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(dialogTitle, video, downloadOptions);
 
                     // Show dialog and get download
                     var download = await _dialogManager.ShowDialogAsync(dialog);
@@ -172,10 +184,10 @@ namespace YoutubeDownloader.ViewModels
                 else
                 {
                     // Create dialog
-                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(executedQuery.Title, executedQuery.Videos);
+                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(dialogTitle, videos);
 
-                    // If this is not a search result - preselect all videos
-                    if (executedQuery.Query.Type != QueryType.Search)
+                    // Preselect all videos if needed
+                    if (shouldPreselectAllVideos)
                         dialog.SelectedVideos = dialog.AvailableVideos;
 
                     // Show dialog and get downloads
@@ -200,9 +212,8 @@ namespace YoutubeDownloader.ViewModels
             }
             finally
             {
-                // Reset busy state
-                IsBusy = false;
-                IsProgressIndeterminate = false;
+                // Dispose progress operation
+                operation.Dispose();
             }
         }
 

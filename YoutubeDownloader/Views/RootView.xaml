@@ -53,12 +53,15 @@
                         <TextBox
                             x:Name="QueryTextBox"
                             Grid.Column="0"
+                            AcceptsReturn="True"
                             Margin="6"
                             materialDesign:HintAssist.Hint="URL or search query"
                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                             BorderThickness="0"
                             FontSize="16"
-                            Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" />
+                            MaxLines="4"
+                            Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                            VerticalScrollBarVisibility="Auto" />
 
                         <!--  Process query button  -->
                         <Button
@@ -67,7 +70,8 @@
                             Padding="4"
                             Command="{s:Action ProcessQuery}"
                             IsDefault="True"
-                            Style="{DynamicResource MaterialDesignFlatButton}">
+                            Style="{DynamicResource MaterialDesignFlatButton}"
+                            ToolTip="Process query (Ctrl+Enter)">
                             <materialDesign:PackIcon
                                 Width="24"
                                 Height="24"
@@ -82,7 +86,8 @@
                     Margin="6"
                     Padding="4"
                     Command="{s:Action ShowSettings}"
-                    Style="{DynamicResource MaterialDesignFlatDarkButton}">
+                    Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                    ToolTip="Settings">
                     <materialDesign:PackIcon
                         Width="24"
                         Height="24"
@@ -127,7 +132,8 @@
                                             Command="{s:Action RemoveDownload}"
                                             CommandParameter="{Binding}"
                                             Header="Remove download" />
-                                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove all finished downloads" />
+                                        <MenuItem Command="{s:Action RemoveInactiveDownloads}"
+                                                  Header="Remove all finished downloads" />
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
@@ -186,20 +192,24 @@
                                 <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                     <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
                                         <TextBlock.Style>
-                                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                                            <Style BasedOn="{StaticResource {x:Type TextBlock}}"
+                                                   TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>
                                                     <!--  Downloading  -->
                                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                                        <Setter Property="Text" Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P1\}}" />
+                                                        <Setter Property="Text"
+                                                                Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P1\}}" />
                                                     </DataTrigger>
 
                                                     <!--  Pending  -->
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsActive}" Value="True" />
-                                                            <Condition Binding="{Binding ProgressOperation.Progress}" Value="0" />
+                                                            <Condition Binding="{Binding ProgressOperation.Progress}"
+                                                                       Value="0" />
                                                         </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}" />
+                                                        <Setter Property="Foreground"
+                                                                Value="{DynamicResource DimTextBrush}" />
                                                         <Setter Property="Text" Value="Pending..." />
                                                     </MultiDataTrigger>
 

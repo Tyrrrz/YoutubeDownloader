@@ -104,7 +104,7 @@ namespace YoutubeDownloader.Services
             // Search
             if (query.Type == QueryType.Search)
             {
-                var videos = await _youtubeClient.SearchVideosAsync(query.Value, 5);
+                var videos = await _youtubeClient.SearchVideosAsync(query.Value, 2);
                 var title = $"Search: {query.Value}";
 
                 return new ExecutedQuery(query, title, videos);
@@ -112,7 +112,5 @@ namespace YoutubeDownloader.Services
 
             throw new ArgumentException($"Could not parse query [{query}].", nameof(query));
         }
-
-        public Task<ExecutedQuery> ExecuteQueryAsync(string query) => ExecuteQueryAsync(ParseQuery(query));
     }
 }

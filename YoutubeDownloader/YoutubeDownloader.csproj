@@ -67,6 +67,7 @@
     <Compile Include="Models\ExecutedQuery.cs" />
     <Compile Include="Models\Query.cs" />
     <Compile Include="Models\QueryType.cs" />
+    <Compile Include="Services\Extensions.cs" />
     <Compile Include="Services\QueryService.cs" />
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Services\SettingsService.cs" />
@@ -110,9 +111,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Dialogs\DownloadMultipleSetupView.xaml">
