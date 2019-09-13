@@ -55,11 +55,12 @@
                             Grid.Column="0"
                             AcceptsReturn="True"
                             Margin="6"
-                            materialDesign:HintAssist.Hint="URL or search query"
+                            materialDesign:HintAssist.Hint="URL or search query (press Shift+Enter for multiple)"
                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                             BorderThickness="0"
                             FontSize="16"
                             MaxLines="4"
+                            PreviewKeyDown="QueryTextBox_OnPreviewKeyDown"
                             Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
                             VerticalScrollBarVisibility="Auto" />
 
@@ -71,7 +72,7 @@
                             Command="{s:Action ProcessQuery}"
                             IsDefault="True"
                             Style="{DynamicResource MaterialDesignFlatButton}"
-                            ToolTip="Process query (Ctrl+Enter)">
+                            ToolTip="Process query (Enter)">
                             <materialDesign:PackIcon
                                 Width="24"
                                 Height="24"
