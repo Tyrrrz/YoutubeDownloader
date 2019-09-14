@@ -113,9 +113,13 @@ namespace YoutubeDownloader.ViewModels
 
         private void EnqueueAndStartDownload(DownloadViewModel download)
         {
-            // Cancel existing downloads for this file path to prevent writing to the same file
-            foreach (var existingDownload in Downloads.Where(d => d.FilePath == download.FilePath))
+            // Cancel and remove downloads with the same file path
+            var existingDownloads = Downloads.Where(d => d.FilePath == download.FilePath).ToArray();
+            foreach (var existingDownload in existingDownloads)
+            {
                 existingDownload.Cancel();
+                Downloads.Remove(existingDownload);
+            }
 
             // Add to list
             Downloads.Add(download);
@@ -237,8 +241,8 @@ namespace YoutubeDownloader.ViewModels
         public void RestartFailedDownloads()
         {
             var failedDownloads = Downloads.Where(d => d.IsFailed).ToArray();
-            foreach (var download in failedDownloads)
-                download.Restart();
+            foreach (var failedDownload in failedDownloads)
+                failedDownload.Restart();
         }
     }
 }
