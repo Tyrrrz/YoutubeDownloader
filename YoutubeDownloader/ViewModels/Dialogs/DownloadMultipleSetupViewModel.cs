@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -57,12 +57,18 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             // Save last used format
             _settingsService.LastFormat = SelectedFormat;
 
+            // Make sure selected videos are ordered in the same way as available videos
+            var orderedSelectedVideos = AvailableVideos.Where(v => SelectedVideos.Contains(v)).ToArray();
+
             // Create download view models
             var downloads = new List<DownloadViewModel>();
-            foreach (var video in SelectedVideos)
+            for (var i = 0; i < orderedSelectedVideos.Length; i++)
             {
+                var video = orderedSelectedVideos[i];
+
                 // Generate file path
-                var fileName = $"{FileEx.MakeSafeFileName(video.Title)}.{SelectedFormat}";
+                var fileNamePrefix = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
+                var fileName = $"{fileNamePrefix} - {FileEx.MakeSafeFileName(video.Title)}.{SelectedFormat}";
                 var filePath = Path.Combine(dirPath, fileName);
 
                 // Ensure file paths are unique because user will not be able to confirm overwrites
