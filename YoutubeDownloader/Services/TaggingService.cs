@@ -87,7 +87,7 @@ namespace YoutubeDownloader.Services
             videoTitle = videoTitle.Replace("(animated video)", "", StringComparison.OrdinalIgnoreCase);
 
             // Split by common artist/title separator characters
-            var split = videoTitle.Split('-', '~', '—', '–');
+            var split = videoTitle.Split(" - ", " ~ ", " — ", " – ");
 
             // Extract artist and title
             if (split.Length >= 2)
