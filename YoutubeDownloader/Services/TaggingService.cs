@@ -122,7 +122,7 @@ namespace YoutubeDownloader.Services
 
             // Try to get tags
             var tagsJson = await TryGetTagsJsonAsync(artist, title, cancellationToken);
-            if (tagsJson == null || tagsJson["score"].Value<int>() < 50)
+            if (tagsJson == null)
                 return;
 
             // Extract information
