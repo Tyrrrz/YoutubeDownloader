@@ -49,7 +49,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
             // Prompt user for output file path
             var filter = $"{format.ToUpperInvariant()} file|*.{format}";
-            var defaultFileName = $"{FileEx.MakeSafeFileName(Video.Title)}.{format}";
+            var defaultFileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, Video, format);
             var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
 
             // If canceled - return

@@ -62,6 +62,7 @@
     <Compile Include="Behaviors\VideoMultiSelectionListBoxBehavior.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Internal\FileEx.cs" />
+    <Compile Include="Internal\FileNameGenerator.cs" />
     <Compile Include="Models\DownloadOption.cs" />
     <Compile Include="Models\ExecutedQuery.cs" />
     <Compile Include="Models\Query.cs" />

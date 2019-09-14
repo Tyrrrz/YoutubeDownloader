@@ -6,6 +6,7 @@
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     MinWidth="300"
     d:DataContext="{d:DesignInstance Type=dialogs:SettingsViewModel}"
     d:DesignHeight="450"
@@ -20,7 +21,7 @@
             Text="Settings" />
 
         <!--  Max concurrent downloads  -->
-        <StackPanel>
+        <StackPanel Background="Transparent" ToolTip="How many downloads can be active at one time">
             <TextBlock Margin="16,8">
                 <Run Text="Maximum concurrent downloads:" />
                 <Run Foreground="{DynamicResource PrimaryTextBrush}" Text="{Binding MaxConcurrentDownloads, Mode=OneWay}" />
@@ -34,8 +35,39 @@
                 Value="{Binding MaxConcurrentDownloads}" />
         </StackPanel>
 
+        <!--  Default file name template  -->
+        <TextBox
+            Margin="16,8"
+            materialDesign:HintAssist.Hint="File name template"
+            materialDesign:HintAssist.IsFloating="True"
+            Text="{Binding FileNameTemplate}">
+            <TextBox.ToolTip>
+                <TextBlock>
+                    <Run Text="Template used for generating file names for downloaded videos" />
+                    <LineBreak />
+                    <LineBreak />
+                    <Run Text="Available variables:" />
+                    <LineBreak />
+                    <Run Text="$num" FontWeight="SemiBold" />
+                    <Run Text="- video's position in the list (if applicable)" />
+                    <LineBreak />
+                    <Run Text="$title" FontWeight="SemiBold" />
+                    <Run Text="- video title" />
+                    <LineBreak />
+                    <Run Text="$author" FontWeight="SemiBold" />
+                    <Run Text="- video author" />
+                    <LineBreak />
+                    <Run Text="$uploadDate" FontWeight="SemiBold" />
+                    <Run Text="- video upload date" />
+                </TextBlock>
+            </TextBox.ToolTip>
+        </TextBox>
+
         <!--  Tag injection  -->
-        <DockPanel LastChildFill="False">
+        <DockPanel
+            LastChildFill="False"
+            Background="Transparent"
+            ToolTip="Media tags can be automatically inferred from video title and injected into output file">
             <TextBlock
                 Margin="16,8"
                 DockPanel.Dock="Left"

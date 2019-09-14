@@ -67,8 +67,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 var video = orderedSelectedVideos[i];
 
                 // Generate file path
-                var fileNamePrefix = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
-                var fileName = $"{fileNamePrefix} - {FileEx.MakeSafeFileName(video.Title)}.{SelectedFormat}";
+                var number = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
+                var fileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, video, SelectedFormat, number);
                 var filePath = Path.Combine(dirPath, fileName);
 
                 // Ensure file paths are unique because user will not be able to confirm overwrites
