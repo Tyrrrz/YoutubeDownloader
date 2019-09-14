@@ -16,7 +16,9 @@ namespace YoutubeDownloader.ViewModels.Components
     {
         private readonly IViewModelFactory _viewModelFactory;
         private readonly DialogManager _dialogManager;
+        private readonly SettingsService _settingsService;
         private readonly DownloadService _downloadService;
+        private readonly TaggingService _taggingService;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -44,11 +46,14 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public string FailReason { get; private set; }
 
-        public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, DownloadService downloadService)
+        public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, SettingsService settingsService,
+            DownloadService downloadService, TaggingService taggingService)
         {
             _viewModelFactory = viewModelFactory;
             _dialogManager = dialogManager;
+            _settingsService = settingsService;
             _downloadService = downloadService;
+            _taggingService = taggingService;
         }
 
         public bool CanStart => !IsActive;
@@ -78,6 +83,9 @@ namespace YoutubeDownloader.ViewModels.Components
                         DownloadOption = await _downloadService.GetBestDownloadOptionAsync(Video.Id, Format);
 
                     await _downloadService.DownloadVideoAsync(DownloadOption, FilePath, ProgressOperation, _cancellationTokenSource.Token);
+
+                    if (_settingsService.ShouldInjectTags)
+                        await _taggingService.InjectTagsAsync(Video, Format, FilePath, _cancellationTokenSource.Token);
 
                     IsSuccessful = true;
                 }

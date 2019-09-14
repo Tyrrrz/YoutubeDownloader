@@ -36,7 +36,7 @@ namespace YoutubeDownloader.Services
 
             try
             {
-                // Spin-wait until other downloads finish so that the number of concurrent downloads doesn't exceed the maximum
+                // Wait until other downloads finish so that the number of concurrent downloads doesn't exceed the maximum
                 while (_concurrentDownloadCount >= _settingsService.MaxConcurrentDownloadCount)
                     await Task.Delay(350, cancellationToken);
 

@@ -34,6 +34,18 @@
                 Value="{Binding MaxConcurrentDownloads}" />
         </StackPanel>
 
+        <!--  Tag injection  -->
+        <DockPanel LastChildFill="False">
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Automatically inject media tags" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding ShouldInjectTags}" />
+        </DockPanel>
+
         <!--  Save button  -->
         <Button
             Margin="8"

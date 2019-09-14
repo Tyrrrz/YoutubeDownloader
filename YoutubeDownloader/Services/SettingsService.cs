@@ -6,6 +6,8 @@ namespace YoutubeDownloader.Services
     {
         public int MaxConcurrentDownloadCount { get; set; } = 2;
 
+        public bool ShouldInjectTags { get; set; } = true;
+
         public string LastFormat { get; set; }
 
         public SettingsService()

@@ -14,6 +14,12 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             set => _settingsService.MaxConcurrentDownloadCount = value.Clamp(1, 10);
         }
 
+        public bool ShouldInjectTags
+        {
+            get => _settingsService.ShouldInjectTags;
+            set => _settingsService.ShouldInjectTags = value;
+        }
+
         public SettingsViewModel(SettingsService settingsService)
         {
             _settingsService = settingsService;

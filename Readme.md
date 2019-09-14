@@ -19,6 +19,7 @@ YoutubeDownloader is an application that lets you download videos from YouTube. 
 - Variety of output formats: mp4, webm, mp3, ogg
 - Selectable video quality
 - Multiple downloads in parallel with progress reporting and cancellation
+- Automatic media tagging for audio downloads
 
 ## Screenshots
 
@@ -31,7 +32,9 @@ YoutubeDownloader is an application that lets you download videos from YouTube. 
 - [Stylet](https://github.com/canton7/Stylet)
 - [PropertyChanged.Fody](https://github.com/Fody/PropertyChanged)
 - [MaterialDesignInXamlToolkit](https://github.com/ButchersBoy/MaterialDesignInXamlToolkit)
+- [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 - [Ookii.Dialogs](https://github.com/caioproiete/ookii-dialogs-wpf)
+- [ATL.NET](https://github.com/Zeugma440/atldotnet)
 - [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode)
 - [YoutubeExplode.Converter](https://github.com/Tyrrrz/YoutubeExplode.Converter)
 - [Gress](https://github.com/Tyrrrz/Gress)
