@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Tyrrrz.Extensions;
 using YoutubeDownloader.Internal;
 using YoutubeDownloader.Services;
@@ -61,13 +62,14 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             foreach (var video in SelectedVideos)
             {
                 // Generate file path
-                var fileName = $"{video.GetFileNameSafeTitle()}.{SelectedFormat}";
+                var fileName = $"{FileEx.MakeSafeFileName(video.Title)}.{SelectedFormat}";
                 var filePath = Path.Combine(dirPath, fileName);
 
-                // Ensure file paths are unique because users will not be able to confirm overwrites
+                // Ensure file paths are unique because user will not be able to confirm overwrites
                 filePath = FileEx.MakeUniqueFilePath(filePath);
 
                 // Create empty file to "lock in" the file path
+                FileEx.CreateDirectoriesForFile(filePath);
                 FileEx.CreateEmptyFile(filePath);
 
                 // Create download view model
@@ -80,5 +82,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             // Close dialog
             Close(downloads);
         }
+
+        public void CopyTitle() => Clipboard.SetText(DisplayName);
     }
 }

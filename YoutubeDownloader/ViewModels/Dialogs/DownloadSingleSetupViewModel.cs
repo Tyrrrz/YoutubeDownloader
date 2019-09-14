@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using Tyrrrz.Extensions;
 using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
@@ -48,7 +49,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
             // Prompt user for output file path
             var filter = $"{format.ToUpperInvariant()} file|*.{format}";
-            var defaultFileName = $"{Video.GetFileNameSafeTitle()}.{format}";
+            var defaultFileName = $"{FileEx.MakeSafeFileName(Video.Title)}.{format}";
             var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
 
             // If canceled - return
@@ -62,10 +63,13 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var download = _viewModelFactory.CreateDownloadViewModel(Video, filePath, format, SelectedDownloadOption);
 
             // Create empty file to "lock in" the file path
+            FileEx.CreateDirectoriesForFile(filePath);
             FileEx.CreateEmptyFile(filePath);
 
             // Close dialog
             Close(download);
         }
+
+        public void CopyTitle() => Clipboard.SetText(DisplayName);
     }
 }

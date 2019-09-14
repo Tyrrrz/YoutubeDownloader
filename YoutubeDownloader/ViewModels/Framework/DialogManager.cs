@@ -40,27 +40,27 @@ namespace YoutubeDownloader.ViewModels.Framework
             return dialogScreen.DialogResult;
         }
 
-        public string PromptSaveFilePath(string filter = "All files|*.*", string initialFilePath = "")
+        public string PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
         {
             // Create dialog
             var dialog = new VistaSaveFileDialog
             {
                 Filter = filter,
                 AddExtension = true,
-                FileName = initialFilePath,
-                DefaultExt = Path.GetExtension(initialFilePath) ?? ""
+                FileName = defaultFilePath,
+                DefaultExt = Path.GetExtension(defaultFilePath) ?? ""
             };
 
             // Show dialog and return result
             return dialog.ShowDialog() == true ? dialog.FileName : null;
         }
 
-        public string PromptDirectoryPath(string initialDirPath = "")
+        public string PromptDirectoryPath(string defaultDirPath = "")
         {
             // Create dialog
             var dialog = new VistaFolderBrowserDialog
             {
-                SelectedPath = initialDirPath
+                SelectedPath = defaultDirPath
             };
 
             // Show dialog and return result

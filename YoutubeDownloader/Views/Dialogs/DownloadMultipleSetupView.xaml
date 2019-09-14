@@ -28,7 +28,13 @@
             Foreground="{DynamicResource PrimaryTextBrush}"
             Text="{Binding DisplayName}"
             TextTrimming="CharacterEllipsis"
-            ToolTip="{Binding DisplayName}" />
+            ToolTip="{Binding DisplayName}">
+            <TextBlock.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="{s:Action CopyTitle}" Header="Copy" />
+                </ContextMenu>
+            </TextBlock.ContextMenu>
+        </TextBlock>
 
         <!--  Videos  -->
         <Border

@@ -144,7 +144,6 @@ namespace YoutubeDownloader.ViewModels
                 // Extract videos and other details
                 var videos = executedQueries.SelectMany(q => q.Videos).Distinct(v => v.Id).ToArray();
                 var dialogTitle = executedQueries.Count == 1 ? executedQueries.Single().Title : "Multiple queries";
-                var shouldPreselectAllVideos = executedQueries.All(q => q.Query.Type != QueryType.Search);
 
                 // If no videos were found - tell the user
                 if (videos.Length <= 0)
@@ -186,8 +185,8 @@ namespace YoutubeDownloader.ViewModels
                     // Create dialog
                     var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(dialogTitle, videos);
 
-                    // Preselect all videos if needed
-                    if (shouldPreselectAllVideos)
+                    // Preselect all videos if none of the videos come from a search query
+                    if (executedQueries.All(q => q.Query.Type != QueryType.Search))
                         dialog.SelectedVideos = dialog.AvailableVideos;
 
                     // Show dialog and get downloads
