@@ -55,7 +55,7 @@
                             Grid.Column="0"
                             AcceptsReturn="True"
                             Margin="6"
-                            materialDesign:HintAssist.Hint="URL or search query (press Shift+Enter for multiple)"
+                            materialDesign:HintAssist.Hint="URL or search query (press Shift+Enter to add multiple)"
                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                             BorderThickness="0"
                             FontSize="16"
