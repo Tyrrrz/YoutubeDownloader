@@ -18,7 +18,7 @@ namespace YoutubeDownloader.Services
         public async Task<Version> CheckForUpdatesAsync()
         {
             var check = await _updateManager.CheckForUpdatesAsync();
-            return !check.CanUpdate ? null : check.LastVersion;
+            return check.CanUpdate ? check.LastVersion : null;
         }
 
         public async Task PrepareUpdateAsync(Version version)
