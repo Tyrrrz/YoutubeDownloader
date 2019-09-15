@@ -6,7 +6,7 @@ using Onova.Services;
 
 namespace YoutubeDownloader.Services
 {
-    public class UpdateService
+    public class UpdateService : IDisposable
     {
         private readonly IUpdateManager _updateManager = new UpdateManager(
             new GithubPackageResolver("Tyrrrz", "YoutubeDownloader", "YoutubeDownloader.zip"),
@@ -15,27 +15,25 @@ namespace YoutubeDownloader.Services
         private Version _updateVersion;
         private bool _updaterLaunched;
 
-        public async Task<Version> CheckPrepareUpdateAsync()
+        public async Task<Version> CheckForUpdatesAsync()
+        {
+            var check = await _updateManager.CheckForUpdatesAsync();
+            return !check.CanUpdate ? null : check.LastVersion;
+        }
+
+        public async Task PrepareUpdateAsync(Version version)
         {
             try
             {
-                // Check for updates
-                var check = await _updateManager.CheckForUpdatesAsync();
-                if (!check.CanUpdate)
-                    return null;
-
-                // Prepare the update
-                await _updateManager.PrepareUpdateAsync(check.LastVersion);
-
-                return _updateVersion = check.LastVersion;
+                await _updateManager.PrepareUpdateAsync(_updateVersion = version);
             }
             catch (UpdaterAlreadyLaunchedException)
             {
-                return null;
+                // Ignore race conditions
             }
             catch (LockFileNotAcquiredException)
             {
-                return null;
+                // Ignore race conditions
             }
         }
 
@@ -43,23 +41,20 @@ namespace YoutubeDownloader.Services
         {
             try
             {
-                // Check if an update is pending
-                if (_updateVersion == null)
+                if (_updateVersion == null || _updaterLaunched)
                     return;
 
-                // Check if the updater has already been launched
-                if (_updaterLaunched)
-                    return;
-
-                // Launch the updater
                 _updateManager.LaunchUpdater(_updateVersion, needRestart);
+
                 _updaterLaunched = true;
             }
             catch (UpdaterAlreadyLaunchedException)
             {
+                // Ignore race conditions
             }
             catch (LockFileNotAcquiredException)
             {
+                // Ignore race conditions
             }
         }
 
