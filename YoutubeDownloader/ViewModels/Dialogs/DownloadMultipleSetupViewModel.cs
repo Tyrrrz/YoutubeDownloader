@@ -58,10 +58,11 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
             // Create download view models
             var downloads = new List<DownloadViewModel>();
+			int count = 1;
             foreach (var video in SelectedVideos)
             {
                 // Generate file path
-                var fileName = $"{video.GetFileNameSafeTitle()}.{SelectedFormat}";
+                var fileName = $"{count.ToString("00")}-{video.GetFileNameSafeTitle()}.{SelectedFormat}";
                 var filePath = Path.Combine(dirPath, fileName);
 
                 // Ensure file paths are unique because users will not be able to confirm overwrites
@@ -75,6 +76,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
                 // Add to list
                 downloads.Add(download);
+				count += 1;
             }
 
             // Close dialog
