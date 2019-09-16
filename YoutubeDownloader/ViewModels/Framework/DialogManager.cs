@@ -21,12 +21,12 @@ namespace YoutubeDownloader.ViewModels.Framework
             var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
 
             // Set up event routing that will close the view when called from viewmodel
-            void OnDialogOpened(object sender, DialogOpenedEventArgs e)
+            void OnDialogOpened(object openSender, DialogOpenedEventArgs openArgs)
             {
                 // Delegate to close the dialog and unregister event handler
-                void OnScreenClosed(object o, CloseEventArgs args)
+                void OnScreenClosed(object closeSender, CloseEventArgs closeArgs)
                 {
-                    e.Session.Close();
+                    openArgs.Session.Close();
                     dialogScreen.Closed -= OnScreenClosed;
                 }
 

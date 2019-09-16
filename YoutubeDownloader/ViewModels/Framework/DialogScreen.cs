@@ -6,7 +6,7 @@ namespace YoutubeDownloader.ViewModels.Framework
     {
         public T DialogResult { get; private set; }
 
-        public void Close(T dialogResult = default(T))
+        public void Close(T dialogResult = default)
         {
             // Set the result
             DialogResult = dialogResult;

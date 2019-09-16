@@ -23,11 +23,13 @@ namespace YoutubeDownloader
             builder.Bind<IViewModelFactory>().ToAbstractFactory();
         }
 
+#if !DEBUG
         protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
             base.OnUnhandledException(e);
 
             MessageBox.Show(e.Exception.ToString(), "Error occured", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+#endif
     }
 }

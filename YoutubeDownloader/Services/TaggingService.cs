@@ -13,8 +13,8 @@ namespace YoutubeDownloader.Services
     {
         private readonly HttpClient _httpClient = new HttpClient();
 
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        private DateTimeOffset _lastRequestInstance = DateTimeOffset.MinValue;
+        private readonly SemaphoreSlim _requestRateSemaphore = new SemaphoreSlim(1, 1);
+        private DateTimeOffset _lastRequestInstant = DateTimeOffset.MinValue;
 
         public TaggingService()
         {
@@ -25,22 +25,22 @@ namespace YoutubeDownloader.Services
         private async Task MaintainRateLimitAsync(TimeSpan interval, CancellationToken cancellationToken)
         {
             // Gain lock
-            await _semaphore.WaitAsync(cancellationToken);
+            await _requestRateSemaphore.WaitAsync(cancellationToken);
 
             try
             {
                 // Wait until enough time has passed since last request
-                var timePassedSinceLastRequest = DateTimeOffset.Now - _lastRequestInstance;
+                var timePassedSinceLastRequest = DateTimeOffset.Now - _lastRequestInstant;
                 var remainingTime = interval - timePassedSinceLastRequest;
                 if (remainingTime > TimeSpan.Zero)
                     await Task.Delay(remainingTime, cancellationToken);
 
-                _lastRequestInstance = DateTimeOffset.Now;
+                _lastRequestInstant = DateTimeOffset.Now;
             }
             finally
             {
                 // Release the lock
-                _semaphore.Release();
+                _requestRateSemaphore.Release();
             }
         }
 
