@@ -1,3 +1,7 @@
+### v1.6.1 (22-Sep-2019)
+
+- Fixed an issue where starting new downloads was not possible if there were already active downloads.
+
 ### v1.6 (14-Sep-2019)
 
 - Added support for processing multiple queries in one go. Separate multiple URLs/IDs/searches with new lines (Shift+Enter) to specify multiple queries.
