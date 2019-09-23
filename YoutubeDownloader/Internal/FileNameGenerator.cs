@@ -19,12 +19,12 @@ namespace YoutubeDownloader.Internal
         {
             var result = template;
 
-            if (!number.IsNullOrWhiteSpace())
-                result = result.Replace(NumberToken, $"[{number}]");
-
+            result = result.Replace(NumberToken, !number.IsNullOrWhiteSpace() ? $"[{number}]" : "");
             result = result.Replace(TitleToken, video.Title);
             result = result.Replace(AuthorToken, video.Author);
             result = result.Replace(UploadDateToken, video.UploadDate.ToString("yyyy-MM-dd"));
+
+            result = result.Trim();
 
             result += $".{format}";
 
