@@ -55,15 +55,14 @@ namespace YoutubeDownloader.Services
                 // 4 requests per second
                 await MaintainRateLimitAsync(TimeSpan.FromSeconds(1.0 / 4), cancellationToken);
 
-                using (var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
-                {
-                    if (!response.IsSuccessStatusCode)
-                        return null;
+                using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
-                    var raw = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                    return null;
 
-                    return JToken.Parse(raw)["recordings"]?.FirstOrDefault();
-                }
+                var raw = await response.Content.ReadAsStringAsync();
+
+                return JToken.Parse(raw)["recordings"]?.FirstOrDefault();
             }
             catch
             {
