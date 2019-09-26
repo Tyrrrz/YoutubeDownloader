@@ -1,6 +1,6 @@
 version: '{build}'
 
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 
 before_build:
@@ -10,10 +10,10 @@ build:
   verbosity: minimal
 
 after_build:
-- ps: Deploy\Prepare.ps1
+- ps: Deploy/Prepare.ps1
 
 artifacts:
-- path: Deploy\Portable\bin\YoutubeDownloader.zip
+- path: Deploy/bin/YoutubeDownloader.zip
   name: YoutubeDownloader.zip
 
 deploy:

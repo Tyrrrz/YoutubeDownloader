@@ -1,8 +1,21 @@
-# Get files
+$licenseFilePath = "$PSScriptRoot/../License.txt"
+
+$solutionDirPath = "$PSScriptRoot/../"
+$publishDirPath = "$PSScriptRoot/bin/build/"
+$artifactFilePath = "$PSScriptRoot/bin/YoutubeDownloader.zip"
+
+# Prepare directory
+if (Test-Path $publishDirPath) {
+    Remove-Item $publishDirPath -Recurse -Force
+}
+New-Item $publishDirPath -ItemType Directory -Force
+
+# Build & publish
+dotnet publish $solutionDirPath -o $publishDirPath -c Release | Out-Host
+
 $files = @()
-$files += Get-Item -Path "$PSScriptRoot\..\License.txt"
-$files += Get-ChildItem -Path "$PSScriptRoot\..\YoutubeDownloader\bin\Release\*" -Include "*.exe", "*.dll", "*.config"
+$files += Get-Item -Path $licenseFilePath
+$files += Get-ChildItem -Path $publishDirPath
 
 # Pack into archive
-New-Item "$PSScriptRoot\Portable\bin" -ItemType Directory -Force
-$files | Compress-Archive -DestinationPath "$PSScriptRoot\Portable\bin\YoutubeDownloader.zip" -Force
+$files | Compress-Archive -DestinationPath $artifactFilePath -Force

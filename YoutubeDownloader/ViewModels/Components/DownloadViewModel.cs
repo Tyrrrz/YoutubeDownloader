@@ -4,11 +4,11 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
+using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Models;
-using PropertyChangedBase = Stylet.PropertyChangedBase;
 
 namespace YoutubeDownloader.ViewModels.Components
 {
@@ -146,8 +146,8 @@ namespace YoutubeDownloader.ViewModels.Components
 
             try
             {
-                // This opens the video file using the default player
-                Process.Start(FilePath);
+                // Open video file using default player
+                ProcessEx.StartShellExecute(FilePath);
             }
             catch (Exception ex)
             {
