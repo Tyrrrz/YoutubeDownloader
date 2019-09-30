@@ -31,9 +31,11 @@
     <PackageReference Include="YoutubeExplode.Converter" Version="1.4.3" />
   </ItemGroup>
 
+  <!-- This downloads FFmpeg and copies it to output directory-->
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)DownloadFfmpeg.ps1&quot;" />
     <Copy SourceFiles="$(ProjectDir)ffmpeg.exe" DestinationFiles="$(OutDir)ffmpeg.exe" />
+    <Copy SourceFiles="$(ProjectDir)ffmpeg.exe" DestinationFiles="$(PublishDir)ffmpeg.exe" />
   </Target>
 
 </Project>
