@@ -1,6 +1,6 @@
 $licenseFilePath = "$PSScriptRoot/../License.txt"
 
-$solutionDirPath = "$PSScriptRoot/../"
+$projectDirPath = "$PSScriptRoot/../YoutubeDownloader"
 $publishDirPath = "$PSScriptRoot/bin/build/"
 $artifactFilePath = "$PSScriptRoot/bin/YoutubeDownloader.zip"
 
@@ -11,7 +11,7 @@ if (Test-Path $publishDirPath) {
 New-Item $publishDirPath -ItemType Directory -Force
 
 # Build & publish
-dotnet publish $solutionDirPath -o $publishDirPath -c Release | Out-Host
+dotnet publish $projectDirPath -o $publishDirPath -c Release | Out-Host
 
 $files = @()
 $files += Get-Item -Path $licenseFilePath
