@@ -13,7 +13,7 @@ namespace YoutubeDownloader.Internal
 
         private static string UploadDateToken { get; } = "$uploadDate";
 
-        public static string DefaultTemplate { get; } = $"{NumberToken} {AuthorToken} - {TitleToken} ({UploadDateToken})";
+        public static string DefaultTemplate { get; } = $"{TitleToken}";
 
         public static string GenerateFileName(string template, Video video, string format, string number = null)
         {
