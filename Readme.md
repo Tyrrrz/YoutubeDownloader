@@ -10,8 +10,8 @@ YoutubeDownloader is an application that lets you download videos from YouTube. 
 
 ## Download
 
-- [Stable releases](https://github.com/Tyrrrz/YoutubeDownloader/releases)
-- [Continuous integration](https://ci.appveyor.com/project/Tyrrrz/YoutubeDownloader)
+- **[Latest release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
+- [CI build](https://ci.appveyor.com/project/Tyrrrz/YoutubeDownloader/branch/master/artifacts)
 
 ## Features
 
