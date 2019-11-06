@@ -16,9 +16,7 @@ jobs:
         dotnet-version: 3.0.100
 
     - name: Build & publish
-      run: |
-        dotnet build --configuration Release
-        dotnet publish -o PublishOutput/ --configuration Release --no-build
+      run: dotnet publish -o PublishOutput/ --configuration Release
 
     - name: Pack
       run: Compress-Archive -Path PublishOutput/* -DestinationPath PublishOutput/Archive.zip -Force
