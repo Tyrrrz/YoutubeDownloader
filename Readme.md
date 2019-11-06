@@ -1,6 +1,6 @@
 # YoutubeDownloader
 
-[![Build](https://img.shields.io/appveyor/ci/Tyrrrz/YoutubeDownloader/master.svg)](https://ci.appveyor.com/project/Tyrrrz/YoutubeDownloader)
+[![Build](https://github.com/Tyrrrz/YoutubeDownloader/workflows/CI/badge.svg?branch=master)](https://github.com/Tyrrrz/YoutubeDownloader/actions)
 [![Release](https://img.shields.io/github/release/Tyrrrz/YoutubeDownloader.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
 [![Downloads](https://img.shields.io/github/downloads/Tyrrrz/YoutubeDownloader/total.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
 [![Donate](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://patreon.com/tyrrrz)
@@ -11,7 +11,7 @@ YoutubeDownloader is an application that lets you download videos from YouTube. 
 ## Download
 
 - **[Latest release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
-- [CI build](https://ci.appveyor.com/project/Tyrrrz/YoutubeDownloader/branch/master/artifacts)
+- [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions)
 
 ## Features
 

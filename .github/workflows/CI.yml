@@ -1,0 +1,31 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+
+    - name: Build & publish
+      run: |
+        dotnet build --configuration Release
+        dotnet publish -o PublishOutput/ --configuration Release --no-build
+
+    - name: Pack
+      run: Compress-Archive -Path PublishOutput/* -DestinationPath PublishOutput/Archive.zip -Force
+      shell: pwsh
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: YoutubeDownloader.zip
+        path: PublishOutput/Archive.zip

@@ -1,0 +1,49 @@
+name: CD
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+
+    - name: Build & publish
+      run: |
+        dotnet build --configuration Release
+        dotnet publish -o PublishOutput/ --configuration Release
+
+    - name: Pack
+      run: Compress-Archive -Path PublishOutput/* -DestinationPath PublishOutput/Archive.zip -Force
+      shell: pwsh
+
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload release artifact
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: PublishOutput/Archive.zip
+        asset_name: YoutubeDownloader.zip
+        asset_content_type: application/zip
