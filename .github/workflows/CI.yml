@@ -16,14 +16,10 @@ jobs:
         dotnet-version: 3.0.100
 
     - name: Build & publish
-      run: dotnet publish -o PublishOutput/ --configuration Release
+      run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
 
-    - name: Pack
-      run: Compress-Archive -Path PublishOutput/* -DestinationPath PublishOutput/Archive.zip -Force
-      shell: pwsh
-
-    - name: Upload build artifact
+    - name: Upload build artifacts
       uses: actions/upload-artifact@master
       with:
-        name: YoutubeDownloader.zip
-        path: PublishOutput/Archive.zip
+        name: YoutubeDownloader
+        path: YoutubeDownloader/bin/Publish
