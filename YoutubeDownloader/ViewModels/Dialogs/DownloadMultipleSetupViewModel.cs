@@ -11,84 +11,90 @@ using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {
-    public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
-    {
-        private readonly IViewModelFactory _viewModelFactory;
-        private readonly SettingsService _settingsService;
-        private readonly DialogManager _dialogManager;
+	public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
+	{
+		private readonly IViewModelFactory _viewModelFactory;
+		private readonly SettingsService _settingsService;
+		private readonly DialogManager _dialogManager;
 
-        public IReadOnlyList<Video> AvailableVideos { get; set; }
+		public IReadOnlyList<Video> AvailableVideos { get; set; }
 
-        public IReadOnlyList<Video> SelectedVideos { get; set; }
+		public IReadOnlyList<Video> SelectedVideos { get; set; }
 
-        public IReadOnlyList<string> AvailableFormats { get; } = new[] {"mp4", "mp3", "ogg"};
+		public IReadOnlyList<string> AvailableFormats { get; } = new[] { "mp4", "mp3", "ogg" };
 
-        public string SelectedFormat { get; set; }
+		public string SelectedFormat { get; set; }
 
-        public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
-            DialogManager dialogManager)
-        {
-            _viewModelFactory = viewModelFactory;
-            _settingsService = settingsService;
-            _dialogManager = dialogManager;
-        }
+		public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
+			DialogManager dialogManager)
+		{
+			_viewModelFactory = viewModelFactory;
+			_settingsService = settingsService;
+			_dialogManager = dialogManager;
+		}
 
-        protected override void OnViewLoaded()
-        {
-            base.OnViewLoaded();
+		protected override void OnViewLoaded()
+		{
+			base.OnViewLoaded();
 
-            // Select last used format
-            SelectedFormat = AvailableFormats.Contains(_settingsService.LastFormat)
-                ? _settingsService.LastFormat
-                : AvailableFormats.FirstOrDefault();
-        }
+			// Select last used format
+			SelectedFormat = AvailableFormats.Contains(_settingsService.LastFormat)
+				? _settingsService.LastFormat
+				: AvailableFormats.FirstOrDefault();
+		}
 
-        public bool CanConfirm => !SelectedVideos.IsNullOrEmpty();
+		public bool CanConfirm => !SelectedVideos.IsNullOrEmpty();
 
-        public void Confirm()
-        {
-            // Prompt user for output directory path
-            var dirPath = _dialogManager.PromptDirectoryPath();
+		public void Confirm()
+		{
+			// Prompt user for output directory path
+			var dirPath = _dialogManager.PromptDirectoryPath();
 
-            // If canceled - return
-            if (dirPath.IsNullOrWhiteSpace())
-                return;
+			// If canceled - return
+			if (dirPath.IsNullOrWhiteSpace())
+				return;
 
-            // Save last used format
-            _settingsService.LastFormat = SelectedFormat;
+			// Save last used format
+			_settingsService.LastFormat = SelectedFormat;
 
-            // Make sure selected videos are ordered in the same way as available videos
-            var orderedSelectedVideos = AvailableVideos.Where(v => SelectedVideos.Contains(v)).ToArray();
+			// Make sure selected videos are ordered in the same way as available videos
+			var orderedSelectedVideos = AvailableVideos.Where(v => SelectedVideos.Contains(v)).ToArray();
 
-            // Create download view models
-            var downloads = new List<DownloadViewModel>();
-            for (var i = 0; i < orderedSelectedVideos.Length; i++)
-            {
-                var video = orderedSelectedVideos[i];
+			// Create download view models
+			var downloads = new List<DownloadViewModel>();
+			for (var i = 0; i < orderedSelectedVideos.Length; i++)
+			{
+				var video = orderedSelectedVideos[i];
 
-                // Generate file path
-                var number = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
-                var fileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, video, SelectedFormat, number);
-                var filePath = Path.Combine(dirPath, fileName);
+				// Generate file path
+				var number = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
+				var fileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, video, SelectedFormat, number);
+				var filePath = Path.Combine(dirPath, fileName);
 
-                // Ensure file paths are unique because user will not be able to confirm overwrites
-                filePath = FileEx.MakeUniqueFilePath(filePath);
+				//generate unique file name if overwrite is selected
+				if (!SkipExisting)
+				{
+					// Ensure file paths are unique because user will not be able to confirm overwrites
+					filePath = FileEx.MakeUniqueFilePath(filePath);
 
-                // Create empty file to "lock in" the file path
-                FileEx.CreateDirectoriesForFile(filePath);
-                FileEx.CreateEmptyFile(filePath);
+					// Create empty file to "lock in" the file path
+					FileEx.CreateDirectoriesForFile(filePath);
+					FileEx.CreateEmptyFile(filePath);
+				}
 
-                // Create download view model
-                var download = _viewModelFactory.CreateDownloadViewModel(video, filePath, SelectedFormat);
+				// Create download view model
+				DownloadViewModel download = _viewModelFactory.CreateDownloadViewModel(video, filePath, SelectedFormat);
+				//pass overwrite signal to the downloadViewModel
+				download.SkipExisting = SkipExisting;
 
-                // Add to list
-                downloads.Add(download);
-            }
+				// Add to list
+				downloads.Add(download);
+			}
 
-            // Close dialog
-            Close(downloads);
-        }
+			// Close dialog
+			Close(downloads);
+		}
 
-        public void CopyTitle() => Clipboard.SetText(DisplayName);
-    }
+		public void CopyTitle() => Clipboard.SetText(DisplayName);
+	}
 }

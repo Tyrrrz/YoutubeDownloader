@@ -9,6 +9,7 @@ namespace YoutubeDownloader.Models
 
         public string Label { get; }
 
+		
         public IReadOnlyList<MediaStreamInfo> MediaStreamInfos { get; }
 
         public DownloadOption(string format, string label, IReadOnlyList<MediaStreamInfo> mediaStreamInfos)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using Tyrrrz.Extensions;
@@ -11,65 +12,70 @@ using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {
-    public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
-    {
-        private readonly IViewModelFactory _viewModelFactory;
-        private readonly SettingsService _settingsService;
-        private readonly DialogManager _dialogManager;
+	public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
+	{
+		private readonly IViewModelFactory _viewModelFactory;
+		private readonly SettingsService _settingsService;
+		private readonly DialogManager _dialogManager;
 
-        public Video Video { get; set; }
+		public Video Video { get; set; }
 
-        public IReadOnlyList<DownloadOption> AvailableDownloadOptions { get; set; }
+		public IReadOnlyList<DownloadOption> AvailableDownloadOptions { get; set; }
 
-        public DownloadOption SelectedDownloadOption { get; set; }
 
-        public DownloadSingleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
-            DialogManager dialogManager)
-        {
-            _viewModelFactory = viewModelFactory;
-            _settingsService = settingsService;
-            _dialogManager = dialogManager;
-        }
+		public DownloadOption SelectedDownloadOption { get; set; }
 
-        protected override void OnViewLoaded()
-        {
-            base.OnViewLoaded();
+		public DownloadSingleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
+			DialogManager dialogManager)
+		{
+			_viewModelFactory = viewModelFactory;
+			_settingsService = settingsService;
+			_dialogManager = dialogManager;
+		}
 
-            // Select first download option matching last used format or first non-audio-only download option
-            SelectedDownloadOption =
-                AvailableDownloadOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
-                AvailableDownloadOptions.OrderByDescending(o => !o.Label.IsNullOrWhiteSpace()).FirstOrDefault();
-        }
+		protected override void OnViewLoaded()
+		{
+			base.OnViewLoaded();
 
-        public bool CanConfirm => Video != null;
+			// Select first download option matching last used format or first non-audio-only download option
+			SelectedDownloadOption =
+				AvailableDownloadOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
+				AvailableDownloadOptions.OrderByDescending(o => !o.Label.IsNullOrWhiteSpace()).FirstOrDefault();
+		}
 
-        public void Confirm()
-        {
-            var format = SelectedDownloadOption.Format;
+		public bool CanConfirm => Video != null;
 
-            // Prompt user for output file path
-            var filter = $"{format.ToUpperInvariant()} file|*.{format}";
-            var defaultFileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, Video, format);
-            var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
+		public void Confirm()
+		{
+			var format = SelectedDownloadOption.Format;
 
-            // If canceled - return
-            if (filePath.IsNullOrWhiteSpace())
-                return;
+			// Prompt user for output file path
+			var filter = $"{format.ToUpperInvariant()} file|*.{format}";
+			var defaultFileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, Video, format);
+			var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
 
-            // Save last used format
-            _settingsService.LastFormat = format;
+			// If canceled - return
+			if (filePath.IsNullOrWhiteSpace())
+				return;
 
-            // Create download view model
-            var download = _viewModelFactory.CreateDownloadViewModel(Video, filePath, format, SelectedDownloadOption);
 
-            // Create empty file to "lock in" the file path
-            FileEx.CreateDirectoriesForFile(filePath);
-            FileEx.CreateEmptyFile(filePath);
+			// Save last used format
+			_settingsService.LastFormat = format;
 
-            // Close dialog
-            Close(download);
-        }
+			// Create download view model
+			var download = _viewModelFactory.CreateDownloadViewModel(Video, filePath, format, SelectedDownloadOption);
+			
+			//single download must be overwritten checked
+			download.SkipExisting = true;
+			
+			// Create empty file to "lock in" the file path
+			FileEx.CreateDirectoriesForFile(filePath);
+			FileEx.CreateEmptyFile(filePath);
 
-        public void CopyTitle() => Clipboard.SetText(DisplayName);
-    }
+			// Close dialog
+			Close(download);
+		}
+
+		public void CopyTitle() => Clipboard.SetText(DisplayName);
+	}
 }
