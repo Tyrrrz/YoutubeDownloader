@@ -46,7 +46,10 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public string FailReason { get; private set; }
 
-        public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, SettingsService settingsService,
+		//Signal to skip existing files
+		public bool SkipExisting { get; set; } 
+
+		public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, SettingsService settingsService,
             DownloadService downloadService, TaggingService taggingService)
         {
             _viewModelFactory = viewModelFactory;
@@ -82,8 +85,14 @@ namespace YoutubeDownloader.ViewModels.Components
                     if (DownloadOption == null)
                         DownloadOption = await _downloadService.GetBestDownloadOptionAsync(Video.Id, Format);
 
-                    await _downloadService.DownloadVideoAsync(DownloadOption, FilePath, ProgressOperation, _cancellationTokenSource.Token);
-
+					if (SkipExisting && File.Exists(FilePath))
+					{
+						//Skip downloading this file as per user request
+					}
+					else
+					{
+						await _downloadService.DownloadVideoAsync(DownloadOption, FilePath, ProgressOperation, _cancellationTokenSource.Token);
+					}
                     if (_settingsService.ShouldInjectTags)
                         await _taggingService.InjectTagsAsync(Video, Format, FilePath, _cancellationTokenSource.Token);
 

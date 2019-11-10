@@ -86,7 +86,7 @@
                     Margin="8,8,0,8"
                     VerticalAlignment="Center"
                     Text="Format:" />
-                <ComboBox
+					<ComboBox
                     MinWidth="150"
                     Margin="8"
                     VerticalAlignment="Center"
@@ -94,7 +94,7 @@
                     IsReadOnly="True"
                     ItemsSource="{Binding AvailableDownloadOptions}"
                     SelectedItem="{Binding SelectedDownloadOption}" />
-            </StackPanel>
+			</StackPanel>
 
             <!--  OK  -->
             <Button
