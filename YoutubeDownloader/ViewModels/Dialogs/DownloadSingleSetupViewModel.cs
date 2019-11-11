@@ -21,8 +21,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 		public Video Video { get; set; }
 
 		public IReadOnlyList<DownloadOption> AvailableDownloadOptions { get; set; }
-
-
+		
 		public DownloadOption SelectedDownloadOption { get; set; }
 
 		public DownloadSingleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
