@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Tyrrrz.Extensions;
 using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.Services
@@ -19,7 +18,7 @@ namespace YoutubeDownloader.Services
         public TaggingService()
         {
             // MusicBrainz requires user agent to be set
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("YoutubeDownloader (https://github.com/Tyrrrz/YoutubeDownloader)");
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"{App.Name} ({App.GitHubProjectUrl})");
         }
 
         private async Task MaintainRateLimitAsync(TimeSpan interval, CancellationToken cancellationToken)
@@ -44,7 +43,7 @@ namespace YoutubeDownloader.Services
             }
         }
 
-        private async Task<JToken> TryGetTagsJsonAsync(string artist, string title, CancellationToken cancellationToken)
+        private async Task<JToken?> TryGetTagsJsonAsync(string artist, string title, CancellationToken cancellationToken)
         {
             var url = Uri.EscapeUriString(
                 "http://musicbrainz.org/ws/2/recording/?fmt=json&query=" +
@@ -70,7 +69,7 @@ namespace YoutubeDownloader.Services
             }
         }
 
-        private bool TryExtractArtistAndTitle(string videoTitle, out string artist, out string title)
+        private bool TryExtractArtistAndTitle(string videoTitle, out string? artist, out string? title)
         {
             // Get rid of common rubbish in music video titles
             videoTitle = videoTitle.Replace("(official video)", "", StringComparison.OrdinalIgnoreCase);
@@ -86,7 +85,7 @@ namespace YoutubeDownloader.Services
             videoTitle = videoTitle.Replace("(animated video)", "", StringComparison.OrdinalIgnoreCase);
 
             // Split by common artist/title separator characters
-            var split = videoTitle.Split(" - ", " ~ ", " — ", " – ");
+            var split = videoTitle.Split(new[] {" - ", " ~ ", " — ", " – "}, StringSplitOptions.RemoveEmptyEntries);
 
             // Extract artist and title
             if (split.Length >= 2)
@@ -120,7 +119,7 @@ namespace YoutubeDownloader.Services
                 return;
 
             // Try to get tags
-            var tagsJson = await TryGetTagsJsonAsync(artist, title, cancellationToken);
+            var tagsJson = await TryGetTagsJsonAsync(artist!, title!, cancellationToken);
             if (tagsJson == null)
                 return;
 

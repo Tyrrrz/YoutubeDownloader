@@ -9,7 +9,7 @@ namespace YoutubeDownloader.ViewModels.Framework
     public static class Extensions
     {
         public static DownloadViewModel CreateDownloadViewModel(this IViewModelFactory factory, Video video,
-            string filePath, string format, DownloadOption downloadOption = null)
+            string filePath, string format, DownloadOption? downloadOption = null)
         {
             var viewModel = factory.CreateDownloadViewModel();
             viewModel.Video = video;
@@ -24,7 +24,7 @@ namespace YoutubeDownloader.ViewModels.Framework
             this IViewModelFactory factory, string title, IReadOnlyList<Video> availableVideos)
         {
             var viewModel = factory.CreateDownloadMultipleSetupViewModel();
-            viewModel.DisplayName = title;
+            viewModel.Title = title;
             viewModel.AvailableVideos = availableVideos;
 
             return viewModel;
@@ -34,7 +34,7 @@ namespace YoutubeDownloader.ViewModels.Framework
             string title, Video video, IReadOnlyList<DownloadOption> availableDownloadOptions)
         {
             var viewModel = factory.CreateDownloadSingleSetupViewModel();
-            viewModel.DisplayName = title;
+            viewModel.Title = title;
             viewModel.Video = video;
             viewModel.AvailableDownloadOptions = availableDownloadOptions;
 
@@ -45,7 +45,7 @@ namespace YoutubeDownloader.ViewModels.Framework
             string message)
         {
             var viewModel = factory.CreateMessageBoxViewModel();
-            viewModel.DisplayName = title;
+            viewModel.Title = title;
             viewModel.Message = message;
 
             return viewModel;

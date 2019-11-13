@@ -25,9 +25,9 @@
             Margin="8,16"
             FontSize="19"
             Foreground="{DynamicResource PrimaryTextBrush}"
-            Text="{Binding DisplayName}"
+            Text="{Binding Title}"
             TextTrimming="CharacterEllipsis"
-            ToolTip="{Binding DisplayName}" />
+            ToolTip="{Binding Title}" />
 
         <!--  Message  -->
         <TextBlock

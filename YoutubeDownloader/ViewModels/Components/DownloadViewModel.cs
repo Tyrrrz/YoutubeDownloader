@@ -20,7 +20,7 @@ namespace YoutubeDownloader.ViewModels.Components
         private readonly DownloadService _downloadService;
         private readonly TaggingService _taggingService;
 
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource? _cancellationTokenSource;
 
         public Video Video { get; set; }
 
@@ -30,7 +30,7 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public string Format { get; set; }
 
-        public DownloadOption DownloadOption { get; set; }
+        public DownloadOption? DownloadOption { get; set; }
 
         public IProgressManager ProgressManager { get; set; }
 
@@ -44,7 +44,7 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public bool IsFailed { get; private set; }
 
-        public string FailReason { get; private set; }
+        public string? FailReason { get; private set; }
 
         public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, SettingsService settingsService,
             DownloadService downloadService, TaggingService taggingService)
@@ -115,7 +115,7 @@ namespace YoutubeDownloader.ViewModels.Components
             if (!CanCancel)
                 return;
 
-            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource?.Cancel();
         }
 
         public bool CanShowFile => IsSuccessful;

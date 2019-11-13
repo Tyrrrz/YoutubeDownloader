@@ -28,7 +28,7 @@ namespace YoutubeDownloader.Internal
             {
                 // Assemble file path
                 var filePath = $"{baseFileNameWithoutExtension} ({i}){baseFileExtension}";
-                if (!baseDirPath.IsNullOrWhiteSpace())
+                if (!string.IsNullOrWhiteSpace(baseDirPath))
                     filePath = Path.Combine(baseDirPath, filePath);
 
                 // Check if file exists
@@ -45,7 +45,7 @@ namespace YoutubeDownloader.Internal
         public static void CreateDirectoriesForFile(string filePath)
         {
             var dirPath = Path.GetDirectoryName(filePath);
-            if (!dirPath.IsNullOrWhiteSpace())
+            if (!string.IsNullOrWhiteSpace(dirPath))
                 Directory.CreateDirectory(dirPath);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using MaterialDesignThemes.Wpf;
 using Ookii.Dialogs.Wpf;
@@ -21,10 +22,10 @@ namespace YoutubeDownloader.ViewModels.Framework
             var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
 
             // Set up event routing that will close the view when called from viewmodel
-            void OnDialogOpened(object openSender, DialogOpenedEventArgs openArgs)
+            void OnDialogOpened(object? openSender, DialogOpenedEventArgs openArgs)
             {
                 // Delegate to close the dialog and unregister event handler
-                void OnScreenClosed(object closeSender, CloseEventArgs closeArgs)
+                void OnScreenClosed(object? closeSender, EventArgs closeArgs)
                 {
                     openArgs.Session.Close();
                     dialogScreen.Closed -= OnScreenClosed;
@@ -40,7 +41,7 @@ namespace YoutubeDownloader.ViewModels.Framework
             return dialogScreen.DialogResult;
         }
 
-        public string PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
+        public string? PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
         {
             // Create dialog
             var dialog = new VistaSaveFileDialog
@@ -55,7 +56,7 @@ namespace YoutubeDownloader.ViewModels.Framework
             return dialog.ShowDialog() == true ? dialog.FileName : null;
         }
 
-        public string PromptDirectoryPath(string defaultDirPath = "")
+        public string? PromptDirectoryPath(string defaultDirPath = "")
         {
             // Create dialog
             var dialog = new VistaFolderBrowserDialog

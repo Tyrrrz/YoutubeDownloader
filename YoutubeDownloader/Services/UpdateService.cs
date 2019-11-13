@@ -12,10 +12,10 @@ namespace YoutubeDownloader.Services
             new GithubPackageResolver("Tyrrrz", "YoutubeDownloader", "YoutubeDownloader.zip"),
             new ZipPackageExtractor());
 
-        private Version _updateVersion;
+        private Version? _updateVersion;
         private bool _updaterLaunched;
 
-        public async Task<Version> CheckForUpdatesAsync()
+        public async Task<Version?> CheckForUpdatesAsync()
         {
             var check = await _updateManager.CheckForUpdatesAsync();
             return check.CanUpdate ? check.LastVersion : null;

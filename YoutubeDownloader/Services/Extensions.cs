@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tyrrrz.Extensions;
 using YoutubeDownloader.Models;
 
 namespace YoutubeDownloader.Services
@@ -13,7 +12,7 @@ namespace YoutubeDownloader.Services
             query.Split(Environment.NewLine).Select(queryService.ParseQuery).ToArray();
 
         public static async Task<IReadOnlyList<ExecutedQuery>> ExecuteQueriesAsync(this QueryService queryService, IReadOnlyList<Query> queries,
-            IProgress<double> progress = null)
+            IProgress<double>? progress = null)
         {
             var result = new List<ExecutedQuery>(queries.Count);
 

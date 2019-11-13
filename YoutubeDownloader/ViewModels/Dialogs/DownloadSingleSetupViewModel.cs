@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Tyrrrz.Extensions;
 using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
@@ -17,6 +16,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         private readonly SettingsService _settingsService;
         private readonly DialogManager _dialogManager;
 
+        public string Title { get; set; }
+
         public Video Video { get; set; }
 
         public IReadOnlyList<DownloadOption> AvailableDownloadOptions { get; set; }
@@ -29,16 +30,11 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             _viewModelFactory = viewModelFactory;
             _settingsService = settingsService;
             _dialogManager = dialogManager;
-        }
-
-        protected override void OnViewLoaded()
-        {
-            base.OnViewLoaded();
 
             // Select first download option matching last used format or first non-audio-only download option
             SelectedDownloadOption =
                 AvailableDownloadOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
-                AvailableDownloadOptions.OrderByDescending(o => !o.Label.IsNullOrWhiteSpace()).FirstOrDefault();
+                AvailableDownloadOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Label)).First();
         }
 
         public bool CanConfirm => Video != null;
@@ -53,7 +49,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
 
             // If canceled - return
-            if (filePath.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(filePath))
                 return;
 
             // Save last used format
@@ -70,6 +66,6 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             Close(download);
         }
 
-        public void CopyTitle() => Clipboard.SetText(DisplayName);
+        public void CopyTitle() => Clipboard.SetText(Title);
     }
 }

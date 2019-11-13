@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Tyrrrz.Extensions;
 using YoutubeDownloader.Internal;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
@@ -16,6 +15,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         private readonly IViewModelFactory _viewModelFactory;
         private readonly SettingsService _settingsService;
         private readonly DialogManager _dialogManager;
+
+        public string Title { get; set; }
 
         public IReadOnlyList<Video> AvailableVideos { get; set; }
 
@@ -31,19 +32,14 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             _viewModelFactory = viewModelFactory;
             _settingsService = settingsService;
             _dialogManager = dialogManager;
-        }
-
-        protected override void OnViewLoaded()
-        {
-            base.OnViewLoaded();
 
             // Select last used format
-            SelectedFormat = AvailableFormats.Contains(_settingsService.LastFormat)
+            SelectedFormat = !string.IsNullOrWhiteSpace(_settingsService.LastFormat) && AvailableFormats.Contains(_settingsService.LastFormat)
                 ? _settingsService.LastFormat
-                : AvailableFormats.FirstOrDefault();
+                : AvailableFormats.First();
         }
 
-        public bool CanConfirm => !SelectedVideos.IsNullOrEmpty();
+        public bool CanConfirm => SelectedVideos != null && SelectedVideos.Any();
 
         public void Confirm()
         {
@@ -51,7 +47,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var dirPath = _dialogManager.PromptDirectoryPath();
 
             // If canceled - return
-            if (dirPath.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(dirPath))
                 return;
 
             // Save last used format
@@ -89,6 +85,6 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             Close(downloads);
         }
 
-        public void CopyTitle() => Clipboard.SetText(DisplayName);
+        public void CopyTitle() => Clipboard.SetText(Title);
     }
 }

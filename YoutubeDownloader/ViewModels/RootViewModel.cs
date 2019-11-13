@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Gress;
 using MaterialDesignThemes.Wpf;
@@ -30,7 +29,7 @@ namespace YoutubeDownloader.ViewModels
 
         public bool IsProgressIndeterminate { get; private set; }
 
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         public BindableCollection<DownloadViewModel> Downloads { get; } = new BindableCollection<DownloadViewModel>();
 
@@ -46,8 +45,7 @@ namespace YoutubeDownloader.ViewModels
             _downloadService = downloadService;
 
             // Title
-            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
-            DisplayName = $"YoutubeDownloader v{version}";
+            DisplayName = $"{App.Name} v{App.VersionString}";
 
             // Update busy state when progress manager changes
             ProgressManager.Bind(o => o.IsActive,
@@ -142,7 +140,7 @@ namespace YoutubeDownloader.ViewModels
             download.Start();
         }
 
-        public bool CanProcessQuery => !IsBusy && !Query.IsNullOrWhiteSpace();
+        public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
 
         public async void ProcessQuery()
         {
@@ -155,7 +153,7 @@ namespace YoutubeDownloader.ViewModels
             try
             {
                 // Split query into separate lines and parse them
-                var parsedQueries = _queryService.ParseMultilineQuery(Query);
+                var parsedQueries = _queryService.ParseMultilineQuery(Query!);
 
                 // Execute separate queries
                 var executedQueries = await _queryService.ExecuteQueriesAsync(parsedQueries, operation);
