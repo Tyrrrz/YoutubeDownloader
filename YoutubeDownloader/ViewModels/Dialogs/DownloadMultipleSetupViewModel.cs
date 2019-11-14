@@ -26,6 +26,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public string SelectedFormat { get; set; }
 
+        public bool SkipExisting { get; set; }
+
         public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
             DialogManager dialogManager)
         {
@@ -66,6 +68,22 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 var number = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
                 var fileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, video, SelectedFormat, number);
                 var filePath = Path.Combine(dirPath, fileName);
+
+                if (File.Exists(filePath))
+                {
+                    //ensure that the existing file is not a dummy file (fileSize=0) otherwise, Makeuniquefilename will create an un-necessary new incremented file
+                    var fileinfo = new FileInfo(filePath);
+                    if (fileinfo.Length == 0)
+                    {
+                        File.Delete(filePath);
+                    }
+                }
+
+                //Skip File if already exists, if user prefer so.
+                if (SkipExisting && File.Exists(filePath))
+                {
+                    continue;
+                }
 
                 // Ensure file paths are unique because user will not be able to confirm overwrites
                 filePath = FileEx.MakeUniqueFilePath(filePath);

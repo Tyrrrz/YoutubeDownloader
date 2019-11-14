@@ -136,6 +136,10 @@
                     IsReadOnly="True"
                     ItemsSource="{Binding AvailableFormats}"
                     SelectedItem="{Binding SelectedFormat}" />
+                <CheckBox
+                    Content="Skip Existing"
+                    IsChecked="{Binding SkipExisting}"
+                    ToolTip="if unchecked, a unique file name will be created if file exists" />
             </StackPanel>
 
             <!--  OK  -->
