@@ -129,19 +129,17 @@
                     Margin="8,8,0,8"
                     VerticalAlignment="Center"
                     Text="Format:" />
-                <StackPanel>
-                    <ComboBox
-                        MinWidth="150"
-                        Margin="8"
-                        VerticalAlignment="Center"
-                        IsReadOnly="True"
-                        ItemsSource="{Binding AvailableFormats}"
-                        SelectedItem="{Binding SelectedFormat}" />
-                    <CheckBox
-                        Content="Skip Existing"
-                        IsChecked="{Binding SkipExisting}"
-                        ToolTip="if unchecked, a unique file name will be created if file exists" />
-                </StackPanel>
+                <ComboBox
+                    MinWidth="150"
+                    Margin="8"
+                    VerticalAlignment="Center"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding AvailableFormats}"
+                    SelectedItem="{Binding SelectedFormat}" />
+                <CheckBox
+                    Content="Skip Existing"
+                    IsChecked="{Binding SkipExisting}"
+                    ToolTip="if unchecked, a unique file name will be created if file exists" />
             </StackPanel>
 
             <!--  OK  -->
