@@ -8,7 +8,6 @@
     <Copyright>Copyright (c) Alexey Golub</Copyright>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>../favicon.ico</ApplicationIcon>
-    <FileVersion>1.18.0.19314</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

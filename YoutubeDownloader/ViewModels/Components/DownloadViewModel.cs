@@ -89,7 +89,6 @@ namespace YoutubeDownloader.ViewModels.Components
 
                     IsSuccessful = true;
                 }
-
                 catch (OperationCanceledException)
                 {
                     IsCanceled = true;

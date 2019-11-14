@@ -18,7 +18,6 @@ namespace YoutubeDownloader.ViewModels.Framework
             else
                 ((IScreenState) this).Close();
         }
-
     }
 
     public abstract class DialogScreen : DialogScreen<bool?>
