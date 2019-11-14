@@ -26,6 +26,12 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             set => _settingsService.ShouldInjectTags = value;
         }
 
+        public bool ShouldSkipExistingFiles
+        {
+            get => _settingsService.ShouldSkipExistingFiles;
+            set => _settingsService.ShouldSkipExistingFiles = value;
+        }
+
         public SettingsViewModel(SettingsService settingsService)
         {
             _settingsService = settingsService;

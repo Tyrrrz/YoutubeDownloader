@@ -11,6 +11,8 @@ namespace YoutubeDownloader.Services
 
         public bool ShouldInjectTags { get; set; } = true;
 
+        public bool ShouldSkipExistingFiles { get; set; } = false;
+
         public string? LastFormat { get; set; }
 
         public SettingsService()

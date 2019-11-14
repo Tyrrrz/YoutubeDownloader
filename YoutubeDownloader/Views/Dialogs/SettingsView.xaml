@@ -4,9 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     MinWidth="300"
     d:DataContext="{d:DesignInstance Type=dialogs:SettingsViewModel}"
     d:DesignHeight="450"
@@ -48,16 +48,16 @@
                     <LineBreak />
                     <Run Text="Available variables:" />
                     <LineBreak />
-                    <Run Text="$num" FontWeight="SemiBold" />
+                    <Run FontWeight="SemiBold" Text="$num" />
                     <Run Text="- video's position in the list (if applicable)" />
                     <LineBreak />
-                    <Run Text="$title" FontWeight="SemiBold" />
+                    <Run FontWeight="SemiBold" Text="$title" />
                     <Run Text="- video title" />
                     <LineBreak />
-                    <Run Text="$author" FontWeight="SemiBold" />
+                    <Run FontWeight="SemiBold" Text="$author" />
                     <Run Text="- video author" />
                     <LineBreak />
-                    <Run Text="$uploadDate" FontWeight="SemiBold" />
+                    <Run FontWeight="SemiBold" Text="$uploadDate" />
                     <Run Text="- video upload date" />
                 </TextBlock>
             </TextBox.ToolTip>
@@ -65,8 +65,8 @@
 
         <!--  Tag injection  -->
         <DockPanel
-            LastChildFill="False"
             Background="Transparent"
+            LastChildFill="False"
             ToolTip="Media tags can be automatically inferred from video title and injected into output file">
             <TextBlock
                 Margin="16,8"
@@ -76,6 +76,21 @@
                 Margin="16,8"
                 DockPanel.Dock="Right"
                 IsChecked="{Binding ShouldInjectTags}" />
+        </DockPanel>
+
+        <!--  Skip existing files  -->
+        <DockPanel
+            Background="Transparent"
+            LastChildFill="False"
+            ToolTip="When selecting multiple videos to download, skip those that already have a matching file in the directory">
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Skip downloads for files that already exist" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding ShouldSkipExistingFiles}" />
         </DockPanel>
 
         <!--  Save button  -->
