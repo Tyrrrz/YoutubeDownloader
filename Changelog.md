@@ -1,3 +1,10 @@
+### v1.7 (14-Nov-2019)
+
+- Migrated to .NET Core 3.0. You will need to install .NET Core runtime in order to run this application starting from this version. You can download it [here](https://dotnet.microsoft.com/download/dotnet-core/3.0/runtime).
+- Added setting "Skip downloads for files that already exist" which, when enabled, skips downloading videos that already have a matching file in the destination directory. Thanks [@mostafa901](https://github.com/mostafa901).
+- Changed default file name template to `$title`. You can change it in settings.
+- Fixed an issue where the number token in file name template didn't get replaced properly for single-video downloads.
+
 ### v1.6.1 (22-Sep-2019)
 
 - Fixed an issue where starting new downloads was not possible if there were already active downloads.
