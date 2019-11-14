@@ -11,99 +11,102 @@ using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {
-	public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
-	{
-		private readonly IViewModelFactory _viewModelFactory;
-		private readonly SettingsService _settingsService;
-		private readonly DialogManager _dialogManager;
+    public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
+    {
+        private readonly IViewModelFactory _viewModelFactory;
+        private readonly SettingsService _settingsService;
+        private readonly DialogManager _dialogManager;
 
-		public IReadOnlyList<Video> AvailableVideos { get; set; }
+        public IReadOnlyList<Video> AvailableVideos { get; set; }
 
-		public IReadOnlyList<Video> SelectedVideos { get; set; }
+        public IReadOnlyList<Video> SelectedVideos { get; set; }
 
-		public IReadOnlyList<string> AvailableFormats { get; } = new[] { "mp4", "mp3", "ogg" };
+        public IReadOnlyList<string> AvailableFormats { get; } = new[] {"mp4", "mp3", "ogg"};
 
-		public string SelectedFormat { get; set; }
+        public string SelectedFormat { get; set; }
 
-		public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
-			DialogManager dialogManager)
-		{
-			_viewModelFactory = viewModelFactory;
-			_settingsService = settingsService;
-			_dialogManager = dialogManager;
-		}
+        public bool SkipExisting { get; set; }
 
-		protected override void OnViewLoaded()
-		{
-			base.OnViewLoaded();
+        public DownloadMultipleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
+            DialogManager dialogManager)
+        {
+            _viewModelFactory = viewModelFactory;
+            _settingsService = settingsService;
+            _dialogManager = dialogManager;
+        }
 
-			// Select last used format
-			SelectedFormat = AvailableFormats.Contains(_settingsService.LastFormat)
-				? _settingsService.LastFormat
-				: AvailableFormats.FirstOrDefault();
-		}
+        protected override void OnViewLoaded()
+        {
+            base.OnViewLoaded();
 
-		public bool CanConfirm => !SelectedVideos.IsNullOrEmpty();
+            // Select last used format
+            SelectedFormat = AvailableFormats.Contains(_settingsService.LastFormat)
+                ? _settingsService.LastFormat
+                : AvailableFormats.FirstOrDefault();
+        }
 
-		public void Confirm()
-		{
-			// Prompt user for output directory path
-			var dirPath = _dialogManager.PromptDirectoryPath();
+        public bool CanConfirm => !SelectedVideos.IsNullOrEmpty();
 
-			// If canceled - return
-			if (dirPath.IsNullOrWhiteSpace())
-				return;
+        public void Confirm()
+        {
+            // Prompt user for output directory path
+            var dirPath = _dialogManager.PromptDirectoryPath();
 
-			// Save last used format
-			_settingsService.LastFormat = SelectedFormat;
+            // If canceled - return
+            if (dirPath.IsNullOrWhiteSpace())
+                return;
 
-			// Make sure selected videos are ordered in the same way as available videos
-			var orderedSelectedVideos = AvailableVideos.Where(v => SelectedVideos.Contains(v)).ToArray();
+            // Save last used format
+            _settingsService.LastFormat = SelectedFormat;
 
-			// Create download view models
-			var downloads = new List<DownloadViewModel>();
-			for (var i = 0; i < orderedSelectedVideos.Length; i++)
-			{
-				var video = orderedSelectedVideos[i];
+            // Make sure selected videos are ordered in the same way as available videos
+            var orderedSelectedVideos = AvailableVideos.Where(v => SelectedVideos.Contains(v)).ToArray();
 
-				// Generate file path
-				var number = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
-				var fileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, video, SelectedFormat, number);
-				var filePath = Path.Combine(dirPath, fileName);
+            // Create download view models
+            var downloads = new List<DownloadViewModel>();
+            for (var i = 0; i < orderedSelectedVideos.Length; i++)
+            {
+                var video = orderedSelectedVideos[i];
 
-				if (File.Exists(filePath))
-				{
-					//ensure that the existing file is not a dummy file (fileSize=0) otherwise, Makeuniquefilename will create an un-necessary new incremented file
-					var fileinfo = new FileInfo(filePath);
-					if(fileinfo.Length==0)
-					{
-						File.Delete(filePath);
-					}
-				}
-				//Skip File if already exists, if user prefer so.
-				if (SkipExisting && File.Exists(filePath))
-				{
-					continue;
-				}
+                // Generate file path
+                var number = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
+                var fileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, video, SelectedFormat, number);
+                var filePath = Path.Combine(dirPath, fileName);
 
-				// Ensure file paths are unique because user will not be able to confirm overwrites
-				filePath = FileEx.MakeUniqueFilePath(filePath);
+                if (File.Exists(filePath))
+                {
+                    //ensure that the existing file is not a dummy file (fileSize=0) otherwise, Makeuniquefilename will create an un-necessary new incremented file
+                    var fileinfo = new FileInfo(filePath);
+                    if (fileinfo.Length == 0)
+                    {
+                        File.Delete(filePath);
+                    }
+                }
 
-				// Create empty file to "lock in" the file path
-				FileEx.CreateDirectoriesForFile(filePath);
-				FileEx.CreateEmptyFile(filePath);
+                //Skip File if already exists, if user prefer so.
+                if (SkipExisting && File.Exists(filePath))
+                {
+                    continue;
+                }
 
-				// Create download view model
-				DownloadViewModel download = _viewModelFactory.CreateDownloadViewModel(video, filePath, SelectedFormat);
+                // Ensure file paths are unique because user will not be able to confirm overwrites
+                filePath = FileEx.MakeUniqueFilePath(filePath);
 
-				// Add to list
-				downloads.Add(download);
-			}
+                // Create empty file to "lock in" the file path
+                FileEx.CreateDirectoriesForFile(filePath);
+                FileEx.CreateEmptyFile(filePath);
 
-			// Close dialog
-			Close(downloads);
-		}
+                // Create download view model
+                var download = _viewModelFactory.CreateDownloadViewModel(video, filePath, SelectedFormat);
 
-		public void CopyTitle() => Clipboard.SetText(DisplayName);
-	}
+                // Add to list
+                downloads.Add(download);
+            }
+
+            // Close dialog
+            Close(downloads);
+        }
+
+        public void CopyTitle() => Clipboard.SetText(DisplayName);
+    }
 }

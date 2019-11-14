@@ -12,18 +12,16 @@ namespace YoutubeDownloader.ViewModels.Framework
             DialogResult = dialogResult;
 
             // If there is a parent - ask them to close this dialog
-            if (Parent != null && dialogResult!=null)
+            if (Parent != null)
                 RequestClose(Equals(dialogResult, default(T)));
             // Otherwise close ourselves
             else
                 ((IScreenState) this).Close();
         }
-		//Signal to skip existing files
-		public bool SkipExisting { get; set; } 
 
-	}
+    }
 
-	public abstract class DialogScreen : DialogScreen<bool?>
+    public abstract class DialogScreen : DialogScreen<bool?>
     {
     }
 }
