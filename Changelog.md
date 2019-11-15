@@ -1,3 +1,7 @@
+### v1.7.1 (15-Nov-2019)
+
+- Fixed an issue where trying to download a single video resulted in an error.
+
 ### v1.7 (14-Nov-2019)
 
 - Migrated to .NET Core 3.0. You will need to install .NET Core runtime in order to run this application starting from this version. You can download it [here](https://dotnet.microsoft.com/download/dotnet-core/3.0/runtime).
