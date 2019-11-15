@@ -30,11 +30,14 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             _viewModelFactory = viewModelFactory;
             _settingsService = settingsService;
             _dialogManager = dialogManager;
+        }
 
+        public void OnViewLoaded()
+        {
             // Select first download option matching last used format or first non-audio-only download option
             SelectedDownloadOption =
                 AvailableDownloadOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
-                AvailableDownloadOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Label)).First();
+                AvailableDownloadOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Label)).FirstOrDefault();
         }
 
         public bool CanConfirm => Video != null;

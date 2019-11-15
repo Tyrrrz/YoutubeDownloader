@@ -9,6 +9,7 @@
     xmlns:s="https://github.com/canton7/Stylet"
     MinWidth="500"
     d:DataContext="{d:DesignInstance Type=dialogs:DownloadSingleSetupViewModel}"
+    Loaded="{s:Action OnViewLoaded}"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
     <Grid>

@@ -32,11 +32,14 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             _viewModelFactory = viewModelFactory;
             _settingsService = settingsService;
             _dialogManager = dialogManager;
+        }
 
+        public void OnViewLoaded()
+        {
             // Select last used format
             SelectedFormat = !string.IsNullOrWhiteSpace(_settingsService.LastFormat) && AvailableFormats.Contains(_settingsService.LastFormat)
                 ? _settingsService.LastFormat
-                : AvailableFormats.First();
+                : AvailableFormats.FirstOrDefault();
         }
 
         public bool CanConfirm => SelectedVideos != null && SelectedVideos.Any();
