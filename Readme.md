@@ -12,7 +12,7 @@ YoutubeDownloader is an application that lets you download videos from YouTube. 
 - **[Latest release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
 - [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions)
 
-Note: This application requires .NET Core 3 runtime, which you can [download here](https://dotnet.microsoft.com/download/dotnet-core/3.0/runtime).
+Note: This application requires .NET Core 3 runtime for desktop apps, which you can [download here](https://dotnet.microsoft.com/download/dotnet-core/3.0/runtime).
 
 ## Features
 
@@ -27,17 +27,3 @@ Note: This application requires .NET Core 3 runtime, which you can [download her
 ![list](.screenshots/list.png)
 ![single](.screenshots/single.png)
 ![multiple](.screenshots/multiple.png)
-
-## Libraries used
-
-- [Stylet](https://github.com/canton7/Stylet)
-- [PropertyChanged.Fody](https://github.com/Fody/PropertyChanged)
-- [MaterialDesignInXamlToolkit](https://github.com/ButchersBoy/MaterialDesignInXamlToolkit)
-- [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-- [Ookii.Dialogs](https://github.com/caioproiete/ookii-dialogs-wpf)
-- [Taglib](https://github.com/mono/taglib-sharp)
-- [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode)
-- [YoutubeExplode.Converter](https://github.com/Tyrrrz/YoutubeExplode.Converter)
-- [Gress](https://github.com/Tyrrrz/Gress)
-- [Onova](https://github.com/Tyrrrz/Onova)
-- [Tyrrrz.Extensions](https://github.com/Tyrrrz/Extensions)
