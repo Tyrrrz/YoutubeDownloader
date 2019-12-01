@@ -1,0 +1,11 @@
+<Project>
+
+  <PropertyGroup>
+    <Version>1.7.1</Version>
+    <Company>Tyrrrz</Company>
+    <Copyright>Copyright (C) Alexey Golub</Copyright>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
