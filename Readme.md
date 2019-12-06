@@ -12,7 +12,7 @@ YoutubeDownloader is an application that lets you download videos from YouTube. 
 - **[Latest release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
 - [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions)
 
-Note: This application requires .NET Core 3 runtime for desktop apps, which you can [download here](https://dotnet.microsoft.com/download/dotnet-core/3.0/runtime).
+Note: This application requires .NET Core runtime for desktop apps, which you can [download here](https://dotnet.microsoft.com/download/dotnet-core/current/runtime).
 
 ## Features
 

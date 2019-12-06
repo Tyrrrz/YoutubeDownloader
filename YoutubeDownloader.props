@@ -1,6 +1,7 @@
 <Project>
 
   <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>1.7.1</Version>
     <Company>Tyrrrz</Company>
     <Copyright>Copyright (C) Alexey Golub</Copyright>
