@@ -7,6 +7,8 @@
 
 YoutubeDownloader is an application that lets you download videos from YouTube. You can just copy-paste URLs of any videos, playlists or channels and download them directly to a format of your choice. It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
 
+This application uses the [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) library under the hood to interact with YouTube.
+
 ## Download
 
 - **[Latest release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
