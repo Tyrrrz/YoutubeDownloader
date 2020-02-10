@@ -53,10 +53,11 @@
                         <TextBox
                             x:Name="QueryTextBox"
                             Grid.Column="0"
-                            AcceptsReturn="True"
                             Margin="6"
+                            VerticalAlignment="Bottom"
                             materialDesign:HintAssist.Hint="URL or search query (press Shift+Enter to add multiple)"
                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                            AcceptsReturn="True"
                             BorderThickness="0"
                             FontSize="16"
                             MaxLines="4"
@@ -133,12 +134,9 @@
                                             Command="{s:Action RemoveDownload}"
                                             CommandParameter="{Binding}"
                                             Header="Remove download" />
-                                        <MenuItem Command="{s:Action RemoveInactiveDownloads}"
-                                                  Header="Remove all inactive downloads" />
-                                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}"
-                                                  Header="Remove all successful downloads" />
-                                        <MenuItem Command="{s:Action RestartFailedDownloads}"
-                                                  Header="Restart all failed downloads" />
+                                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove all inactive downloads" />
+                                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove all successful downloads" />
+                                        <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart all failed downloads" />
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
@@ -197,24 +195,20 @@
                                 <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                     <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
                                         <TextBlock.Style>
-                                            <Style BasedOn="{StaticResource {x:Type TextBlock}}"
-                                                   TargetType="{x:Type TextBlock}">
+                                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>
                                                     <!--  Downloading  -->
                                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                                        <Setter Property="Text"
-                                                                Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P1\}}" />
+                                                        <Setter Property="Text" Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P1\}}" />
                                                     </DataTrigger>
 
                                                     <!--  Pending  -->
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsActive}" Value="True" />
-                                                            <Condition Binding="{Binding ProgressOperation.Progress}"
-                                                                       Value="0" />
+                                                            <Condition Binding="{Binding ProgressOperation.Progress}" Value="0" />
                                                         </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource DimTextBrush}" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}" />
                                                         <Setter Property="Text" Value="Pending..." />
                                                     </MultiDataTrigger>
 
