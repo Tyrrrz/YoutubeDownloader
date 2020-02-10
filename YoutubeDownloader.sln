@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Changelog.md = Changelog.md
 		License.txt = License.txt
 		Readme.md = Readme.md
+		YoutubeDownloader.props = YoutubeDownloader.props
 	EndProjectSection
 EndProject
 Global
