@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v1.4.0
       with:
         dotnet-version: 3.1.100
 
@@ -27,7 +27,7 @@ jobs:
 
     - name: Create release
       id: create_release
-      uses: actions/create-release@v1
+      uses: actions/create-release@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -39,7 +39,7 @@ jobs:
         prerelease: false
 
     - name: Upload release asset
-      uses: actions/upload-release-asset@v1.0.1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
