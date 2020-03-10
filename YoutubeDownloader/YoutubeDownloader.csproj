@@ -24,7 +24,7 @@
     <PackageReference Include="taglib" Version="2.1.0" />
     <PackageReference Include="Tyrrrz.Extensions" Version="1.6.5" />
     <PackageReference Include="Tyrrrz.Settings" Version="1.3.4" />
-    <PackageReference Include="YoutubeExplode" Version="4.7.13" />
+    <PackageReference Include="YoutubeExplode" Version="4.7.14" />
     <PackageReference Include="YoutubeExplode.Converter" Version="1.4.3" />
   </ItemGroup>
 
