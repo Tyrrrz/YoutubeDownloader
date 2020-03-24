@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using TagLib;
 using YoutubeExplode.Models;
 
 namespace YoutubeDownloader.Services
@@ -69,6 +70,23 @@ namespace YoutubeDownloader.Services
             }
         }
 
+        private async Task<IPicture?> TryGetPictureAsync(Video video, CancellationToken cancellationToken)
+        {
+            try
+            {
+                using var response = await _httpClient.GetAsync(video.Thumbnails.HighResUrl,
+                    HttpCompletionOption.ResponseContentRead, cancellationToken);
+
+                var data = await response.Content.ReadAsByteArrayAsync();
+
+                return new Picture(new ReadOnlyByteVector(data));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private bool TryExtractArtistAndTitle(string videoTitle, out string? artist, out string? title)
         {
             // Get rid of common rubbish in music video titles
@@ -120,19 +138,21 @@ namespace YoutubeDownloader.Services
 
             // Try to get tags
             var tagsJson = await TryGetTagsJsonAsync(artist!, title!, cancellationToken);
-            if (tagsJson == null)
-                return;
+
+            // Try to get picture
+            var picture = await TryGetPictureAsync(video, cancellationToken);
 
             // Extract information
-            var resolvedArtist = tagsJson["artist-credit"]?.FirstOrDefault()?["name"]?.Value<string>();
-            var resolvedTitle = tagsJson["title"]?.Value<string>();
-            var resolvedAlbumName = tagsJson["releases"]?.FirstOrDefault()?["title"]?.Value<string>();
+            var resolvedArtist = tagsJson?["artist-credit"]?.FirstOrDefault()?["name"]?.Value<string>();
+            var resolvedTitle = tagsJson?["title"]?.Value<string>();
+            var resolvedAlbumName = tagsJson?["releases"]?.FirstOrDefault()?["title"]?.Value<string>();
 
             // Inject tags
-            var taggedFile = TagLib.File.Create(filePath);
+            var taggedFile = File.Create(filePath);
             taggedFile.Tag.Performers = new[] {resolvedArtist ?? artist ?? ""};
             taggedFile.Tag.Title = resolvedTitle ?? title ?? "";
             taggedFile.Tag.Album = resolvedAlbumName ?? "";
+            taggedFile.Tag.Pictures = picture != null ? new[] {picture} : Array.Empty<IPicture>();
             taggedFile.Save();
         }
     }
