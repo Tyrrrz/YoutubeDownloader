@@ -37,8 +37,28 @@ namespace YoutubeDownloader.ViewModels.Components
         public IProgressOperation ProgressOperation { get; private set; }
 
         public bool IsActive { get; private set; }
+        /// <summary>
+        ///  Event raise when download finished
+        /// </summary>
+        public event EventHandler<EventArgs> Finished;
 
-        public bool IsSuccessful { get; private set; }
+        bool _isSuccessful = false;
+        public bool IsSuccessful
+        {
+            get
+            {
+                return _isSuccessful;
+            }
+            private set
+            {
+                _isSuccessful = value;
+                if (value)
+                {
+                    if (Finished != null)
+                        this.Finished(this, new EventArgs());
+                }
+            }
+        }
 
         public bool IsCanceled { get; private set; }
 

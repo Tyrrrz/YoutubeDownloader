@@ -73,16 +73,19 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 // If file exists - either skip it or generate a unique file path, depending on user settings
                 if (File.Exists(filePath))
                 {
-                    if (_settingsService.ShouldSkipExistingFiles && new FileInfo(filePath).Length > 0)
+                    var fi = new FileInfo(filePath);
+                    if (_settingsService.ShouldSkipExistingFiles && fi.Length > 0)
                         continue;
-
-                    filePath = FileEx.MakeUniqueFilePath(filePath);
+                    //if file length is 0,  don't need to create new one
+                    if (fi.Length != 0)
+                        filePath = FileEx.MakeUniqueFilePath(filePath);
                 }
-
-                // Create empty file to "lock in" the file path
-                FileEx.CreateDirectoriesForFile(filePath);
-                FileEx.CreateEmptyFile(filePath);
-
+                else//there is some empty file exists,so only need run this code when file not exists
+                {
+                    // Create empty file to "lock in" the file path
+                    FileEx.CreateDirectoriesForFile(filePath);
+                    FileEx.CreateEmptyFile(filePath);
+                }
                 // Create download view model
                 var download = _viewModelFactory.CreateDownloadViewModel(video, filePath, SelectedFormat);
 

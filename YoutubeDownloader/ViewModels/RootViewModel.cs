@@ -136,10 +136,25 @@ namespace YoutubeDownloader.ViewModels
             // Bind progress manager
             download.ProgressManager = ProgressManager;
 
-            // Start download
-            download.Start();
+            // Use Finished event to start the new task
+            download.Finished += Download_Finished;
+            //Here to control only start by MaxConcurrentDownloadCount
+            if (Downloads.Count(t => t.IsActive == true) < _settingsService.MaxConcurrentDownloadCount)
+                // Start download
+                download.Start();
         }
 
+        private void Download_Finished(object? sender, EventArgs e)
+        {
+            // I think need to check the count here ,because some one can stop and restart a lot of task
+            if (Downloads.Count(t => t.IsActive == true) < _settingsService.MaxConcurrentDownloadCount)
+            {
+                var download = Downloads.FirstOrDefault(t => t.CanRestart == true);
+                //if download is null, there is no task leave
+                if (download != null)
+                    download.Start();
+            }
+        }
         public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
 
         public async void ProcessQuery()
@@ -258,7 +273,12 @@ namespace YoutubeDownloader.ViewModels
         {
             var failedDownloads = Downloads.Where(d => d.IsFailed).ToArray();
             foreach (var failedDownload in failedDownloads)
-                failedDownload.Restart();
+            {
+                if (Downloads.Count(t => t.IsActive == true) < _settingsService.MaxConcurrentDownloadCount)
+                    failedDownload.Restart();
+                else
+                    break;
+            }
         }
     }
 }
