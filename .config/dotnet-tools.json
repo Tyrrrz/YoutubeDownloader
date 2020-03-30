@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "xamlstyler.console": {
-      "version": "3.2001.0",
+      "version": "3.2003.9",
       "commands": [
         "xstyler"
       ]
