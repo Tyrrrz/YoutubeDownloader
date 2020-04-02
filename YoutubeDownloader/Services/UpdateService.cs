@@ -13,6 +13,7 @@ namespace YoutubeDownloader.Services
             new ZipPackageExtractor());
 
         private Version? _updateVersion;
+        private bool _updatePrepared;
         private bool _updaterLaunched;
 
         public async Task<Version?> CheckForUpdatesAsync()
@@ -26,6 +27,7 @@ namespace YoutubeDownloader.Services
             try
             {
                 await _updateManager.PrepareUpdateAsync(_updateVersion = version);
+                _updatePrepared = true;
             }
             catch (UpdaterAlreadyLaunchedException)
             {
@@ -41,7 +43,7 @@ namespace YoutubeDownloader.Services
         {
             try
             {
-                if (_updateVersion == null || _updaterLaunched)
+                if (_updateVersion == null || !_updatePrepared || _updaterLaunched)
                     return;
 
                 _updateManager.LaunchUpdater(_updateVersion, needRestart);
