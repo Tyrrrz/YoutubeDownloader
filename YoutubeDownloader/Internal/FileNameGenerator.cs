@@ -1,4 +1,4 @@
-﻿using YoutubeExplode.Models;
+﻿using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Internal
 {

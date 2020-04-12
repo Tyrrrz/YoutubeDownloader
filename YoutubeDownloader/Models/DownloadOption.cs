@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using YoutubeExplode.Models.MediaStreams;
+using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Models
 {
@@ -9,22 +9,22 @@ namespace YoutubeDownloader.Models
 
         public string Label { get; }
 
-        public IReadOnlyList<MediaStreamInfo> MediaStreamInfos { get; }
+        public IReadOnlyList<IStreamInfo> StreamInfos { get; }
 
-        public DownloadOption(string format, string label, IReadOnlyList<MediaStreamInfo> mediaStreamInfos)
+        public DownloadOption(string format, string label, IReadOnlyList<IStreamInfo> streamInfos)
         {
             Format = format;
             Label = label;
-            MediaStreamInfos = mediaStreamInfos;
+            StreamInfos = streamInfos;
         }
 
-        public DownloadOption(string format, AudioStreamInfo audioStreamInfo)
-            : this(format, "Audio", new[] {audioStreamInfo})
+        public DownloadOption(string format, AudioOnlyStreamInfo audioOnlyStreamInfo)
+            : this(format, "Audio", new[] {audioOnlyStreamInfo})
         {
         }
 
-        public DownloadOption(string format, AudioStreamInfo audioStreamInfo, VideoStreamInfo videoStreamInfo)
-            : this(format, videoStreamInfo.VideoQualityLabel, new MediaStreamInfo[] {audioStreamInfo, videoStreamInfo})
+        public DownloadOption(string format, AudioOnlyStreamInfo audioOnlyStreamInfo, VideoOnlyStreamInfo videoOnlyStreamInfo)
+            : this(format, videoOnlyStreamInfo.VideoQualityLabel, new IStreamInfo[] {audioOnlyStreamInfo, videoOnlyStreamInfo})
         {
         }
 

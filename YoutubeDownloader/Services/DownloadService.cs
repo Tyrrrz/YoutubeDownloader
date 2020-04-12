@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using YoutubeDownloader.Models;
 using YoutubeExplode;
 using YoutubeExplode.Converter;
-using YoutubeExplode.Models.MediaStreams;
+using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Services
 {
@@ -15,7 +15,7 @@ namespace YoutubeDownloader.Services
     {
         private readonly SettingsService _settingsService;
 
-        private readonly IYoutubeClient _youtubeClient = new YoutubeClient();
+        private readonly YoutubeClient _youtube = new YoutubeClient();
         private readonly IYoutubeConverter _youtubeConverter = new YoutubeConverter();
 
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
@@ -59,8 +59,8 @@ namespace YoutubeDownloader.Services
             try
             {
                 // Download the video
-                await _youtubeConverter.DownloadAndProcessMediaStreamsAsync(downloadOption.MediaStreamInfos,
-                    filePath, downloadOption.Format,
+                await _youtubeConverter.DownloadAndProcessMediaStreamsAsync(downloadOption.StreamInfos,
+                    filePath, downloadOption.Format, ConversionPreset.Medium,
                     progress, cancellationToken);
             }
             finally
@@ -75,13 +75,14 @@ namespace YoutubeDownloader.Services
             var result = new List<DownloadOption>();
 
             // Get media stream info set
-            var mediaStreamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(videoId);
+            var streamManifest = await _youtube.Videos.Streams.GetManifestAsync(videoId);
 
             // Prefer adaptive streams if possible
-            if (mediaStreamInfoSet.Audio.Any() && mediaStreamInfoSet.Video.Any())
+            if (streamManifest.GetAudioOnly().Any() && streamManifest.GetVideoOnly().Any())
             {
                 // Sort video streams
-                var videoStreamInfos = mediaStreamInfoSet.Video
+                var videoStreamInfos = streamManifest
+                    .GetVideoOnly()
                     .OrderByDescending(s => s.VideoQuality)
                     .ThenByDescending(s => s.Framerate)
                     .ToArray();
@@ -90,10 +91,11 @@ namespace YoutubeDownloader.Services
                 foreach (var videoStreamInfo in videoStreamInfos)
                 {
                     // Get format
-                    var format = videoStreamInfo.Container.GetFileExtension();
+                    var format = videoStreamInfo.Container.Name;
 
                     // Get best audio stream, preferably with the same container
-                    var audioStreamInfo = mediaStreamInfoSet.Audio
+                    var audioStreamInfo = streamManifest
+                        .GetAudioOnly()
                         .OrderByDescending(s => s.Container == videoStreamInfo.Container)
                         .ThenByDescending(s => s.Bitrate)
                         .First();
@@ -105,7 +107,8 @@ namespace YoutubeDownloader.Services
                 // Add audio-only download options
                 {
                     // Get best audio stream, preferably with webm container
-                    var audioStreamInfo = mediaStreamInfoSet.Audio
+                    var audioStreamInfo = streamManifest
+                        .GetAudioOnly()
                         .OrderByDescending(s => s.Container == Container.WebM)
                         .ThenByDescending(s => s.Bitrate)
                         .First();
@@ -116,10 +119,11 @@ namespace YoutubeDownloader.Services
                 }
             }
             // Fallback to muxed streams
-            else if (mediaStreamInfoSet.Muxed.Any())
+            else if (streamManifest.GetMuxed().Any())
             {
                 // Sort muxed streams
-                var muxedStreamInfos = mediaStreamInfoSet.Muxed
+                var muxedStreamInfos = streamManifest
+                    .GetMuxed()
                     .OrderByDescending(s => s.VideoQuality)
                     .ToArray();
 
@@ -127,7 +131,7 @@ namespace YoutubeDownloader.Services
                 foreach (var muxedStreamInfo in muxedStreamInfos)
                 {
                     // Get format
-                    var format = muxedStreamInfo.Container.GetFileExtension();
+                    var format = muxedStreamInfo.Container.Name;
 
                     // Add to list
                     result.Add(new DownloadOption(format, muxedStreamInfo));

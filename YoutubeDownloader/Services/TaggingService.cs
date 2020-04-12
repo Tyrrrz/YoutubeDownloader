@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using TagLib;
-using YoutubeExplode.Models;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Services
 {

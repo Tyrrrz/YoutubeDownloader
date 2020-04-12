@@ -8,7 +8,7 @@ using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
-using YoutubeExplode.Models;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Components
 {

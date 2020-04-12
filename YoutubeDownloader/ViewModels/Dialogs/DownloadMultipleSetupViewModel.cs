@@ -6,7 +6,7 @@ using YoutubeDownloader.Internal;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
-using YoutubeExplode.Models;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {

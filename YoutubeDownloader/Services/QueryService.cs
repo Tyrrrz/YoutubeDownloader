@@ -2,57 +2,99 @@
 using System.Threading.Tasks;
 using YoutubeDownloader.Models;
 using YoutubeExplode;
+using YoutubeExplode.Channels;
+using YoutubeExplode.Playlists;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Services
 {
     public class QueryService
     {
-        private readonly IYoutubeClient _youtubeClient = new YoutubeClient();
+        private readonly YoutubeClient _youtube = new YoutubeClient();
+
+        private VideoId? TryParseVideoId(string query)
+        {
+            try
+            {
+                return new VideoId(query);
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
+        }
+
+        private PlaylistId? TryParsePlaylistId(string query)
+        {
+            try
+            {
+                return new PlaylistId(query);
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
+        }
+
+        private ChannelId? TryParseChannelId(string query)
+        {
+            try
+            {
+                return new ChannelId(query);
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
+        }
+
+        private UserName? TryParseUserName(string query)
+        {
+            try
+            {
+                // Only URLs
+                if (!query.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+                    !query.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                    return null;
+
+                return new UserName(query);
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
+        }
 
         public Query ParseQuery(string query)
         {
             query = query.Trim();
 
-            // Playlist ID
-            if (YoutubeClient.ValidatePlaylistId(query))
+            // Playlist
+            var playlistId = TryParsePlaylistId(query);
+            if (playlistId != null)
             {
-                return new Query(QueryType.Playlist, query);
+                return new Query(QueryType.Playlist, playlistId.Value);
             }
 
-            // Playlist URL
-            if (YoutubeClient.TryParsePlaylistId(query, out var playlistId))
+            // Video
+            var videoId = TryParseVideoId(query);
+            if (videoId != null)
             {
-                return new Query(QueryType.Playlist, playlistId);
+                return new Query(QueryType.Video, videoId.Value);
             }
 
-            // Video ID
-            if (YoutubeClient.ValidateVideoId(query))
+            // Channel
+            var channelId = TryParseChannelId(query);
+            if (channelId != null)
             {
-                return new Query(QueryType.Video, query);
+                return new Query(QueryType.Channel, channelId.Value);
             }
 
-            // Video URL
-            if (YoutubeClient.TryParseVideoId(query, out var videoId))
+            // User
+            var userName = TryParseUserName(query);
+            if (userName != null)
             {
-                return new Query(QueryType.Video, videoId);
-            }
-
-            // Channel ID
-            if (YoutubeClient.ValidateChannelId(query))
-            {
-                return new Query(QueryType.Channel, query);
-            }
-
-            // Channel URL
-            if (YoutubeClient.TryParseChannelId(query, out var channelId))
-            {
-                return new Query(QueryType.Channel, channelId);
-            }
-
-            // User URL
-            if (YoutubeClient.TryParseUsername(query, out var username))
-            {
-                return new Query(QueryType.User, username);
+                return new Query(QueryType.User, userName.Value);
             }
 
             // Search
@@ -66,51 +108,47 @@ namespace YoutubeDownloader.Services
             // Video
             if (query.Type == QueryType.Video)
             {
-                var video = await _youtubeClient.GetVideoAsync(query.Value);
-                var title = video.Title;
+                var video = await _youtube.Videos.GetAsync(query.Value);
 
-                return new ExecutedQuery(query, title, new[] {video});
+                return new ExecutedQuery(query, video.Title, new[] {video});
             }
 
             // Playlist
             if (query.Type == QueryType.Playlist)
             {
-                var playlist = await _youtubeClient.GetPlaylistAsync(query.Value);
-                var title = playlist.Title;
+                var playlist = await _youtube.Playlists.GetAsync(query.Value);
+                var videos = await _youtube.Playlists.GetVideosAsync(query.Value).BufferAsync();
 
-                return new ExecutedQuery(query, title, playlist.Videos);
+                return new ExecutedQuery(query, playlist.Title, videos);
             }
 
             // Channel
             if (query.Type == QueryType.Channel)
             {
-                var channel = await _youtubeClient.GetChannelAsync(query.Value);
-                var videos = await _youtubeClient.GetChannelUploadsAsync(query.Value);
-                var title = $"Channel uploads: {channel.Title}";
+                var channel = await _youtube.Channels.GetAsync(query.Value);
+                var videos = await _youtube.Channels.GetUploadsAsync(query.Value).BufferAsync();
 
-                return new ExecutedQuery(query, title, videos);
+                return new ExecutedQuery(query, $"Channel uploads: {channel.Title}", videos);
             }
 
             // User
             if (query.Type == QueryType.User)
             {
-                var channelId = await _youtubeClient.GetChannelIdAsync(query.Value);
-                var videos = await _youtubeClient.GetChannelUploadsAsync(channelId);
-                var title = $"User uploads: {query.Value}";
+                var channel = await _youtube.Channels.GetByUserAsync(query.Value);
+                var videos = await _youtube.Channels.GetUploadsAsync(channel.Id).BufferAsync();
 
-                return new ExecutedQuery(query, title, videos);
+                return new ExecutedQuery(query, $"Channel uploads: {channel.Title}", videos);
             }
 
             // Search
             if (query.Type == QueryType.Search)
             {
-                var videos = await _youtubeClient.SearchVideosAsync(query.Value, 2);
-                var title = $"Search: {query.Value}";
+                var videos = await _youtube.Search.GetVideosAsync(query.Value).BufferAsync(200);
 
-                return new ExecutedQuery(query, title, videos);
+                return new ExecutedQuery(query, $"Search: {query.Value}", videos);
             }
 
-            throw new ArgumentException($"Could not parse query [{query}].", nameof(query));
+            throw new ArgumentException($"Could not parse query '{query}'.", nameof(query));
         }
     }
 }

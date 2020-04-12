@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using Tyrrrz.Extensions;
 
 namespace YoutubeDownloader.Internal
 {

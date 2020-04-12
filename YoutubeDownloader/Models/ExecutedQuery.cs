@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using YoutubeExplode.Models;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Models
 {

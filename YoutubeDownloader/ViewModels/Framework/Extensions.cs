@@ -2,7 +2,7 @@
 using YoutubeDownloader.Models;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
-using YoutubeExplode.Models;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Framework
 {
