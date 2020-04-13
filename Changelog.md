@@ -1,3 +1,9 @@
+### v1.7.6 (13-Apr-2020)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v5.0.1.
+- Improved media tagging. Now it's less reliant on MusicBrainz and should attempt to tag files more often.
+- Fixed some issues related to auto-update functionality.
+
 ### v1.7.5 (16-Mar-2020)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v4.7.16.
