@@ -18,18 +18,8 @@ namespace YoutubeDownloader.Models
             StreamInfos = streamInfos;
         }
 
-        public DownloadOption(string format, AudioOnlyStreamInfo audioOnlyStreamInfo)
-            : this(format, "Audio", new[] {audioOnlyStreamInfo})
-        {
-        }
-
-        public DownloadOption(string format, AudioOnlyStreamInfo audioOnlyStreamInfo, VideoOnlyStreamInfo videoOnlyStreamInfo)
-            : this(format, videoOnlyStreamInfo.VideoQualityLabel, new IStreamInfo[] {audioOnlyStreamInfo, videoOnlyStreamInfo})
-        {
-        }
-
-        public DownloadOption(string format, MuxedStreamInfo muxedStreamInfo)
-            : this(format, muxedStreamInfo.VideoQualityLabel, new[] {muxedStreamInfo})
+        public DownloadOption(string format, string label, params IStreamInfo[] streamInfos)
+            : this(format, label, (IReadOnlyList<IStreamInfo>) streamInfos)
         {
         }
 
