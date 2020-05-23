@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Models
@@ -24,5 +25,19 @@ namespace YoutubeDownloader.Models
         }
 
         public override string ToString() => $"{Label} / {Format}";
+    }
+
+    public class DownloadOptionEqualityComparer : IEqualityComparer<DownloadOption>
+    {
+        public static DownloadOptionEqualityComparer Instance { get; } = new DownloadOptionEqualityComparer();
+
+        public bool Equals(DownloadOption x, DownloadOption y) =>
+            StringComparer.OrdinalIgnoreCase.Equals(x.Format, y.Format) &&
+            StringComparer.OrdinalIgnoreCase.Equals(x.Label, y.Label);
+
+        public int GetHashCode(DownloadOption obj) => HashCode.Combine(
+            StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Format),
+            StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Label)
+        );
     }
 }

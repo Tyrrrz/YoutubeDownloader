@@ -66,7 +66,7 @@ namespace YoutubeDownloader.Services
 
         public async Task<IReadOnlyList<DownloadOption>> GetDownloadOptionsAsync(string videoId)
         {
-            var options = new Dictionary<string, DownloadOption>(StringComparer.OrdinalIgnoreCase);
+            var options = new HashSet<DownloadOption>(DownloadOptionEqualityComparer.Instance);
 
             var streamManifest = await _youtube.Videos.Streams.GetManifestAsync(videoId);
 
@@ -80,8 +80,6 @@ namespace YoutubeDownloader.Services
             // Video streams
             var videoStreams = streamManifest
                 .GetVideo()
-                .GroupBy(v => v.VideoQualityLabel, StringComparer.OrdinalIgnoreCase)
-                .Select(g => g.OrderByDescending(v => v.Framerate).First())
                 .OrderByDescending(v => v.VideoQuality)
                 .ThenByDescending(v => v.Framerate);
 
@@ -92,19 +90,19 @@ namespace YoutubeDownloader.Services
 
                 // Muxed streams are standalone, video-only need to be merged with audio
                 if (streamInfo is VideoOnlyStreamInfo && bestAudioOnlyStreamInfo != null)
-                    options[label] = new DownloadOption(format, label, streamInfo, bestAudioOnlyStreamInfo);
+                    options.Add(new DownloadOption(format, label, streamInfo, bestAudioOnlyStreamInfo));
                 else
-                    options[label] = new DownloadOption(format, label, streamInfo);
+                    options.Add(new DownloadOption(format, label, streamInfo));
             }
 
             // Additional options
             if (bestAudioOnlyStreamInfo != null)
             {
-                options["audio/mp3"] = new DownloadOption("mp3", "Audio", bestAudioOnlyStreamInfo);
-                options["audio/ogg"] = new DownloadOption("ogg", "Audio", bestAudioOnlyStreamInfo);
+                options.Add(new DownloadOption("mp3", "Audio", bestAudioOnlyStreamInfo));
+                options.Add(new DownloadOption("ogg", "Audio", bestAudioOnlyStreamInfo));
             }
 
-            return options.Values.ToArray();
+            return options.ToArray();
         }
 
         public async Task<DownloadOption> GetBestDownloadOptionAsync(string videoId, string format)
