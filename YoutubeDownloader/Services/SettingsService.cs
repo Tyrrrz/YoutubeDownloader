@@ -5,6 +5,8 @@ namespace YoutubeDownloader.Services
 {
     public class SettingsService : SettingsManager
     {
+        public bool IsAutoUpdateEnabled { get; set; } = true;
+
         public int MaxConcurrentDownloadCount { get; set; } = 2;
 
         public string FileNameTemplate { get; set; } = FileNameGenerator.DefaultTemplate;

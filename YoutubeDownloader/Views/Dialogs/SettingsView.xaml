@@ -63,6 +63,26 @@
             </TextBox.ToolTip>
         </TextBox>
 
+        <!--  Auto-updates  -->
+        <DockPanel Background="Transparent" LastChildFill="False">
+            <DockPanel.ToolTip>
+                <TextBlock>
+                    <Run Text="Perform automatic updates on every launch" />
+                    <LineBreak />
+                    <Run FontWeight="SemiBold" Text="Warning:" />
+                    <Run Text="disabling this is NOT recommended because the application will stop working when integration with YouTube inevitably breaks in the future" />
+                </TextBlock>
+            </DockPanel.ToolTip>
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Auto-updates" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding IsAutoUpdateEnabled}" />
+        </DockPanel>
+
         <!--  Tag injection  -->
         <DockPanel
             Background="Transparent"
