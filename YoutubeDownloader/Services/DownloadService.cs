@@ -66,18 +66,12 @@ namespace YoutubeDownloader.Services
 
         public async Task<IReadOnlyList<DownloadOption>> GetDownloadOptionsAsync(string videoId)
         {
-            var options = new HashSet<DownloadOption>(DownloadOptionEqualityComparer.Instance);
-
             var streamManifest = await _youtube.Videos.Streams.GetManifestAsync(videoId);
 
-            // Best audio stream (muxed or audio-only)
-            var bestAudioOnlyStreamInfo = streamManifest
-                .GetAudio()
-                .OrderByDescending(s => s.Container == Container.WebM)
-                .ThenByDescending(s => s.Bitrate)
-                .FirstOrDefault();
+            // Using a set ensures only one download option per format/quality is provided
+            var options = new HashSet<DownloadOption>(DownloadOptionEqualityComparer.Instance);
 
-            // Video streams
+            // Video+audio options
             var videoStreams = streamManifest
                 .GetVideo()
                 .OrderByDescending(v => v.VideoQuality)
@@ -88,14 +82,33 @@ namespace YoutubeDownloader.Services
                 var format = streamInfo.Container.Name;
                 var label = streamInfo.VideoQualityLabel;
 
-                // Muxed streams are standalone, video-only need to be merged with audio
-                if (streamInfo is VideoOnlyStreamInfo && bestAudioOnlyStreamInfo != null)
-                    options.Add(new DownloadOption(format, label, streamInfo, bestAudioOnlyStreamInfo));
-                else
+                // Muxed streams are standalone
+                if (streamInfo is MuxedStreamInfo)
+                {
                     options.Add(new DownloadOption(format, label, streamInfo));
+                    continue;
+                }
+
+                // Get audio with matching format, if possible
+                var audioStreamInfo = streamManifest
+                    .GetAudio()
+                    .OrderByDescending(s => s.Container == streamInfo.Container)
+                    .ThenByDescending(s => s.Bitrate)
+                    .FirstOrDefault();
+
+                if (audioStreamInfo != null)
+                {
+                    options.Add(new DownloadOption(format, label, streamInfo, audioStreamInfo));
+                }
             }
 
-            // Additional options
+            // Audio-only options
+            var bestAudioOnlyStreamInfo = streamManifest
+                .GetAudio()
+                .OrderByDescending(s => s.Container == Container.WebM)
+                .ThenByDescending(s => s.Bitrate)
+                .FirstOrDefault();
+
             if (bestAudioOnlyStreamInfo != null)
             {
                 options.Add(new DownloadOption("mp3", "Audio", bestAudioOnlyStreamInfo));
