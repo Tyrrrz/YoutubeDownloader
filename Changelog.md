@@ -1,3 +1,7 @@
+### v1.7.10 (06-Jul-2020)
+
+- Fixed an issue where mp4 download options took much longer to download due to unnecessary transcoding.
+
 ### v1.7.9 (02-Jul-2020)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v5.1.1.
