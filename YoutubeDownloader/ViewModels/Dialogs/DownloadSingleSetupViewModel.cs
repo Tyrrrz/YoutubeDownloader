@@ -62,8 +62,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var download = _viewModelFactory.CreateDownloadViewModel(Video, filePath, format, SelectedDownloadOption);
 
             // Create empty file to "lock in" the file path
-            FileEx.CreateDirectoriesForFile(filePath);
-            FileEx.CreateEmptyFile(filePath);
+            PathEx.CreateDirectoryForFile(filePath);
+            PathEx.CreateEmptyFile(filePath);
 
             // Close dialog
             Close(download);

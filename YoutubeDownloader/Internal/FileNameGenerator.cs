@@ -27,7 +27,7 @@ namespace YoutubeDownloader.Internal
 
             result += $".{format}";
 
-            return FileEx.MakeSafeFileName(result);
+            return PathEx.EscapeFileName(result);
         }
     }
 }

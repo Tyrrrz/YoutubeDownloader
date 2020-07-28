@@ -3,13 +3,13 @@ using System.Linq;
 
 namespace YoutubeDownloader.Internal
 {
-    internal static class FileEx
+    internal static class PathEx
     {
-        public static string MakeSafeFileName(string fileName) =>
+        public static string EscapeFileName(string fileName) =>
             Path.GetInvalidFileNameChars().Aggregate(fileName, (current, invalidChar) => current.Replace(invalidChar, '_'));
 
-        public static string MakeSafeDirectoryName(string directoryName) =>
-            MakeSafeFileName(directoryName).Replace('.', '_');
+        public static string EscapeDirectoryName(string directoryName) =>
+            EscapeFileName(directoryName).Replace('.', '_');
 
         public static string MakeUniqueFilePath(string baseFilePath, int maxAttempts = 100)
         {
@@ -41,7 +41,7 @@ namespace YoutubeDownloader.Internal
 
         public static void CreateEmptyFile(string filePath) => File.WriteAllText(filePath, "");
 
-        public static void CreateDirectoriesForFile(string filePath)
+        public static void CreateDirectoryForFile(string filePath)
         {
             var dirPath = Path.GetDirectoryName(filePath);
             if (!string.IsNullOrWhiteSpace(dirPath))
