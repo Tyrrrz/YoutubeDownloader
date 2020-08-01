@@ -73,7 +73,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 // If file exists - either skip it or generate a unique file path, depending on user settings
                 if (File.Exists(filePath))
                 {
-                    if (_settingsService.ShouldSkipExistingFiles && new FileInfo(filePath).Length > 0)
+                    if (_settingsService.ShouldSkipExistingFiles)
                         continue;
 
                     filePath = PathEx.MakeUniqueFilePath(filePath);
