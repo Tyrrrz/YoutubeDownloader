@@ -131,7 +131,7 @@ namespace YoutubeDownloader.ViewModels
             }
 
             // Add to list
-            Downloads.Add(download);
+            Downloads.Insert(0, download);
 
             // Bind progress manager
             download.ProgressManager = ProgressManager;
@@ -244,7 +244,7 @@ namespace YoutubeDownloader.ViewModels
 
         public void RemoveInactiveDownloads()
         {
-            var inactiveDownloads = Downloads.Where(d => !d.IsActive).ToArray();
+            var inactiveDownloads = Downloads.Where(d => !d.IsActive);
             Downloads.RemoveRange(inactiveDownloads);
         }
 
