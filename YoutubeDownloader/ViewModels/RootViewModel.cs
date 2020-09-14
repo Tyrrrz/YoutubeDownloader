@@ -131,7 +131,7 @@ namespace YoutubeDownloader.ViewModels
             }
 
             // Add to list
-            Downloads.Add(download);
+            Downloads.Insert(0, download);
 
             // Bind progress manager
             download.ProgressManager = ProgressManager;

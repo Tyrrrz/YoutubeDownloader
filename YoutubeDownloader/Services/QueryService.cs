@@ -110,7 +110,7 @@ namespace YoutubeDownloader.Services
             {
                 var video = await _youtube.Videos.GetAsync(query.Value);
 
-                return new ExecutedQuery(query, video.Title, new[] {video});
+                return new ExecutedQuery(query, video.Title, new[] { video });
             }
 
             // Playlist
