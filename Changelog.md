@@ -1,3 +1,8 @@
+### v1.7.14 (29-Sep-2020)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v5.1.6.
+- Changed the order in which new downloads appear in the list so that newest downloads are at the top. (Thanks [@Max](https://github.com/badijm))
+
 ### v1.7.13 (12-Sep-2020)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v5.1.5.
