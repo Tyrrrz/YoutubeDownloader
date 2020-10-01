@@ -1,4 +1,4 @@
-# YoutubeDownloader
+# BestYoutubeDownloader
 
 [![Build](https://github.com/Tyrrrz/YoutubeDownloader/workflows/CI/badge.svg?branch=master)](https://github.com/Tyrrrz/YoutubeDownloader/actions)
 [![Release](https://img.shields.io/github/release/Tyrrrz/YoutubeDownloader.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
