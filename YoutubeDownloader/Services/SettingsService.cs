@@ -17,6 +17,8 @@ namespace YoutubeDownloader.Services
 
         public string? LastFormat { get; set; }
 
+        public string? LastSubtitleLanguageCode { get; set; }
+
         public SettingsService()
         {
             Configuration.StorageSpace = StorageSpace.Instance;

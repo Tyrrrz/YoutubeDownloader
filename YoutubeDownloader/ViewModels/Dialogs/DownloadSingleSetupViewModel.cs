@@ -21,8 +21,10 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         public Video Video { get; set; }
 
         public IReadOnlyList<DownloadOption> AvailableDownloadOptions { get; set; }
+        public IReadOnlyList<SubtitleOption> AvailableSubtitleOptions { get; set; }
 
         public DownloadOption SelectedDownloadOption { get; set; }
+        public SubtitleOption SelectedSubtitleOption { get; set; }
 
         public DownloadSingleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
             DialogManager dialogManager)
@@ -38,6 +40,10 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             SelectedDownloadOption =
                 AvailableDownloadOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
                 AvailableDownloadOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Label)).FirstOrDefault();
+
+            SelectedSubtitleOption = 
+                AvailableSubtitleOptions.FirstOrDefault(o => o.Language.Code == _settingsService.LastSubtitleLanguageCode) ??
+                AvailableSubtitleOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Language.Name)).FirstOrDefault();
         }
 
         public bool CanConfirm => Video != null;
@@ -58,8 +64,12 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             // Save last used format
             _settingsService.LastFormat = format;
 
+            // Save last used subtitle language if selected
+            if (!string.IsNullOrWhiteSpace(SelectedSubtitleOption.Language.Code))
+                _settingsService.LastSubtitleLanguageCode = SelectedSubtitleOption.Language.Code;
+
             // Create download view model
-            var download = _viewModelFactory.CreateDownloadViewModel(Video, filePath, format, SelectedDownloadOption);
+            var download = _viewModelFactory.CreateDownloadViewModel(Video, filePath, format, SelectedDownloadOption, SelectedSubtitleOption);
 
             // Create empty file to "lock in" the file path
             PathEx.CreateDirectoryForFile(filePath);

@@ -9,13 +9,14 @@ namespace YoutubeDownloader.ViewModels.Framework
     public static class Extensions
     {
         public static DownloadViewModel CreateDownloadViewModel(this IViewModelFactory factory, Video video,
-            string filePath, string format, DownloadOption? downloadOption = null)
+            string filePath, string format, DownloadOption? downloadOption = null, SubtitleOption? subtitleOption = null)
         {
             var viewModel = factory.CreateDownloadViewModel();
             viewModel.Video = video;
             viewModel.FilePath = filePath;
             viewModel.Format = format;
             viewModel.DownloadOption = downloadOption;
+            viewModel.SubtitleOption = subtitleOption;
 
             return viewModel;
         }
@@ -31,12 +32,13 @@ namespace YoutubeDownloader.ViewModels.Framework
         }
 
         public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(this IViewModelFactory factory,
-            string title, Video video, IReadOnlyList<DownloadOption> availableDownloadOptions)
+            string title, Video video, IReadOnlyList<DownloadOption> availableDownloadOptions, IReadOnlyList<SubtitleOption> availableSubtitleOptions)
         {
             var viewModel = factory.CreateDownloadSingleSetupViewModel();
             viewModel.Title = title;
             viewModel.Video = video;
             viewModel.AvailableDownloadOptions = availableDownloadOptions;
+            viewModel.AvailableSubtitleOptions = availableSubtitleOptions;
 
             return viewModel;
         }

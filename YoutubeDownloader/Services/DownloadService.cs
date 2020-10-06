@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using YoutubeDownloader.Models;
 using YoutubeExplode;
 using YoutubeExplode.Converter;
+using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Services
@@ -64,6 +66,12 @@ namespace YoutubeDownloader.Services
             }
         }
 
+        public async Task DownloadSubtitleAsync(SubtitleOption subtitleOption, string filePath)
+        {
+            await _youtube.Videos.ClosedCaptions.DownloadAsync(subtitleOption.ClosedCaptionTrackInfos.FirstOrDefault(), 
+                $"{Path.GetDirectoryName(filePath)}{Path.DirectorySeparatorChar}{Path.GetFileNameWithoutExtension(filePath)}.srt");
+        }
+
         public async Task<IReadOnlyList<DownloadOption>> GetDownloadOptionsAsync(string videoId)
         {
             var streamManifest = await _youtube.Videos.Streams.GetManifestAsync(videoId);
@@ -113,6 +121,22 @@ namespace YoutubeDownloader.Services
             {
                 options.Add(new DownloadOption("mp3", "Audio", bestAudioOnlyStreamInfo));
                 options.Add(new DownloadOption("ogg", "Audio", bestAudioOnlyStreamInfo));
+            }
+
+            return options.ToArray();
+        }
+
+        public async Task<IReadOnlyList<SubtitleOption>> GetSubtitleOptionsAsync(string videoId)
+        {
+            var closedCaptionManifest = await _youtube.Videos.ClosedCaptions.GetManifestAsync(videoId);
+
+            var options = new HashSet<SubtitleOption>();
+
+            options.Add(new SubtitleOption(new Language(string.Empty, "No subtitle")));
+
+            foreach (var closedCaptionTrackInfo in closedCaptionManifest.Tracks)
+            {
+                options.Add(new SubtitleOption(closedCaptionTrackInfo.Language, closedCaptionTrackInfo));
             }
 
             return options.ToArray();

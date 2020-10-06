@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
@@ -31,6 +32,8 @@ namespace YoutubeDownloader.ViewModels.Components
         public string Format { get; set; }
 
         public DownloadOption? DownloadOption { get; set; }
+
+        public SubtitleOption? SubtitleOption { get; set; }
 
         public IProgressManager ProgressManager { get; set; }
 
@@ -86,6 +89,9 @@ namespace YoutubeDownloader.ViewModels.Components
 
                     if (_settingsService.ShouldInjectTags)
                         await _taggingService.InjectTagsAsync(Video, Format, FilePath, _cancellationTokenSource.Token);
+
+                    if (SubtitleOption != null && SubtitleOption.ClosedCaptionTrackInfos.Any())
+                        await _downloadService.DownloadSubtitleAsync(SubtitleOption, FilePath);
 
                     IsSuccessful = true;
                 }

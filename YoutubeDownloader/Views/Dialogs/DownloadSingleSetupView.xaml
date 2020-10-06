@@ -18,6 +18,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--  Title  -->
@@ -114,6 +115,27 @@
                 Content="CANCEL"
                 IsCancel="True"
                 Style="{DynamicResource MaterialDesignFlatButton}" />
+        </Grid>
+
+        <Grid Grid.Row="4" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Download option  -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock
+                    Margin="8,8,0,8"
+                    VerticalAlignment="Center"
+                    Text="Subtitle:" />
+                <ComboBox
+                    MinWidth="150"
+                    Margin="8"
+                    materialDesign:ComboBoxAssist.ShowSelectedItem="True"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding AvailableSubtitleOptions}"
+                    SelectedItem="{Binding SelectedSubtitleOption}" />
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
