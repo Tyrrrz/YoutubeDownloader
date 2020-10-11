@@ -30,6 +30,7 @@ namespace YoutubeDownloader.ViewModels.Components
         public string FileName => Path.GetFileName(FilePath);
 
         public string Format { get; set; }
+        public string Quality { get; set; }
 
         public DownloadOption? DownloadOption { get; set; }
 
@@ -83,7 +84,7 @@ namespace YoutubeDownloader.ViewModels.Components
                 {
                     // If download option is not set - get the best download option
                     if (DownloadOption == null)
-                        DownloadOption = await _downloadService.GetBestDownloadOptionAsync(Video.Id, Format);
+                        DownloadOption = await _downloadService.GetBestDownloadOptionAsync(Video.Id, Format, Quality);
 
                     await _downloadService.DownloadVideoAsync(DownloadOption, FilePath, ProgressOperation, _cancellationTokenSource.Token);
 

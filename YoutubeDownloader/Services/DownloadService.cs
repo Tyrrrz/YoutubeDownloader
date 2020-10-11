@@ -142,12 +142,17 @@ namespace YoutubeDownloader.Services
             return options.ToArray();
         }
 
-        public async Task<DownloadOption> GetBestDownloadOptionAsync(string videoId, string format)
+        public async Task<DownloadOption> GetBestDownloadOptionAsync(string videoId, string format, string quality)
         {
             // Get all download options
             var downloadOptions = await GetDownloadOptionsAsync(videoId);
 
-            // Get first download option for this format
+            // Get first download option for this format and quality
+            var bestOption = downloadOptions.FirstOrDefault(o => o.Format == format && o.Label == quality);
+            if (bestOption != null)
+                return bestOption;
+
+            // Get first download option for this format only
             return downloadOptions.FirstOrDefault(o => o.Format == format);
         }
     }
