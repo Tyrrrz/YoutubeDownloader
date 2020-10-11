@@ -1,4 +1,5 @@
-﻿using Tyrrrz.Extensions;
+﻿using System.Linq;
+using Tyrrrz.Extensions;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
 
@@ -24,6 +25,12 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         {
             get => _settingsService.FileNameTemplate;
             set => _settingsService.FileNameTemplate = value;
+        }
+
+        public string ExcludedContainerFormats
+        {
+            get => _settingsService.ExcludedContainerFormats != null ? string.Join(',', _settingsService.ExcludedContainerFormats) : string.Empty;
+            set => _settingsService.ExcludedContainerFormats = value.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
         }
 
         public bool ShouldInjectTags

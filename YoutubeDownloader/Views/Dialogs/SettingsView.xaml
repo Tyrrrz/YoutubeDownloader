@@ -63,6 +63,22 @@
             </TextBox.ToolTip>
         </TextBox>
 
+        <!--  Excluded container formats  -->
+        <TextBox
+            Margin="16,8"
+            materialDesign:HintAssist.Hint="Excluded container formats"
+            materialDesign:HintAssist.IsFloating="True"
+            Text="{Binding ExcludedContainerFormats}">
+            <TextBox.ToolTip>
+                <TextBlock>
+                    <Run Text="Comma separated list of container formats excluded from format list when downloading a video" />
+                    <LineBreak />
+                    <LineBreak />
+                    <Run Text="Ex: webm,ogg" />
+                </TextBlock>
+            </TextBox.ToolTip>
+        </TextBox>
+
         <!--  Auto-updates  -->
         <DockPanel Background="Transparent" LastChildFill="False">
             <DockPanel.ToolTip>
