@@ -142,18 +142,45 @@ namespace YoutubeDownloader.Services
             return options.ToArray();
         }
 
-        public async Task<DownloadOption> GetBestDownloadOptionAsync(string videoId, string format, string quality)
+        public async Task<DownloadOption> GetBestDownloadOptionAsync(string videoId, string format, DownloadQuality quality)
         {
             // Get all download options
             var downloadOptions = await GetDownloadOptionsAsync(videoId);
 
-            // Get first download option for this format and quality
-            var bestOption = downloadOptions.FirstOrDefault(o => o.Format == format && o.Label == quality);
+            // Go from worst quality download option up to highest requested
+            var bestOption = downloadOptions
+                .Where(o => o.Format == format)
+                .Reverse()
+                .TakeWhile(o => IsAcceptableQuality(o.StreamInfos, quality))                
+                .LastOrDefault();
+
             if (bestOption != null)
                 return bestOption;
 
             // Get first download option for this format only
             return downloadOptions.FirstOrDefault(o => o.Format == format);
+        }
+
+        private bool IsAcceptableQuality(IReadOnlyList<IStreamInfo> streamInfos, DownloadQuality quality)
+        {
+            var videoStreamInfo = streamInfos.Where(s => s is IVideoStreamInfo).Cast<IVideoStreamInfo>().FirstOrDefault();
+            if (videoStreamInfo == null)
+                return false;
+
+            switch (quality)
+            {
+                case DownloadQuality.Minimum:
+                    return videoStreamInfo.VideoQuality <= VideoQuality.Low144;
+                case DownloadQuality.Low:
+                    return videoStreamInfo.VideoQuality <= VideoQuality.Medium480;
+                case DownloadQuality.Medium:
+                    return videoStreamInfo.VideoQuality <= VideoQuality.High720;
+                case DownloadQuality.High:
+                    return videoStreamInfo.VideoQuality <= VideoQuality.High1080;
+                case DownloadQuality.Maximum:
+                default:
+                    return true;
+            }
         }
     }
 }

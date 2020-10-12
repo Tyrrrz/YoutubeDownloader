@@ -12,22 +12,13 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 {
     public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
     {
-        private static readonly string[] AvaliableQualities = new[]
+        private static readonly Dictionary<string, DownloadQuality> AvaliableQualities = new Dictionary<string, DownloadQuality>()
         {
-            "4320p",
-            "3072p",
-            "2880p",
-            "2160p",
-            "2160p",
-            "1440p60",
-            "1440p",
-            "1080p60",
-            "1080p",
-            "720p60",
-            "720p",
-            "480p",
-            "360p",
-            "240p",
+            { "Maximum", DownloadQuality.Maximum },
+            { "High (up to 1080p)", DownloadQuality.High },
+            { "Medium (up to 720p)", DownloadQuality.Medium },
+            { "Low (up to 480p)", DownloadQuality.Low },
+            { "Minimum", DownloadQuality.Minimum }
         };
 
         private readonly IViewModelFactory _viewModelFactory;
@@ -40,7 +31,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public IReadOnlyList<Video> SelectedVideos { get; set; }
 
-        public IReadOnlyList<string> AvailableFormats { get; } = AvaliableQualities.Select(q => $@"{q} / mp4").Concat(new[] {"mp3", "ogg"}).ToList();
+        public IReadOnlyList<string> AvailableFormats { get; } = AvaliableQualities.Select(q => $@"{q.Key} / mp4").Concat(new[] {"mp3", "ogg"}).ToList();
 
         public string SelectedFormat { get; set; }
 
@@ -115,10 +106,10 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             Close(downloads);
         }
 
-        private (string, string) ParseToQualityAndFormat(string selectedFormat)
+        private (DownloadQuality, string) ParseToQualityAndFormat(string selectedFormat)
         {
             var parts = selectedFormat.Split("/");
-            var quality = parts.Length > 1 ? parts[0].Trim() : "";
+            var quality = parts.Length > 1 ? AvaliableQualities[parts[0].Trim()] : DownloadQuality.Maximum;
             var format = parts.Length > 1 ? parts[1].Trim() : parts[0].Trim();
             return (quality, format);
         }

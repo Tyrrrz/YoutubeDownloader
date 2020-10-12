@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using YoutubeDownloader.Models;
+using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeExplode.Videos;
@@ -22,7 +23,7 @@ namespace YoutubeDownloader.ViewModels.Framework
         }
 
         public static DownloadViewModel CreateDownloadViewModel(this IViewModelFactory factory, Video video,
-            string filePath, string format, string quality)
+            string filePath, string format, DownloadQuality quality)
         {
             var viewModel = factory.CreateDownloadViewModel();
             viewModel.Video = video;

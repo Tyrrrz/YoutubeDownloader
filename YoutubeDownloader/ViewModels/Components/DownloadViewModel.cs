@@ -30,7 +30,7 @@ namespace YoutubeDownloader.ViewModels.Components
         public string FileName => Path.GetFileName(FilePath);
 
         public string Format { get; set; }
-        public string Quality { get; set; }
+        public DownloadQuality Quality { get; set; }
 
         public DownloadOption? DownloadOption { get; set; }
 
