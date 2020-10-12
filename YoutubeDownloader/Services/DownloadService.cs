@@ -82,6 +82,7 @@ namespace YoutubeDownloader.Services
             // Video+audio options
             var videoStreams = streamManifest
                 .GetVideo()
+                .Where(v => !_settingsService.ExcludedContainerFormats.Contains(v.Container.Name))
                 .OrderByDescending(v => v.VideoQuality)
                 .ThenByDescending(v => v.Framerate);
 
@@ -119,8 +120,11 @@ namespace YoutubeDownloader.Services
 
             if (bestAudioOnlyStreamInfo != null)
             {
-                options.Add(new DownloadOption("mp3", "Audio", bestAudioOnlyStreamInfo));
-                options.Add(new DownloadOption("ogg", "Audio", bestAudioOnlyStreamInfo));
+                if (!_settingsService.ExcludedContainerFormats.Contains("mp3"))
+                    options.Add(new DownloadOption("mp3", "Audio", bestAudioOnlyStreamInfo));
+
+                if (!_settingsService.ExcludedContainerFormats.Contains("ogg"))
+                    options.Add(new DownloadOption("ogg", "Audio", bestAudioOnlyStreamInfo));
             }
 
             return options.ToArray();
