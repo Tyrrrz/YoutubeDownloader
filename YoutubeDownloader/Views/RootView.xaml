@@ -32,10 +32,7 @@
             </Grid.RowDefinitions>
 
             <!--  Toolbar  -->
-            <Grid
-                Grid.Row="0"
-                Background="{DynamicResource PrimaryHueMidBrush}"
-                TextElement.Foreground="{DynamicResource SecondaryInverseTextBrush}">
+            <Grid Grid.Row="0" Background="{DynamicResource MaterialDesignDarkBackground}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -88,8 +85,12 @@
                     Margin="6"
                     Padding="4"
                     Command="{s:Action ShowSettings}"
-                    Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                    Foreground="{DynamicResource MaterialDesignDarkForeground}"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
                     ToolTip="Settings">
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
+                    </Button.Resources>
                     <materialDesign:PackIcon
                         Width="24"
                         Height="24"
@@ -100,16 +101,18 @@
             <!--  Progress  -->
             <ProgressBar
                 Grid.Row="1"
-                Background="Transparent"
+                Background="{DynamicResource MaterialDesignDarkBackground}"
                 IsIndeterminate="{Binding IsProgressIndeterminate}"
                 Value="{Binding ProgressManager.Progress, Mode=OneWay}" />
 
             <!--  Content  -->
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="2" Background="{DynamicResource MaterialDesignCardBackground}">
+
                 <!--  Placeholder  -->
                 <TextBlock
                     Margin="32"
                     FontSize="18"
+                    FontWeight="Light"
                     Text="Copy-paste URL or type in a search query to start downloading"
                     TextAlignment="Center"
                     TextWrapping="Wrap"
@@ -179,6 +182,7 @@
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         FontSize="14"
+                                        Foreground="{DynamicResource MaterialDesignBody}"
                                         Text="{Binding FileName}"
                                         TextTrimming="CharacterEllipsis"
                                         ToolTip="{Binding FileName}" />
@@ -214,19 +218,19 @@
 
                                                     <!--  Successful  -->
                                                     <DataTrigger Binding="{Binding IsSuccessful}" Value="True">
-                                                        <Setter Property="Foreground" Value="DarkGreen" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
                                                         <Setter Property="Text" Value="✓ Done" />
                                                     </DataTrigger>
 
                                                     <!--  Canceled  -->
                                                     <DataTrigger Binding="{Binding IsCanceled}" Value="True">
-                                                        <Setter Property="Foreground" Value="DarkOrange" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
                                                         <Setter Property="Text" Value="✗ Canceled" />
                                                     </DataTrigger>
 
                                                     <!--  Failed  -->
                                                     <DataTrigger Binding="{Binding IsFailed}" Value="True">
-                                                        <Setter Property="Foreground" Value="DarkRed" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
                                                         <Setter Property="Text" Value="✗ Failed" />
                                                         <Setter Property="ToolTip" Value="{Binding FailReason}" />
                                                     </DataTrigger>

@@ -17,14 +17,13 @@
         <TextBlock
             Margin="16"
             FontSize="17"
-            Foreground="{DynamicResource PrimaryTextBrush}"
             Text="Settings" />
 
         <!--  Max concurrent downloads  -->
         <StackPanel Background="Transparent" ToolTip="How many downloads can be active at one time">
             <TextBlock Margin="16,8">
                 <Run Text="Maximum concurrent downloads:" />
-                <Run Foreground="{DynamicResource PrimaryTextBrush}" Text="{Binding MaxConcurrentDownloads, Mode=OneWay}" />
+                <Run FontWeight="DemiBold" Text="{Binding MaxConcurrentDownloads, Mode=OneWay}" />
             </TextBlock>
             <Slider
                 Margin="16,8"
@@ -128,6 +127,25 @@
                 DockPanel.Dock="Right"
                 IsChecked="{Binding ShouldSkipExistingFiles}" />
         </DockPanel>
+
+        <!--  Dark Theme  -->
+        <DockPanel
+            Background="Transparent"
+            LastChildFill="False"
+            ToolTip="Style this window with a dark theme">
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Dark theme" />
+            <ToggleButton
+                Margin="16,8"
+                Checked="DarkThemeToggle_Checked"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding IsDarkThemeEnabled}"
+                Unchecked="DarkThemeToggle_Unchecked" />
+        </DockPanel>
+
+
 
         <!--  Save button  -->
         <Button
