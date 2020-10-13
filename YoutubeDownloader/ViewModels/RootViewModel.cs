@@ -90,6 +90,8 @@ namespace YoutubeDownloader.ViewModels
             // Load settings
             _settingsService.Load();
 
+            Theme.SetCurrent(_settingsService.IsDarkThemeEnabled ? Theme.Dark : Theme.Light);
+
             // Check and prepare update
             await HandleAutoUpdateAsync();
         }

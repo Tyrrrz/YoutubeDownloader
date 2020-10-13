@@ -18,6 +18,8 @@ namespace YoutubeDownloader.Services
 
         public bool ShouldSkipExistingFiles { get; set; } = false;
 
+        public bool IsDarkThemeEnabled { get; set; } = false;
+
         public string? LastFormat { get; set; }
 
         public string? LastSubtitleLanguageCode { get; set; }

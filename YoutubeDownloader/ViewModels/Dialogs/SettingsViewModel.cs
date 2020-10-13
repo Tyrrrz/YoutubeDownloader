@@ -44,6 +44,11 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             get => _settingsService.ShouldSkipExistingFiles;
             set => _settingsService.ShouldSkipExistingFiles = value;
         }
+        public bool IsDarkThemeEnabled
+        {
+            get => _settingsService.IsDarkThemeEnabled;
+            set => _settingsService.IsDarkThemeEnabled = value;
+        }
 
         public SettingsViewModel(SettingsService settingsService)
         {

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:YoutubeDownloader"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:s="https://github.com/canton7/Stylet">
     <Application.Resources>
         <s:ApplicationLoader>
@@ -13,69 +14,20 @@
 
             <!--  Merged dictionaries  -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <materialDesign:BundledTheme
+                    BaseTheme="Light"
+                    PrimaryColor="Blue"
+                    SecondaryColor="Blue" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!--  Colors  -->
-            <Color x:Key="PrimaryColor">#343838</Color>
-            <Color x:Key="PrimaryLightColor">#5E6262</Color>
-            <Color x:Key="PrimaryDarkColor">#0D1212</Color>
-            <Color x:Key="AccentColor">#F9A825</Color>
-            <Color x:Key="AccentDarkColor">#C17900</Color>
-            <Color x:Key="TextColor">#000000</Color>
-            <Color x:Key="InverseTextColor">#FFFFFF</Color>
+            <Color x:Key="SuccessColor">#006400</Color>
+            <Color x:Key="CanceledColor">#FF8C00</Color>
+            <Color x:Key="FailedColor">#8B0000</Color>
 
-            <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="{DynamicResource PrimaryLightColor}" />
-            <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="{DynamicResource InverseTextColor}" />
-            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{DynamicResource PrimaryColor}" />
-            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{DynamicResource InverseTextColor}" />
-            <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="{DynamicResource PrimaryDarkColor}" />
-            <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="{DynamicResource InverseTextColor}" />
-            <SolidColorBrush x:Key="SecondaryAccentBrush" Color="{DynamicResource AccentColor}" />
-            <SolidColorBrush x:Key="SecondaryAccentForegroundBrush" Color="{DynamicResource TextColor}" />
-
-            <SolidColorBrush
-                x:Key="PrimaryTextBrush"
-                Opacity="0.87"
-                Color="{DynamicResource TextColor}" />
-            <SolidColorBrush
-                x:Key="SecondaryTextBrush"
-                Opacity="0.64"
-                Color="{DynamicResource TextColor}" />
-            <SolidColorBrush
-                x:Key="DimTextBrush"
-                Opacity="0.45"
-                Color="{DynamicResource TextColor}" />
-            <SolidColorBrush
-                x:Key="PrimaryInverseTextBrush"
-                Opacity="1"
-                Color="{DynamicResource InverseTextColor}" />
-            <SolidColorBrush
-                x:Key="SecondaryInverseTextBrush"
-                Opacity="0.7"
-                Color="{DynamicResource InverseTextColor}" />
-            <SolidColorBrush
-                x:Key="DimInverseTextBrush"
-                Opacity="0.52"
-                Color="{DynamicResource InverseTextColor}" />
-            <SolidColorBrush
-                x:Key="AccentTextBrush"
-                Opacity="1"
-                Color="{DynamicResource AccentColor}" />
-            <SolidColorBrush
-                x:Key="AccentDarkTextBrush"
-                Opacity="1"
-                Color="{DynamicResource AccentDarkColor}" />
-            <SolidColorBrush
-                x:Key="DividerBrush"
-                Opacity="0.12"
-                Color="{DynamicResource TextColor}" />
-            <SolidColorBrush
-                x:Key="InverseDividerBrush"
-                Opacity="0.12"
-                Color="{DynamicResource InverseTextColor}" />
-
+            <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource SuccessColor}" />
+            <SolidColorBrush x:Key="CanceledBrush" Color="{DynamicResource CanceledColor}" />
+            <SolidColorBrush x:Key="FailedBrush" Color="{DynamicResource FailedColor}" />
             <!--  Styles  -->
             <Style x:Key="MaterialDesignRoot" TargetType="{x:Type Control}">
                 <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
@@ -83,7 +35,7 @@
                 <Setter Property="SnapsToDevicePixels" Value="True" />
                 <Setter Property="TextElement.FontSize" Value="13" />
                 <Setter Property="TextElement.FontWeight" Value="Regular" />
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource SecondaryTextBrush}" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
                 <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
                 <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
                 <Setter Property="UseLayoutRounding" Value="True" />
@@ -94,18 +46,15 @@
             <Style BasedOn="{StaticResource MaterialDesignLinearProgressBar}" TargetType="{x:Type ProgressBar}">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Foreground" Value="{DynamicResource SecondaryAccentBrush}" />
+                <Setter Property="Background" Value="Transparent" />
                 <Setter Property="Height" Value="2" />
                 <Setter Property="Maximum" Value="1" />
                 <Setter Property="Minimum" Value="0" />
             </Style>
 
-            <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type TextBox}">
-                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
-            </Style>
+            <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type TextBox}" />
 
-            <Style BasedOn="{StaticResource MaterialDesignComboBox}" TargetType="{x:Type ComboBox}">
-                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
-            </Style>
+            <Style BasedOn="{StaticResource MaterialDesignComboBox}" TargetType="{x:Type ComboBox}" />
 
             <Style BasedOn="{StaticResource MaterialDesignDataGrid}" TargetType="{x:Type DataGrid}">
                 <Setter Property="AutoGenerateColumns" Value="False" />
