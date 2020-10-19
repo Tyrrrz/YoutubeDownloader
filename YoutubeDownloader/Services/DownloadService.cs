@@ -18,7 +18,6 @@ namespace YoutubeDownloader.Services
         private readonly SettingsService _settingsService;
 
         private readonly YoutubeClient _youtube = new YoutubeClient();
-        private readonly IYoutubeConverter _youtubeConverter = new YoutubeConverter();
 
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
         private int _concurrentDownloadCount;
@@ -56,9 +55,17 @@ namespace YoutubeDownloader.Services
 
             try
             {
-                await _youtubeConverter.DownloadAndProcessMediaStreamsAsync(downloadOption.StreamInfos,
-                    filePath, downloadOption.Format, ConversionPreset.Medium,
-                    progress, cancellationToken);
+                var conversion = new ConversionRequestBuilder(filePath)
+                    .SetFormat(downloadOption.Format)
+                    .SetPreset(ConversionPreset.Medium)
+                    .Build();
+                
+                await _youtube.Videos.DownloadAsync(
+                    downloadOption.StreamInfos,
+                    conversion,
+                    progress,
+                    cancellationToken
+                );
             }
             finally
             {
