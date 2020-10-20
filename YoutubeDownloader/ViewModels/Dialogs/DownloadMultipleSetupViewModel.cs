@@ -12,7 +12,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 {
     public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
     {
-        private static readonly Dictionary<string, DownloadQuality> AvaliableQualities = new Dictionary<string, DownloadQuality>()
+        private static readonly Dictionary<string, DownloadQuality> AvailableQualities = new Dictionary<string, DownloadQuality>()
         {
             { "Maximum", DownloadQuality.Maximum },
             { "High (up to 1080p)", DownloadQuality.High },
@@ -31,7 +31,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public IReadOnlyList<Video> SelectedVideos { get; set; }
 
-        public IReadOnlyList<string> AvailableFormats { get; } = AvaliableQualities.Select(q => $@"{q.Key} / mp4").Concat(new[] {"mp3", "ogg"}).ToList();
+        public IReadOnlyList<string> AvailableFormats { get; private set; }
 
         public string SelectedFormat { get; set; }
 
@@ -45,6 +45,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public void OnViewLoaded()
         {
+            AvailableFormats = GetAvailableFormats();
+
             // Select last used format
             SelectedFormat = !string.IsNullOrWhiteSpace(_settingsService.LastFormat) && AvailableFormats.Contains(_settingsService.LastFormat)
                 ? _settingsService.LastFormat
@@ -106,10 +108,26 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             Close(downloads);
         }
 
+        private List<string> GetAvailableFormats()
+        {
+            var formats = new List<string>();
+
+            if (!_settingsService.ExcludedContainerFormats.Contains("mp4"))
+                formats.AddRange(AvailableQualities.Select(q => $@"{q.Key} / mp4"));
+
+            if (!_settingsService.ExcludedContainerFormats.Contains("mp3"))
+                formats.Add("mp3");
+
+            if (!_settingsService.ExcludedContainerFormats.Contains("ogg"))
+                formats.Add("ogg");
+
+            return formats;
+        }
+
         private (DownloadQuality, string) ParseToQualityAndFormat(string selectedFormat)
         {
             var parts = selectedFormat.Split("/");
-            var quality = parts.Length > 1 ? AvaliableQualities[parts[0].Trim()] : DownloadQuality.Maximum;
+            var quality = parts.Length > 1 ? AvailableQualities[parts[0].Trim()] : DownloadQuality.Maximum;
             var format = parts.Length > 1 ? parts[1].Trim() : parts[0].Trim();
             return (quality, format);
         }
