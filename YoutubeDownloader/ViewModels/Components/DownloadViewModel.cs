@@ -9,6 +9,7 @@ using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
+using YoutubeExplode.Exceptions;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Components
@@ -103,7 +104,11 @@ namespace YoutubeDownloader.ViewModels.Components
                 catch (Exception ex)
                 {
                     IsFailed = true;
-                    FailReason = ex.Message;
+
+                    // Short error message for expected errors, full for unexpected
+                    FailReason = ex is YoutubeExplodeException
+                        ? ex.Message
+                        : ex.ToString();
                 }
                 finally
                 {
