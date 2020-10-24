@@ -153,8 +153,8 @@ namespace YoutubeDownloader.Services
             var taggedFile = File.Create(filePath);
             taggedFile.Tag.Pictures = picture != null ? new[] { picture } : Array.Empty<IPicture>();
             AppleTag customTag = (AppleTag)taggedFile.GetTag(TagTypes.Apple);
-            customTag.SetDashBox(string.Empty, "    Upload Date", video.UploadDate.ToString("yyyy-MM-dd"));
-            customTag.SetDashBox(string.Empty, "    Channel", video.Author);
+            customTag.SetDashBox("Upload Date", "    Upload Date", video.UploadDate.ToString("yyyy-MM-dd"));
+            customTag.SetDashBox("Channel", "    Channel", video.Author);
             taggedFile.Save();
         }
 
