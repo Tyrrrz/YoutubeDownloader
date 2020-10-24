@@ -5,7 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using TagLib;
+using TagLib.Mpeg4;
 using YoutubeExplode.Videos;
+using File = TagLib.File;
 
 namespace YoutubeDownloader.Services
 {
@@ -127,11 +129,37 @@ namespace YoutubeDownloader.Services
 
         public async Task InjectTagsAsync(Video video, string format, string filePath, CancellationToken cancellationToken)
         {
-            // Only audio files are supported at the moment
-            if (!string.Equals(format, "mp3", StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(format, "ogg", StringComparison.OrdinalIgnoreCase))
-                return;
+            if (string.Equals(format, "mp4", StringComparison.OrdinalIgnoreCase))
+            {
+                await TagMp4File(video, filePath, cancellationToken);
+            }
+            else if (string.Equals(format, "mp3", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(format, "ogg", StringComparison.OrdinalIgnoreCase))
+            {
+                await TagAudioFile(video, filePath, cancellationToken);
+            }
+            else
+            {
+                // Do nothing for other container formats.
+            }
+        }
 
+        private async Task TagMp4File(Video video, string filePath, CancellationToken cancellationToken)
+        {
+            // Try to get picture
+            var picture = await TryGetPictureAsync(video, cancellationToken);
+
+            // Inject tags
+            var taggedFile = File.Create(filePath);
+            taggedFile.Tag.Pictures = picture != null ? new[] { picture } : Array.Empty<IPicture>();
+            AppleTag customTag = (AppleTag)taggedFile.GetTag(TagTypes.Apple);
+            customTag.SetDashBox("Upload Date", "    Upload Date", video.UploadDate.ToString("yyyy-MM-dd"));
+            customTag.SetDashBox("Channel", "    Channel", video.Author);
+            taggedFile.Save();
+        }
+
+        private async Task TagAudioFile(Video video, string filePath, CancellationToken cancellationToken)
+        {
             // Try to extract artist/title from video title
             if (!TryExtractArtistAndTitle(video.Title, out var artist, out var title))
                 return;
