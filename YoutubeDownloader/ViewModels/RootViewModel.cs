@@ -5,10 +5,13 @@ using Gress;
 using MaterialDesignThemes.Wpf;
 using Stylet;
 using Tyrrrz.Extensions;
+using YoutubeDownloader.Internal.Extensions;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
+using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.ViewModels.Framework;
+using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader.ViewModels
 {
@@ -49,12 +52,17 @@ namespace YoutubeDownloader.ViewModels
 
             // Update busy state when progress manager changes
             ProgressManager.Bind(o => o.IsActive,
-                (sender, args) => IsProgressIndeterminate = ProgressManager.IsActive && ProgressManager.Progress.IsEither(0, 1));
+                (sender, args) => IsProgressIndeterminate =
+                    ProgressManager.IsActive && ProgressManager.Progress.IsEither(0, 1)
+            );
+
             ProgressManager.Bind(o => o.Progress,
-                (sender, args) => IsProgressIndeterminate = ProgressManager.IsActive && ProgressManager.Progress.IsEither(0, 1));
+                (sender, args) => IsProgressIndeterminate =
+                    ProgressManager.IsActive && ProgressManager.Progress.IsEither(0, 1)
+            );
         }
 
-        private async Task HandleAutoUpdateAsync()
+        private async Task CheckForUpdatesAsync()
         {
             try
             {
@@ -64,7 +72,7 @@ namespace YoutubeDownloader.ViewModels
                     return;
 
                 // Notify user of an update and prepare it
-                Notifications.Enqueue($"Downloading update to YoutubeDownloader v{updateVersion}...");
+                Notifications.Enqueue($"Downloading update to {App.Name} v{updateVersion}...");
                 await _updateService.PrepareUpdateAsync(updateVersion);
 
                 // Prompt user to install update (otherwise install it when application exits)
@@ -87,27 +95,30 @@ namespace YoutubeDownloader.ViewModels
         {
             base.OnViewLoaded();
 
-            // Load settings
             _settingsService.Load();
 
-            Theme.SetCurrent(_settingsService.IsDarkThemeEnabled ? Theme.Dark : Theme.Light);
+            if (_settingsService.IsDarkModeEnabled)
+            {
+                App.SetDarkTheme();
+            }
+            else
+            {
+                App.SetLightTheme();
+            }
 
-            // Check and prepare update
-            await HandleAutoUpdateAsync();
+            await CheckForUpdatesAsync();
         }
 
         protected override void OnClose()
         {
             base.OnClose();
 
-            // Save settings
             _settingsService.Save();
 
             // Cancel all downloads
             foreach (var download in Downloads)
                 download.Cancel();
 
-            // Finalize updates if necessary
             _updateService.FinalizeUpdate(false);
         }
 
@@ -115,14 +126,11 @@ namespace YoutubeDownloader.ViewModels
 
         public async void ShowSettings()
         {
-            // Create dialog
             var dialog = _viewModelFactory.CreateSettingsViewModel();
-
-            // Show dialog
             await _dialogManager.ShowDialogAsync(dialog);
         }
 
-        private void EnqueueAndStartDownload(DownloadViewModel download)
+        private void EnqueueDownload(DownloadViewModel download)
         {
             // Cancel and remove downloads with the same file path
             var existingDownloads = Downloads.Where(d => d.FilePath == download.FilePath).ToArray();
@@ -132,14 +140,11 @@ namespace YoutubeDownloader.ViewModels
                 Downloads.Remove(existingDownload);
             }
 
-            // Add to list
-            Downloads.Insert(0, download);
-
             // Bind progress manager
             download.ProgressManager = ProgressManager;
-
-            // Start download
             download.Start();
+
+            Downloads.Insert(0, download);
         }
 
         public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
@@ -149,94 +154,87 @@ namespace YoutubeDownloader.ViewModels
             // Small operation weight to not offset any existing download operations
             var operation = ProgressManager.CreateOperation(0.01);
 
-            // Lock this method for re-entry
             IsBusy = true;
 
             try
             {
-                // Split query into separate lines and parse them
                 var parsedQueries = _queryService.ParseMultilineQuery(Query!);
-
-                // Execute separate queries
                 var executedQueries = await _queryService.ExecuteQueriesAsync(parsedQueries, operation);
 
-                // Extract videos and other details
                 var videos = executedQueries.SelectMany(q => q.Videos).Distinct(v => v.Id).ToArray();
-                var dialogTitle = executedQueries.Count == 1 ? executedQueries.Single().Title : "Multiple queries";
 
-                // If no videos were found - tell the user
+                var dialogTitle = executedQueries.Count == 1
+                    ? executedQueries.Single().Title
+                    : "Multiple queries";
+
+                // No videos found
                 if (videos.Length <= 0)
                 {
-                    // Create dialog
-                    var dialog = _viewModelFactory.CreateMessageBoxViewModel("Nothing found",
-                        "Couldn't find any videos based on the query or URL you provided");
+                    var dialog = _viewModelFactory.CreateMessageBoxViewModel(
+                        "Nothing found",
+                        "Couldn't find any videos based on the query or URL you provided"
+                    );
 
-                    // Show dialog
                     await _dialogManager.ShowDialogAsync(dialog);
                 }
 
-                // If only one video was found - show download setup for single video
+                // Single video
                 else if (videos.Length == 1)
                 {
-                    // Get single video
                     var video = videos.Single();
 
-                    // Get download options
-                    var downloadOptions = await _downloadService.GetDownloadOptionsAsync(video.Id);
+                    var downloadOptions = await _downloadService.GetVideoDownloadOptionsAsync(video.Id);
+                    var subtitleOptions = await _downloadService.GetSubtitleDownloadOptionsAsync(video.Id);
 
-                    // Get subtitle options
-                    var subtitleOptions = await _downloadService.GetSubtitleOptionsAsync(video.Id);
+                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(
+                        dialogTitle,
+                        video,
+                        downloadOptions,
+                        subtitleOptions
+                    );
 
-                    // Create dialog
-                    var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(dialogTitle, video, downloadOptions, subtitleOptions);
-
-                    // Show dialog and get download
                     var download = await _dialogManager.ShowDialogAsync(dialog);
-
-                    // If canceled - return
-                    if (download == null)
+                    if (download == null) // generics + NRTs issue
                         return;
 
-                    // Enqueue download
-                    EnqueueAndStartDownload(download);
+                    EnqueueDownload(download);
                 }
 
-                // If multiple videos were found - show download setup for multiple videos
+                // Multiple videos
                 else
                 {
-                    // Create dialog
-                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(dialogTitle, videos);
+                    var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(
+                        dialogTitle,
+                        videos
+                    );
 
                     // Preselect all videos if none of the videos come from a search query
-                    if (executedQueries.All(q => q.Query.Type != QueryType.Search))
+                    if (executedQueries.All(q => q.Query.Kind != QueryKind.Search))
                         dialog.SelectedVideos = dialog.AvailableVideos;
 
-                    // Show dialog and get downloads
                     var downloads = await _dialogManager.ShowDialogAsync(dialog);
-
-                    // If canceled - return
-                    if (downloads == null)
+                    if (downloads == null) // generics + NRTs issue
                         return;
 
-                    // Enqueue downloads
                     foreach (var download in downloads)
-                        EnqueueAndStartDownload(download);
+                        EnqueueDownload(download);
                 }
             }
             catch (Exception ex)
             {
-                // Create dialog
-                var dialog = _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message);
+                var dialog = _viewModelFactory.CreateMessageBoxViewModel(
+                    "Error",
+                    // Short error message for expected errors, full for unexpected
+                    ex is YoutubeExplodeException
+                        ? ex.Message
+                        : ex.ToString()
+                );
 
-                // Show dialog
                 await _dialogManager.ShowDialogAsync(dialog);
             }
             finally
             {
-                // Dispose progress operation
                 operation.Dispose();
-
-                // Unlock this method
                 IsBusy = false;
             }
         }
@@ -247,17 +245,11 @@ namespace YoutubeDownloader.ViewModels
             Downloads.Remove(download);
         }
 
-        public void RemoveInactiveDownloads()
-        {
-            var inactiveDownloads = Downloads.Where(d => !d.IsActive).ToArray();
-            Downloads.RemoveRange(inactiveDownloads);
-        }
+        public void RemoveInactiveDownloads() =>
+            Downloads.RemoveWhere(d => !d.IsActive);
 
-        public void RemoveSuccessfulDownloads()
-        {
-            var successfulDownloads = Downloads.Where(d => d.IsSuccessful).ToArray();
-            Downloads.RemoveRange(successfulDownloads);
-        }
+        public void RemoveSuccessfulDownloads() =>
+            Downloads.RemoveWhere(d => d.IsSuccessful);
 
         public void RestartFailedDownloads()
         {

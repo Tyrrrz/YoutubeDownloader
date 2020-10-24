@@ -19,22 +19,75 @@
             FontSize="17"
             Text="Settings" />
 
-        <!--  Max concurrent downloads  -->
-        <StackPanel Background="Transparent" ToolTip="How many downloads can be active at one time">
-            <TextBlock Margin="16,8">
-                <Run Text="Maximum concurrent downloads:" />
-                <Run FontWeight="DemiBold" Text="{Binding MaxConcurrentDownloads, Mode=OneWay}" />
-            </TextBlock>
-            <Slider
+        <!--  Auto-updates  -->
+        <DockPanel Background="Transparent" LastChildFill="False">
+            <DockPanel.ToolTip>
+                <TextBlock>
+                    <Run Text="Perform automatic updates on every launch" />
+                    <LineBreak />
+                    <Run FontWeight="SemiBold" Text="Warning:" />
+                    <Run Text="disabling this is NOT recommended because the application will stop working when integration with YouTube inevitably breaks in the future" />
+                </TextBlock>
+            </DockPanel.ToolTip>
+            <TextBlock
                 Margin="16,8"
-                IsSnapToTickEnabled="True"
-                Maximum="10"
-                Minimum="1"
-                TickFrequency="1"
-                Value="{Binding MaxConcurrentDownloads}" />
-        </StackPanel>
+                DockPanel.Dock="Left"
+                Text="Auto-updates" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding IsAutoUpdateEnabled}" />
+        </DockPanel>
 
-        <!--  Default file name template  -->
+        <!--  Dark mode  -->
+        <DockPanel
+            Background="Transparent"
+            LastChildFill="False"
+            ToolTip="Use darker colors in the UI">
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Dark mode" />
+            <ToggleButton
+                x:Name="DarkModeToggleButton"
+                Margin="16,8"
+                Checked="DarkModeToggleButton_Checked"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding IsDarkModeEnabled}"
+                Unchecked="DarkModeToggleButton_Unchecked" />
+        </DockPanel>
+
+        <!--  Inject tags  -->
+        <DockPanel
+            Background="Transparent"
+            LastChildFill="False"
+            ToolTip="Media tags can be automatically inferred from video title and injected into output file">
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Automatically inject media tags" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding ShouldInjectTags}" />
+        </DockPanel>
+
+        <!--  Skip existing files  -->
+        <DockPanel
+            Background="Transparent"
+            LastChildFill="False"
+            ToolTip="When selecting multiple videos to download, skip those that already have a matching file in the directory">
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Skip downloads for files that already exist" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding ShouldSkipExistingFiles}" />
+        </DockPanel>
+
+        <!--  File name template  -->
         <TextBox
             Margin="16,8"
             materialDesign:HintAssist.Hint="File name template"
@@ -78,74 +131,20 @@
             </TextBox.ToolTip>
         </TextBox>
 
-        <!--  Auto-updates  -->
-        <DockPanel Background="Transparent" LastChildFill="False">
-            <DockPanel.ToolTip>
-                <TextBlock>
-                    <Run Text="Perform automatic updates on every launch" />
-                    <LineBreak />
-                    <Run FontWeight="SemiBold" Text="Warning:" />
-                    <Run Text="disabling this is NOT recommended because the application will stop working when integration with YouTube inevitably breaks in the future" />
-                </TextBlock>
-            </DockPanel.ToolTip>
-            <TextBlock
-                Margin="16,8"
-                DockPanel.Dock="Left"
-                Text="Auto-updates" />
-            <ToggleButton
-                Margin="16,8"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding IsAutoUpdateEnabled}" />
-        </DockPanel>
-
-        <!--  Tag injection  -->
-        <DockPanel
-            Background="Transparent"
-            LastChildFill="False"
-            ToolTip="Media tags can be automatically inferred from video title and injected into output file">
-            <TextBlock
-                Margin="16,8"
-                DockPanel.Dock="Left"
-                Text="Automatically inject media tags" />
-            <ToggleButton
-                Margin="16,8"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding ShouldInjectTags}" />
-        </DockPanel>
-
-        <!--  Skip existing files  -->
-        <DockPanel
-            Background="Transparent"
-            LastChildFill="False"
-            ToolTip="When selecting multiple videos to download, skip those that already have a matching file in the directory">
-            <TextBlock
-                Margin="16,8"
-                DockPanel.Dock="Left"
-                Text="Skip downloads for files that already exist" />
-            <ToggleButton
-                Margin="16,8"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding ShouldSkipExistingFiles}" />
-        </DockPanel>
-
-        <!--  Dark Theme  -->
-        <DockPanel
-            Background="Transparent"
-            LastChildFill="False"
-            ToolTip="Style this window with a dark theme">
-            <TextBlock
-                Margin="16,8"
-                DockPanel.Dock="Left"
-                Text="Dark theme" />
-            <ToggleButton
-                Margin="16,8"
-                Checked="DarkThemeToggle_Checked"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding IsDarkThemeEnabled}"
-                Unchecked="DarkThemeToggle_Unchecked" />
-        </DockPanel>
-
-
+        <!--  Max concurrent downloads  -->
+        <StackPanel Background="Transparent" ToolTip="How many downloads can be active at one time">
+            <TextBlock Margin="16,8,16,4">
+                <Run Text="Maximum concurrent downloads:" />
+                <Run FontWeight="DemiBold" Text="{Binding MaxConcurrentDownloads, Mode=OneWay}" />
+            </TextBlock>
+            <Slider
+                Margin="16,4,16,8"
+                IsSnapToTickEnabled="True"
+                Maximum="10"
+                Minimum="1"
+                TickFrequency="1"
+                Value="{Binding MaxConcurrentDownloads}" />
+        </StackPanel>
 
         <!--  Save button  -->
         <Button

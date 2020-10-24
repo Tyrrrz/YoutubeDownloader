@@ -1,4 +1,6 @@
-﻿namespace YoutubeDownloader.Views.Dialogs
+﻿using System.Windows;
+
+namespace YoutubeDownloader.Views.Dialogs
 {
     public partial class SettingsView
     {
@@ -7,19 +9,10 @@
             InitializeComponent();
         }
 
-        private void DarkThemeToggle_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            setBaseTheme(Theme.Dark);
-        }
+        private void DarkModeToggleButton_Checked(object sender, RoutedEventArgs args) =>
+            App.SetDarkTheme();
 
-        private void DarkThemeToggle_Unchecked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            setBaseTheme(Theme.Light);
-        }
-
-        private void setBaseTheme(Theme theme)
-        {
-            Theme.SetCurrent(theme);
-        }
+        private void DarkModeToggleButton_Unchecked(object sender, RoutedEventArgs args) =>
+            App.SetLightTheme();
     }
 }

@@ -78,13 +78,12 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!--  Download option  -->
+            <!--  Video option  -->
             <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <TextBlock
-                    Margin="8,8,0,8"
+                    Margin="8"
                     VerticalAlignment="Center"
                     Text="Format:" />
                 <ComboBox
@@ -93,13 +92,41 @@
                     VerticalAlignment="Center"
                     materialDesign:ComboBoxAssist.ShowSelectedItem="True"
                     IsReadOnly="True"
-                    ItemsSource="{Binding AvailableDownloadOptions}"
-                    SelectedItem="{Binding SelectedDownloadOption}" />
+                    ItemsSource="{Binding AvailableVideoOptions}"
+                    SelectedItem="{Binding SelectedVideoOption}" />
             </StackPanel>
 
+            <!--  Subtitle option  -->
+            <StackPanel
+                Grid.Column="2"
+                IsEnabled="{Binding AvailableSubtitleOptions}"
+                Orientation="Horizontal">
+                <CheckBox
+                    x:Name="SubtitlesCheckBox"
+                    VerticalAlignment="Center"
+                    Unchecked="SubtitlesCheckBox_OnUnchecked" />
+                <TextBlock
+                    Margin="4,8,8,8"
+                    VerticalAlignment="Center"
+                    Text="Subtitles:" />
+                <ComboBox
+                    MinWidth="150"
+                    Margin="8"
+                    materialDesign:ComboBoxAssist.ShowSelectedItem="True"
+                    IsEnabled="{Binding IsChecked, ElementName=SubtitlesCheckBox}"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding AvailableSubtitleOptions}"
+                    SelectedItem="{Binding SelectedSubtitleOption}" />
+            </StackPanel>
+        </Grid>
+
+        <StackPanel
+            Grid.Row="4"
+            Margin="0,8,0,0"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
             <!--  OK  -->
             <Button
-                Grid.Column="2"
                 Margin="8"
                 Command="{s:Action Confirm}"
                 Content="DOWNLOAD"
@@ -108,33 +135,11 @@
 
             <!--  Cancel  -->
             <Button
-                Grid.Column="3"
                 Margin="8"
                 Command="{s:Action Close}"
                 Content="CANCEL"
                 IsCancel="True"
                 Style="{DynamicResource MaterialDesignFlatButton}" />
-        </Grid>
-
-        <Grid Grid.Row="4" Margin="0,8,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <!--  Download option  -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <TextBlock
-                    Margin="8,8,0,8"
-                    VerticalAlignment="Center"
-                    Text="Subtitle:" />
-                <ComboBox
-                    MinWidth="150"
-                    Margin="8"
-                    materialDesign:ComboBoxAssist.ShowSelectedItem="True"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding AvailableSubtitleOptions}"
-                    SelectedItem="{Binding SelectedSubtitleOption}" />
-            </StackPanel>
-        </Grid>
+        </StackPanel>
     </Grid>
 </UserControl>

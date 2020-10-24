@@ -2,13 +2,13 @@
 {
     public class Query
     {
-        public QueryType Type { get; }
+        public QueryKind Kind { get; }
 
         public string Value { get; }
 
-        public Query(QueryType type, string value)
+        public Query(QueryKind kind, string value)
         {
-            Type = type;
+            Kind = kind;
             Value = value;
         }
     }

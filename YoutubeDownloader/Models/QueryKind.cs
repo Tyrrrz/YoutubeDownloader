@@ -1,6 +1,6 @@
 ﻿namespace YoutubeDownloader.Models
 {
-    public enum QueryType
+    public enum QueryKind
     {
         Video,
         Playlist,

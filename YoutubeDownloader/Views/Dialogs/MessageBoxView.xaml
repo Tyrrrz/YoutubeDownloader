@@ -24,7 +24,7 @@
             Grid.Row="0"
             Margin="8,16"
             FontSize="19"
-            Foreground="{DynamicResource PrimaryTextBrush}"
+            FontWeight="SemiBold"
             Text="{Binding Title}"
             TextTrimming="CharacterEllipsis"
             ToolTip="{Binding Title}" />

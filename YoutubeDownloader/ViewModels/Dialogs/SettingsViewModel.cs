@@ -15,22 +15,10 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             set => _settingsService.IsAutoUpdateEnabled = value;
         }
 
-        public int MaxConcurrentDownloads
+        public bool IsDarkModeEnabled
         {
-            get => _settingsService.MaxConcurrentDownloadCount;
-            set => _settingsService.MaxConcurrentDownloadCount = value.Clamp(1, 10);
-        }
-
-        public string FileNameTemplate
-        {
-            get => _settingsService.FileNameTemplate;
-            set => _settingsService.FileNameTemplate = value;
-        }
-
-        public string ExcludedContainerFormats
-        {
-            get => _settingsService.ExcludedContainerFormats != null ? string.Join(',', _settingsService.ExcludedContainerFormats) : string.Empty;
-            set => _settingsService.ExcludedContainerFormats = value.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            get => _settingsService.IsDarkModeEnabled;
+            set => _settingsService.IsDarkModeEnabled = value;
         }
 
         public bool ShouldInjectTags
@@ -44,10 +32,30 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             get => _settingsService.ShouldSkipExistingFiles;
             set => _settingsService.ShouldSkipExistingFiles = value;
         }
-        public bool IsDarkThemeEnabled
+
+        public string FileNameTemplate
         {
-            get => _settingsService.IsDarkThemeEnabled;
-            set => _settingsService.IsDarkThemeEnabled = value;
+            get => _settingsService.FileNameTemplate;
+            set => _settingsService.FileNameTemplate = value;
+        }
+
+        public string ExcludedContainerFormats
+        {
+            get => _settingsService.ExcludedContainerFormats != null
+                ? _settingsService.ExcludedContainerFormats.JoinToString(",")
+                : "";
+
+            set => _settingsService.ExcludedContainerFormats = value
+                .Split(',')
+                .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToArray();
+        }
+
+        public int MaxConcurrentDownloads
+        {
+            get => _settingsService.MaxConcurrentDownloadCount;
+            set => _settingsService.MaxConcurrentDownloadCount = value.Clamp(1, 10);
         }
 
         public SettingsViewModel(SettingsService settingsService)

@@ -11,8 +11,7 @@ namespace YoutubeDownloader.Internal
                 UseShellExecute = true
             };
 
-            using (Process.Start(startInfo))
-            { }
+            using (Process.Start(startInfo)) {}
         }
     }
 }

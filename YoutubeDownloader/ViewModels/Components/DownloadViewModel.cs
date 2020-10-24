@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
 using YoutubeDownloader.Internal;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
+using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Exceptions;
 using YoutubeExplode.Videos;
@@ -24,22 +24,23 @@ namespace YoutubeDownloader.ViewModels.Components
 
         private CancellationTokenSource? _cancellationTokenSource;
 
-        public Video Video { get; set; }
+        public Video Video { get; set; } = default!;
 
-        public string FilePath { get; set; }
+        public string FilePath { get; set; } = default!;
 
         public string FileName => Path.GetFileName(FilePath);
 
-        public string Format { get; set; }
-        public DownloadQuality Quality { get; set; }
+        public string Format { get; set; } = default!;
 
-        public DownloadOption? DownloadOption { get; set; }
+        public VideoQualityPreference QualityPreference { get; set; } = VideoQualityPreference.Maximum;
 
-        public SubtitleOption? SubtitleOption { get; set; }
+        public VideoDownloadOption? VideoOption { get; set; }
 
-        public IProgressManager ProgressManager { get; set; }
+        public SubtitleDownloadOption? SubtitleOption { get; set; }
 
-        public IProgressOperation ProgressOperation { get; private set; }
+        public IProgressManager? ProgressManager { get; set; }
+
+        public IProgressOperation? ProgressOperation { get; private set; }
 
         public bool IsActive { get; private set; }
 
@@ -51,8 +52,12 @@ namespace YoutubeDownloader.ViewModels.Components
 
         public string? FailReason { get; private set; }
 
-        public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, SettingsService settingsService,
-            DownloadService downloadService, TaggingService taggingService)
+        public DownloadViewModel(
+            IViewModelFactory viewModelFactory,
+            DialogManager dialogManager,
+            SettingsService settingsService,
+            DownloadService downloadService,
+            TaggingService taggingService)
         {
             _viewModelFactory = viewModelFactory;
             _dialogManager = dialogManager;
@@ -75,25 +80,39 @@ namespace YoutubeDownloader.ViewModels.Components
 
             Task.Run(async () =>
             {
-                // Create cancellation token source
                 _cancellationTokenSource = new CancellationTokenSource();
-
-                // Create progress operation
-                ProgressOperation = ProgressManager.CreateOperation();
+                ProgressOperation = ProgressManager?.CreateOperation();
 
                 try
                 {
                     // If download option is not set - get the best download option
-                    if (DownloadOption == null)
-                        DownloadOption = await _downloadService.GetBestDownloadOptionAsync(Video.Id, Format, Quality);
+                    VideoOption ??= await _downloadService.TryGetBestVideoDownloadOptionAsync(
+                        Video.Id,
+                        Format,
+                        QualityPreference
+                    );
 
-                    await _downloadService.DownloadVideoAsync(DownloadOption, FilePath, ProgressOperation, _cancellationTokenSource.Token);
+                    // It's possible that video has no streams
+                    if (VideoOption == null)
+                        throw new InvalidOperationException($"Video '{Video.Id}' contains no streams.");
+
+                    await _downloadService.DownloadAsync(
+                        VideoOption,
+                        SubtitleOption,
+                        FilePath,
+                        ProgressOperation,
+                        _cancellationTokenSource.Token
+                    );
 
                     if (_settingsService.ShouldInjectTags)
-                        await _taggingService.InjectTagsAsync(Video, Format, FilePath, _cancellationTokenSource.Token);
-
-                    if (SubtitleOption != null && SubtitleOption.ClosedCaptionTrackInfos.Any())
-                        await _downloadService.DownloadSubtitleAsync(SubtitleOption, FilePath);
+                    {
+                        await _taggingService.InjectTagsAsync(
+                            Video,
+                            Format,
+                            FilePath,
+                            _cancellationTokenSource.Token
+                        );
+                    }
 
                     IsSuccessful = true;
                 }
@@ -113,9 +132,8 @@ namespace YoutubeDownloader.ViewModels.Components
                 finally
                 {
                     IsActive = false;
-
                     _cancellationTokenSource.Dispose();
-                    ProgressOperation.Dispose();
+                    ProgressOperation?.Dispose();
                 }
             });
         }
@@ -139,7 +157,7 @@ namespace YoutubeDownloader.ViewModels.Components
 
             try
             {
-                // This opens explorer, navigates to the output directory and selects the video file
+                // Open explorer, navigate to the output directory and select the video file
                 Process.Start("explorer", $"/select, \"{FilePath}\"");
             }
             catch (Exception ex)
@@ -158,7 +176,6 @@ namespace YoutubeDownloader.ViewModels.Components
 
             try
             {
-                // Open video file using default player
                 ProcessEx.StartShellExecute(FilePath);
             }
             catch (Exception ex)
@@ -171,5 +188,44 @@ namespace YoutubeDownloader.ViewModels.Components
         public bool CanRestart => CanStart && !IsSuccessful;
 
         public void Restart() => Start();
+    }
+
+    public static class DownloadViewModelExtensions
+    {
+        public static DownloadViewModel CreateDownloadViewModel(
+            this IViewModelFactory factory,
+            Video video,
+            string filePath,
+            string format,
+            VideoDownloadOption videoOption,
+            SubtitleDownloadOption? subtitleOption)
+        {
+            var viewModel = factory.CreateDownloadViewModel();
+
+            viewModel.Video = video;
+            viewModel.FilePath = filePath;
+            viewModel.Format = format;
+            viewModel.VideoOption = videoOption;
+            viewModel.SubtitleOption = subtitleOption;
+
+            return viewModel;
+        }
+
+        public static DownloadViewModel CreateDownloadViewModel(
+            this IViewModelFactory factory,
+            Video video,
+            string filePath,
+            string format,
+            VideoQualityPreference qualityPreference)
+        {
+            var viewModel = factory.CreateDownloadViewModel();
+
+            viewModel.Video = video;
+            viewModel.FilePath = filePath;
+            viewModel.Format = format;
+            viewModel.QualityPreference = qualityPreference;
+
+            return viewModel;
+        }
     }
 }

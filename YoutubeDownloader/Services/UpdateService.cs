@@ -10,7 +10,8 @@ namespace YoutubeDownloader.Services
     {
         private readonly IUpdateManager _updateManager = new UpdateManager(
             new GithubPackageResolver("Tyrrrz", "YoutubeDownloader", "YoutubeDownloader.zip"),
-            new ZipPackageExtractor());
+            new ZipPackageExtractor()
+        );
 
         private readonly SettingsService _settingsService;
 

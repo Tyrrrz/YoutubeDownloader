@@ -1,4 +1,5 @@
-﻿using Stylet;
+﻿using System.Net;
+using Stylet;
 using StyletIoC;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels;
@@ -13,6 +14,18 @@ namespace YoutubeDownloader
 {
     public class Bootstrapper : Bootstrapper<RootViewModel>
     {
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            // Set default theme
+            // (preferred theme will be chosen later, once the settings are loaded)
+            App.SetLightTheme();
+
+            // Increase maximum concurrent connections
+            ServicePointManager.DefaultConnectionLimit = 20;
+        }
+
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
             base.ConfigureIoC(builder);

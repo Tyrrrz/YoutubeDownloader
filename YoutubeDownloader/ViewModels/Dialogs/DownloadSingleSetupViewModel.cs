@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using YoutubeDownloader.Internal;
@@ -16,17 +17,23 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         private readonly SettingsService _settingsService;
         private readonly DialogManager _dialogManager;
 
-        public string Title { get; set; }
+        public string Title { get; set; } = default!;
 
-        public Video Video { get; set; }
+        public Video Video { get; set; } = default!;
 
-        public IReadOnlyList<DownloadOption> AvailableDownloadOptions { get; set; }
-        public IReadOnlyList<SubtitleOption> AvailableSubtitleOptions { get; set; }
+        public IReadOnlyList<VideoDownloadOption> AvailableVideoOptions { get; set; } =
+            Array.Empty<VideoDownloadOption>();
 
-        public DownloadOption SelectedDownloadOption { get; set; }
-        public SubtitleOption SelectedSubtitleOption { get; set; }
+        public IReadOnlyList<SubtitleDownloadOption> AvailableSubtitleOptions { get; set; } =
+            Array.Empty<SubtitleDownloadOption>();
 
-        public DownloadSingleSetupViewModel(IViewModelFactory viewModelFactory, SettingsService settingsService,
+        public VideoDownloadOption? SelectedVideoOption { get; set; }
+
+        public SubtitleDownloadOption? SelectedSubtitleOption { get; set; }
+
+        public DownloadSingleSetupViewModel(
+            IViewModelFactory viewModelFactory,
+            SettingsService settingsService,
             DialogManager dialogManager)
         {
             _viewModelFactory = viewModelFactory;
@@ -36,49 +43,76 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public void OnViewLoaded()
         {
-            // Select first download option matching last used format or first non-audio-only download option
-            SelectedDownloadOption =
-                AvailableDownloadOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
-                AvailableDownloadOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Label)).FirstOrDefault();
+            // Select first video download option matching last used format or first non-audio-only download option
+            SelectedVideoOption =
+                AvailableVideoOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
+                AvailableVideoOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Label)).FirstOrDefault();
 
-            SelectedSubtitleOption = 
-                AvailableSubtitleOptions.FirstOrDefault(o => o.Language.Code == _settingsService.LastSubtitleLanguageCode) ??
-                AvailableSubtitleOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Language.Name)).FirstOrDefault();
+            // Select first subtitle download option matching last used language
+            SelectedSubtitleOption =
+                AvailableSubtitleOptions.FirstOrDefault(o =>
+                    o.TrackInfo.Language.Code == _settingsService.LastSubtitleLanguageCode);
         }
 
-        public bool CanConfirm => Video != null;
+        public bool CanConfirm => SelectedVideoOption != null;
 
         public void Confirm()
         {
-            var format = SelectedDownloadOption.Format;
+            var format = SelectedVideoOption!.Format;
 
-            // Prompt user for output file path
+            // Prompt for output file path
+            var defaultFileName = FileNameGenerator.GenerateFileName(
+                _settingsService.FileNameTemplate,
+                Video,
+                format
+            );
+
             var filter = $"{format.ToUpperInvariant()} file|*.{format}";
-            var defaultFileName = FileNameGenerator.GenerateFileName(_settingsService.FileNameTemplate, Video, format);
-            var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
 
-            // If canceled - return
+            var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
             if (string.IsNullOrWhiteSpace(filePath))
                 return;
 
-            // Save last used format
             _settingsService.LastFormat = format;
+            _settingsService.LastSubtitleLanguageCode = SelectedSubtitleOption?.TrackInfo.Language.Code;
 
-            // Save last used subtitle language if selected
-            if (!string.IsNullOrWhiteSpace(SelectedSubtitleOption.Language.Code))
-                _settingsService.LastSubtitleLanguageCode = SelectedSubtitleOption.Language.Code;
+            var download = _viewModelFactory.CreateDownloadViewModel(
+                Video!,
+                filePath,
+                format,
+                SelectedVideoOption,
+                SelectedSubtitleOption
+            );
 
-            // Create download view model
-            var download = _viewModelFactory.CreateDownloadViewModel(Video, filePath, format, SelectedDownloadOption, SelectedSubtitleOption);
-
-            // Create empty file to "lock in" the file path
+            // Create empty file to "lock in" the file path.
+            // This is necessary as there may be other downloads with the same file name
+            // which would otherwise overwrite the file.
             PathEx.CreateDirectoryForFile(filePath);
             PathEx.CreateEmptyFile(filePath);
 
-            // Close dialog
             Close(download);
         }
 
         public void CopyTitle() => Clipboard.SetText(Title);
+    }
+
+    public static class DownloadSingleSetupViewModelExtensions
+    {
+        public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
+            this IViewModelFactory factory,
+            string title,
+            Video video,
+            IReadOnlyList<VideoDownloadOption> availableDownloadOptions,
+            IReadOnlyList<SubtitleDownloadOption> availableSubtitleOptions)
+        {
+            var viewModel = factory.CreateDownloadSingleSetupViewModel();
+
+            viewModel.Title = title;
+            viewModel.Video = video;
+            viewModel.AvailableVideoOptions = availableDownloadOptions;
+            viewModel.AvailableSubtitleOptions = availableSubtitleOptions;
+
+            return viewModel;
+        }
     }
 }
