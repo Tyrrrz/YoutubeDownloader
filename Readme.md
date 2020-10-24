@@ -5,9 +5,11 @@
 [![Downloads](https://img.shields.io/github/downloads/Tyrrrz/YoutubeDownloader/total.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
-YoutubeDownloader is an application that lets you download videos from YouTube. You can just copy-paste URLs of any videos, playlists or channels and download them directly to a format of your choice. It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
+**Project status: maintenance mode** (bug fixes only).
 
-This application uses the [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) library under the hood to interact with YouTube.
+YoutubeDownloader is an application that lets you download videos from YouTube. You can copy-paste URL of any video, playlist or channel and download it directly to a format of your choice. It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
+
+This application uses [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 
 ## Download
 
