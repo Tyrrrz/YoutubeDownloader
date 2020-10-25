@@ -90,7 +90,7 @@
                     VerticalAlignment="Center"
                     Text="Format:" />
                 <ComboBox
-                    MinWidth="150"
+                    Width="150"
                     Margin="8"
                     VerticalAlignment="Center"
                     materialDesign:ComboBoxAssist.ShowSelectedItem="True"
@@ -105,16 +105,15 @@
                 IsEnabled="{Binding AvailableSubtitleOptions}"
                 Orientation="Horizontal">
                 <CheckBox
-                    x:Name="SubtitlesCheckBox"
                     Margin="8"
                     VerticalAlignment="Center"
                     Content="Subtitles:"
-                    Unchecked="SubtitlesCheckBox_OnUnchecked" />
+                    IsChecked="{Binding ShouldDownloadSubtitles}" />
                 <ComboBox
-                    MinWidth="150"
+                    Width="150"
                     Margin="8"
                     materialDesign:ComboBoxAssist.ShowSelectedItem="True"
-                    IsEnabled="{Binding IsChecked, ElementName=SubtitlesCheckBox}"
+                    IsEnabled="{Binding ShouldDownloadSubtitles}"
                     IsReadOnly="True"
                     ItemsSource="{Binding AvailableSubtitleOptions}"
                     SelectedItem="{Binding SelectedSubtitleOption}" />

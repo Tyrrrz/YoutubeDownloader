@@ -130,7 +130,7 @@
                     VerticalAlignment="Center"
                     Text="Format:" />
                 <ComboBox
-                    MinWidth="150"
+                    Width="150"
                     Margin="8"
                     VerticalAlignment="Center"
                     IsReadOnly="True"
@@ -148,7 +148,7 @@
                     VerticalAlignment="Center"
                     Text="Video quality:" />
                 <ComboBox
-                    MinWidth="150"
+                    Width="150"
                     Margin="8"
                     VerticalAlignment="Center"
                     IsReadOnly="True"
