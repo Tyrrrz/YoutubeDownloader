@@ -14,10 +14,16 @@ namespace YoutubeDownloader.Models
         public IReadOnlyList<IStreamInfo> StreamInfos { get; }
 
         public VideoQuality? Quality =>
-            StreamInfos.OfType<IVideoStreamInfo>().FirstOrDefault()?.VideoQuality;
+            StreamInfos.OfType<IVideoStreamInfo>()
+                .Select(s => s.VideoQuality)
+                .OrderByDescending(q => q)
+                .FirstOrDefault();
 
         public Framerate? Framerate =>
-            StreamInfos.OfType<IVideoStreamInfo>().FirstOrDefault()?.Framerate;
+            StreamInfos.OfType<IVideoStreamInfo>()
+                .Select(s => s.Framerate)
+                .OrderByDescending(f => f)
+                .FirstOrDefault();
 
         public VideoDownloadOption(
             string format,

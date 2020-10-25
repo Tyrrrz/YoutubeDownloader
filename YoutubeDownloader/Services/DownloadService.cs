@@ -111,11 +111,18 @@ namespace YoutubeDownloader.Services
                 }
 
                 // Get audio with matching format, if possible
-                var audioStreamInfo = streamManifest
-                    .GetAudio()
-                    .OrderByDescending(s => s.Container == streamInfo.Container)
-                    .ThenByDescending(s => s.Bitrate)
-                    .FirstOrDefault();
+                var audioStreamInfo =
+                    (IStreamInfo?)
+                    streamManifest
+                        .GetAudioOnly()
+                        .OrderByDescending(s => s.Container == streamInfo.Container)
+                        .ThenByDescending(s => s.Bitrate)
+                        .FirstOrDefault() ??
+                    streamManifest
+                        .GetMuxed()
+                        .OrderByDescending(s => s.Container == streamInfo.Container)
+                        .ThenByDescending(s => s.Bitrate)
+                        .FirstOrDefault();
 
                 if (audioStreamInfo != null)
                 {
@@ -199,7 +206,9 @@ namespace YoutubeDownloader.Services
                 _ => throw new ArgumentOutOfRangeException(nameof(qualityPreference))
             };
 
-            return preferredOption ?? orderedOptions.FirstOrDefault();
+            return
+                preferredOption ??
+                orderedOptions.FirstOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
