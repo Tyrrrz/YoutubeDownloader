@@ -1,3 +1,13 @@
+### v1.7.15 (25-Oct-2020)
+
+- Added subtitle download option when downloading single videos. (Thanks [@beawolf](https://github.com/beawolf))
+- Added format exclusion list. You can configure in settings a list of containers which you would like to not see, and they will be filtered out in the format selection dropdown. (Thanks [@beawolf](https://github.com/beawolf))
+- Added dark mode. You can enable it in settings. (Thanks [@Andrew Kolos](https://github.com/andrewkolos))
+- Added video quality preference selection when downloading multiple videos. (Thanks [@Bartłomiej Rogowski](https://github.com/brogowski))
+- Added circular progress bars for each individual active download.
+- Added meta tag injection for mp4 files. This adds channel and upload date information, as well as thumbnail. (Thanks [@beawolf](https://github.com/beawolf))
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v5.1.8.
+
 ### v1.7.14 (29-Sep-2020)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v5.1.6.
