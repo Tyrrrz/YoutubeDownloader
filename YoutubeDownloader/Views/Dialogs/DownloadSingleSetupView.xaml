@@ -26,7 +26,7 @@
             Grid.Row="0"
             Margin="8,16,8,8"
             FontSize="19"
-            FontWeight="DemiBold"
+            FontWeight="SemiBold"
             Text="{Binding Title}"
             TextTrimming="CharacterEllipsis"
             ToolTip="{Binding Title}">
@@ -52,6 +52,7 @@
             <TextBlock
                 Grid.Column="2"
                 FontSize="15"
+                FontWeight="Light"
                 Text="{Binding Video.UploadDate, StringFormat=\{0:MMM d\, yyyy\}}" />
         </Grid>
 
@@ -70,6 +71,8 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Background="Black"
+                FontWeight="Light"
+                Foreground="White"
                 Text="{Binding Video.Duration}" />
         </Grid>
 
@@ -103,12 +106,10 @@
                 Orientation="Horizontal">
                 <CheckBox
                     x:Name="SubtitlesCheckBox"
+                    Margin="8"
                     VerticalAlignment="Center"
+                    Content="Subtitles:"
                     Unchecked="SubtitlesCheckBox_OnUnchecked" />
-                <TextBlock
-                    Margin="4,8,8,8"
-                    VerticalAlignment="Center"
-                    Text="Subtitles:" />
                 <ComboBox
                     MinWidth="150"
                     Margin="8"
@@ -122,7 +123,6 @@
 
         <StackPanel
             Grid.Row="4"
-            Margin="0,8,0,0"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
             <!--  OK  -->

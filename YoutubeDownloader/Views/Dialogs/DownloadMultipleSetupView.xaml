@@ -116,7 +116,7 @@
             </ListView>
         </Border>
 
-        <Grid Grid.Row="2" Margin="8">
+        <Grid Grid.Row="2" Margin="0,8,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -131,7 +131,7 @@
                     Text="Format:" />
                 <ComboBox
                     MinWidth="150"
-                    Margin="12,8"
+                    Margin="8"
                     VerticalAlignment="Center"
                     IsReadOnly="True"
                     ItemsSource="{Binding AvailableFormats}"
