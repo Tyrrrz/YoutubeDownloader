@@ -132,7 +132,8 @@ namespace YoutubeDownloader.ViewModels.Components
                 finally
                 {
                     IsActive = false;
-                    _cancellationTokenSource.Dispose();
+                    _cancellationTokenSource?.Dispose();
+                    _cancellationTokenSource = null;
                     ProgressOperation?.Dispose();
                 }
             });
