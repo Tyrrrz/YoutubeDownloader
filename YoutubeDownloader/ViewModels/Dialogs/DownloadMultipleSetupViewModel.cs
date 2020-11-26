@@ -24,7 +24,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public IReadOnlyList<Video> SelectedVideos { get; set; } = Array.Empty<Video>();
 
-        public IReadOnlyList<string> AvailableFormats { get; set; } = Array.Empty<string>();
+        public IReadOnlyList<string> AvailableFormats { get; set; } = new[] { "mp4", "mp3", "ogg" };
 
         public IReadOnlyList<VideoQualityPreference> AvailableQualityPreferences { get; } =
             Enum.GetValues(typeof(VideoQualityPreference)).Cast<VideoQualityPreference>().ToArray();
@@ -49,9 +49,11 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public void OnViewLoaded()
         {
-            AvailableFormats = new[] {"mp4", "mp3", "ogg"}
-                .Where(f => !_settingsService.ExcludedContainerFormats?.Contains(f, StringComparer.OrdinalIgnoreCase) == true)
-                .ToArray();
+        
+            if (_settingsService.ExcludedContainerFormats != null)
+                AvailableFormats = new[] {"mp4", "mp3", "ogg"}
+                    .Where(f => !_settingsService.ExcludedContainerFormats?.Contains(f, StringComparer.OrdinalIgnoreCase) == true)
+                    .ToArray();
 
             SelectedFormat =
                 !string.IsNullOrWhiteSpace(_settingsService.LastFormat) &&
