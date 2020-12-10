@@ -19,3 +19,6 @@ bld/
 
 # Coverage
 *.opencover.xml
+
+# FFmpeg binary
+ffmpeg.exe
