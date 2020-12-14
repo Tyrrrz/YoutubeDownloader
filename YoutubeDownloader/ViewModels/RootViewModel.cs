@@ -34,7 +34,7 @@ namespace YoutubeDownloader.ViewModels
 
         public string? Query { get; set; }
 
-        public BindableCollection<DownloadViewModel> Downloads { get; } = new BindableCollection<DownloadViewModel>();
+        public BindableCollection<DownloadViewModel> Downloads { get; } = new();
 
         public RootViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager,
             SettingsService settingsService, UpdateService updateService, QueryService queryService,
@@ -52,12 +52,12 @@ namespace YoutubeDownloader.ViewModels
 
             // Update busy state when progress manager changes
             ProgressManager.Bind(o => o.IsActive,
-                (sender, args) => IsProgressIndeterminate =
+                (_, _) => IsProgressIndeterminate =
                     ProgressManager.IsActive && ProgressManager.Progress.IsEither(0, 1)
             );
 
             ProgressManager.Bind(o => o.Progress,
-                (sender, args) => IsProgressIndeterminate =
+                (_, _) => IsProgressIndeterminate =
                     ProgressManager.IsActive && ProgressManager.Progress.IsEither(0, 1)
             );
         }

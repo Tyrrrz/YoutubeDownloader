@@ -13,9 +13,9 @@ namespace YoutubeDownloader.Services
 {
     public class TaggingService
     {
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient = new();
 
-        private readonly SemaphoreSlim _requestRateSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _requestRateSemaphore = new(1, 1);
         private DateTimeOffset _lastRequestInstant = DateTimeOffset.MinValue;
 
         public TaggingService()

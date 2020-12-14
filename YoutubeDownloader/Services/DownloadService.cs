@@ -13,8 +13,8 @@ namespace YoutubeDownloader.Services
 {
     public class DownloadService
     {
-        private readonly YoutubeClient _youtube = new YoutubeClient();
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly YoutubeClient _youtube = new();
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         private readonly SettingsService _settingsService;
 

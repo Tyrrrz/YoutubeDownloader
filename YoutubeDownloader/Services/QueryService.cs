@@ -12,7 +12,7 @@ namespace YoutubeDownloader.Services
 {
     public partial class QueryService
     {
-        private readonly YoutubeClient _youtube = new YoutubeClient();
+        private readonly YoutubeClient _youtube = new();
 
         public Query ParseQuery(string query)
         {
