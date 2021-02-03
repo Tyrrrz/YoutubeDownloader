@@ -349,7 +349,12 @@
                 </DataGrid>
 
                 <!--  Notifications  -->
-                <materialDesign:Snackbar MessageQueue="{Binding Notifications}" />
+                <materialDesign:Snackbar
+                    ActionButtonPlacement="Inline"
+                    ActionButtonStyle="{DynamicResource Snackbar}"
+                    Background="{DynamicResource MaterialDesignDarkBackground}"
+                    Foreground="{DynamicResource MaterialDesignDarkForeground}"
+                    MessageQueue="{Binding Notifications}" />
             </Grid>
         </Grid>
     </materialDesign:DialogHost>
