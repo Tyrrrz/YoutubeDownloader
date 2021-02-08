@@ -93,11 +93,24 @@
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
             </Style>
 
-            <Style
-                x:Key="Snackbar"
-                BasedOn="{StaticResource MaterialDesignFlatButton}"
-                TargetType="{x:Type Button}">
-                <Setter Property="Foreground" Value="#F9A825" />
+            <Style TargetType="{x:Type materialDesign:Snackbar}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignDarkForeground}" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="ActionButtonStyle">
+                    <Setter.Value>
+                        <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="{x:Type Button}">
+                            <Setter Property="VerticalAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                            <Setter Property="Height" Value="36" />
+                            <Setter Property="Margin" Value="8,-10,-8,-10" />
+                            <Setter Property="Padding" Value="8" />
+                            <Setter Property="Foreground" Value="{DynamicResource SecondaryAccentBrush}" />
+                            <Setter Property="materialDesign:RippleAssist.Feedback" Value="{DynamicResource MaterialDesignSnackbarRipple}" />
+                        </Style>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </s:ApplicationLoader>
     </Application.Resources>
