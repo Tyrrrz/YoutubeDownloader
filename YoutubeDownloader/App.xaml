@@ -92,6 +92,13 @@
 
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
             </Style>
+
+            <Style
+                x:Key="Snackbar"
+                BasedOn="{StaticResource MaterialDesignFlatButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Foreground" Value="#F9A825" />
+            </Style>
         </s:ApplicationLoader>
     </Application.Resources>
 </Application>
