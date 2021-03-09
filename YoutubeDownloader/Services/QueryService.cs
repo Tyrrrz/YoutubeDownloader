@@ -20,28 +20,28 @@ namespace YoutubeDownloader.Services
 
             // Playlist
             var playlistId = TryParsePlaylistId(query);
-            if (playlistId != null)
+            if (playlistId is not null)
             {
                 return new Query(QueryKind.Playlist, playlistId.Value);
             }
 
             // Video
             var videoId = TryParseVideoId(query);
-            if (videoId != null)
+            if (videoId is not null)
             {
                 return new Query(QueryKind.Video, videoId.Value);
             }
 
             // Channel
             var channelId = TryParseChannelId(query);
-            if (channelId != null)
+            if (channelId is not null)
             {
                 return new Query(QueryKind.Channel, channelId.Value);
             }
 
             // User
             var userName = TryParseUserName(query);
-            if (userName != null)
+            if (userName is not null)
             {
                 return new Query(QueryKind.User, userName.Value);
             }

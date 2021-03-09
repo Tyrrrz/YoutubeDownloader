@@ -156,7 +156,7 @@ namespace YoutubeDownloader.Services
             appleTag.SetDashBox("Upload Date", "    Upload Date", video.UploadDate.ToString("yyyy-MM-dd"));
             appleTag.SetDashBox("Channel", "    Channel", video.Author);
 
-            file.Tag.Pictures = picture != null
+            file.Tag.Pictures = picture is not null
                 ? new[] {picture}
                 : Array.Empty<IPicture>();
 
@@ -185,7 +185,7 @@ namespace YoutubeDownloader.Services
             file.Tag.Title = resolvedTitle ?? title ?? "";
             file.Tag.Album = resolvedAlbumName ?? "";
 
-            file.Tag.Pictures = picture != null
+            file.Tag.Pictures = picture is not null
                 ? new[] {picture}
                 : Array.Empty<IPicture>();
 

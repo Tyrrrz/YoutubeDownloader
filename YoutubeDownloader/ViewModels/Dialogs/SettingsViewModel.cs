@@ -41,7 +41,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public string ExcludedContainerFormats
         {
-            get => _settingsService.ExcludedContainerFormats != null
+            get => _settingsService.ExcludedContainerFormats is not null
                 ? _settingsService.ExcludedContainerFormats.JoinToString(",")
                 : "";
 

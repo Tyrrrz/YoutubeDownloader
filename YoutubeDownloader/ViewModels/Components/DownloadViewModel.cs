@@ -93,7 +93,7 @@ namespace YoutubeDownloader.ViewModels.Components
                     );
 
                     // It's possible that video has no streams
-                    if (VideoOption == null)
+                    if (VideoOption is null)
                         throw new InvalidOperationException($"Video '{Video.Id}' contains no streams.");
 
                     await _downloadService.DownloadAsync(

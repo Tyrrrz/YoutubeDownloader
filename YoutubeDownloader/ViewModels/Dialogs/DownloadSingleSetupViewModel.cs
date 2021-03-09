@@ -57,7 +57,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                 AvailableSubtitleOptions.FirstOrDefault();
         }
 
-        public bool CanConfirm => SelectedVideoOption != null;
+        public bool CanConfirm => SelectedVideoOption is not null;
 
         public void Confirm()
         {

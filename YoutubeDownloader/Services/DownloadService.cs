@@ -66,7 +66,7 @@ namespace YoutubeDownloader.Services
                     cancellationToken
                 );
 
-                if (subtitleDownloadOption != null)
+                if (subtitleDownloadOption is not null)
                 {
                     var subtitleFilePath = Path.ChangeExtension(filePath, "srt");
 
@@ -124,7 +124,7 @@ namespace YoutubeDownloader.Services
                         .ThenByDescending(s => s.Bitrate)
                         .FirstOrDefault();
 
-                if (audioStreamInfo != null)
+                if (audioStreamInfo is not null)
                 {
                     options.Add(new VideoDownloadOption(format, label, streamInfo, audioStreamInfo));
                 }
@@ -137,14 +137,14 @@ namespace YoutubeDownloader.Services
                 .ThenByDescending(s => s.Bitrate)
                 .FirstOrDefault();
 
-            if (bestAudioOnlyStreamInfo != null)
+            if (bestAudioOnlyStreamInfo is not null)
             {
                 options.Add(new VideoDownloadOption("mp3", "Audio", bestAudioOnlyStreamInfo));
                 options.Add(new VideoDownloadOption("ogg", "Audio", bestAudioOnlyStreamInfo));
             }
 
             // Drop excluded formats
-            if (_settingsService.ExcludedContainerFormats != null)
+            if (_settingsService.ExcludedContainerFormats is not null)
             {
                 options.RemoveWhere(o =>
                     _settingsService.ExcludedContainerFormats.Contains(o.Format, StringComparer.OrdinalIgnoreCase)
