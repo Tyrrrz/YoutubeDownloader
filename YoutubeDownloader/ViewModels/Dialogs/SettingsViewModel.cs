@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Tyrrrz.Extensions;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
@@ -8,6 +9,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
     public class SettingsViewModel : DialogScreen
     {
         private readonly SettingsService _settingsService;
+        private static readonly char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
 
         public bool IsAutoUpdateEnabled
         {
@@ -56,6 +58,11 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         {
             get => _settingsService.MaxConcurrentDownloadCount;
             set => _settingsService.MaxConcurrentDownloadCount = value.Clamp(1, 10);
+        }
+        public char InvalidCharsReplacement
+        {
+            get => _settingsService.InvalidCharsReplacement;
+            set => _settingsService.InvalidCharsReplacement = invalidFileNameChars.Contains(value) ? '_' : value;
         }
 
         public SettingsViewModel(SettingsService settingsService)

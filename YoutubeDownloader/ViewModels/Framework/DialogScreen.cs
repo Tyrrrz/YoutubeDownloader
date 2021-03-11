@@ -10,7 +10,7 @@ namespace YoutubeDownloader.ViewModels.Framework
 
         public event EventHandler? Closed;
 
-        public void Close(T dialogResult = default)
+        public void Close(T dialogResult = default!)
         {
             DialogResult = dialogResult!;
             Closed?.Invoke(this, EventArgs.Empty);

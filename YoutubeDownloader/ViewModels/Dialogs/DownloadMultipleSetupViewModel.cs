@@ -88,6 +88,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
                     _settingsService.FileNameTemplate,
                     video,
                     SelectedFormat!,
+                    _settingsService.InvalidCharsReplacement,
                     (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0')
                 );
 

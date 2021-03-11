@@ -67,7 +67,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             var defaultFileName = FileNameGenerator.GenerateFileName(
                 _settingsService.FileNameTemplate,
                 Video,
-                format
+                format,
+                _settingsService.InvalidCharsReplacement
             );
 
             var filter = $"{format.ToUpperInvariant()} file|*.{format}";

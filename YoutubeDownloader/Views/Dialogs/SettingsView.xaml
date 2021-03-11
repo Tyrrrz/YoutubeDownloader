@@ -131,6 +131,23 @@
             </TextBox.ToolTip>
         </TextBox>
 
+        <!--  Invalid chars replacement  -->
+        <TextBox
+            Margin="16,8"
+            materialDesign:HintAssist.Hint="Replacement for path invalid characters"
+            materialDesign:HintAssist.IsFloating="True"
+            MaxLength="1"
+            Text="{Binding InvalidCharsReplacement}">
+            <TextBox.ToolTip>
+                <TextBlock>
+                    <Run Text="Replacement symbol for invalid path characters" />
+                    <LineBreak />
+                    <LineBreak />
+                    <Run Text="Ex: /, *, ', :, etc" />
+                </TextBlock>
+            </TextBox.ToolTip>
+        </TextBox>
+
         <!--  Max concurrent downloads  -->
         <StackPanel Background="Transparent" ToolTip="How many downloads can be active at one time">
             <TextBlock Margin="16,8,16,4">

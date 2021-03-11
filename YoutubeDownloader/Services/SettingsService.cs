@@ -27,6 +27,8 @@ namespace YoutubeDownloader.Services
 
         public VideoQualityPreference LastVideoQualityPreference { get; set; } = VideoQualityPreference.Maximum;
 
+        public char InvalidCharsReplacement { get; set; } = '_';
+
         public SettingsService()
         {
             Configuration.StorageSpace = StorageSpace.Instance;

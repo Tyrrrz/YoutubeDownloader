@@ -18,6 +18,7 @@ namespace YoutubeDownloader.Internal
             string template,
             Video video,
             string format,
+            char replacementSymbol,
             string? number = null)
         {
             var result = template;
@@ -31,7 +32,7 @@ namespace YoutubeDownloader.Internal
 
             result += $".{format}";
 
-            return PathEx.EscapeFileName(result);
+            return PathEx.EscapeFileName(result, replacementSymbol);
         }
     }
 }
