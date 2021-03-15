@@ -16,7 +16,9 @@ jobs:
         dotnet-version: '3.1.x'
 
     - name: Build & publish
-      run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
+      run: |
+        dotnet nuget locals all --clear
+        dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v1
