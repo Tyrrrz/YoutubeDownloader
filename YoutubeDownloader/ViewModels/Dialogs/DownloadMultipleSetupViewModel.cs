@@ -8,7 +8,6 @@ using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
-using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs
 {
@@ -20,9 +19,9 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public string Title { get; set; } = default!;
 
-        public IReadOnlyList<Video> AvailableVideos { get; set; } = Array.Empty<Video>();
+        public IReadOnlyList<VideoInformation> AvailableVideos { get; set; } = Array.Empty<VideoInformation>();
 
-        public IReadOnlyList<Video> SelectedVideos { get; set; } = Array.Empty<Video>();
+        public IReadOnlyList<VideoInformation> SelectedVideos { get; set; } = Array.Empty<VideoInformation>();
 
         public IReadOnlyList<string> AvailableFormats { get; set; } = new[] { "mp4", "mp3", "ogg" };
 
@@ -131,7 +130,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         public static DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel(
             this IViewModelFactory factory,
             string title,
-            IReadOnlyList<Video> availableVideos)
+            IReadOnlyList<VideoInformation> availableVideos)
         {
             var viewModel = factory.CreateDownloadMultipleSetupViewModel();
 

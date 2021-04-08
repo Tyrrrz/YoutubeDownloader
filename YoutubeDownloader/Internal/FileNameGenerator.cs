@@ -1,4 +1,4 @@
-﻿using YoutubeExplode.Videos;
+﻿using YoutubeDownloader.Models;
 
 namespace YoutubeDownloader.Internal
 {
@@ -16,7 +16,7 @@ namespace YoutubeDownloader.Internal
 
         public static string GenerateFileName(
             string template,
-            Video video,
+            VideoInformation video,
             string format,
             string? number = null)
         {
@@ -25,7 +25,7 @@ namespace YoutubeDownloader.Internal
             result = result.Replace(NumberToken, !string.IsNullOrWhiteSpace(number) ? $"[{number}]" : "");
             result = result.Replace(TitleToken, video.Title);
             result = result.Replace(AuthorToken, video.Author);
-            result = result.Replace(UploadDateToken, video.UploadDate.ToString("yyyy-MM-dd"));
+            result = result.Replace(UploadDateToken, video.UploadDate?.ToString("yyyy-MM-dd"));
 
             result = result.Trim();
 
