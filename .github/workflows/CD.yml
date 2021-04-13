@@ -19,9 +19,7 @@ jobs:
         dotnet-version: '3.1.x'
 
     - name: Build & publish
-      run: |
-        dotnet nuget locals all --clear
-        dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
+      run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
 
     - name: Pack
       run: Compress-Archive -Path YoutubeDownloader/bin/Publish/* -DestinationPath YoutubeDownloader/bin/Publish/Archive.zip -Force
