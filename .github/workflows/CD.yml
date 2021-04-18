@@ -13,10 +13,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.3.3
 
-    - name: Install .NET Core
+    - name: Install .NET (v3.1)
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: '3.1.x'
+        dotnet-version: 3.1.x
+
+    - name: Install .NET (v5.0)
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: 5.0.x
 
     - name: Build & publish
       run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
