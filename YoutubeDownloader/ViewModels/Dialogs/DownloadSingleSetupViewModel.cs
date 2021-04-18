@@ -19,7 +19,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public string Title { get; set; } = default!;
 
-        public Video Video { get; set; } = default!;
+        public IVideo Video { get; set; } = default!;
 
         public IReadOnlyList<VideoDownloadOption> AvailableVideoOptions { get; set; } =
             Array.Empty<VideoDownloadOption>();
@@ -104,7 +104,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
             this IViewModelFactory factory,
             string title,
-            Video video,
+            IVideo video,
             IReadOnlyList<VideoDownloadOption> availableDownloadOptions,
             IReadOnlyList<SubtitleDownloadOption> availableSubtitleOptions)
         {

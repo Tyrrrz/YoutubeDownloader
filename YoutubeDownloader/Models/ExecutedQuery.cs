@@ -9,9 +9,9 @@ namespace YoutubeDownloader.Models
 
         public string Title { get; }
 
-        public IReadOnlyList<Video> Videos { get; }
+        public IReadOnlyList<IVideo> Videos { get; }
 
-        public ExecutedQuery(Query query, string title, IReadOnlyList<Video> videos)
+        public ExecutedQuery(Query query, string title, IReadOnlyList<IVideo> videos)
         {
             Query = query;
             Title = title;

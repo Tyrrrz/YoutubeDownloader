@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using YoutubeDownloader.Models;
 using YoutubeExplode;
 using YoutubeExplode.Channels;
+using YoutubeExplode.Common;
 using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Services
 {
-    public partial class QueryService
+    public class QueryService
     {
         private readonly YoutubeClient _youtube = new();
 
@@ -19,31 +20,24 @@ namespace YoutubeDownloader.Services
             query = query.Trim();
 
             // Playlist
-            var playlistId = TryParsePlaylistId(query);
+            var playlistId = PlaylistId.TryParse(query);
             if (playlistId is not null)
             {
                 return new Query(QueryKind.Playlist, playlistId.Value);
             }
 
             // Video
-            var videoId = TryParseVideoId(query);
+            var videoId = VideoId.TryParse(query);
             if (videoId is not null)
             {
                 return new Query(QueryKind.Video, videoId.Value);
             }
 
             // Channel
-            var channelId = TryParseChannelId(query);
+            var channelId = ChannelId.TryParse(query);
             if (channelId is not null)
             {
                 return new Query(QueryKind.Channel, channelId.Value);
-            }
-
-            // User
-            var userName = TryParseUserName(query);
-            if (userName is not null)
-            {
-                return new Query(QueryKind.User, userName.Value);
             }
 
             // Search
@@ -69,7 +63,7 @@ namespace YoutubeDownloader.Services
             if (query.Kind == QueryKind.Playlist)
             {
                 var playlist = await _youtube.Playlists.GetAsync(query.Value);
-                var videos = await _youtube.Playlists.GetVideosAsync(query.Value).BufferAsync();
+                var videos = await _youtube.Playlists.GetVideosAsync(query.Value);
 
                 return new ExecutedQuery(query, playlist.Title, videos);
             }
@@ -78,16 +72,7 @@ namespace YoutubeDownloader.Services
             if (query.Kind == QueryKind.Channel)
             {
                 var channel = await _youtube.Channels.GetAsync(query.Value);
-                var videos = await _youtube.Channels.GetUploadsAsync(query.Value).BufferAsync();
-
-                return new ExecutedQuery(query, $"Channel uploads: {channel.Title}", videos);
-            }
-
-            // User
-            if (query.Kind == QueryKind.User)
-            {
-                var channel = await _youtube.Channels.GetByUserAsync(query.Value);
-                var videos = await _youtube.Channels.GetUploadsAsync(channel.Id).BufferAsync();
+                var videos = await _youtube.Channels.GetUploadsAsync(query.Value);
 
                 return new ExecutedQuery(query, $"Channel uploads: {channel.Title}", videos);
             }
@@ -95,7 +80,7 @@ namespace YoutubeDownloader.Services
             // Search
             if (query.Kind == QueryKind.Search)
             {
-                var videos = await _youtube.Search.GetVideosAsync(query.Value).BufferAsync(200);
+                var videos = await _youtube.Search.GetVideosAsync(query.Value).CollectAsync(100);
 
                 return new ExecutedQuery(query, $"Search: {query.Value}", videos);
             }
@@ -118,62 +103,6 @@ namespace YoutubeDownloader.Services
             }
 
             return result;
-        }
-    }
-
-    public partial class QueryService
-    {
-        private static VideoId? TryParseVideoId(string query)
-        {
-            try
-            {
-                return new VideoId(query);
-            }
-            catch (ArgumentException)
-            {
-                return null;
-            }
-        }
-
-        private static PlaylistId? TryParsePlaylistId(string query)
-        {
-            try
-            {
-                return new PlaylistId(query);
-            }
-            catch (ArgumentException)
-            {
-                return null;
-            }
-        }
-
-        private static ChannelId? TryParseChannelId(string query)
-        {
-            try
-            {
-                return new ChannelId(query);
-            }
-            catch (ArgumentException)
-            {
-                return null;
-            }
-        }
-
-        private static UserName? TryParseUserName(string query)
-        {
-            try
-            {
-                // Only URLs
-                if (!query.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
-                    !query.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-                    return null;
-
-                return new UserName(query);
-            }
-            catch (ArgumentException)
-            {
-                return null;
-            }
         }
     }
 }

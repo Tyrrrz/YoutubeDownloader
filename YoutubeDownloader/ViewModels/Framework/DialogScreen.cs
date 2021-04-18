@@ -5,14 +5,13 @@ namespace YoutubeDownloader.ViewModels.Framework
 {
     public abstract class DialogScreen<T> : PropertyChangedBase
     {
-        // ReSharper disable once RedundantDefaultMemberInitializer
-        public T DialogResult { get; private set; } = default!;
+        public T? DialogResult { get; private set; }
 
         public event EventHandler? Closed;
 
-        public void Close(T dialogResult = default)
+        public void Close(T? dialogResult = default)
         {
-            DialogResult = dialogResult!;
+            DialogResult = dialogResult;
             Closed?.Invoke(this, EventArgs.Empty);
         }
     }

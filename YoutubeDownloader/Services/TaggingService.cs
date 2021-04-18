@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using TagLib;
 using TagLib.Mpeg4;
+using YoutubeExplode.Common;
 using YoutubeExplode.Videos;
 using File = TagLib.File;
 
@@ -78,13 +79,17 @@ namespace YoutubeDownloader.Services
         }
 
         private async Task<IPicture?> TryGetPictureAsync(
-            Video video,
+            IVideo video,
             CancellationToken cancellationToken = default)
         {
             try
             {
+                var thumbnail = video.Thumbnails.TryGetWithHighestResolution();
+                if (thumbnail is null)
+                    return null;
+
                 using var response = await _httpClient.GetAsync(
-                    video.Thumbnails.HighResUrl,
+                    thumbnail.Url,
                     HttpCompletionOption.ResponseContentRead,
                     cancellationToken
                 );
@@ -144,7 +149,7 @@ namespace YoutubeDownloader.Services
         }
 
         private async Task InjectVideoTagsAsync(
-            Video video,
+            IVideo video,
             string filePath,
             CancellationToken cancellationToken = default)
         {
@@ -152,9 +157,8 @@ namespace YoutubeDownloader.Services
 
             var file = File.Create(filePath);
 
-            var appleTag = (AppleTag) file.GetTag(TagTypes.Apple);
-            appleTag.SetDashBox("Upload Date", "    Upload Date", video.UploadDate.ToString("yyyy-MM-dd"));
-            appleTag.SetDashBox("Channel", "    Channel", video.Author);
+            var appleTag = file.GetTag(TagTypes.Apple) as AppleTag;
+            appleTag?.SetDashBox("Channel", "Channel", video.Author.Title);
 
             file.Tag.Pictures = picture is not null
                 ? new[] {picture}
@@ -164,7 +168,7 @@ namespace YoutubeDownloader.Services
         }
 
         private async Task InjectAudioTagsAsync(
-            Video video,
+            IVideo video,
             string filePath,
             CancellationToken cancellationToken = default)
         {
@@ -193,7 +197,7 @@ namespace YoutubeDownloader.Services
         }
 
         public async Task InjectTagsAsync(
-            Video video,
+            IVideo video,
             string format,
             string filePath,
             CancellationToken cancellationToken = default)

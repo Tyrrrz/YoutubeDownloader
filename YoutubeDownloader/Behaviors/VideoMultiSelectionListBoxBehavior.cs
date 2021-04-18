@@ -59,7 +59,7 @@ namespace YoutubeDownloader.Behaviors
             if (_viewHandled) return;
             if (AssociatedObject.Items.SourceCollection is null) return;
 
-            SelectedItems = AssociatedObject.SelectedItems.Cast<Video>().ToArray();
+            SelectedItems = AssociatedObject.SelectedItems.Cast<IVideo>().ToArray();
         }
 
         // Re-select items when the set of items changes

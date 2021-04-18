@@ -19,12 +19,6 @@ namespace YoutubeDownloader.Models
                 .OrderByDescending(q => q)
                 .FirstOrDefault();
 
-        public Framerate? Framerate =>
-            StreamInfos.OfType<IVideoStreamInfo>()
-                .Select(s => s.Framerate)
-                .OrderByDescending(f => f)
-                .FirstOrDefault();
-
         public VideoDownloadOption(
             string format,
             string label,

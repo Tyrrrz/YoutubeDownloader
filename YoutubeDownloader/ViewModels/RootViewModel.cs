@@ -194,7 +194,7 @@ namespace YoutubeDownloader.ViewModels
                     );
 
                     var download = await _dialogManager.ShowDialogAsync(dialog);
-                    if (download is null) // generics + NRTs issue
+                    if (download is null)
                         return;
 
                     EnqueueDownload(download);
@@ -213,7 +213,7 @@ namespace YoutubeDownloader.ViewModels
                         dialog.SelectedVideos = dialog.AvailableVideos;
 
                     var downloads = await _dialogManager.ShowDialogAsync(dialog);
-                    if (downloads is null) // generics + NRTs issue
+                    if (downloads is null)
                         return;
 
                     foreach (var download in downloads)
