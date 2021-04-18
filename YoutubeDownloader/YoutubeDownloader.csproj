@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Gress" Version="1.2.0" />
-    <PackageReference Include="MaterialDesignColors" Version="1.2.2" />
-    <PackageReference Include="MaterialDesignThemes" Version="3.0.1" />
+    <PackageReference Include="MaterialDesignColors" Version="2.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Onova" Version="2.6.2" />

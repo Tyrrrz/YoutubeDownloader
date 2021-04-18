@@ -208,7 +208,7 @@
                                         <ProgressBar
                                             Grid.Column="0"
                                             Margin="0,0,6,0"
-                                            Foreground="{DynamicResource SecondaryAccentBrush}"
+                                            Foreground="{DynamicResource SecondaryHueMidBrush}"
                                             Maximum="1"
                                             Minimum="0"
                                             Value="{Binding ProgressOperation.Progress, Mode=OneWay}">

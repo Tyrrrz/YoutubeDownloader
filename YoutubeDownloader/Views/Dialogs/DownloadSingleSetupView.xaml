@@ -61,7 +61,7 @@
                 Background="Black"
                 FontWeight="Light"
                 Foreground="White"
-                Text="{Binding Video.Duration}" />
+                Text="{Binding Video.Duration, TargetNullValue=Live}" />
         </Grid>
 
         <Grid Grid.Row="3" Margin="0,8,0,0">
