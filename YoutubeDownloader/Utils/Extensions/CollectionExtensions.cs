@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace YoutubeDownloader.Internal.Extensions
+namespace YoutubeDownloader.Utils.Extensions
 {
     internal static class CollectionExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using YoutubeExplode.Videos;
 
-namespace YoutubeDownloader.Internal
+namespace YoutubeDownloader.Utils
 {
     internal static class FileNameGenerator
     {
