@@ -2,6 +2,7 @@
     x:Class="YoutubeDownloader.Views.Dialogs.DownloadSingleSetupView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -24,7 +25,7 @@
         <!--  Title  -->
         <TextBlock
             Grid.Row="0"
-            Margin="8,16,8,8"
+            Margin="8,16,8,0"
             FontSize="19"
             FontWeight="SemiBold"
             Text="{Binding Title}"
@@ -37,32 +38,19 @@
             </TextBlock.ContextMenu>
         </TextBlock>
 
-        <!--  Author and upload date  -->
-        <Grid Grid.Row="1" Margin="8,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock
-                Grid.Column="0"
-                FontSize="15"
-                Text="{Binding Video.Author}" />
-            <TextBlock
-                Grid.Column="2"
-                FontSize="15"
-                FontWeight="Light"
-                Text="{Binding Video.UploadDate, StringFormat=\{0:MMM d\, yyyy\}}" />
-        </Grid>
+        <!--  Author  -->
+        <TextBlock
+            Grid.Row="1"
+            Margin="8"
+            FontSize="15"
+            Text="{Binding Video.Author.Title}" />
 
         <Grid
             Grid.Row="2"
-            Margin="0,8,0,0"
             HorizontalAlignment="Stretch"
             Background="Black">
             <!--  Thumbnail  -->
-            <Image Source="{Binding Video.Thumbnails.MediumResUrl}" />
+            <Image Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlConverter.Instance}}" />
 
             <!--  Duration  -->
             <TextBlock
@@ -73,7 +61,7 @@
                 Background="Black"
                 FontWeight="Light"
                 Foreground="White"
-                Text="{Binding Video.Duration}" />
+                Text="{Binding Video.Duration, TargetNullValue=Live}" />
         </Grid>
 
         <Grid Grid.Row="3" Margin="0,8,0,0">

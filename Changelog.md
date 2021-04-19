@@ -1,3 +1,8 @@
+### v1.8 (18-Apr-2021)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.
+- Removed video upload date from UI and from file name templates.
+
 ### v1.7.16 (29-Nov-2020)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v5.1.9.

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace YoutubeDownloader.Internal
+namespace YoutubeDownloader.Utils
 {
     internal static class ProcessEx
     {

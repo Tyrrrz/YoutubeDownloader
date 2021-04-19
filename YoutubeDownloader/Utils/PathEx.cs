@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace YoutubeDownloader.Internal
+namespace YoutubeDownloader.Utils
 {
     internal static class PathEx
     {

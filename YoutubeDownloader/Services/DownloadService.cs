@@ -94,14 +94,13 @@ namespace YoutubeDownloader.Services
 
             // Video+audio options
             var videoStreams = streamManifest
-                .GetVideo()
-                .OrderByDescending(v => v.VideoQuality)
-                .ThenByDescending(v => v.Framerate);
+                .GetVideoStreams()
+                .OrderByDescending(v => v.VideoQuality);
 
             foreach (var streamInfo in videoStreams)
             {
                 var format = streamInfo.Container.Name;
-                var label = streamInfo.VideoQualityLabel;
+                var label = streamInfo.VideoQuality.Label;
 
                 // Muxed streams are standalone
                 if (streamInfo is MuxedStreamInfo)
@@ -114,12 +113,12 @@ namespace YoutubeDownloader.Services
                 var audioStreamInfo =
                     (IStreamInfo?)
                     streamManifest
-                        .GetAudioOnly()
+                        .GetAudioOnlyStreams()
                         .OrderByDescending(s => s.Container == streamInfo.Container)
                         .ThenByDescending(s => s.Bitrate)
                         .FirstOrDefault() ??
                     streamManifest
-                        .GetMuxed()
+                        .GetMuxedStreams()
                         .OrderByDescending(s => s.Container == streamInfo.Container)
                         .ThenByDescending(s => s.Bitrate)
                         .FirstOrDefault();
@@ -132,7 +131,7 @@ namespace YoutubeDownloader.Services
 
             // Audio-only options
             var bestAudioOnlyStreamInfo = streamManifest
-                .GetAudio()
+                .GetAudioOnlyStreams()
                 .OrderByDescending(s => s.Container == Container.WebM)
                 .ThenByDescending(s => s.Bitrate)
                 .FirstOrDefault();
@@ -180,7 +179,6 @@ namespace YoutubeDownloader.Services
 
             var orderedOptions = options
                 .OrderBy(o => o.Quality)
-                .ThenBy(o => o.Framerate)
                 .ToArray();
 
             var preferredOption = qualityPreference switch
@@ -189,15 +187,15 @@ namespace YoutubeDownloader.Services
                     .LastOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
 
                 VideoQualityPreference.High => orderedOptions
-                    .Where(o => o.Quality <= VideoQuality.High1080)
+                    .Where(o => o.Quality?.MaxHeight <= 1080)
                     .LastOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
 
                 VideoQualityPreference.Medium => orderedOptions
-                    .Where(o => o.Quality <= VideoQuality.High720)
+                    .Where(o => o.Quality?.MaxHeight <= 720)
                     .LastOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
 
                 VideoQualityPreference.Low => orderedOptions
-                    .Where(o => o.Quality <= VideoQuality.Medium480)
+                    .Where(o => o.Quality?.MaxHeight <= 480)
                     .LastOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
 
                 VideoQualityPreference.Minimum => orderedOptions

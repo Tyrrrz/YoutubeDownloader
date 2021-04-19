@@ -73,7 +73,7 @@
                                 Grid.Column="0"
                                 Width="48"
                                 Height="48"
-                                Source="{Binding Thumbnails.LowResUrl}" />
+                                Source="{Binding Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
 
                             <!--  Info  -->
                             <StackPanel
@@ -96,8 +96,6 @@
                                     <Run Text="{Binding Duration, Mode=OneWay}" />
                                     <Run Text="/" />
                                     <Run Text="{Binding Author, Mode=OneWay}" />
-                                    <Run Text="/" />
-                                    <Run Text="{Binding UploadDate, StringFormat=\{0:MMM d\, yyyy\}, Mode=OneWay}" />
                                 </TextBlock>
                             </StackPanel>
 

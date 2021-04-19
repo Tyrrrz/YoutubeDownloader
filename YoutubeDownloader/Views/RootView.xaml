@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -167,7 +168,7 @@
                                     <Image
                                         Width="32"
                                         VerticalAlignment="Center"
-                                        Source="{Binding Video.Thumbnails.LowResUrl}" />
+                                        Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -207,7 +208,7 @@
                                         <ProgressBar
                                             Grid.Column="0"
                                             Margin="0,0,6,0"
-                                            Foreground="{DynamicResource SecondaryAccentBrush}"
+                                            Foreground="{DynamicResource SecondaryHueMidBrush}"
                                             Maximum="1"
                                             Minimum="0"
                                             Value="{Binding ProgressOperation.Progress, Mode=OneWay}">

@@ -45,7 +45,7 @@
 
             <Style BasedOn="{StaticResource MaterialDesignLinearProgressBar}" TargetType="{x:Type ProgressBar}">
                 <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Foreground" Value="{DynamicResource SecondaryAccentBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource SecondaryHueMidBrush}" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="Height" Value="2" />
                 <Setter Property="Maximum" Value="1" />
@@ -106,7 +106,7 @@
                             <Setter Property="Height" Value="36" />
                             <Setter Property="Margin" Value="8,-10,-8,-10" />
                             <Setter Property="Padding" Value="8" />
-                            <Setter Property="Foreground" Value="{DynamicResource SecondaryAccentBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource SecondaryHueMidBrush}" />
                             <Setter Property="materialDesign:RippleAssist.Feedback" Value="{DynamicResource MaterialDesignSnackbarRipple}" />
                         </Style>
                     </Setter.Value>
