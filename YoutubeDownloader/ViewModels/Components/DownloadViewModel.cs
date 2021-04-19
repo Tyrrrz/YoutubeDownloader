@@ -100,6 +100,7 @@ namespace YoutubeDownloader.ViewModels.Components
                         VideoOption,
                         SubtitleOption,
                         FilePath,
+                        Video.Url,
                         ProgressOperation,
                         _cancellationTokenSource.Token
                     );

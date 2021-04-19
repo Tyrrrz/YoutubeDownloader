@@ -76,23 +76,78 @@
         <DockPanel
             Background="Transparent"
             LastChildFill="False"
-            ToolTip="When selecting multiple videos to download, skip those that already have a matching file in the directory">
+            ToolTip="When selecting multiple videos to download, skip those that already have a matching non-empty file in the directory">
             <TextBlock
                 Margin="16,8"
                 DockPanel.Dock="Left"
-                Text="Skip downloads for files that already exist" />
+                Text="Skip downloads for files that already exist (if existing file is non empty)" />
             <ToggleButton
                 Margin="16,8"
                 DockPanel.Dock="Right"
                 IsChecked="{Binding ShouldSkipExistingFiles}" />
         </DockPanel>
 
-        <!--  File name template  -->
+        <!--  Skip empty files  -->
+        <DockPanel
+            Background="Transparent"
+            LastChildFill="False"
+            ToolTip="When selecting multiple videos to download, skip those that already have a matching empty file in the directory">
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Skip downloads for files that already exist (if existing file is empty)" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding ShouldSkipEmptyFiles}" />
+        </DockPanel>
+
+        <!--  Skip existing files  -->
+        <DockPanel
+            Background="Transparent"
+            LastChildFill="False"
+            ToolTip="Save a short cut file which references to the original location of the video on YouTube">
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="Save shortcut file" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding SaveShortcutFile}" />
+        </DockPanel>
+
+        <!--  File name template for single file  -->
         <TextBox
             Margin="16,8"
-            materialDesign:HintAssist.Hint="File name template"
+            materialDesign:HintAssist.Hint="File name template for single file"
             materialDesign:HintAssist.IsFloating="True"
-            Text="{Binding FileNameTemplate}">
+            Text="{Binding FileNameTemplateForSingleFile}">
+            <TextBox.ToolTip>
+                <TextBlock>
+                    <Run Text="Template used for generating file names for downloaded videos" />
+                    <LineBreak />
+                    <LineBreak />
+                    <Run Text="Available variables:" />
+                    <LineBreak />
+                    <Run FontWeight="SemiBold" Text="$title" />
+                    <Run Text="- video title" />
+                    <LineBreak />
+                    <Run FontWeight="SemiBold" Text="$author" />
+                    <Run Text="- video author" />
+                    <LineBreak />
+                    <Run FontWeight="SemiBold" Text="$uploadDate" />
+                    <Run Text="- video upload date" />
+                </TextBlock>
+            </TextBox.ToolTip>
+        </TextBox>
+
+        <!--  File name template for multiple files  -->
+        <TextBox
+            Margin="16,8"
+            materialDesign:HintAssist.Hint="File name template for multiple files"
+            materialDesign:HintAssist.IsFloating="True"
+            Text="{Binding FileNameTemplateForMultipleFiles}">
             <TextBox.ToolTip>
                 <TextBlock>
                     <Run Text="Template used for generating file names for downloaded videos" />
@@ -101,7 +156,10 @@
                     <Run Text="Available variables:" />
                     <LineBreak />
                     <Run FontWeight="SemiBold" Text="$num" />
-                    <Run Text="- video's position in the list (if applicable)" />
+                    <Run Text="- video's position in the list (number increases, first video has index 1)" />
+                    <LineBreak />
+                    <Run FontWeight="SemiBold" Text="$numInverted" />
+                    <Run Text="- video's position in the list in inverted order (number decreases, first video has index N)" />
                     <LineBreak />
                     <Run FontWeight="SemiBold" Text="$title" />
                     <Run Text="- video title" />

@@ -65,7 +65,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
             // Prompt for output file path
             var defaultFileName = FileNameGenerator.GenerateFileName(
-                _settingsService.FileNameTemplate,
+                _settingsService.FileNameTemplateForSingleFile,
                 Video,
                 format
             );

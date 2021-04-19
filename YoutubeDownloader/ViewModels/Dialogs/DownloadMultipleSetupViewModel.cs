@@ -83,22 +83,41 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             {
                 var video = orderedSelectedVideos[i];
 
+                var number = (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
+                var InvertedNumber = (orderedSelectedVideos.Length - i).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0');
                 var fileName = FileNameGenerator.GenerateFileName(
-                    _settingsService.FileNameTemplate,
+                    _settingsService.FileNameTemplateForMultipleFiles,
                     video,
                     SelectedFormat!,
-                    (i + 1).ToString().PadLeft(orderedSelectedVideos.Length.ToString().Length, '0')
+                    number,
+                    InvertedNumber
                 );
 
                 var filePath = Path.Combine(dirPath, fileName);
 
-                // If file exists or is no empty - either skip it or generate a unique file path, depending on user settings
-                var fileInfo = new FileInfo(filePath);
-
-                if (fileInfo.Exists && fileInfo.Length > 0)
+                // If file exists - either skip it or generate a unique file path, depending on user settings
+                if (File.Exists(filePath))
                 {
-                    if (_settingsService.ShouldSkipExistingFiles)
-                        continue;
+                    bool FileIsEmpty = (new System.IO.FileInfo(filePath).Length == 0);
+           
+                    if (FileIsEmpty)
+                    {
+                        if (_settingsService.ShouldSkipEmptyFiles)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            File.Delete(filePath); // Delete the empty file so that the creation of a new file with (1) will be prevented.
+                        }
+                    }
+                    else
+                    {
+                        if (_settingsService.ShouldSkipExistingFiles)
+                        {
+                            continue;
+                        }
+                    }
 
                     filePath = PathEx.MakeUniqueFilePath(filePath);
                 }

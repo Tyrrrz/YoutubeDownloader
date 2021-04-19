@@ -33,11 +33,29 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             set => _settingsService.ShouldSkipExistingFiles = value;
         }
 
-        public string FileNameTemplate
-        {
-            get => _settingsService.FileNameTemplate;
-            set => _settingsService.FileNameTemplate = value;
-        }
+           public bool ShouldSkipEmptyFiles
+           {
+               get => _settingsService.ShouldSkipEmptyFiles;
+               set => _settingsService.ShouldSkipEmptyFiles = value;
+           }
+           
+           public bool SaveShortcutFile
+           {
+               get => _settingsService.SaveShortcutFile;
+               set => _settingsService.SaveShortcutFile = value;
+           }
+           
+           public string FileNameTemplateForSingleFile
+           {
+               get => _settingsService.FileNameTemplateForSingleFile;
+               set => _settingsService.FileNameTemplateForSingleFile = value;
+           }
+           
+           public string FileNameTemplateForMultipleFiles
+           {
+               get => _settingsService.FileNameTemplateForMultipleFiles;
+               set => _settingsService.FileNameTemplateForMultipleFiles = value;
+           }
 
         public string ExcludedContainerFormats
         {

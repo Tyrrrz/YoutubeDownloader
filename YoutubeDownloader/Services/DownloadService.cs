@@ -2,12 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using YoutubeDownloader.Models;
 using YoutubeExplode;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.Streams;
+
+using Shell32;
+using IWshRuntimeLibrary;
+using System.IO;
+using System.Net.Http;
+// Add these COM references:
+// -  Microsoft Shell Controls And Automation
+// -  Windows Script Host Object Model
+
 
 namespace YoutubeDownloader.Services
 {
@@ -47,6 +57,7 @@ namespace YoutubeDownloader.Services
             VideoDownloadOption videoDownloadOption,
             SubtitleDownloadOption? subtitleDownloadOption,
             string filePath,
+            string URL,
             IProgress<double>? progress = null,
             CancellationToken cancellationToken = default)
         {
@@ -54,6 +65,20 @@ namespace YoutubeDownloader.Services
 
             try
             {
+                if (_settingsService.SaveShortcutFile)
+                {
+                    string ShortcutFileName = Path.Combine(Path.GetDirectoryName(filePath)!, Path.GetFileNameWithoutExtension(filePath) + ".lnk"); // Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+           
+                    WshShellClass WshShell = new WshShellClass();
+                    IWshShortcut  Shortcut = (WshShell.CreateShortcut(ShortcutFileName) as IWshShortcut)!;
+                    Shortcut.Arguments = "";
+                    Shortcut.TargetPath = URL;
+                    Shortcut.WindowStyle = 1; // not sure about what this is for
+                    string IconFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, "YouTube.ico");
+                    Shortcut.IconLocation = IconFileName;
+                    Shortcut.Save();
+                }
+
                 var conversion = new ConversionRequestBuilder(filePath)
                     .SetFormat(videoDownloadOption.Format)
                     .SetPreset(ConversionPreset.Medium)

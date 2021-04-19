@@ -13,6 +13,14 @@ using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Exceptions;
 
+using Shell32;
+using IWshRuntimeLibrary;
+using System.IO;
+using System.Net.Http;
+// Add these COM references:
+// -  Microsoft Shell Controls And Automation
+// -  Windows Script Host Object Model
+
 namespace YoutubeDownloader.ViewModels
 {
     public class RootViewModel : Screen
@@ -215,6 +223,22 @@ namespace YoutubeDownloader.ViewModels
                     var downloads = await _dialogManager.ShowDialogAsync(dialog);
                     if (downloads is null)
                         return;
+
+                    if (_settingsService.SaveShortcutFile && (downloads.Count > 0))
+                    {
+                        string DownloadFolder = Path.GetDirectoryName(downloads[0].FilePath)!;
+           
+                        string ShortcutFileName = Path.Combine(DownloadFolder, "! List.lnk"); // Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+           
+                        WshShellClass WshShell = new WshShellClass();
+                        IWshShortcut Shortcut = (WshShell.CreateShortcut(ShortcutFileName) as IWshShortcut)!;
+                        Shortcut.Arguments = "";
+                        Shortcut.TargetPath = Query;
+                        Shortcut.WindowStyle = 1; // not sure about what this is for
+                        string IconFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, "YouTube.ico");
+                        Shortcut.IconLocation = IconFileName;
+                        Shortcut.Save();
+                    }
 
                     foreach (var download in downloads)
                         EnqueueDownload(download);

@@ -15,7 +15,13 @@ namespace YoutubeDownloader.Services
 
         public bool ShouldSkipExistingFiles { get; set; }
 
-        public string FileNameTemplate { get; set; } = FileNameGenerator.DefaultTemplate;
+        public bool ShouldSkipEmptyFiles { get; set; } = false;
+
+        public bool SaveShortcutFile { get; set; } = false;
+
+        public string FileNameTemplateForSingleFile { get; set; } = FileNameGenerator.DefaultTemplate;
+
+        public string FileNameTemplateForMultipleFiles { get; set; } = FileNameGenerator.DefaultTemplate;
 
         public IReadOnlyList<string>? ExcludedContainerFormats { get; set; }
 
