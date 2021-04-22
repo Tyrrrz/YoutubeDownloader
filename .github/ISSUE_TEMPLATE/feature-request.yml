@@ -1,0 +1,16 @@
+name: "\U00002728 Feature request"
+description: Request a new feature.
+labels: [enhancement]
+body:
+- type: markdown
+  attributes:
+    value: |
+      - Please check existing issues (both opened and closed) to ensure that this feature hasn't been requested before.
+      - If you want to ask a question instead of requesting a feature, use [**discussions**](https://github.com/Tyrrrz/YoutubeDownloader/discussions/new) instead.
+
+- type: textarea
+  attributes:
+    label: Details
+    description: "Clear and thorough explanation of the feature you have in mind."
+  validations:
+    required: true

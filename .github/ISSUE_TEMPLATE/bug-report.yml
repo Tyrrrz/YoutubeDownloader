@@ -1,0 +1,30 @@
+name: "\U0001F41E Bug report"
+description: Report broken functionality.
+labels: [bug]
+body:
+- type: markdown
+  attributes:
+    value: |
+      - Please check existing issues (both opened and closed) to ensure that this bug hasn't been reported before.
+      - If you want to ask a question instead of reporting a bug, use [**discussions**](https://github.com/Tyrrrz/YoutubeDownloader/discussions/new) instead.
+
+- type: input
+  attributes:
+    label: Version
+    description: "Which version(s) of YoutubeDownloader does this bug affect?"
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Details
+    description: "Clear and thorough explanation of the bug. If relevant, include screenshots or screen recordings."
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Steps to reproduce
+    description: "Minimum steps required to reproduce the bug."
+  validations:
+    required: true
