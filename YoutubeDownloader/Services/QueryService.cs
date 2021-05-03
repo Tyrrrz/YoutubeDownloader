@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using YoutubeDownloader.Models;
 using YoutubeExplode;
@@ -18,6 +21,7 @@ namespace YoutubeDownloader.Services
         public Query ParseQuery(string query)
         {
             query = query.Trim();
+
 
             // Playlist
             var playlistId = PlaylistId.TryParse(query);
@@ -51,6 +55,21 @@ namespace YoutubeDownloader.Services
 
         public async Task<ExecutedQuery> ExecuteQueryAsync(Query query)
         {
+            YoutubeClient _youtube;
+            if (File.Exists("proxy.txt"))
+            {
+                string[] allLines = File.ReadAllLines("proxy.txt");
+                Random rnd1 = new Random();
+                HttpClient client1 = new HttpClient(new HttpClientHandler { Proxy = new WebProxy(allLines[rnd1.Next(allLines.Length)]) });
+                client1.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
+                _youtube = new(client1);
+            }
+            else
+            {
+                HttpClient client1 = new HttpClient();
+                client1.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
+                _youtube = new();
+            }
             // Video
             if (query.Kind == QueryKind.Video)
             {

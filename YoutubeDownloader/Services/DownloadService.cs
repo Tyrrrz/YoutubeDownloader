@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using YoutubeDownloader.Models;
@@ -13,12 +15,14 @@ namespace YoutubeDownloader.Services
 {
     public class DownloadService
     {
-        private readonly YoutubeClient _youtube = new();
+
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         private readonly SettingsService _settingsService;
 
         private int _concurrentDownloadCount;
+
+
 
         public DownloadService(SettingsService settingsService)
         {
@@ -44,6 +48,7 @@ namespace YoutubeDownloader.Services
         }
 
         public async Task DownloadAsync(
+
             VideoDownloadOption videoDownloadOption,
             SubtitleDownloadOption? subtitleDownloadOption,
             string filePath,
@@ -54,6 +59,21 @@ namespace YoutubeDownloader.Services
 
             try
             {
+                YoutubeClient _youtube;
+                if (File.Exists("proxy.txt"))
+                {
+                    string[] allLines = File.ReadAllLines("proxy.txt");
+                    Random rnd1 = new Random();
+                    HttpClient client1 = new HttpClient(new HttpClientHandler { Proxy = new WebProxy(allLines[rnd1.Next(allLines.Length)]) });
+                    client1.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
+                    _youtube = new(client1);
+                }
+                else
+                {
+                    HttpClient client1 = new HttpClient();
+                    client1.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
+                    _youtube = new();
+                }
                 var conversion = new ConversionRequestBuilder(filePath)
                     .SetFormat(videoDownloadOption.Format)
                     .SetPreset(ConversionPreset.Medium)
@@ -87,6 +107,21 @@ namespace YoutubeDownloader.Services
 
         public async Task<IReadOnlyList<VideoDownloadOption>> GetVideoDownloadOptionsAsync(string videoId)
         {
+            YoutubeClient _youtube;
+            if (File.Exists("proxy.txt"))
+            {
+                string[] allLines = File.ReadAllLines("proxy.txt");
+                Random rnd1 = new Random();
+                HttpClient client1 = new HttpClient(new HttpClientHandler { Proxy = new WebProxy(allLines[rnd1.Next(allLines.Length)]) });
+                client1.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
+                _youtube = new(client1);
+            }
+            else
+            {
+                HttpClient client1 = new HttpClient();
+                client1.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
+                _youtube = new();
+            }
             var streamManifest = await _youtube.Videos.Streams.GetManifestAsync(videoId);
 
             // Using a set ensures only one download option per format/quality is provided
@@ -155,6 +190,21 @@ namespace YoutubeDownloader.Services
 
         public async Task<IReadOnlyList<SubtitleDownloadOption>> GetSubtitleDownloadOptionsAsync(string videoId)
         {
+            YoutubeClient _youtube;
+            if (File.Exists("proxy.txt"))
+            {
+                string[] allLines = File.ReadAllLines("proxy.txt");
+                Random rnd1 = new Random();
+                HttpClient client1 = new HttpClient(new HttpClientHandler { Proxy = new WebProxy(allLines[rnd1.Next(allLines.Length)]) });
+                client1.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
+                _youtube = new(client1);
+            }
+            else
+            {
+                HttpClient client1 = new HttpClient();
+                client1.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
+                _youtube = new();
+            }
             var closedCaptionManifest = await _youtube.Videos.ClosedCaptions.GetManifestAsync(videoId);
 
             return closedCaptionManifest.Tracks
