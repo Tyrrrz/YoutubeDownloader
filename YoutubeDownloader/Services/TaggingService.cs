@@ -262,24 +262,28 @@ namespace YoutubeDownloader.Services
             file.Tag.Title = title ?? resolvedTitle ?? "";
             file.Tag.Album = resolvedAlbumName ?? "";
 
-            double bitrate = 44100;
-            if (string.Equals(format, "wav", StringComparison.OrdinalIgnoreCase))
-                using (var reader = new WaveFileReader(filePath))
-                {
-                    bitrate = reader.WaveFormat.AverageBytesPerSecond * 8;
-                    bitrate = bitrate / 1000;
-                }
-            if (string.Equals(format, "mp3", StringComparison.OrdinalIgnoreCase))
-                using (var reader = new Mp3FileReader(filePath))
-                {
-                    bitrate = reader.WaveFormat.AverageBytesPerSecond * 8;
-                    bitrate = bitrate / 1000;
-                }
+            //BPMDetector only in 32bit environment
+            if (!Environment.Is64BitProcess)
+            {
+                double bitrate = 44100;
+                if (string.Equals(format, "wav", StringComparison.OrdinalIgnoreCase))
+                    using (var reader = new WaveFileReader(filePath))
+                    {
+                        bitrate = reader.WaveFormat.AverageBytesPerSecond * 8;
+                        bitrate = bitrate / 1000;
+                    }
+                if (string.Equals(format, "mp3", StringComparison.OrdinalIgnoreCase))
+                    using (var reader = new Mp3FileReader(filePath))
+                    {
+                        bitrate = reader.WaveFormat.AverageBytesPerSecond * 8;
+                        bitrate = bitrate / 1000;
+                    }
 
-            var bpmdetector = new BPMDetector(filePath, Convert.ToInt32(bitrate));
-            var bpm = bpmdetector.getBPM();
+                var bpmdetector = new BPMDetector(filePath, Convert.ToInt32(bitrate));
+                var bpm = bpmdetector.getBPM();
 
-            file.Tag.BeatsPerMinute = Convert.ToUInt32(bpm);
+                file.Tag.BeatsPerMinute = Convert.ToUInt32(bpm);
+            }
 
             IPicture[] pictFrames = new IPicture[1];
             pictFrames[0] = picture;
