@@ -10,8 +10,11 @@
     <Resource Include="../favicon.ico" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <PackageReference Include="DotnetRuntimeBootstrapper" Version="1.1.2" PrivateAssets="all" />
+  </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="DotnetRuntimeBootstrapper" Version="1.0.1" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="1.2.0" />
     <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
     <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
