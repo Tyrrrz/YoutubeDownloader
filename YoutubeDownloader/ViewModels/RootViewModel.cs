@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Gress;
 using MaterialDesignThemes.Wpf;
@@ -36,6 +37,8 @@ namespace YoutubeDownloader.ViewModels
 
         public BindableCollection<DownloadViewModel> Downloads { get; } = new();
 
+        public static TaskQueue Queue;
+
         public RootViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager,
             SettingsService settingsService, UpdateService updateService, QueryService queryService,
             DownloadService downloadService)
@@ -46,6 +49,12 @@ namespace YoutubeDownloader.ViewModels
             _updateService = updateService;
             _queryService = queryService;
             _downloadService = downloadService;
+
+            //ThreadPool.SetMaxThreads(2, 2);
+            TagLib.Id3v2.Tag.DefaultVersion = 3;
+            TagLib.Id3v2.Tag.ForceDefaultVersion = true;
+            TagLib.Id3v2.Tag.DefaultEncoding = TagLib.StringType.Latin1;
+            TagLib.Id3v2.Tag.ForceDefaultEncoding = true;
 
             // Title
             DisplayName = $"{App.Name} v{App.VersionString}";
@@ -106,6 +115,8 @@ namespace YoutubeDownloader.ViewModels
                 App.SetLightTheme();
             }
 
+            Queue = new TaskQueue(_settingsService.MaxConcurrentDownloadCount);
+
             await CheckForUpdatesAsync();
         }
 
@@ -144,7 +155,8 @@ namespace YoutubeDownloader.ViewModels
             download.ProgressManager = ProgressManager;
             download.Start();
 
-            Downloads.Insert(0, download);
+            //Downloads.Insert(0, download);
+            Downloads.Add(download);
         }
 
         public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);

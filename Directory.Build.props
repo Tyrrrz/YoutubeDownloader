@@ -6,8 +6,8 @@
     <Company>Tyrrrz</Company>
     <Copyright>Copyright (C) Alexey Golub</Copyright>
     <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <Nullable>disable</Nullable>
+    <WarningsAsErrors>disable</WarningsAsErrors>
   </PropertyGroup>
 
 </Project>

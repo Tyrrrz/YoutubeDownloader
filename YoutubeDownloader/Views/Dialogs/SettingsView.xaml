@@ -7,9 +7,10 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
+    Height="550"
     MinWidth="300"
+    MinHeight="550"
     d:DataContext="{d:DesignInstance Type=dialogs:SettingsViewModel}"
-    d:DesignHeight="450"
     d:DesignWidth="800"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
@@ -37,6 +38,26 @@
                 Margin="16,8"
                 DockPanel.Dock="Right"
                 IsChecked="{Binding IsAutoUpdateEnabled}" />
+        </DockPanel>
+
+        <!--  AutoRenameFile  -->
+        <DockPanel Background="Transparent" LastChildFill="False">
+            <DockPanel.ToolTip>
+                <TextBlock>
+                    <Run Text="Perform automatic renames on music file based on found title/artist." />
+                    <LineBreak />
+                    <Run FontWeight="SemiBold" Text="Info:" />
+                    <Run Text="Does only for music files, may not find on 'weird' youtube videoname." />
+                </TextBlock>
+            </DockPanel.ToolTip>
+            <TextBlock
+                Margin="16,8"
+                DockPanel.Dock="Left"
+                Text="AutoRenameFile" />
+            <ToggleButton
+                Margin="16,8"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding AutoRenameFile}" />
         </DockPanel>
 
         <!--  Dark mode  -->
@@ -112,6 +133,46 @@
             </TextBox.ToolTip>
         </TextBox>
 
+        <!--  Shazam api keys  -->
+        <TextBox
+            Margin="16,8"
+            materialDesign:HintAssist.Hint="Shazam api keys: https://rapidapi.com/"
+            materialDesign:HintAssist.IsFloating="True"
+            AcceptsReturn="True"
+            Text="{Binding FastAPIShazamKeys}"
+            TextWrapping="Wrap"
+            VerticalScrollBarVisibility="Visible">
+            <TextBox.ToolTip>
+                <TextBlock>
+                    <Run Text="Used to find music tags/author/song" />
+                    <LineBreak />
+                    <LineBreak />
+                    <Run Text="Get api key: https://rapidapi.com =&gt; shazam" />
+                    <Run Text="Seperate by newline!" />
+                </TextBlock>
+            </TextBox.ToolTip>
+        </TextBox>
+
+        <!--  Vagalume api keys  -->
+        <TextBox
+            Margin="16,8"
+            materialDesign:HintAssist.Hint="Vagalume api keys: https://api.vagalume.com.br/"
+            materialDesign:HintAssist.IsFloating="True"
+            AcceptsReturn="True"
+            Text="{Binding VagalumeAPIKeys}"
+            TextWrapping="Wrap"
+            VerticalScrollBarVisibility="Visible">
+            <TextBox.ToolTip>
+                <TextBlock>
+                    <Run Text="Used to find music tags/author/song" />
+                    <LineBreak />
+                    <LineBreak />
+                    <Run Text="Get api key: https://api.vagalume.com.br" />
+                    <Run Text="Seperate by newline!" />
+                </TextBlock>
+            </TextBox.ToolTip>
+        </TextBox>
+
         <!--  Excluded container formats  -->
         <TextBox
             Margin="16,8"
@@ -129,7 +190,7 @@
         </TextBox>
 
         <!--  Max concurrent downloads  -->
-        <StackPanel Background="Transparent" ToolTip="How many downloads can be active at one time">
+        <StackPanel Background="Transparent" ToolTip="How many downloads can be active at one time, Restart after changing!">
             <TextBlock Margin="16,8,16,4">
                 <Run Text="Maximum concurrent downloads:" />
                 <Run FontWeight="DemiBold" Text="{Binding MaxConcurrentDownloads, Mode=OneWay}" />

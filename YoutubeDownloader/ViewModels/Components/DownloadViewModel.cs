@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
@@ -64,7 +66,7 @@ namespace YoutubeDownloader.ViewModels.Components
             _settingsService = settingsService;
             _downloadService = downloadService;
             _taggingService = taggingService;
-        }
+         }
 
         public bool CanStart => !IsActive;
 
@@ -78,7 +80,8 @@ namespace YoutubeDownloader.ViewModels.Components
             IsCanceled = false;
             IsFailed = false;
 
-            Task.Run(async () =>
+            
+            RootViewModel.Queue.Enqueue(async () =>
             {
                 _cancellationTokenSource = new CancellationTokenSource();
                 ProgressOperation = ProgressManager?.CreateOperation();
@@ -106,12 +109,20 @@ namespace YoutubeDownloader.ViewModels.Components
 
                     if (_settingsService.ShouldInjectTags)
                     {
-                        await _taggingService.InjectTagsAsync(
+                        List<string> shazamapikeys = _settingsService.FastAPIShazamKeys.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        List<string> vagalumeapikeys = _settingsService.VagalumeAPIKeys.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                        var newfilepath = await _taggingService.InjectTagsAsync(
                             Video,
                             Format,
                             FilePath,
+                            _settingsService.AutoRenameFile,
+                            shazamapikeys,
+                            vagalumeapikeys,
                             _cancellationTokenSource.Token
                         );
+
+                        this.FilePath = newfilepath;
                     }
 
                     IsSuccessful = true;
@@ -128,6 +139,8 @@ namespace YoutubeDownloader.ViewModels.Components
                     FailReason = ex is YoutubeExplodeException
                         ? ex.Message
                         : ex.ToString();
+
+                    Debug.WriteLine($"{DateTime.Now} {FileName} {Environment.NewLine}{FailReason}{Environment.NewLine}{ex.StackTrace}");
                 }
                 finally
                 {
@@ -135,6 +148,9 @@ namespace YoutubeDownloader.ViewModels.Components
                     _cancellationTokenSource?.Dispose();
                     _cancellationTokenSource = null;
                     ProgressOperation?.Dispose();
+
+                    if ((IsFailed || IsCanceled) && File.Exists(FilePath))
+                        File.Delete(FilePath);
                 }
             });
         }
@@ -227,6 +243,40 @@ namespace YoutubeDownloader.ViewModels.Components
             viewModel.QualityPreference = qualityPreference;
 
             return viewModel;
+        }
+    }
+
+    public class TaskQueue
+    {
+        private SemaphoreSlim semaphore;
+        public TaskQueue(int simultanioustasks)
+        {
+            semaphore = new SemaphoreSlim(simultanioustasks);
+        }
+
+        public async Task<T> Enqueue<T>(Func<Task<T>> taskGenerator)
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                return await taskGenerator();
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+        public async Task Enqueue(Func<Task> taskGenerator)
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                await taskGenerator();
+            }
+            finally
+            {
+                semaphore.Release();
+            }
         }
     }
 }

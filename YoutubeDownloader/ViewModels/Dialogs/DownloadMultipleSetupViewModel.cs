@@ -24,18 +24,19 @@ namespace YoutubeDownloader.ViewModels.Dialogs
 
         public IReadOnlyList<IVideo> SelectedVideos { get; set; } = Array.Empty<IVideo>();
 
-        public IReadOnlyList<string> AvailableFormats { get; set; } = new[] { "mp4", "mp3", "ogg" };
+        public IReadOnlyList<string> AvailableFormats { get; set; } = new[] { "mp4", "mp3", "ogg", "wav" };
 
         public IReadOnlyList<VideoQualityPreference> AvailableQualityPreferences { get; } =
             Enum.GetValues(typeof(VideoQualityPreference)).Cast<VideoQualityPreference>().ToArray();
 
-        public string? SelectedFormat { get; set; }
+        public string SelectedFormat { get; set; }
 
         public VideoQualityPreference SelectedVideoQualityPreference { get; set; } = VideoQualityPreference.Maximum;
 
         public bool IsAudioOnlyFormatSelected =>
             string.Equals(SelectedFormat, "mp3", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(SelectedFormat, "ogg", StringComparison.OrdinalIgnoreCase);
+            string.Equals(SelectedFormat, "ogg", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(SelectedFormat, "wav", StringComparison.OrdinalIgnoreCase);
 
         public DownloadMultipleSetupViewModel(
             IViewModelFactory viewModelFactory,
@@ -50,7 +51,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         public void OnViewLoaded()
         {
             if (_settingsService.ExcludedContainerFormats is not null)
-                AvailableFormats = new[] {"mp4", "mp3", "ogg"}
+                AvailableFormats = new[] {"mp4", "mp3", "ogg", "wav"}
                     .Where(f => !_settingsService.ExcludedContainerFormats?.Contains(f, StringComparer.OrdinalIgnoreCase) == true)
                     .ToArray();
 

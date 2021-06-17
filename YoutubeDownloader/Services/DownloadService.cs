@@ -1,9 +1,11 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using YoutubeDownloader.Converters;
 using YoutubeDownloader.Models;
 using YoutubeExplode;
 using YoutubeExplode.Converter;
@@ -32,8 +34,8 @@ namespace YoutubeDownloader.Services
             try
             {
                 // Wait until other downloads finish so that the number of concurrent downloads doesn't exceed the maximum
-                while (_concurrentDownloadCount >= _settingsService.MaxConcurrentDownloadCount)
-                    await Task.Delay(350, cancellationToken);
+                //while (_concurrentDownloadCount >= _settingsService.MaxConcurrentDownloadCount)
+                //    await Task.Delay(350, cancellationToken);
 
                 Interlocked.Increment(ref _concurrentDownloadCount);
             }
@@ -140,6 +142,7 @@ namespace YoutubeDownloader.Services
             {
                 options.Add(new VideoDownloadOption("mp3", "Audio", bestAudioOnlyStreamInfo));
                 options.Add(new VideoDownloadOption("ogg", "Audio", bestAudioOnlyStreamInfo));
+                options.Add(new VideoDownloadOption("wav", "Audio", bestAudioOnlyStreamInfo));
             }
 
             // Drop excluded formats
@@ -172,7 +175,9 @@ namespace YoutubeDownloader.Services
             // TODO: generalize supported formats
             // Short-circuit for audio-only formats
             if (string.Equals(format, "mp3", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(format, "ogg", StringComparison.OrdinalIgnoreCase))
+                string.Equals(format, "ogg", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(format, "wav", StringComparison.OrdinalIgnoreCase))
+
             {
                 return options.FirstOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase));
             }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Tyrrrz.Extensions;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
@@ -27,6 +28,12 @@ namespace YoutubeDownloader.ViewModels.Dialogs
             set => _settingsService.ShouldInjectTags = value;
         }
 
+        public bool AutoRenameFile
+        {
+            get => _settingsService.AutoRenameFile;
+            set => _settingsService.AutoRenameFile = value;
+        }
+
         public bool ShouldSkipExistingFiles
         {
             get => _settingsService.ShouldSkipExistingFiles;
@@ -37,6 +44,18 @@ namespace YoutubeDownloader.ViewModels.Dialogs
         {
             get => _settingsService.FileNameTemplate;
             set => _settingsService.FileNameTemplate = value;
+        }
+
+        public string FastAPIShazamKeys
+        {
+            get => _settingsService.FastAPIShazamKeys;
+            set => _settingsService.FastAPIShazamKeys = value;
+        }
+
+        public string VagalumeAPIKeys
+        {
+            get => _settingsService.VagalumeAPIKeys;
+            set => _settingsService.VagalumeAPIKeys = value;
         }
 
         public string ExcludedContainerFormats

@@ -1,0 +1,6 @@
+﻿[*.cs]
+
+# CS8601: Possible null reference assignment.
+-
+# CS8603: Possible null reference return.
+-

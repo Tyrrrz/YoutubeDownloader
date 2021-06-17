@@ -4,7 +4,26 @@
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>../favicon.ico</ApplicationIcon>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
 
   <ItemGroup>
     <Resource Include="../favicon.ico" />
@@ -12,19 +31,28 @@
 
   <ItemGroup>
     <PackageReference Include="Gress" Version="1.2.0" />
-    <PackageReference Include="MaterialDesignColors" Version="2.0.0" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
+    <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="NAudio" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Onova" Version="2.6.2" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
+    <PackageReference Include="RestSharp" Version="106.11.7" />
     <PackageReference Include="Stylet" Version="1.3.6" />
-    <PackageReference Include="taglib" Version="2.1.0" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="5.0.0" />
+    <PackageReference Include="TagLibSharp" Version="2.2.0" />
     <PackageReference Include="Tyrrrz.Extensions" Version="1.6.5" />
     <PackageReference Include="Tyrrrz.Settings" Version="1.3.4" />
-    <PackageReference Include="YoutubeExplode" Version="6.0.1" />
+    <PackageReference Include="YoutubeExplode" Version="6.0.2" />
     <PackageReference Include="YoutubeExplode.Converter" Version="2.1.0" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.3.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="libzplay.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="Format XAML" AfterTargets="BeforeBuild">
