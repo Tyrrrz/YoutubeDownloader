@@ -1,3 +1,8 @@
+### v1.8.2 (22-Jun-2021)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.3.
+- Application will now detect if the required .NET Runtime or any of its prerequisites are missing and prompt the user to download and install them automatically.
+
 ### v1.8.1 (21-May-2021)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.1.
