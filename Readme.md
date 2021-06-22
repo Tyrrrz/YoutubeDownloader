@@ -18,12 +18,6 @@ It also supports searching by keywords, which is helpful if you want to quickly 
 - 🟢 **[Stable release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
 - 🟠 [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions?query=workflow%3ACI)
 
-⚠️ This application requires **.NET v3.1 Desktop Runtime** in order to run.
-To install the runtime, find the suitable download option below:
-
-- [.NET Runtime for Windows **x64**](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-desktop-3.1.10-windows-x64-installer)
-- [.NET Runtime for Windows **x86**](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-desktop-3.1.10-windows-x86-installer)
-
 ## Features
 
 - Download individual videos
