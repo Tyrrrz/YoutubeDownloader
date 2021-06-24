@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: "\U000026A0 Feature request"
-    url: https://github.com/Tyrrrz/YoutubeDownloader/wiki/Maintenance-mode
-    about: Sorry, but this project is in maintenance mode and no longer accepts new feature requests.
-  - name: "\U0001F5E8 Ask a question"
+  - name: 📖 Wiki
+    url: https://github.com/Tyrrrz/YoutubeDownloader/wiki
+    about: Find usage guides and frequently asked questions.
+  - name: 🗨 Discussions
     url: https://github.com/Tyrrrz/YoutubeDownloader/discussions/new
-    about: Please ask and answer questions here.
+    about: Ask and answer questions.
