@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: ⚠ Feature request
+    url: https://github.com/Tyrrrz/YoutubeDownloader/wiki/Maintenance-mode
+    about: Sorry, but this project is in maintenance mode and no longer accepts new feature requests.
   - name: 💬 Discord server
     url: https://discord.gg/2SUWKFnHSm
     about: Chat with the project community.
