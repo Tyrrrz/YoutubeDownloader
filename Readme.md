@@ -3,6 +3,7 @@
 [![Build](https://github.com/Tyrrrz/YoutubeDownloader/workflows/CI/badge.svg?branch=master)](https://github.com/Tyrrrz/YoutubeDownloader/actions)
 [![Release](https://img.shields.io/github/release/Tyrrrz/YoutubeDownloader.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
 [![Downloads](https://img.shields.io/github/downloads/Tyrrrz/YoutubeDownloader/total.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
+[![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
 ⚠️ **Project status: maintenance mode** (bug fixes only).
@@ -12,6 +13,8 @@ You can copy-paste URL of any video, playlist or channel and download it directl
 It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
 
 > This application uses [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
+
+💬 **If you want to chat, join my [Discord server](https://discord.gg/2SUWKFnHSm)**.
 
 ## Download
 

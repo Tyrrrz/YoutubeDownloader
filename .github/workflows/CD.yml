@@ -52,3 +52,9 @@ jobs:
         asset_path: YoutubeDownloader/bin/Publish/Archive.zip
         asset_name: YoutubeDownloader.zip
         asset_content_type: application/zip
+
+    - name: Notify Discord
+      run: |
+        curl '${{ secrets.DISCORD_WEBHOOK }}' \
+          --data-raw '{"content":"[**YoutubeDownloader** ver. ${{ github.ref }} released](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)"}' \
+          -H 'content-type: application/json'
