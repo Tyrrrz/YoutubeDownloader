@@ -55,6 +55,10 @@ jobs:
 
     - name: Notify Discord
       run: |
-        curl '${{ secrets.DISCORD_WEBHOOK }}' \
-          --data-raw '{"content":"[**YoutubeDownloader** ver. ${{ github.ref }} released](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)"}' \
-          -H 'content-type: application/json'
+        Invoke-WebRequest `
+         -Uri "${{ secrets.DISCORD_WEBHOOK }}" `
+         -Method "POST" `
+         -ContentType "application/json; charset=UTF-8" `
+         -Body "{`"content`":`"[**YoutubeDownloader** ver. ${{ github.ref }} released](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)`"}" `
+         -UseBasicParsing
+      shell: pwsh
