@@ -1,3 +1,7 @@
+### v1.8.3 (29-Jul-2021)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.5.
+
 ### v1.8.2 (22-Jun-2021)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.3.
