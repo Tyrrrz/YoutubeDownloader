@@ -82,7 +82,8 @@ namespace YoutubeDownloader.ViewModels
                     {
                         _updateService.FinalizeUpdate(true);
                         RequestClose();
-                    });
+                    }
+                );
             }
             catch
             {

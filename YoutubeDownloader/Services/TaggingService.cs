@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using TagLib;
 using TagLib.Mpeg4;
+using YoutubeDownloader.Utils;
 using YoutubeExplode.Common;
 using YoutubeExplode.Videos;
 using File = TagLib.File;
@@ -14,16 +15,8 @@ namespace YoutubeDownloader.Services
 {
     public class TaggingService
     {
-        private readonly HttpClient _httpClient = new();
-
         private readonly SemaphoreSlim _requestRateSemaphore = new(1, 1);
         private DateTimeOffset _lastRequestInstant = DateTimeOffset.MinValue;
-
-        public TaggingService()
-        {
-            // MusicBrainz requires user agent to be set
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"{App.Name} ({App.GitHubProjectUrl})");
-        }
 
         private async Task MaintainRateLimitAsync(
             TimeSpan interval,
@@ -56,14 +49,19 @@ namespace YoutubeDownloader.Services
         {
             var url = Uri.EscapeUriString(
                 "http://musicbrainz.org/ws/2/recording/?fmt=json&query=" +
-                $"artist:\"{artist}\" AND recording:\"{title}\"");
+                $"artist:\"{artist}\" AND recording:\"{title}\""
+            );
 
             try
             {
                 // 4 requests per second
                 await MaintainRateLimitAsync(TimeSpan.FromSeconds(1.0 / 4), cancellationToken);
 
-                using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                using var response = await Http.Client.GetAsync(
+                    url,
+                    HttpCompletionOption.ResponseHeadersRead,
+                    cancellationToken
+                );
 
                 if (!response.IsSuccessStatusCode)
                     return null;
@@ -88,7 +86,7 @@ namespace YoutubeDownloader.Services
                 if (thumbnail is null)
                     return null;
 
-                using var response = await _httpClient.GetAsync(
+                using var response = await Http.Client.GetAsync(
                     thumbnail.Url,
                     HttpCompletionOption.ResponseContentRead,
                     cancellationToken
@@ -202,15 +200,22 @@ namespace YoutubeDownloader.Services
             string filePath,
             CancellationToken cancellationToken = default)
         {
-            if (string.Equals(format, "mp4", StringComparison.OrdinalIgnoreCase))
+            try
             {
-                await InjectVideoTagsAsync(video, filePath, cancellationToken);
+                if (string.Equals(format, "mp4", StringComparison.OrdinalIgnoreCase))
+                {
+                    await InjectVideoTagsAsync(video, filePath, cancellationToken);
+                }
+                else if (
+                    string.Equals(format, "mp3", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(format, "ogg", StringComparison.OrdinalIgnoreCase))
+                {
+                    await InjectAudioTagsAsync(video, filePath, cancellationToken);
+                }
             }
-            else if (
-                string.Equals(format, "mp3", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(format, "ogg", StringComparison.OrdinalIgnoreCase))
+            catch
             {
-                await InjectAudioTagsAsync(video, filePath, cancellationToken);
+                // Dont throw if tagging fails as it's not essential
             }
 
             // Other formats are not supported for tagging

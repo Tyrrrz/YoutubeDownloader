@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using YoutubeDownloader.Models;
+using YoutubeDownloader.Utils;
 using YoutubeExplode;
 using YoutubeExplode.Channels;
 using YoutubeExplode.Common;
@@ -13,7 +14,7 @@ namespace YoutubeDownloader.Services
 {
     public class QueryService
     {
-        private readonly YoutubeClient _youtube = new();
+        private readonly YoutubeClient _youtube = new(Http.Client);
 
         public Query ParseQuery(string query)
         {
