@@ -6,9 +6,9 @@
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
-⚠️ **Project status: maintenance mode** (bug fixes only).
+⚠️ **Project status: maintenance mode**. [What does it mean?](https://github.com/Tyrrrz/shared/blob/master/docs/project-status.md)
 
-YoutubeDownloader is an application that lets you download videos from YouTube.
+**YoutubeDownloader** is an application that lets you download videos from YouTube.
 You can copy-paste URL of any video, playlist or channel and download it directly to a format of your choice.
 It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
 
