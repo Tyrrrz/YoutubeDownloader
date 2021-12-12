@@ -1,19 +1,18 @@
 ﻿using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
 
-namespace YoutubeDownloader.ViewModels.Framework
+namespace YoutubeDownloader.ViewModels.Framework;
+
+// Used to instantiate new view models while making use of dependency injection
+public interface IViewModelFactory
 {
-    // Used to instantiate new view models while making use of dependency injection
-    public interface IViewModelFactory
-    {
-        DownloadViewModel CreateDownloadViewModel();
+    DownloadViewModel CreateDownloadViewModel();
 
-        DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel();
+    DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel();
 
-        DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel();
+    DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel();
 
-        MessageBoxViewModel CreateMessageBoxViewModel();
+    MessageBoxViewModel CreateMessageBoxViewModel();
 
-        SettingsViewModel CreateSettingsViewModel();
-    }
+    SettingsViewModel CreateSettingsViewModel();
 }

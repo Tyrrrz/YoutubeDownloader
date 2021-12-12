@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace YoutubeDownloader.Utils.Extensions
+namespace YoutubeDownloader.Utils.Extensions;
+
+internal static class CollectionExtensions
 {
-    internal static class CollectionExtensions
+    public static void RemoveAll<T>(this ICollection<T> source, Predicate<T> predicate)
     {
-        public static void RemoveWhere<T>(this ICollection<T> source, Predicate<T> predicate)
+        foreach (var i in source.ToArray())
         {
-            foreach (var i in source.ToArray())
-            {
-                if (predicate(i))
-                    source.Remove(i);
-            }
+            if (predicate(i))
+                source.Remove(i);
         }
     }
 }

@@ -4,22 +4,18 @@ using System.Windows.Data;
 using YoutubeExplode.Common;
 using YoutubeExplode.Videos;
 
-namespace YoutubeDownloader.Converters
+namespace YoutubeDownloader.Converters;
+
+[ValueConversion(typeof(IVideo), typeof(string))]
+public class VideoToHighestQualityThumbnailUrlConverter : IValueConverter
 {
-    [ValueConversion(typeof(IVideo), typeof(string))]
-    public class VideoToHighestQualityThumbnailUrlConverter : IValueConverter
-    {
-        public static VideoToHighestQualityThumbnailUrlConverter Instance { get; } = new();
+    public static VideoToHighestQualityThumbnailUrlConverter Instance { get; } = new();
 
-        public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is IVideo video)
-                return video.Thumbnails.TryGetWithHighestResolution()?.Url;
+    public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture) =>
+        value is IVideo video
+            ? video.Thumbnails.TryGetWithHighestResolution()?.Url
+            : null;
 
-            return default(string);
-        }
-
-        public object ConvertBack(object? value, Type targetType, object parameter, CultureInfo culture) =>
-            throw new NotSupportedException();
-    }
+    public object ConvertBack(object? value, Type targetType, object parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
 }

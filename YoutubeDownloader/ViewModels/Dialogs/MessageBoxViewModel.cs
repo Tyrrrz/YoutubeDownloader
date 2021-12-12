@@ -1,27 +1,26 @@
 ﻿using YoutubeDownloader.ViewModels.Framework;
 
-namespace YoutubeDownloader.ViewModels.Dialogs
+namespace YoutubeDownloader.ViewModels.Dialogs;
+
+public class MessageBoxViewModel : DialogScreen
 {
-    public class MessageBoxViewModel : DialogScreen
+    public string? Title { get; set; }
+
+    public string? Message { get; set; }
+}
+
+public static class MessageBoxViewModelExtensions
+{
+    public static MessageBoxViewModel CreateMessageBoxViewModel(
+        this IViewModelFactory factory,
+        string title,
+        string message)
     {
-        public string? Title { get; set; }
+        var viewModel = factory.CreateMessageBoxViewModel();
 
-        public string? Message { get; set; }
-    }
+        viewModel.Title = title;
+        viewModel.Message = message;
 
-    public static class MessageBoxViewModelExtensions
-    {
-        public static MessageBoxViewModel CreateMessageBoxViewModel(
-            this IViewModelFactory factory,
-            string title,
-            string message)
-        {
-            var viewModel = factory.CreateMessageBoxViewModel();
-
-            viewModel.Title = title;
-            viewModel.Message = message;
-
-            return viewModel;
-        }
+        return viewModel;
     }
 }

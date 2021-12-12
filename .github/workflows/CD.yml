@@ -17,15 +17,10 @@ jobs:
       id: get-version
       uses: dawidd6/action-get-tag@v1
 
-    - name: Install .NET (v3.1)
+    - name: Install .NET
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: 3.1.x
-
-    - name: Install .NET (v5.0)
-      uses: actions/setup-dotnet@v1.7.2
-      with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
 
     - name: Build & publish
       run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
