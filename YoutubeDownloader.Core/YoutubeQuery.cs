@@ -21,14 +21,14 @@ public static class YoutubeQuery
         {
             var playlist = await Youtube.Client.Playlists.GetAsync(playlistId, cancellationToken);
             var videos = await Youtube.Client.Playlists.GetVideosAsync(playlistId, cancellationToken);
-            return new YoutubeQueryResult(playlist.Title, videos);
+            return new YoutubeQueryResult(YoutubeQueryKind.Playlist, playlist.Title, videos);
         }
 
         // Video
         if (VideoId.TryParse(query) is { } videoId)
         {
             var video = await Youtube.Client.Videos.GetAsync(videoId, cancellationToken);
-            return new YoutubeQueryResult(video.Title, new[] { video });
+            return new YoutubeQueryResult(YoutubeQueryKind.Video, video.Title, new[] { video });
         }
 
         // Channel
@@ -36,13 +36,13 @@ public static class YoutubeQuery
         {
             var channel = await Youtube.Client.Channels.GetAsync(channelId, cancellationToken);
             var videos = await Youtube.Client.Channels.GetUploadsAsync(channelId, cancellationToken);
-            return new YoutubeQueryResult($"Channel uploads: {channel.Title}", videos);
+            return new YoutubeQueryResult(YoutubeQueryKind.Channel, $"Channel uploads: {channel.Title}", videos);
         }
 
         // Search
         {
             var videos = await Youtube.Client.Search.GetVideosAsync(query, cancellationToken).CollectAsync(100);
-            return new YoutubeQueryResult($"Search: {query}", videos);
+            return new YoutubeQueryResult(YoutubeQueryKind.Search, $"Search: {query}", videos);
         }
     }
 

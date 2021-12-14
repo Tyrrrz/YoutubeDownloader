@@ -28,6 +28,7 @@
             Grid.Row="0"
             Margin="8,16"
             FontSize="19"
+            FontWeight="Light"
             Text="{Binding Title}"
             TextTrimming="CharacterEllipsis"
             ToolTip="{Binding Title}">

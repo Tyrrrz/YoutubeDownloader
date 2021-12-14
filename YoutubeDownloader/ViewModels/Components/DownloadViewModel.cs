@@ -129,7 +129,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
             {
                 IsFailed = true;
 
-                // Short error message for expected errors, full for unexpected
+                // Short error message for YouTube-related errors, full for others
                 FailReason = ex is YoutubeExplodeException
                     ? ex.Message
                     : ex.ToString();

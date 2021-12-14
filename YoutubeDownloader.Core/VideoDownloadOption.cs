@@ -6,17 +6,24 @@ using System.Threading.Tasks;
 using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeExplode.Converter;
+using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core;
 
-public partial record VideoDownloadOption(string Label, Container Container, IReadOnlyList<IStreamInfo> StreamInfos)
+public partial record VideoDownloadOption(Container Container, IReadOnlyList<IStreamInfo> StreamInfos)
 {
-    public VideoQuality? VideoQuality => StreamInfos
-        .OfType<IVideoStreamInfo>()
-        .Select(s => s.VideoQuality)
-        .OrderByDescending(q => q)
-        .FirstOrDefault();
+    public string Label => VideoQuality?.Label ?? "Audio";
+
+    public VideoQuality? VideoQuality => Memo.Cache(this, () =>
+        StreamInfos
+            .OfType<IVideoStreamInfo>()
+            .Select(s => s.VideoQuality)
+            .OrderByDescending(q => q)
+            .FirstOrDefault()
+    );
+
+    public bool IsAudioOnly => VideoQuality is null;
 
     public async Task DownloadAsync(
         string filePath,
@@ -35,7 +42,7 @@ public partial record VideoDownloadOption(string Label, Container Container, IRe
 
 public partial record VideoDownloadOption
 {
-    public static IReadOnlyList<VideoDownloadOption> GetAll(StreamManifest manifest)
+    public static IReadOnlyList<VideoDownloadOption> ResolveAll(StreamManifest manifest)
     {
         static IEnumerable<VideoDownloadOption> GetVideoAndAudioOptions(StreamManifest streamManifest)
         {
@@ -43,15 +50,14 @@ public partial record VideoDownloadOption
                 .GetVideoStreams()
                 .OrderByDescending(v => v.VideoQuality);
 
-            foreach (var streamInfo in videoStreams)
+            foreach (var videoStreamInfo in videoStreams)
             {
                 // Muxed stream
-                if (streamInfo is MuxedStreamInfo)
+                if (videoStreamInfo is MuxedStreamInfo)
                 {
                     yield return new VideoDownloadOption(
-                        streamInfo.VideoQuality.Label,
-                        streamInfo.Container,
-                        new[] { streamInfo }
+                        videoStreamInfo.Container,
+                        new[] { videoStreamInfo }
                     );
                 }
                 // Separate audio + video stream
@@ -60,16 +66,15 @@ public partial record VideoDownloadOption
                     // Prefer audio stream with the same container
                     var audioStreamInfo = streamManifest
                         .GetAudioStreams()
-                        .OrderByDescending(s => s.Container == streamInfo.Container)
+                        .OrderByDescending(s => s.Container == videoStreamInfo.Container)
                         .ThenByDescending(s => s.Bitrate)
                         .FirstOrDefault();
 
                     if (audioStreamInfo is not null)
                     {
                         yield return new VideoDownloadOption(
-                            streamInfo.VideoQuality.Label,
-                            streamInfo.Container,
-                            new IStreamInfo[] { streamInfo, audioStreamInfo }
+                            videoStreamInfo.Container,
+                            new IStreamInfo[] { videoStreamInfo, audioStreamInfo }
                         );
                     }
                 }
@@ -80,30 +85,30 @@ public partial record VideoDownloadOption
         {
             // WebM-based audio-only containers
             {
-                var streamInfo = streamManifest
+                var audioStreamInfo = streamManifest
                     .GetAudioStreams()
                     .OrderByDescending(s => s.Container == Container.WebM)
                     .ThenByDescending(s => s.Bitrate)
                     .FirstOrDefault();
 
-                if (streamInfo is not null)
+                if (audioStreamInfo is not null)
                 {
-                    yield return new VideoDownloadOption("Audio", new Container("mp3"), new[] { streamInfo });
-                    yield return new VideoDownloadOption("Audio", new Container("ogg"), new[] { streamInfo });
+                    yield return new VideoDownloadOption(new Container("mp3"), new[] { audioStreamInfo });
+                    yield return new VideoDownloadOption(new Container("ogg"), new[] { audioStreamInfo });
                 }
             }
 
             // Mp4-based audio-only containers
             {
-                var streamInfo = streamManifest
+                var audioStreamInfo = streamManifest
                     .GetAudioStreams()
                     .OrderByDescending(s => s.Container == Container.Mp4)
                     .ThenByDescending(s => s.Bitrate)
                     .FirstOrDefault();
 
-                if (streamInfo is not null)
+                if (audioStreamInfo is not null)
                 {
-                    yield return new VideoDownloadOption("Audio", new Container("m4a"), new[] { streamInfo });
+                    yield return new VideoDownloadOption(new Container("m4a"), new[] { audioStreamInfo });
                 }
             }
         }
@@ -122,48 +127,30 @@ public partial record VideoDownloadOption
         return options.ToArray();
     }
 
-    public static VideoDownloadOption Get(
-        StreamManifest manifest,
-        Container container,
-        VideoQualityPreference preference)
+    public static async Task<IReadOnlyList<VideoDownloadOption>> ResolveAllAsync(
+        VideoId videoId,
+        CancellationToken cancellationToken = default)
     {
-        var options = GetAll(manifest);
+        var manifest = await Youtube.Client.Videos.Streams.GetManifestAsync(videoId, cancellationToken);
+        return ResolveAll(manifest);
+    }
 
-        // Video quality preference is ignored for audio-only containers
-        if (container.IsAudioOnly())
-        {
-            return options.FirstOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase));
-        }
+    public static VideoDownloadOption ResolveBest(StreamManifest manifest, Container container) =>
+        ResolveAll(manifest)
+            // Prioritize audio-only options for audio-only containers
+            .OrderByDescending(o => o.IsAudioOnly || !container.IsAudioOnly())
+            // Avoid transcoding, even at the expense of video quality
+            .ThenByDescending(o => o.Container == container)
+            .ThenByDescending(o => o.VideoQuality)
+            .FirstOrDefault() ??
+        throw new ApplicationException("No video download options available.");
 
-        var orderedOptions = options
-            .OrderBy(o => o.VideoQuality)
-            .ToArray();
-
-        var preferredOption = qualityPreference switch
-        {
-            VideoQualityPreference.Maximum => orderedOptions
-                .LastOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
-
-            VideoQualityPreference.High => orderedOptions
-                .Where(o => o.VideoQuality?.MaxHeight <= 1080)
-                .LastOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
-
-            VideoQualityPreference.Medium => orderedOptions
-                .Where(o => o.VideoQuality?.MaxHeight <= 720)
-                .LastOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
-
-            VideoQualityPreference.Low => orderedOptions
-                .Where(o => o.VideoQuality?.MaxHeight <= 480)
-                .LastOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
-
-            VideoQualityPreference.Minimum => orderedOptions
-                .FirstOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase)),
-
-            _ => throw new ArgumentOutOfRangeException(nameof(qualityPreference))
-        };
-
-        return
-            preferredOption ??
-            orderedOptions.FirstOrDefault(o => string.Equals(o.Format, format, StringComparison.OrdinalIgnoreCase));
+    public static async Task<VideoDownloadOption> ResolveBestAsync(
+        VideoId videoId,
+        Container container,
+        CancellationToken cancellationToken = default)
+    {
+        var manifest = await Youtube.Client.Videos.Streams.GetManifestAsync(videoId, cancellationToken);
+        return ResolveBest(manifest, container);
     }
 }

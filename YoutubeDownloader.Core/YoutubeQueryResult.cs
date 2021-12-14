@@ -3,4 +3,4 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Core;
 
-public record YoutubeQueryResult(string Label, IReadOnlyList<IVideo> Videos);
+public record YoutubeQueryResult(YoutubeQueryKind Kind, string Label, IReadOnlyList<IVideo> Videos);

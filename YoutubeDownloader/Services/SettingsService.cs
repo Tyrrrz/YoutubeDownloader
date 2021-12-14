@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Tyrrrz.Settings;
-using YoutubeDownloader.Core;
+﻿using Tyrrrz.Settings;
 using YoutubeDownloader.Utils;
 
 namespace YoutubeDownloader.Services;
@@ -16,8 +14,6 @@ public class SettingsService : SettingsManager
     public bool ShouldSkipExistingFiles { get; set; }
 
     public string FileNameTemplate { get; set; } = FileNameGenerator.DefaultTemplate;
-
-    public IReadOnlyList<string>? ExcludedContainerFormats { get; set; }
 
     public int MaxConcurrentDownloadCount { get; set; } = 2;
 

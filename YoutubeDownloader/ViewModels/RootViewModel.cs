@@ -215,8 +215,8 @@ public class RootViewModel : Screen
             {
                 var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(dialogTitle, videos);
 
-                // Preselect all videos if none of the videos come from a search query
-                if (results.All(q => q.Query.Kind != YoutubeQueryKind.Search))
+                // Preselect all videos (unless it's a search query, then don't)
+                if (results.All(q => q.Kind != YoutubeQueryKind.Search))
                     dialog.SelectedVideos = dialog.AvailableVideos;
 
                 var downloads = await _dialogManager.ShowDialogAsync(dialog);
@@ -259,8 +259,10 @@ public class RootViewModel : Screen
 
     public void RestartFailedDownloads()
     {
-        var failedDownloads = Downloads.Where(d => d.IsFailed).ToArray();
-        foreach (var failedDownload in failedDownloads)
-            failedDownload.Restart();
+        foreach (var download in Downloads)
+        {
+            if (download.IsFailed)
+                download.Restart();
+        }
     }
 }
