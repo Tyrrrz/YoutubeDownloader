@@ -36,17 +36,37 @@ internal class MediaTagInjector
         IVideo video,
         CancellationToken cancellationToken = default)
     {
-        // Use MusicBrainz to automatically resolve tags based on video title
-        var recording = await _musicBrainz.FindRecordingAsync(video.Title, cancellationToken);
+        // We need duration for confidence rating and all videos are expected to have it anyway
+        // since we're not working with live streams.
+        if (video.Duration is not { } videoDuration)
+            return;
 
-        if (!string.IsNullOrWhiteSpace(recording.Artist))
-            mediaFile.SetArtist(recording.Artist);
+        // Use MusicBrainz to automatically resolve tags based on video title
+        var recordings = await _musicBrainz.FindRecordingsAsync(video.Title, cancellationToken);
+
+        // MusicBrainz does not provide any kind of confidence rating, so we're
+        // going to choose the best fit by comparing video and recording durations.
+        var recording = recordings
+            .Select(r => new
+            {
+                Recording = r,
+                ConfidenceRating = 1 - (videoDuration - r.Duration).Duration() / r.Duration
+            })
+            // Accepted discrepancy: ~25 seconds on a 3 minute song
+            .Where(r => r.ConfidenceRating >= 0.85)
+            .OrderByDescending(r => r.ConfidenceRating)
+            .Select(r => r.Recording)
+            .FirstOrDefault();
+
+        // No match
+        if (recording is null)
+            return;
+
+        mediaFile.SetArtist(recording.Artist);
+        mediaFile.SetTitle(recording.Title);
 
         if (!string.IsNullOrWhiteSpace(recording.ArtistSort))
             mediaFile.SetArtistSort(recording.ArtistSort);
-
-        if (!string.IsNullOrWhiteSpace(recording.Title))
-            mediaFile.SetTitle(recording.Title);
 
         if (!string.IsNullOrWhiteSpace(recording.Album))
             mediaFile.SetAlbum(recording.Album);

@@ -1,8 +1,11 @@
-﻿namespace YoutubeDownloader.Core.Downloading.Tagging;
+﻿using System;
+
+namespace YoutubeDownloader.Core.Downloading.Tagging;
 
 internal record MusicBrainzRecording(
-    string? Artist,
+    string Artist,
     string? ArtistSort,
-    string? Title,
-    string? Album
+    string Title,
+    string? Album,
+    TimeSpan Duration
 );
