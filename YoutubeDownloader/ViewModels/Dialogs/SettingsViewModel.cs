@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Tyrrrz.Extensions;
+﻿using Tyrrrz.Extensions;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
 
@@ -21,12 +20,6 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.IsDarkModeEnabled = value;
     }
 
-    public bool ShouldInjectTags
-    {
-        get => _settingsService.ShouldInjectTags;
-        set => _settingsService.ShouldInjectTags = value;
-    }
-
     public bool ShouldSkipExistingFiles
     {
         get => _settingsService.ShouldSkipExistingFiles;
@@ -39,23 +32,10 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.FileNameTemplate = value;
     }
 
-    public string ExcludedContainerFormats
+    public int ParallelLimit
     {
-        get => _settingsService.ExcludedContainerFormats is not null
-            ? _settingsService.ExcludedContainerFormats.JoinToString(",")
-            : "";
-
-        set => _settingsService.ExcludedContainerFormats = value
-            .Split(',')
-            .Select(x => x.Trim())
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .ToArray();
-    }
-
-    public int MaxConcurrentDownloads
-    {
-        get => _settingsService.MaxConcurrentDownloadCount;
-        set => _settingsService.MaxConcurrentDownloadCount = value.Clamp(1, 10);
+        get => _settingsService.ParallelLimit;
+        set => _settingsService.ParallelLimit = value.Clamp(1, 10);
     }
 
     public SettingsViewModel(SettingsService settingsService)

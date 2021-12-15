@@ -159,14 +159,14 @@
                             Margin="10,0"
                             VerticalAlignment="Center"
                             FontWeight="SemiBold"
-                            Text="{Binding MaxConcurrentDownloads}" />
+                            Text="{Binding ParallelLimit}" />
                         <Slider
                             Width="150"
                             VerticalAlignment="Center"
                             Maximum="10"
                             Minimum="1"
                             Style="{DynamicResource MaterialDesignThinSlider}"
-                            Value="{Binding MaxConcurrentDownloads}" />
+                            Value="{Binding ParallelLimit}" />
                     </StackPanel>
                 </DockPanel>
             </StackPanel>

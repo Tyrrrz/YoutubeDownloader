@@ -9,13 +9,11 @@ public class SettingsService : SettingsManager
 
     public bool IsDarkModeEnabled { get; set; }
 
-    public bool ShouldInjectTags { get; set; } = true;
-
     public bool ShouldSkipExistingFiles { get; set; }
 
     public string FileNameTemplate { get; set; } = FileNameGenerator.DefaultTemplate;
 
-    public int MaxConcurrentDownloadCount { get; set; } = 2;
+    public int ParallelLimit { get; set; } = 2;
 
     public string? LastFormat { get; set; }
 

@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Core.Utils.Extensions;
-using YoutubeExplode.Converter;
-using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
-namespace YoutubeDownloader.Core;
+namespace YoutubeDownloader.Core.Downloading;
 
 public partial record VideoDownloadOption(Container Container, IReadOnlyList<IStreamInfo> StreamInfos)
 {
@@ -22,27 +18,11 @@ public partial record VideoDownloadOption(Container Container, IReadOnlyList<ISt
             .OrderByDescending(q => q)
             .FirstOrDefault()
     );
-
-    public bool IsAudioOnly => VideoQuality is null;
-
-    public async Task DownloadAsync(
-        string filePath,
-        IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default) =>
-        await Youtube.Client.Videos.DownloadAsync(
-            StreamInfos,
-            new ConversionRequestBuilder(filePath)
-                .SetFormat(Container.Name)
-                .SetPreset(ConversionPreset.Medium)
-                .Build(),
-            progress,
-            cancellationToken
-        );
 }
 
 public partial record VideoDownloadOption
 {
-    public static IReadOnlyList<VideoDownloadOption> ResolveAll(StreamManifest manifest)
+    internal static IReadOnlyList<VideoDownloadOption> ResolveAll(StreamManifest manifest)
     {
         static IEnumerable<VideoDownloadOption> GetVideoAndAudioOptions(StreamManifest streamManifest)
         {
@@ -127,30 +107,10 @@ public partial record VideoDownloadOption
         return options.ToArray();
     }
 
-    public static async Task<IReadOnlyList<VideoDownloadOption>> ResolveAllAsync(
-        VideoId videoId,
-        CancellationToken cancellationToken = default)
-    {
-        var manifest = await Youtube.Client.Videos.Streams.GetManifestAsync(videoId, cancellationToken);
-        return ResolveAll(manifest);
-    }
-
-    public static VideoDownloadOption ResolveBest(StreamManifest manifest, Container container) =>
+    internal static VideoDownloadOption ResolveBest(StreamManifest manifest, Container container) =>
         ResolveAll(manifest)
-            // Prioritize audio-only options for audio-only containers
-            .OrderByDescending(o => o.IsAudioOnly || !container.IsAudioOnly())
-            // Avoid transcoding, even at the expense of video quality
-            .ThenByDescending(o => o.Container == container)
+            .OrderByDescending(o => o.Container == container)
             .ThenByDescending(o => o.VideoQuality)
             .FirstOrDefault() ??
         throw new ApplicationException("No video download options available.");
-
-    public static async Task<VideoDownloadOption> ResolveBestAsync(
-        VideoId videoId,
-        Container container,
-        CancellationToken cancellationToken = default)
-    {
-        var manifest = await Youtube.Client.Videos.Streams.GetManifestAsync(videoId, cancellationToken);
-        return ResolveBest(manifest, container);
-    }
 }

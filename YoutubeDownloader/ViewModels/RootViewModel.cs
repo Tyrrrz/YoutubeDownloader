@@ -6,6 +6,7 @@ using MaterialDesignThemes.Wpf;
 using Stylet;
 using Tyrrrz.Extensions;
 using YoutubeDownloader.Core;
+using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
@@ -53,7 +54,7 @@ public class RootViewModel : Screen
 
         // Update semaphore capacity when settings change
         settingsService.BindAndInvoke(
-            o => o.MaxConcurrentDownloadCount,
+            o => o.ParallelLimit,
             (_, e) => _downloadSemaphore.MaxCount = e.NewValue
         );
 
