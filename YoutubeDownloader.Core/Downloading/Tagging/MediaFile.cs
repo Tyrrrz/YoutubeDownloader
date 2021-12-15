@@ -1,14 +1,14 @@
 ﻿using System;
 using TagLib;
-using FileTags = TagLib.File;
+using TagFile = TagLib.File;
 
 namespace YoutubeDownloader.Core.Downloading.Tagging;
 
 internal partial class MediaFile : IDisposable
 {
-    private readonly FileTags _file;
+    private readonly TagFile _file;
 
-    public MediaFile(FileTags file) =>
+    public MediaFile(TagFile file) =>
         _file = file;
 
     public void SetThumbnail(byte[] thumbnailData) =>
@@ -42,5 +42,5 @@ internal partial class MediaFile : IDisposable
 
 internal partial class MediaFile
 {
-    public static MediaFile Create(string filePath) => new(FileTags.Create(filePath));
+    public static MediaFile Create(string filePath) => new(TagFile.Create(filePath));
 }

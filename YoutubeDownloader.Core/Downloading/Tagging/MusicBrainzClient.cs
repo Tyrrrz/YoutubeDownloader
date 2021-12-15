@@ -15,13 +15,17 @@ internal class MusicBrainzClient
     // 4 requests per second
     private readonly ThrottleLock _throttleLock = new(TimeSpan.FromSeconds(1.0 / 4));
 
-    public async Task<IReadOnlyList<MusicBrainzRecording>> FindRecordingsAsync(
+    public async Task<IReadOnlyList<MusicBrainzRecording>> SearchRecordingsAsync(
         string query,
         CancellationToken cancellationToken = default)
     {
         var url =
-            "http://musicbrainz.org/ws/2/recording/?version=2&fmt=json&dismax=true&limit=25&query=" +
-            Uri.EscapeDataString(query);
+            "http://musicbrainz.org/ws/2/recording/" +
+            "?version=2" +
+            "&fmt=json" +
+            "&dismax=true" +
+            "&limit=100" +
+            $"&query={Uri.EscapeDataString(query)}";
 
         await _throttleLock.WaitAsync(cancellationToken);
         var json = await Http.Client.GetJsonAsync(url, cancellationToken);
@@ -66,9 +70,9 @@ internal class MusicBrainzClient
             var duration = recordingJson
                 .GetPropertyOrNull("length")?
                 .GetDoubleOrNull()?
-                .Pipe(TimeSpan.FromMilliseconds);
+                .Pipe(TimeSpan.FromMilliseconds) ?? TimeSpan.Zero;
 
-            if (duration is null)
+            if (duration == TimeSpan.Zero)
                 continue;
 
             recordings.Add(new MusicBrainzRecording(
@@ -76,7 +80,7 @@ internal class MusicBrainzClient
                 artistSort,
                 title,
                 album,
-                duration.Value
+                duration
             ));
         }
 

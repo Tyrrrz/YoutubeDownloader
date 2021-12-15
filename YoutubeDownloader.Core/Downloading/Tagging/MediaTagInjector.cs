@@ -18,14 +18,15 @@ internal class MediaTagInjector
         IVideo video,
         CancellationToken cancellationToken = default)
     {
-        var thumbnailUrl = video.Thumbnails
-            .OrderByDescending(t => string.Equals(t.TryGetImageFormat(), "jpg", StringComparison.OrdinalIgnoreCase))
-            .ThenByDescending(t => t.Resolution.Area)
-            .Select(t => t.Url)
-            .FirstOrDefault();
-
-        if (thumbnailUrl is null)
-            return;
+        var thumbnailUrl =
+            video.Thumbnails
+                .OrderByDescending(t =>
+                    string.Equals(t.TryGetImageFormat(), "jpg", StringComparison.OrdinalIgnoreCase)
+                )
+                .ThenByDescending(t => t.Resolution.Area)
+                .Select(t => t.Url)
+                .FirstOrDefault() ??
+            $"https://i.ytimg.com/vi/{video.Id}/hqdefault.jpg";
 
         var thumbnailData = await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken);
         mediaFile.SetThumbnail(thumbnailData);
@@ -42,19 +43,20 @@ internal class MediaTagInjector
             return;
 
         // Use MusicBrainz to automatically resolve tags based on video title
-        var recordings = await _musicBrainz.FindRecordingsAsync(video.Title, cancellationToken);
+        var recordings = await _musicBrainz.SearchRecordingsAsync(video.Title, cancellationToken);
 
-        // MusicBrainz does not provide any kind of confidence rating, so we're
+        // MusicBrainz does not provide any kind of absolute confidence rating, so we're
         // going to choose the best fit by comparing video and recording durations.
         var recording = recordings
             .Select(r => new
             {
                 Recording = r,
+                // Rating range: (-inf, 1] where 1 is perfect match
                 ConfidenceRating = 1 - (videoDuration - r.Duration).Duration() / r.Duration
             })
-            // Accepted discrepancy: ~25 seconds on a 3 minute song
-            .Where(r => r.ConfidenceRating >= 0.85)
-            .OrderByDescending(r => r.ConfidenceRating)
+            // Accepted discrepancy: ~8 seconds on a 3 minute song
+            .Where(x => x.ConfidenceRating >= 0.95)
+            .OrderByDescending(x => x.ConfidenceRating)
             .Select(r => r.Recording)
             .FirstOrDefault();
 
@@ -84,10 +86,17 @@ internal class MediaTagInjector
 
         // Inject some misc metadata
         {
-            if (video is Video videoFull && !string.IsNullOrWhiteSpace(videoFull.Description))
-                mediaFile.SetDescription(videoFull.Description);
+            var description = (video as Video)?.Description;
+            if (!string.IsNullOrWhiteSpace(description))
+                mediaFile.SetDescription(description);
 
-            mediaFile.SetComment($"Downloaded from YouTube: {video.Url}");
+            mediaFile.SetComment(
+                "Downloaded from YouTube using YoutubeDownloader" + Environment.NewLine +
+                $"Video: {video.Title}" + Environment.NewLine +
+                $"Video URL: {video.Url}" + Environment.NewLine +
+                $"Channel: {video.Author.Title}" + Environment.NewLine +
+                $"Channel URL: {video.Author.GetChannelUrl()}"
+            );
         }
     }
 }
