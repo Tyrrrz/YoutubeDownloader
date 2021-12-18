@@ -10,10 +10,6 @@
     <Resource Include="../favicon.ico" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="DotnetRuntimeBootstrapper" Version="1.1.2" PrivateAssets="all" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Gress" Version="1.2.0" />
     <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
@@ -29,6 +25,7 @@
     <PackageReference Include="YoutubeExplode" Version="6.0.7" />
     <PackageReference Include="YoutubeExplode.Converter" Version="6.0.7" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.4.0" PrivateAssets="all" />
+    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.0.2" PrivateAssets="all" />
   </ItemGroup>
 
   <Target Name="Format XAML" AfterTargets="BeforeBuild">
