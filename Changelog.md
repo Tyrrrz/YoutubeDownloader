@@ -1,3 +1,8 @@
+### v1.8.4 (18-Dec-2021)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.7.
+- Fixed various issues related to the runtime bootstrapper. Updated to DotnetRuntimeBootstrapper v2.0.2.
+
 ### v1.8.3 (29-Jul-2021)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.5.
