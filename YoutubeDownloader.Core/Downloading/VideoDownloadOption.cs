@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Core.Utils.Extensions;
+using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core.Downloading;
 
 public partial record VideoDownloadOption(Container Container, IReadOnlyList<IStreamInfo> StreamInfos)
 {
-    public string Label => VideoQuality?.Label ?? "Audio";
+    public string Label =>
+        Container.IsAudioOnly()
+            ? $"Audio / {Container.Name}"
+            : $"{VideoQuality?.Label ?? "???"} / {Container.Name}";
 
     public VideoQuality? VideoQuality => Memo.Cache(this, () =>
         StreamInfos
@@ -24,9 +28,9 @@ public partial record VideoDownloadOption
 {
     internal static IReadOnlyList<VideoDownloadOption> ResolveAll(StreamManifest manifest)
     {
-        static IEnumerable<VideoDownloadOption> GetVideoAndAudioOptions(StreamManifest streamManifest)
+        IEnumerable<VideoDownloadOption> GetVideoAndAudioOptions()
         {
-            var videoStreams = streamManifest
+            var videoStreams = manifest
                 .GetVideoStreams()
                 .OrderByDescending(v => v.VideoQuality);
 
@@ -44,7 +48,7 @@ public partial record VideoDownloadOption
                 else
                 {
                     // Prefer audio stream with the same container
-                    var audioStreamInfo = streamManifest
+                    var audioStreamInfo = manifest
                         .GetAudioStreams()
                         .OrderByDescending(s => s.Container == videoStreamInfo.Container)
                         .ThenByDescending(s => s.Bitrate)
@@ -61,11 +65,11 @@ public partial record VideoDownloadOption
             }
         }
 
-        static IEnumerable<VideoDownloadOption> GetAudioOnlyOptions(StreamManifest streamManifest)
+        IEnumerable<VideoDownloadOption> GetAudioOnlyOptions()
         {
             // WebM-based audio-only containers
             {
-                var audioStreamInfo = streamManifest
+                var audioStreamInfo = manifest
                     .GetAudioStreams()
                     .OrderByDescending(s => s.Container == Container.WebM)
                     .ThenByDescending(s => s.Bitrate)
@@ -80,7 +84,7 @@ public partial record VideoDownloadOption
 
             // Mp4-based audio-only containers
             {
-                var audioStreamInfo = streamManifest
+                var audioStreamInfo = manifest
                     .GetAudioStreams()
                     .OrderByDescending(s => s.Container == Container.Mp4)
                     .ThenByDescending(s => s.Bitrate)
@@ -101,8 +105,8 @@ public partial record VideoDownloadOption
 
         var options = new HashSet<VideoDownloadOption>(comparer);
 
-        options.AddRange(GetVideoAndAudioOptions(manifest));
-        options.AddRange(GetAudioOnlyOptions(manifest));
+        options.AddRange(GetVideoAndAudioOptions());
+        options.AddRange(GetAudioOnlyOptions());
 
         return options.ToArray();
     }

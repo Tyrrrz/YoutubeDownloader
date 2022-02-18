@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using YoutubeDownloader.Core;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -14,14 +12,12 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 {
-    // TODO: exclude formats
-    private readonly IViewModelFactory _viewModelFactory;
     private readonly SettingsService _settingsService;
     private readonly DialogManager _dialogManager;
 
-    public string Title { get; set; } = default!;
+    public string? Title { get; set; }
 
-    public IVideo Video { get; set; } = default!;
+    public IVideo? Video { get; set; }
 
     public IReadOnlyList<VideoDownloadOption> AvailableVideoOptions { get; set; } =
         Array.Empty<VideoDownloadOption>();
@@ -31,74 +27,47 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 
     public VideoDownloadOption? SelectedVideoOption { get; set; }
 
-    public SubtitleDownloadOption? SelectedSubtitleOption { get; set; }
+    public IReadOnlyList<SubtitleDownloadOption>? SelectedSubtitleOptions { get; set; }
 
-    public bool ShouldDownloadSubtitles { get; set; }
+    public string? FilePath { get; set; }
 
-    public DownloadSingleSetupViewModel(
-        IViewModelFactory viewModelFactory,
-        SettingsService settingsService,
-        DialogManager dialogManager)
+    public DownloadSingleSetupViewModel(SettingsService settingsService, DialogManager dialogManager)
     {
-        _viewModelFactory = viewModelFactory;
         _settingsService = settingsService;
         _dialogManager = dialogManager;
-    }
-
-    public void OnViewLoaded()
-    {
-        // Select first video download option matching last used format or first non-audio-only download option
-        SelectedVideoOption =
-            AvailableVideoOptions.FirstOrDefault(o => o.Format == _settingsService.LastFormat) ??
-            AvailableVideoOptions.OrderByDescending(o => !string.IsNullOrWhiteSpace(o.Label)).FirstOrDefault();
-
-        // Select first subtitle download option matching last used language
-        SelectedSubtitleOption =
-            AvailableSubtitleOptions.FirstOrDefault(o =>
-                o.TrackInfo.Language.Code == _settingsService.LastSubtitleLanguageCode) ??
-            AvailableSubtitleOptions.FirstOrDefault();
     }
 
     public bool CanConfirm => SelectedVideoOption is not null;
 
     public void Confirm()
     {
-        var format = SelectedVideoOption!.Format;
+        if (Video is null || SelectedVideoOption is null)
+            return;
 
-        // Prompt for output file path
         var defaultFileName = FileNameGenerator.GenerateFileName(
             _settingsService.FileNameTemplate,
             Video,
-            format
+            SelectedVideoOption.Container.Name
         );
 
-        var filter = $"{format.ToUpperInvariant()} file|*.{format}";
+        FilePath = _dialogManager.PromptSaveFilePath(
+            $"{SelectedVideoOption.Container.Name.ToUpperInvariant()} file|*.{SelectedVideoOption.Container.Name}",
+            defaultFileName
+        );
 
-        var filePath = _dialogManager.PromptSaveFilePath(filter, defaultFileName);
-        if (string.IsNullOrWhiteSpace(filePath))
+        if (string.IsNullOrWhiteSpace(FilePath))
             return;
 
-        _settingsService.LastFormat = format;
-        _settingsService.LastSubtitleLanguageCode = SelectedSubtitleOption?.TrackInfo.Language.Code;
-
-        var download = _viewModelFactory.CreateDownloadViewModel(
-            Video!,
-            filePath,
-            format,
-            SelectedVideoOption,
-            ShouldDownloadSubtitles ? SelectedSubtitleOption : null
-        );
-
-        // Create empty file to "lock in" the file path.
-        // This is necessary as there may be other downloads with the same file name
-        // which would otherwise overwrite the file.
-        PathEx.CreateDirectoryForFile(filePath);
-        PathEx.CreateEmptyFile(filePath);
-
-        Close(download);
+        Close();
     }
 
-    public void CopyTitle() => Clipboard.SetText(Title);
+    public void CopyTitle()
+    {
+        if (string.IsNullOrWhiteSpace(Title))
+            return;
+
+        Clipboard.SetText(Title);
+    }
 }
 
 public static class DownloadSingleSetupViewModelExtensions

@@ -1,7 +1,15 @@
 ﻿<Window
+    Background="{DynamicResource MaterialDesignBackground}"
+    FocusManager.FocusedElement="{Binding ElementName=QueryTextBox}"
+    Height="550"
+    Icon="/YoutubeDownloader;component/favicon.ico"
+    Style="{DynamicResource MaterialDesignRoot}"
+    Width="600"
+    WindowStartupLocation="CenterScreen"
+    d:DataContext="{d:DesignInstance Type=viewModels:RootViewModel}"
+    mc:Ignorable="d"
     x:Class="YoutubeDownloader.Views.RootView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,17 +17,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
-    Width="600"
-    Height="550"
-    d:DataContext="{d:DesignInstance Type=viewModels:RootViewModel}"
-    Background="{DynamicResource MaterialDesignBackground}"
-    FocusManager.FocusedElement="{Binding ElementName=QueryTextBox}"
-    Icon="/YoutubeDownloader;component/favicon.ico"
-    Style="{DynamicResource MaterialDesignRoot}"
-    WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Window.TaskbarItemInfo>
-        <TaskbarItemInfo ProgressState="Normal" ProgressValue="{Binding ProgressManager.Progress}" />
+        <TaskbarItemInfo ProgressState="Normal" ProgressValue="{Binding Progress.Current.Fraction}" />
     </Window.TaskbarItemInfo>
     <materialDesign:DialogHost
         CloseOnClickAway="True"
@@ -33,7 +33,7 @@
             </Grid.RowDefinitions>
 
             <!--  Toolbar  -->
-            <Grid Grid.Row="0" Background="{DynamicResource MaterialDesignDarkBackground}">
+            <Grid Background="{DynamicResource MaterialDesignDarkBackground}" Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -49,71 +49,71 @@
 
                         <!--  Query  -->
                         <TextBox
-                            x:Name="QueryTextBox"
-                            Grid.Column="0"
-                            Margin="6"
-                            VerticalAlignment="Bottom"
-                            materialDesign:HintAssist.Hint="URL or search query (press Shift+Enter to add multiple)"
-                            materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                             AcceptsReturn="True"
                             BorderThickness="0"
                             FontSize="16"
+                            Grid.Column="0"
+                            Margin="6"
                             MaxLines="4"
                             PreviewKeyDown="QueryTextBox_OnPreviewKeyDown"
                             Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
-                            VerticalScrollBarVisibility="Auto" />
+                            VerticalAlignment="Bottom"
+                            VerticalScrollBarVisibility="Auto"
+                            materialDesign:HintAssist.Hint="URL or search query (press Shift+Enter to add multiple)"
+                            materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                            x:Name="QueryTextBox" />
 
                         <!--  Process query button  -->
                         <Button
+                            Command="{s:Action ProcessQuery}"
                             Grid.Column="1"
+                            IsDefault="True"
                             Margin="0,6,6,6"
                             Padding="4"
-                            Command="{s:Action ProcessQuery}"
-                            IsDefault="True"
                             Style="{DynamicResource MaterialDesignFlatButton}"
                             ToolTip="Process query (Enter)">
                             <materialDesign:PackIcon
-                                Width="24"
                                 Height="24"
-                                Kind="ArrowRight" />
+                                Kind="ArrowRight"
+                                Width="24" />
                         </Button>
                     </Grid>
                 </materialDesign:Card>
 
                 <!--  Settings button  -->
                 <Button
+                    Command="{s:Action ShowSettings}"
+                    Foreground="{DynamicResource MaterialDesignDarkForeground}"
                     Grid.Column="1"
                     Margin="6"
                     Padding="4"
-                    Command="{s:Action ShowSettings}"
-                    Foreground="{DynamicResource MaterialDesignDarkForeground}"
                     Style="{DynamicResource MaterialDesignFlatButton}"
                     ToolTip="Settings">
                     <Button.Resources>
-                        <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
+                        <SolidColorBrush Color="#4C4C4C" x:Key="MaterialDesignFlatButtonClick" />
                     </Button.Resources>
                     <materialDesign:PackIcon
-                        Width="24"
                         Height="24"
-                        Kind="Settings" />
+                        Kind="Settings"
+                        Width="24" />
                 </Button>
             </Grid>
 
             <!--  Progress  -->
             <ProgressBar
-                Grid.Row="1"
                 Background="{DynamicResource MaterialDesignDarkBackground}"
+                Grid.Row="1"
                 IsIndeterminate="{Binding IsProgressIndeterminate}"
-                Value="{Binding ProgressManager.Progress, Mode=OneWay}" />
+                Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
 
             <!--  Content  -->
-            <Grid Grid.Row="2" Background="{DynamicResource MaterialDesignCardBackground}">
+            <Grid Background="{DynamicResource MaterialDesignCardBackground}" Grid.Row="2">
 
                 <!--  Placeholder  -->
                 <TextBlock
-                    Margin="32"
                     FontSize="18"
                     FontWeight="Light"
+                    Margin="32"
                     Text="Copy-paste URL or type in a search query to start downloading"
                     TextAlignment="Center"
                     TextWrapping="Wrap"
@@ -166,35 +166,35 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                     <Image
-                                        Width="32"
+                                        Source="{Binding Request.Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}"
                                         VerticalAlignment="Center"
-                                        Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
+                                        Width="32" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
                         <!--  File name  -->
                         <DataGridTemplateColumn
-                            Width="*"
                             Header="File"
-                            SortMemberPath="FileName">
+                            SortMemberPath="FileName"
+                            Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                     <TextBlock
-                                        VerticalAlignment="Center"
                                         FontSize="14"
                                         Foreground="{DynamicResource MaterialDesignBody}"
-                                        Text="{Binding FileName}"
+                                        Text="{Binding Request.FileName}"
                                         TextTrimming="CharacterEllipsis"
-                                        ToolTip="{Binding FileName}" />
+                                        ToolTip="{Binding Request.FileName}"
+                                        VerticalAlignment="Center" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
                         <!--  Status  -->
                         <DataGridTemplateColumn
-                            MinWidth="100"
                             Header="Status"
+                            MinWidth="100"
                             SortMemberPath="ProgressOperation.Progress">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type components:DownloadViewModel}">
@@ -206,23 +206,18 @@
 
                                         <!--  Progress  -->
                                         <ProgressBar
+                                            Foreground="{DynamicResource SecondaryHueMidBrush}"
                                             Grid.Column="0"
                                             Margin="0,0,6,0"
-                                            Foreground="{DynamicResource SecondaryHueMidBrush}"
                                             Maximum="1"
                                             Minimum="0"
-                                            Value="{Binding ProgressOperation.Progress, Mode=OneWay}">
+                                            Value="{Binding Progress.Current.Fraction, Mode=OneWay}"
+                                            Visibility="Collapsed">
                                             <ProgressBar.Style>
                                                 <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
                                                     <Style.Triggers>
-                                                        <!--  Hide when not downloading  -->
-                                                        <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-
-                                                        <!--  Hide when progress is zero  -->
-                                                        <DataTrigger Binding="{Binding ProgressOperation.Progress}" Value="0">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Started}">
+                                                            <Setter Property="Visibility" Value="Visible" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -232,42 +227,38 @@
                                         <!--  Status  -->
                                         <TextBlock
                                             Grid.Column="1"
-                                            VerticalAlignment="Center"
-                                            TextTrimming="CharacterEllipsis">
+                                            TextTrimming="CharacterEllipsis"
+                                            VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
                                                     <Style.Triggers>
-                                                        <!--  Downloading  -->
-                                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                                            <Setter Property="Text" Value="{Binding ProgressOperation.Progress, StringFormat=\{0:P1\}}" />
+                                                        <!--  Pending  -->
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Initial}">
+                                                            <Setter Property="Text" Value="Pending..." />
                                                         </DataTrigger>
 
-                                                        <!--  Pending  -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsActive}" Value="True" />
-                                                                <Condition Binding="{Binding ProgressOperation.Progress}" Value="0" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="Text" Value="Pending..." />
-                                                        </MultiDataTrigger>
+                                                        <!--  Downloading  -->
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Started}">
+                                                            <Setter Property="Text" Value="{Binding Progress.Current}" />
+                                                        </DataTrigger>
 
                                                         <!--  Successful  -->
-                                                        <DataTrigger Binding="{Binding IsSuccessful}" Value="True">
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Completed}">
                                                             <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
                                                             <Setter Property="Text" Value="✓ Done" />
                                                         </DataTrigger>
 
                                                         <!--  Canceled  -->
-                                                        <DataTrigger Binding="{Binding IsCanceled}" Value="True">
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled}">
                                                             <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
                                                             <Setter Property="Text" Value="✗ Canceled" />
                                                         </DataTrigger>
 
                                                         <!--  Failed  -->
-                                                        <DataTrigger Binding="{Binding IsFailed}" Value="True">
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Failed}">
                                                             <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
                                                             <Setter Property="Text" Value="✗ Failed" />
-                                                            <Setter Property="ToolTip" Value="{Binding FailReason}" />
+                                                            <Setter Property="ToolTip" Value="{Binding ErrorMessage}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -284,63 +275,63 @@
                                 <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                     <StackPanel
                                         HorizontalAlignment="Right"
+                                        Orientation="Horizontal"
                                         VerticalAlignment="Center"
-                                        s:View.ActionTarget="{Binding}"
-                                        Orientation="Horizontal">
+                                        s:View.ActionTarget="{Binding}">
                                         <!--  Cancel  -->
                                         <Button
-                                            Padding="4,0,4,0"
-                                            VerticalAlignment="Center"
                                             Command="{s:Action Cancel}"
+                                            Padding="4,0,4,0"
                                             Style="{DynamicResource MaterialDesignFlatButton}"
                                             ToolTip="Cancel download"
+                                            VerticalAlignment="Center"
                                             Visibility="{Binding CanCancel, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                             <materialDesign:PackIcon
-                                                Width="24"
                                                 Height="24 "
-                                                Kind="CloseCircleOutline" />
+                                                Kind="CloseCircleOutline"
+                                                Width="24" />
                                         </Button>
 
                                         <!--  Restart  -->
                                         <Button
-                                            Padding="4,0,4,0"
-                                            VerticalAlignment="Center"
                                             Command="{s:Action Restart}"
+                                            Padding="4,0,4,0"
                                             Style="{DynamicResource MaterialDesignFlatButton}"
                                             ToolTip="Restart download"
+                                            VerticalAlignment="Center"
                                             Visibility="{Binding CanRestart, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                             <materialDesign:PackIcon
-                                                Width="24"
                                                 Height="24 "
-                                                Kind="Restart" />
+                                                Kind="Restart"
+                                                Width="24" />
                                         </Button>
 
                                         <!--  Show file  -->
                                         <Button
-                                            Padding="4,0,4,0"
-                                            VerticalAlignment="Center"
                                             Command="{s:Action ShowFile}"
+                                            Padding="4,0,4,0"
                                             Style="{DynamicResource MaterialDesignFlatButton}"
                                             ToolTip="Navigate to file"
+                                            VerticalAlignment="Center"
                                             Visibility="{Binding CanShowFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                             <materialDesign:PackIcon
-                                                Width="24"
                                                 Height="24 "
-                                                Kind="FileFindOutline" />
+                                                Kind="FileFindOutline"
+                                                Width="24" />
                                         </Button>
 
                                         <!--  Open file  -->
                                         <Button
-                                            Padding="4,0,4,0"
-                                            VerticalAlignment="Center"
                                             Command="{s:Action OpenFile}"
+                                            Padding="4,0,4,0"
                                             Style="{DynamicResource MaterialDesignFlatButton}"
                                             ToolTip="Play"
+                                            VerticalAlignment="Center"
                                             Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                             <materialDesign:PackIcon
-                                                Width="24"
                                                 Height="24 "
-                                                Kind="PlayCircleOutline" />
+                                                Kind="PlayCircleOutline"
+                                                Width="24" />
                                         </Button>
                                     </StackPanel>
                                 </DataTemplate>

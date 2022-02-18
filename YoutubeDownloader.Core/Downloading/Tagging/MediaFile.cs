@@ -8,8 +8,7 @@ internal partial class MediaFile : IDisposable
 {
     private readonly TagFile _file;
 
-    public MediaFile(TagFile file) =>
-        _file = file;
+    public MediaFile(TagFile file) => _file = file;
 
     public void SetThumbnail(byte[] thumbnailData) =>
         _file.Tag.Pictures = new IPicture[] { new Picture(thumbnailData) };

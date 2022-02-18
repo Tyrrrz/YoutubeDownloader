@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeExplode.Videos;
-using MediaFile = TagLib.File;
 
 namespace YoutubeDownloader.Core.Downloading.Tagging;
 
@@ -21,18 +20,23 @@ internal class MediaTagInjector
         var thumbnailUrl =
             video.Thumbnails
                 .OrderByDescending(t =>
-                    string.Equals(t.TryGetImageFormat(), "jpg", StringComparison.OrdinalIgnoreCase)
+                    string.Equals(
+                        t.TryGetImageFormat(),
+                        "jpg",
+                        StringComparison.OrdinalIgnoreCase
+                    )
                 )
                 .ThenByDescending(t => t.Resolution.Area)
                 .Select(t => t.Url)
                 .FirstOrDefault() ??
             $"https://i.ytimg.com/vi/{video.Id}/hqdefault.jpg";
 
-        var thumbnailData = await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken);
-        mediaFile.SetThumbnail(thumbnailData);
+        mediaFile.SetThumbnail(
+            await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken)
+        );
     }
 
-    private async Task InjectRecordingMetadataAsync(
+    private async Task InjectMusicMetadataAsync(
         MediaFile mediaFile,
         IVideo video,
         CancellationToken cancellationToken = default)
@@ -42,7 +46,6 @@ internal class MediaTagInjector
         if (video.Duration is not { } videoDuration)
             return;
 
-        // Use MusicBrainz to automatically resolve tags based on video title
         var recordings = await _musicBrainz.SearchRecordingsAsync(video.Title, cancellationToken);
 
         // MusicBrainz does not provide any kind of absolute confidence rating, so we're
@@ -51,7 +54,7 @@ internal class MediaTagInjector
             .Select(r => new
             {
                 Recording = r,
-                // Rating range: (-inf, 1] where 1 is perfect match
+                // Rating range: (-inf, 1] where 1 is a perfect match
                 ConfidenceRating = 1 - (videoDuration - r.Duration).Duration() / r.Duration
             })
             // Accepted discrepancy: ~8 seconds on a 3 minute song
@@ -60,7 +63,6 @@ internal class MediaTagInjector
             .Select(r => r.Recording)
             .FirstOrDefault();
 
-        // No match
         if (recording is null)
             return;
 
@@ -74,6 +76,21 @@ internal class MediaTagInjector
             mediaFile.SetAlbum(recording.Album);
     }
 
+    private void InjectMiscMetadata(MediaFile mediaFile, IVideo video)
+    {
+        var description = (video as Video)?.Description;
+        if (!string.IsNullOrWhiteSpace(description))
+            mediaFile.SetDescription(description);
+
+        mediaFile.SetComment(
+            "Downloaded from YouTube using YoutubeDownloader" + Environment.NewLine +
+            $"Video: {video.Title}" + Environment.NewLine +
+            $"Video URL: {video.Url}" + Environment.NewLine +
+            $"Channel: {video.Author.Title}" + Environment.NewLine +
+            $"Channel URL: {video.Author.ChannelUrl}"
+        );
+    }
+
     public async Task InjectTagsAsync(
         string filePath,
         IVideo video,
@@ -82,21 +99,7 @@ internal class MediaTagInjector
         using var mediaFile = MediaFile.Create(filePath);
 
         await InjectThumbnailAsync(mediaFile, video, cancellationToken);
-        await InjectRecordingMetadataAsync(mediaFile, video, cancellationToken);
-
-        // Inject some misc metadata
-        {
-            var description = (video as Video)?.Description;
-            if (!string.IsNullOrWhiteSpace(description))
-                mediaFile.SetDescription(description);
-
-            mediaFile.SetComment(
-                "Downloaded from YouTube using YoutubeDownloader" + Environment.NewLine +
-                $"Video: {video.Title}" + Environment.NewLine +
-                $"Video URL: {video.Url}" + Environment.NewLine +
-                $"Channel: {video.Author.Title}" + Environment.NewLine +
-                $"Channel URL: {video.Author.GetChannelUrl()}"
-            );
-        }
+        await InjectMusicMetadataAsync(mediaFile, video, cancellationToken);
+        InjectMiscMetadata(mediaFile, video);
     }
 }

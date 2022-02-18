@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Gress;
 using YoutubeDownloader.Core.Utils;
 using YoutubeExplode;
 using YoutubeExplode.Channels;
@@ -12,17 +13,9 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Core.Resolving;
 
-public class VideoResolver
+public class YoutubeQueryResolver
 {
-    private readonly YoutubeClient _youtube;
-
-    public VideoResolver(YoutubeClient youtube) =>
-        _youtube = youtube;
-
-    public VideoResolver()
-        : this(new YoutubeClient(Http.Client))
-    {
-    }
+    private readonly YoutubeClient _youtube = new(Http.Client);
 
     public async Task<YoutubeQueryResult> QueryAsync(
         string query,
@@ -60,20 +53,28 @@ public class VideoResolver
 
     public async Task<YoutubeQueryResult> QueryAsync(
         IReadOnlyList<string> queries,
-        IProgress<double>? progress = null,
+        IProgress<Percentage>? progress = null,
         CancellationToken cancellationToken = default)
     {
+        // Avoid wrapping results in an aggregated query if there is no need for it
         if (queries.Count == 1)
             return await QueryAsync(queries.Single(), cancellationToken);
 
         var videos = new List<IVideo>();
+        var videoIds = new HashSet<VideoId>();
 
-        for (var i = 0; i < queries.Count; i++)
+        var completedQueriesCount = 0;
+        foreach (var query in queries)
         {
-            var query = await QueryAsync(queries[i], cancellationToken);
-            videos.AddRange(query.Videos);
+            var result = await QueryAsync(query, cancellationToken);
 
-            progress?.Report((i + 1.0) / queries.Count);
+            videos.AddRange(
+                result.Videos.Where(v => videoIds.Add(v.Id))
+            );
+
+            progress?.Report(Percentage.FromFraction(
+                1.0 * completedQueriesCount++ / queries.Count
+            ));
         }
 
         return new YoutubeQueryResult(YoutubeQueryKind.Aggregate, "Multiple queries", videos);

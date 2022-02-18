@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Gress;
+using Gress.Completable;
 using MaterialDesignThemes.Wpf;
 using Stylet;
-using Tyrrrz.Extensions;
-using YoutubeDownloader.Core;
+using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -19,20 +19,24 @@ namespace YoutubeDownloader.ViewModels;
 
 public class RootViewModel : Screen
 {
-    private readonly ResizableSemaphore _downloadSemaphore = new();
-
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
     private readonly UpdateService _updateService;
 
-    public ISnackbarMessageQueue Notifications { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(5));
+    private readonly AutoResetProgressMuxer _progressMuxer;
+    private readonly ResizableSemaphore _downloadSemaphore = new();
 
-    public IProgressManager ProgressManager { get; } = new ProgressManager();
+    private readonly YoutubeQueryResolver _youtubeQueryResolver = new();
+    private readonly YoutubeVideoDownloader _youtubeVideoDownloader = new();
 
     public bool IsBusy { get; private set; }
 
-    public bool IsProgressIndeterminate => ProgressManager.IsActive && ProgressManager.Progress is <= 0 or >= 1;
+    public ProgressContainer<Percentage> Progress { get; } = new();
+
+    public bool IsProgressIndeterminate => IsBusy && Progress.Current.Fraction is <= 0 or >= 1;
+
+    public SnackbarMessageQueue Notifications { get; } = new(TimeSpan.FromSeconds(5));
 
     public string? Query { get; set; }
 
@@ -49,25 +53,12 @@ public class RootViewModel : Screen
         _settingsService = settingsService;
         _updateService = updateService;
 
-        // Title
+        _progressMuxer = Progress.CreateMuxer().WithAutoReset();
+
         DisplayName = $"{App.Name} v{App.VersionString}";
 
-        // Update semaphore capacity when settings change
-        settingsService.BindAndInvoke(
-            o => o.ParallelLimit,
-            (_, e) => _downloadSemaphore.MaxCount = e.NewValue
-        );
-
-        // Update busy state when progress manager changes
-        ProgressManager.Bind(
-            o => o.IsActive,
-            (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
-        );
-
-        ProgressManager.Bind(
-            o => o.Progress,
-            (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
-        );
+        settingsService.BindAndInvoke(o => o.ParallelLimit, (_, e) => _downloadSemaphore.MaxCount = e.NewValue);
+        Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
     }
 
     private async Task CheckForUpdatesAsync()
@@ -133,27 +124,45 @@ public class RootViewModel : Screen
 
     public bool CanShowSettings => !IsBusy;
 
-    public async void ShowSettings()
-    {
-        var dialog = _viewModelFactory.CreateSettingsViewModel();
-        await _dialogManager.ShowDialogAsync(dialog);
-    }
+    public async void ShowSettings() => await _dialogManager.ShowDialogAsync(
+        _viewModelFactory.CreateSettingsViewModel()
+    );
 
-    private void EnqueueDownload(DownloadViewModel download)
+    private void EnqueueDownload(VideoDownloadRequest request, int position = 0)
     {
-        // Cancel and remove downloads with the same file path
-        var existingDownloads = Downloads.Where(d => d.FilePath == download.FilePath).ToArray();
-        foreach (var existingDownload in existingDownloads)
+        var download = _viewModelFactory.CreateDownloadViewModel(request);
+        Downloads.Insert(position, download);
+
+        var progress = _progressMuxer.CreateInput();
+        var mergedProgress = progress.Merge(download.Progress);
+
+        Task.Run(async () =>
         {
-            existingDownload.Cancel();
-            Downloads.Remove(existingDownload);
-        }
+            download.Status = DownloadStatus.Started;
 
-        // Bind progress manager
-        download.ProgressManager = ProgressManager;
-        download.Start();
+            try
+            {
+                await _youtubeVideoDownloader.DownloadAsync(request, mergedProgress, download.CancellationToken);
+                download.Status = DownloadStatus.Completed;
+            }
+            catch (OperationCanceledException)
+            {
+                download.Status = DownloadStatus.Canceled;
+            }
+            catch (Exception ex)
+            {
+                download.Status = DownloadStatus.Failed;
 
-        Downloads.Insert(0, download);
+                // Short error message for YouTube-related errors, full for others
+                download.ErrorMessage = ex is YoutubeExplodeException
+                    ? ex.Message
+                    : ex.ToString();
+            }
+            finally
+            {
+                progress.ReportCompletion();
+            }
+        });
     }
 
     public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
@@ -163,30 +172,25 @@ public class RootViewModel : Screen
         if (string.IsNullOrWhiteSpace(Query))
             return;
 
-        // Small operation weight to not offset any existing download operations
-        using var operation = ProgressManager.CreateOperation(0.01);
-
         IsBusy = true;
+
+        // Small weight to not offset any existing download operations
+        var progress = _progressMuxer.CreateInput(0.01);
 
         try
         {
-            var results = await YoutubeQuery.ExecuteAsync(Query.Split(Environment.NewLine), operation);
-
-            var videos = results.SelectMany(q => q.Videos).Distinct(v => v.Id).ToArray();
-
-            var dialogTitle = results.Count == 1
-                ? results.Single().Label
-                : "Multiple queries";
+            var queryResult = await _youtubeQueryResolver.QueryAsync(Query.Split(Environment.NewLine), progress);
+            var videos = queryResult.Videos.ToArray();
 
             // No videos found
             if (videos.Length <= 0)
             {
-                var dialog = _viewModelFactory.CreateMessageBoxViewModel(
-                    "Nothing found",
-                    "Couldn't find any videos based on the query or URL you provided"
+                await _dialogManager.ShowDialogAsync(
+                    _viewModelFactory.CreateMessageBoxViewModel(
+                        "Nothing found",
+                        "Couldn't find any videos based on the query or URL you provided"
+                    )
                 );
-
-                await _dialogManager.ShowDialogAsync(dialog);
             }
 
             // Single video
@@ -194,11 +198,11 @@ public class RootViewModel : Screen
             {
                 var video = videos.Single();
 
-                var downloadOptions = await video.GetDownloadOptionsAsync();
-                var subtitleOptions = await video.GetSubtitleDownloadOptionsAsync();
+                var downloadOptions = await _youtubeVideoDownloader.GetVideoDownloadOptionsAsync(video.Id);
+                var subtitleOptions = await _youtubeVideoDownloader.GetSubtitleDownloadOptionsAsync(video.Id);
 
                 var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(
-                    dialogTitle,
+                    queryResult.Label,
                     video,
                     downloadOptions,
                     subtitleOptions
@@ -208,40 +212,52 @@ public class RootViewModel : Screen
                 if (download is null)
                     return;
 
-                EnqueueDownload(download);
+                EnqueueDownload(
+                    new VideoDownloadRequest(
+                        dialog.FilePath!,
+                        dialog.Video!,
+                        dialog.SelectedVideoOption!,
+                        dialog.SelectedSubtitleOptions!
+                    )
+                );
             }
 
             // Multiple videos
             else
             {
-                var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(dialogTitle, videos);
+                /*
+                var downloads = await _dialogManager.ShowDialogAsync(
+                    _viewModelFactory.CreateDownloadMultipleSetupViewModel(
+                        queryResult.Label,
+                        videos,
+                        // Preselect all videos if this is not a search query
+                        queryResult.Kind != YoutubeQueryKind.Search
+                    )
+                );
 
-                // Preselect all videos (unless it's a search query, then don't)
-                if (results.All(q => q.Kind != YoutubeQueryKind.Search))
-                    dialog.SelectedVideos = dialog.AvailableVideos;
-
-                var downloads = await _dialogManager.ShowDialogAsync(dialog);
                 if (downloads is null)
                     return;
 
                 foreach (var download in downloads)
                     EnqueueDownload(download);
+                    */
             }
         }
         catch (Exception ex)
         {
-            var dialog = _viewModelFactory.CreateMessageBoxViewModel(
-                "Error",
-                // Short error message for YouTube-related errors, full for others
-                ex is YoutubeExplodeException
-                    ? ex.Message
-                    : ex.ToString()
+            await _dialogManager.ShowDialogAsync(
+                _viewModelFactory.CreateMessageBoxViewModel(
+                    "Error",
+                    // Short error message for YouTube-related errors, full for others
+                    ex is YoutubeExplodeException
+                        ? ex.Message
+                        : ex.ToString()
+                )
             );
-
-            await _dialogManager.ShowDialogAsync(dialog);
         }
         finally
         {
+            progress.ReportCompletion();
             IsBusy = false;
         }
     }
@@ -253,17 +269,21 @@ public class RootViewModel : Screen
     }
 
     public void RemoveInactiveDownloads() =>
-        Downloads.RemoveAll(d => !d.IsActive);
+        Downloads.RemoveAll(d =>
+            d.Status is DownloadStatus.Completed or DownloadStatus.Failed or DownloadStatus.Canceled
+        );
 
     public void RemoveSuccessfulDownloads() =>
-        Downloads.RemoveAll(d => d.IsSuccessful);
+        Downloads.RemoveAll(d => d.Status == DownloadStatus.Completed);
 
     public void RestartFailedDownloads()
     {
         foreach (var download in Downloads)
         {
-            if (download.IsFailed)
-                download.Restart();
+            if (download.Status == DownloadStatus.Failed)
+            {
+                EnqueueDownload(download.Request!, Downloads.IndexOf(download));
+            }
         }
     }
 }

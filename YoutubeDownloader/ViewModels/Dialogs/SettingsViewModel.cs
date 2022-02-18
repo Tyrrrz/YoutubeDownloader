@@ -1,4 +1,4 @@
-﻿using Tyrrrz.Extensions;
+﻿using System;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
 
@@ -20,12 +20,6 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.IsDarkModeEnabled = value;
     }
 
-    public bool ShouldSkipExistingFiles
-    {
-        get => _settingsService.ShouldSkipExistingFiles;
-        set => _settingsService.ShouldSkipExistingFiles = value;
-    }
-
     public string FileNameTemplate
     {
         get => _settingsService.FileNameTemplate;
@@ -35,7 +29,7 @@ public class SettingsViewModel : DialogScreen
     public int ParallelLimit
     {
         get => _settingsService.ParallelLimit;
-        set => _settingsService.ParallelLimit = value.Clamp(1, 10);
+        set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
 
     public SettingsViewModel(SettingsService settingsService)
