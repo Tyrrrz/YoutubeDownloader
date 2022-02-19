@@ -5,6 +5,7 @@ using Gress;
 using Gress.Completable;
 using MaterialDesignThemes.Wpf;
 using Stylet;
+using TagLib;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Services;
@@ -14,6 +15,7 @@ using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Exceptions;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels;
 
@@ -128,9 +130,9 @@ public class RootViewModel : Screen
         _viewModelFactory.CreateSettingsViewModel()
     );
 
-    private void EnqueueDownload(VideoDownloadRequest request, int position = 0)
+    private void EnqueueDownload(IVideo video, string filePath, VideoDownloadOption downloadOption, int position = 0)
     {
-        var download = _viewModelFactory.CreateDownloadViewModel(request);
+        var download = _viewModelFactory.CreateDownloadViewModel(video, filePath);
         Downloads.Insert(position, download);
 
         var progress = _progressMuxer.CreateInput();
@@ -142,7 +144,14 @@ public class RootViewModel : Screen
 
             try
             {
-                await _youtubeVideoDownloader.DownloadAsync(request, mergedProgress, download.CancellationToken);
+                await _youtubeVideoDownloader.DownloadAsync(
+                    filePath,
+                    video,
+                    downloadOption,
+                    mergedProgress,
+                    download.CancellationToken
+                );
+
                 download.Status = DownloadStatus.Completed;
             }
             catch (OperationCanceledException)
@@ -199,11 +208,10 @@ public class RootViewModel : Screen
                 var video = videos.Single();
 
                 var videoOptions = await _youtubeVideoDownloader.GetDownloadOptionsAsync(video.Id);
-                var subtitleOptions = await _youtubeVideoDownloader.GetSubtitleDownloadOptionsAsync(video.Id);
 
                 var dialog = _viewModelFactory.CreateDownloadSetupViewModel(new[]
                 {
-                    _viewModelFactory.CreateDownloadSetupItemViewModel(video, videoOptions, subtitleOptions)
+                    _viewModelFactory.CreateDownloadSetupItemViewModel(video, videoOptions)
                 });
 
                 var download = await _dialogManager.ShowDialogAsync(dialog);
@@ -273,7 +281,8 @@ public class RootViewModel : Screen
         {
             if (download.Status == DownloadStatus.Failed)
             {
-                EnqueueDownload(download.Request!, Downloads.IndexOf(download));
+                throw new UnsupportedFormatException();
+                //EnqueueDownload(download.Request!, Downloads.IndexOf(download));
             }
         }
     }

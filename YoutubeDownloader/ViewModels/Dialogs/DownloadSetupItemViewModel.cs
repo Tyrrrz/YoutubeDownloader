@@ -15,11 +15,7 @@ public class DownloadSetupItemViewModel
 
     public IReadOnlyList<VideoDownloadOption>? AvailableVideoOptions { get; set; }
 
-    public VideoDownloadOption? VideoOption { get; set; }
-
-    public IReadOnlyList<SubtitleDownloadOption>? AvailableSubtitleOptions { get; set; }
-
-    public IReadOnlyList<SubtitleDownloadOption>? SubtitleOptions { get; set; }
+    public VideoDownloadOption? SelectedVideoOption { get; set; }
 }
 
 public static class DownloadSetupItemViewModelExtensions
@@ -27,14 +23,12 @@ public static class DownloadSetupItemViewModelExtensions
     public static DownloadSetupItemViewModel CreateDownloadSetupItemViewModel(
         this IViewModelFactory factory,
         IVideo video,
-        IReadOnlyList<VideoDownloadOption> availableVideoOptions,
-        IReadOnlyList<SubtitleDownloadOption> availableSubtitleOptions)
+        IReadOnlyList<VideoDownloadOption> availableVideoOptions)
     {
         var viewModel = factory.CreateDownloadSetupItemViewModel();
 
         viewModel.Video = video;
         viewModel.AvailableVideoOptions = availableVideoOptions;
-        viewModel.AvailableSubtitleOptions = availableSubtitleOptions;
 
         return viewModel;
     }

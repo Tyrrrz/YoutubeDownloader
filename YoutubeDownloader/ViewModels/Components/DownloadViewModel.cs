@@ -1,11 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using Gress;
 using Stylet;
-using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.ViewModels.Framework;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
@@ -16,7 +17,11 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-    public VideoDownloadRequest? Request { get; set; }
+    public IVideo? Video { get; set; }
+
+    public string? FilePath { get; set; }
+
+    public string? FileName => Path.GetFileName(FilePath);
 
     public ProgressContainer<Percentage> Progress { get; } = new();
 
@@ -46,13 +51,13 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public async void ShowFile()
     {
-        if (Request is null || !CanShowFile)
+        if (string.IsNullOrWhiteSpace(FilePath) || !CanShowFile)
             return;
 
         try
         {
             // Navigate to the file in Windows Explorer
-            ProcessEx.Start("explorer", new[] { "/select,", Request.FilePath });
+            ProcessEx.Start("explorer", new[] { "/select,", FilePath });
         }
         catch (Exception ex)
         {
@@ -66,12 +71,12 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public async void OpenFile()
     {
-        if (Request is null || !CanOpenFile)
+        if (string.IsNullOrWhiteSpace(FilePath) || !CanOpenFile)
             return;
 
         try
         {
-            ProcessEx.StartShellExecute(Request.FilePath);
+            ProcessEx.StartShellExecute(FilePath);
         }
         catch (Exception ex)
         {
@@ -88,11 +93,13 @@ public static class DownloadViewModelExtensions
 {
     public static DownloadViewModel CreateDownloadViewModel(
         this IViewModelFactory factory,
-        VideoDownloadRequest request)
+        IVideo video,
+        string filePath)
     {
         var viewModel = factory.CreateDownloadViewModel();
 
-        viewModel.Request = request;
+        viewModel.Video = video;
+        viewModel.FilePath = filePath;
 
         return viewModel;
     }
