@@ -1,8 +1,8 @@
 ﻿namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class DownloadSingleSetupView
+public partial class DownloadSetupView
 {
-    public DownloadSingleSetupView()
+    public DownloadSetupView()
     {
         InitializeComponent();
     }

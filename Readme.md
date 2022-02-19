@@ -9,10 +9,10 @@
 ⚠️ **Project status: maintenance mode**. [What does it mean?](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
 
 **YoutubeDownloader** is an application that lets you download videos from YouTube.
-You can copy-paste URL of any video, playlist or channel and download it directly to a format of your choice.
-It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
+You can copy-paste URL of any video and download it directly to a format of your choice in the selected quality.
+It also supports downloading videos from playlists, channels, or search results.
 
-✨ This application uses [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
+✨ This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 
 💬 **If you want to chat, join my [Discord server](https://discord.gg/2SUWKFnHSm)**.
 
@@ -23,15 +23,14 @@ It also supports searching by keywords, which is helpful if you want to quickly 
 
 ## Features
 
-- Download individual videos
-- Download videos from playlists, channels, or search
+- Downloads individual videos
+- Downloads playlists, channel uploads, and search results
+- Multiple output formats: MP4, MP3, M4A, WebM, OGG
 - Selectable video quality
-- Variety of output formats: mp4, webm, mp3, ogg
-- Multiple parallel downloads
-- Automatic media tagging
+- Automatically embeds subtitles
+- Automatically adds media tags
+- Supports parallel downloads
 
 ## Screenshots
 
-![list](.screenshots/list.png)
-![single](.screenshots/single.png)
-![multiple](.screenshots/multiple.png)
+![download screen](.screenshots/download.png)

@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Core.Utils.Extensions;
-using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core.Downloading;
 
 public partial record VideoDownloadOption(Container Container, IReadOnlyList<IStreamInfo> StreamInfos)
 {
-    public string Label =>
-        Container.IsAudioOnly()
-            ? $"Audio / {Container.Name}"
-            : $"{VideoQuality?.Label ?? "???"} / {Container.Name}";
+    public string Label => !Container.IsAudioOnly
+        ? $"{VideoQuality?.Label ?? "???"} / {Container.Name}"
+        : $"Audio / {Container.Name}";
 
     public VideoQuality? VideoQuality => Memo.Cache(this, () =>
         StreamInfos
@@ -110,11 +108,4 @@ public partial record VideoDownloadOption
 
         return options.ToArray();
     }
-
-    internal static VideoDownloadOption ResolveBest(StreamManifest manifest, Container container) =>
-        ResolveAll(manifest)
-            .OrderByDescending(o => o.Container == container)
-            .ThenByDescending(o => o.VideoQuality)
-            .FirstOrDefault() ??
-        throw new ApplicationException("No video download options available.");
 }

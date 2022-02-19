@@ -198,28 +198,19 @@ public class RootViewModel : Screen
             {
                 var video = videos.Single();
 
-                var downloadOptions = await _youtubeVideoDownloader.GetVideoDownloadOptionsAsync(video.Id);
+                var videoOptions = await _youtubeVideoDownloader.GetDownloadOptionsAsync(video.Id);
                 var subtitleOptions = await _youtubeVideoDownloader.GetSubtitleDownloadOptionsAsync(video.Id);
 
-                var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(
-                    queryResult.Label,
-                    video,
-                    downloadOptions,
-                    subtitleOptions
-                );
+                var dialog = _viewModelFactory.CreateDownloadSetupViewModel(new[]
+                {
+                    _viewModelFactory.CreateDownloadSetupItemViewModel(video, videoOptions, subtitleOptions)
+                });
 
                 var download = await _dialogManager.ShowDialogAsync(dialog);
                 if (download is null)
                     return;
 
-                EnqueueDownload(
-                    new VideoDownloadRequest(
-                        dialog.FilePath!,
-                        dialog.Video!,
-                        dialog.SelectedVideoOption!,
-                        dialog.SelectedSubtitleOptions!
-                    )
-                );
+
             }
 
             // Multiple videos
