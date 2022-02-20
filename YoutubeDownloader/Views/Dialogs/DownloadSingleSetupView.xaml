@@ -73,7 +73,7 @@
                         Margin="3,0,0,0"
                         TextTrimming="CharacterEllipsis"
                         VerticalAlignment="Center">
-                        <Hyperlink Command="{s:Action NavigateToVideo}" FocusVisualStyle="{x:Null}">
+                        <Hyperlink Command="{s:Action NavigateToVideo}" Focusable="False">
                             <Run Text="{Binding Video.Url, Mode=OneWay}" />
                         </Hyperlink>
                     </TextBlock>
