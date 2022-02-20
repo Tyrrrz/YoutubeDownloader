@@ -1,7 +1,7 @@
 ﻿<Window
     Background="{DynamicResource MaterialDesignBackground}"
     FocusManager.FocusedElement="{Binding ElementName=QueryTextBox}"
-    Height="550"
+    Height="580"
     Icon="/YoutubeDownloader;component/favicon.ico"
     Style="{DynamicResource MaterialDesignRoot}"
     Width="600"

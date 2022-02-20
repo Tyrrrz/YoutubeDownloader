@@ -209,10 +209,7 @@ public class RootViewModel : Screen
 
                 var videoOptions = await _youtubeVideoDownloader.GetDownloadOptionsAsync(video.Id);
 
-                var dialog = _viewModelFactory.CreateDownloadSetupViewModel(new[]
-                {
-                    _viewModelFactory.CreateDownloadSetupItemViewModel(video, videoOptions)
-                });
+                var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(video, videoOptions);
 
                 var download = await _dialogManager.ShowDialogAsync(dialog);
                 if (download is null)

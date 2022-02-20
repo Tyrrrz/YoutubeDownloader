@@ -1,0 +1,138 @@
+﻿<UserControl
+    MinWidth="500"
+    Style="{DynamicResource MaterialDesignRoot}"
+    d:DataContext="{d:DesignInstance Type=dialogs:DownloadSingleSetupViewModel}"
+    mc:Ignorable="d"
+    x:Class="YoutubeDownloader.Views.Dialogs.DownloadSingleSetupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="https://github.com/canton7/Stylet"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="16">
+            <!--  Title  -->
+            <TextBlock
+                FontSize="19"
+                Text="{Binding Video.Title}"
+                TextTrimming="CharacterEllipsis"
+                ToolTip="{Binding Video.Title}" />
+
+            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                <!--  Author  -->
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        BorderThickness="1"
+                        Height="16"
+                        Kind="UserOutline"
+                        VerticalAlignment="Center"
+                        Width="16" />
+                    <TextBlock
+                        FontWeight="Light"
+                        Margin="3,0,0,0"
+                        Text="{Binding Video.Author.Title}"
+                        TextTrimming="CharacterEllipsis"
+                        VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!--  Duration  -->
+                <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        BorderThickness="1"
+                        Height="16"
+                        Kind="ClockOutline"
+                        VerticalAlignment="Center"
+                        Width="16" />
+                    <TextBlock
+                        FontWeight="Light"
+                        Margin="3,0,0,0"
+                        Text="{Binding Video.Duration, TargetNullValue=Live}"
+                        TextTrimming="CharacterEllipsis"
+                        VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!--  URL  -->
+                <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        BorderThickness="1"
+                        Height="16"
+                        Kind="Link"
+                        VerticalAlignment="Center"
+                        Width="16" />
+                    <TextBlock
+                        FontWeight="Light"
+                        Margin="3,0,0,0"
+                        TextTrimming="CharacterEllipsis"
+                        VerticalAlignment="Center">
+                        <Hyperlink Command="{s:Action NavigateToVideo}" FocusVisualStyle="{x:Null}">
+                            <Run Text="{Binding Video.Url, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <Border
+            Background="Black"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderThickness="0,1"
+            Grid.Row="1"
+            Padding="0,8">
+            <!--  Thumbnail  -->
+            <Image Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlConverter.Instance}}" />
+        </Border>
+
+        <Grid Grid.Row="2" Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Download option  -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock
+                    Margin="8"
+                    Text="Format:"
+                    VerticalAlignment="Center" />
+                <ComboBox
+                    DisplayMemberPath="Label"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding AvailableDownloadOptions}"
+                    Margin="8"
+                    SelectedItem="{Binding SelectedDownloadOption}"
+                    VerticalAlignment="Center"
+                    Width="150"
+                    materialDesign:ComboBoxAssist.ShowSelectedItem="True" />
+            </StackPanel>
+
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <!--  Download  -->
+                <Button
+                    Command="{s:Action Confirm}"
+                    Content="DOWNLOAD"
+                    IsDefault="True"
+                    Style="{DynamicResource MaterialDesignOutlinedButton}" />
+
+                <!--  Cancel  -->
+                <Button
+                    Command="{s:Action Close}"
+                    Content="CANCEL"
+                    IsCancel="True"
+                    Margin="8,0,0,0"
+                    Style="{DynamicResource MaterialDesignOutlinedButton}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
