@@ -11,7 +11,6 @@ namespace YoutubeDownloader.Utils
         private static string AuthorToken { get; } = "$author";
 
         private static string URLToken { get; } = "$url";
-
         public static string DefaultTemplate { get; } = $"{TitleToken}";
 
         public static string GenerateFileName(
