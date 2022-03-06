@@ -108,9 +108,6 @@
                     <LineBreak />
                     <Run FontWeight="SemiBold" Text="$author" />
                     <Run Text="- video author" />
-                    <LineBreak />
-                    <Run FontWeight="SemiBold" Text="$url" />
-                    <Run Text="- adds everything after v=" />
                 </TextBlock>
             </TextBox.ToolTip>
         </TextBox>
