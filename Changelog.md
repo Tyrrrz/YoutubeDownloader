@@ -1,3 +1,8 @@
+### v1.8.5 (06-Mar-2022)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.1.
+- Added messages about war in Ukraine.
+
 ### v1.8.4 (18-Dec-2021)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.7.
