@@ -54,7 +54,7 @@ namespace YoutubeDownloader.Behaviors
         }
 
         // Propagate selected items from view to model
-        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs args)
+        private void OnListBoxSelectionChanged(object? sender, SelectionChangedEventArgs args)
         {
             if (_viewHandled) return;
             if (AssociatedObject.Items.SourceCollection is null) return;
@@ -63,7 +63,7 @@ namespace YoutubeDownloader.Behaviors
         }
 
         // Re-select items when the set of items changes
-        private void OnListBoxItemsChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void OnListBoxItemsChanged(object? sender, NotifyCollectionChangedEventArgs args)
         {
             if (_viewHandled) return;
             if (AssociatedObject.Items.SourceCollection is null) return;

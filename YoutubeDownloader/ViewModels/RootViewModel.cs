@@ -7,6 +7,7 @@ using Stylet;
 using Tyrrrz.Extensions;
 using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
+using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -106,6 +107,19 @@ namespace YoutubeDownloader.ViewModels
             {
                 App.SetLightTheme();
             }
+
+            // War in Ukraine message
+            Notifications.Enqueue(
+                "⚠ UKRAINE IS AT WAR!",
+                "LEARN MORE & HELP", _ =>
+                {
+                    ProcessEx.StartShellExecute("https://tyrrrz.me");
+                },
+                null,
+                true,
+                true,
+                TimeSpan.FromMinutes(1)
+            );
 
             await CheckForUpdatesAsync();
         }
