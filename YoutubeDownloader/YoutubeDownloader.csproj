@@ -10,14 +10,11 @@
     <Resource Include="../favicon.ico" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="DotnetRuntimeBootstrapper" Version="1.1.2" PrivateAssets="all" />
-  </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.2.0" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.0.1" />
-    <PackageReference Include="MaterialDesignColors" Version="2.0.4" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
+    <PackageReference Include="MaterialDesignColors" Version="2.0.5" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.4.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="Onova" Version="2.6.2" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
