@@ -1,3 +1,21 @@
+### v1.8.7 (07-Mar-2022)
+
+- Actually fixed it this time.
+
+### v1.8.6 (07-Mar-2022)
+
+- Fixed an issue where the application silently failed to run if the system didn't have .NET Runtime 6.0.2 installed. If you continue seeing this issue, please uninstall all existing .NET runtimes from your computer and then try running the application again.
+
+### v1.8.5 (06-Mar-2022)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.1.
+- Added messages about war in Ukraine.
+
+### v1.8.4 (18-Dec-2021)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.7.
+- Fixed various issues related to the runtime bootstrapper. Updated to DotnetRuntimeBootstrapper v2.0.2.
+
 ### v1.8.3 (29-Jul-2021)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.0.5.

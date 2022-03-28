@@ -1,21 +1,31 @@
 # YoutubeDownloader
 
-[![Build](https://github.com/Tyrrrz/YoutubeDownloader/workflows/CI/badge.svg?branch=master)](https://github.com/Tyrrrz/YoutubeDownloader/actions)
+[![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://vshymanskyy.github.io/StandWithUkraine)
+[![Build](https://img.shields.io/github/workflow/status/Tyrrrz/YoutubeDownloader/CI/master)](https://github.com/Tyrrrz/YoutubeDownloader/actions)
 [![Release](https://img.shields.io/github/release/Tyrrrz/YoutubeDownloader.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
 [![Downloads](https://img.shields.io/github/downloads/Tyrrrz/YoutubeDownloader/total.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
-[![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
-[![Fuck Russia](https://img.shields.io/badge/fuck-russia-black.svg)](https://twitter.com/Tyrrrz/status/1495972128977571848)
+[![Donate](https://img.shields.io/badge/donate-$$$-8a2be2.svg)](https://tyrrrz.me/donate)
+[![Fuck Russia](https://img.shields.io/badge/fuck-russia-e4181c.svg?labelColor=000000)](https://twitter.com/tyrrrz/status/1495972128977571848)
 
-⚠️ **Project status: maintenance mode**. [What does it mean?](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
+> 🟡 **Project status**: maintenance mode<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)</sup>
 
 **YoutubeDownloader** is an application that lets you download videos from YouTube.
-You can copy-paste URL of any video and download it directly to a format of your choice in the selected quality.
-It also supports downloading videos from playlists, channels, or search results.
+You can copy-paste URL of any video, playlist or channel and download it directly to a format of your choice.
+It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
 
-✨ This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
+This application uses [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 
-💬 **If you want to chat, join my [Discord server](https://discord.gg/2SUWKFnHSm)**.
+## Terms of use
+
+By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
+
+- You **condemn Russia and its military aggression against Ukraine**
+- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
+- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
+- You **reject false narratives perpetuated by Russian state propaganda**
+
+To learn more about the war and how you can help, [click here](https://tyrrrz.me). Glory to Ukraine! 🇺🇦
 
 ## Download
 
@@ -24,14 +34,15 @@ It also supports downloading videos from playlists, channels, or search results.
 
 ## Features
 
-- Downloads individual videos
-- Downloads playlists, channel uploads, and search results
-- Multiple output formats: MP4, MP3, M4A, WebM, OGG
+- Download individual videos
+- Download videos from playlists, channels, or search
 - Selectable video quality
-- Automatically embeds subtitles
-- Automatically adds media tags
-- Supports parallel downloads
+- Variety of output formats: mp4, webm, mp3, ogg
+- Multiple parallel downloads
+- Automatic media tagging
 
 ## Screenshots
 
-![download screen](.screenshots/download.png)
+![list](.screenshots/list.png)
+![single](.screenshots/single.png)
+![multiple](.screenshots/multiple.png)
