@@ -103,6 +103,10 @@
                 </Setter>
             </Style>
 
+            <Style BasedOn="{StaticResource MaterialDesignContextMenu}" TargetType="{x:Type ContextMenu}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+            </Style>
+
             <!--  Use old MD style for slider, because the new one is too huge  -->
             <Style x:Key="MaterialDesignHorizontalTrackRepeatButton" TargetType="{x:Type RepeatButton}">
                 <Setter Property="OverridesDefaultStyle" Value="true" />
