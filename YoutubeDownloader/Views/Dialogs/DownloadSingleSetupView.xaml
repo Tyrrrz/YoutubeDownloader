@@ -83,7 +83,6 @@
 
         <Border
             Grid.Row="1"
-            Padding="0,8"
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
             <!--  Thumbnail  -->

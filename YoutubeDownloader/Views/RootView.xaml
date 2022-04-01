@@ -130,11 +130,11 @@
                         <Run FontWeight="SemiBold" Text="URL" />
                         <Run Text="or enter a" />
                         <Run FontWeight="SemiBold" Text="search query" />
-                        <Run Text="to start downloading." />
+                        <Run Text="to start downloading" />
                         <LineBreak />
                         <Run Text="Press" />
                         <Run FontWeight="SemiBold" Text="Shift+Enter" />
-                        <Run Text="to add multiple items." />
+                        <Run Text="to add multiple items" />
                     </TextBlock>
                 </StackPanel>
 
