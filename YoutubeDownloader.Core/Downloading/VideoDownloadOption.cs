@@ -10,7 +10,7 @@ namespace YoutubeDownloader.Core.Downloading;
 public partial record VideoDownloadOption(Container Container, IReadOnlyList<IStreamInfo> StreamInfos)
 {
     public string Label => !Container.IsAudioOnly
-        ? $"{VideoQuality?.Label ?? "???"} / {Container.Name}"
+        ? $"{VideoQuality?.Label} / {Container.Name}"
         : $"Audio / {Container.Name}";
 
     public VideoQuality? VideoQuality => Memo.Cache(this, () =>
@@ -97,8 +97,14 @@ public partial record VideoDownloadOption
 
         // Deduplicate download options by label and container
         var comparer = new DelegateEqualityComparer<VideoDownloadOption>(
-            (x, y) => StringComparer.OrdinalIgnoreCase.Equals(x.Label, y.Label) && x.Container == y.Container,
-            x => HashCode.Combine(StringComparer.OrdinalIgnoreCase.GetHashCode(x.Label), x.Container)
+            (x, y) =>
+                StringComparer.OrdinalIgnoreCase.Equals(x.Label, y.Label) &&
+                x.Container == y.Container,
+
+            x => HashCode.Combine(
+                StringComparer.OrdinalIgnoreCase.GetHashCode(x.Label),
+                x.Container
+            )
         );
 
         var options = new HashSet<VideoDownloadOption>(comparer);

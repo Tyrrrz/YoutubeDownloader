@@ -14,7 +14,7 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core.Downloading;
 
-public class YoutubeVideoDownloader
+public class VideoDownloader
 {
     private readonly YoutubeClient _youtube = new(Http.Client);
     private readonly MediaTagInjector _tagInjector = new();

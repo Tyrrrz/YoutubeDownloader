@@ -3,8 +3,8 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Core.Resolving;
 
-public record YoutubeQueryResult(
-    YoutubeQueryKind Kind,
+public record QueryResult(
+    QueryKind Kind,
     string Label,
     IReadOnlyList<IVideo> Videos
 );

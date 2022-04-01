@@ -1,6 +1,6 @@
 ﻿namespace YoutubeDownloader.Core.Resolving;
 
-public enum YoutubeQueryKind
+public enum QueryKind
 {
     Video,
     Playlist,

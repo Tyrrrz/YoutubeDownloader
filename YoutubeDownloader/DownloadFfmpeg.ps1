@@ -9,7 +9,7 @@ if (Test-Path $ffmpegFilePath) {
 Write-Host "Downloading ffmpeg..."
 
 # Download the zip archive
-$url = "https://github.com/ffbinaries/ffbinaries-prebuilt/releases/download/v4.2.1/ffmpeg-4.2.1-win-64.zip"
+$url = "https://github.com/ffbinaries/ffbinaries-prebuilt/releases/download/v4.4.1/ffmpeg-4.4.1-win-64.zip"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $wc = New-Object System.Net.WebClient
 $wc.DownloadFile($url, "$ffmpegFilePath.zip")

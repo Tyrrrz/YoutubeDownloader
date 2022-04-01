@@ -53,7 +53,7 @@
                             Grid.Column="0"
                             Margin="6"
                             VerticalAlignment="Bottom"
-                            materialDesign:HintAssist.Hint="URL or search query (press Shift+Enter to add multiple)"
+                            materialDesign:HintAssist.Hint="URL or search query"
                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                             AcceptsReturn="True"
                             BorderThickness="0"
@@ -108,16 +108,35 @@
 
             <!--  Content  -->
             <Grid Grid.Row="2" Background="{DynamicResource MaterialDesignCardBackground}">
-
                 <!--  Placeholder  -->
-                <TextBlock
-                    Margin="32"
-                    FontSize="18"
-                    FontWeight="Light"
-                    Text="Copy-paste URL or type in a search query to start downloading"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}" />
+                <StackPanel
+                    Margin="8,32,8,8"
+                    HorizontalAlignment="Center"
+                    Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}">
+                    <materialDesign:PackIcon
+                        Width="258"
+                        Height="258"
+                        HorizontalAlignment="Center"
+                        Foreground="{DynamicResource MaterialDesignDivider}"
+                        Kind="Youtube" />
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="18"
+                        FontWeight="Light"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap">
+                        <Run Text="Copy-paste a" />
+                        <Run FontWeight="SemiBold" Text="URL" />
+                        <Run Text="or enter a" />
+                        <Run FontWeight="SemiBold" Text="search query" />
+                        <Run Text="to start downloading." />
+                        <LineBreak />
+                        <Run Text="Press" />
+                        <Run FontWeight="SemiBold" Text="Shift+Enter" />
+                        <Run Text="to add multiple items." />
+                    </TextBlock>
+                </StackPanel>
 
                 <!--  Downloads  -->
                 <DataGrid

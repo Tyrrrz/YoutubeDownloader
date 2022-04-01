@@ -12,30 +12,21 @@ internal class MediaTagInjector
 {
     private readonly MusicBrainzClient _musicBrainz = new();
 
-    private async Task InjectThumbnailAsync(
-        MediaFile mediaFile,
-        IVideo video,
-        CancellationToken cancellationToken = default)
+    private void InjectMiscMetadata(MediaFile mediaFile, IVideo video)
     {
-        var thumbnailUrl =
-            video.Thumbnails
-                .OrderByDescending(t =>
-                    string.Equals(
-                        t.TryGetImageFormat(),
-                        "jpg",
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                )
-                .ThenByDescending(t => t.Resolution.Area)
-                .Select(t => t.Url)
-                .FirstOrDefault() ??
-            $"https://i.ytimg.com/vi/{video.Id}/hqdefault.jpg";
+        var description = (video as Video)?.Description;
+        if (!string.IsNullOrWhiteSpace(description))
+            mediaFile.SetDescription(description);
 
-        mediaFile.SetThumbnail(
-            await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken)
+        mediaFile.SetComment(
+            "Downloaded from YouTube using YoutubeDownloader" + Environment.NewLine +
+            $"Video: {video.Title}" + Environment.NewLine +
+            $"Video URL: {video.Url}" + Environment.NewLine +
+            $"Channel: {video.Author.Title}" + Environment.NewLine +
+            $"Channel URL: {video.Author.ChannelUrl}"
         );
-    }
-
+    } 
+    
     private async Task InjectMusicMetadataAsync(
         MediaFile mediaFile,
         IVideo video,
@@ -76,21 +67,30 @@ internal class MediaTagInjector
             mediaFile.SetAlbum(recording.Album);
     }
 
-    private void InjectMiscMetadata(MediaFile mediaFile, IVideo video)
+    private async Task InjectThumbnailAsync(
+        MediaFile mediaFile,
+        IVideo video,
+        CancellationToken cancellationToken = default)
     {
-        var description = (video as Video)?.Description;
-        if (!string.IsNullOrWhiteSpace(description))
-            mediaFile.SetDescription(description);
+        var thumbnailUrl =
+            video.Thumbnails
+                .OrderByDescending(t =>
+                    string.Equals(
+                        t.TryGetImageFormat(),
+                        "jpg",
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                )
+                .ThenByDescending(t => t.Resolution.Area)
+                .Select(t => t.Url)
+                .FirstOrDefault() ??
+            $"https://i.ytimg.com/vi/{video.Id}/hqdefault.jpg";
 
-        mediaFile.SetComment(
-            "Downloaded from YouTube using YoutubeDownloader" + Environment.NewLine +
-            $"Video: {video.Title}" + Environment.NewLine +
-            $"Video URL: {video.Url}" + Environment.NewLine +
-            $"Channel: {video.Author.Title}" + Environment.NewLine +
-            $"Channel URL: {video.Author.ChannelUrl}"
+        mediaFile.SetThumbnail(
+            await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken)
         );
     }
-
+    
     public async Task InjectTagsAsync(
         string filePath,
         IVideo video,
@@ -98,8 +98,8 @@ internal class MediaTagInjector
     {
         using var mediaFile = MediaFile.Create(filePath);
 
-        await InjectThumbnailAsync(mediaFile, video, cancellationToken);
-        await InjectMusicMetadataAsync(mediaFile, video, cancellationToken);
         InjectMiscMetadata(mediaFile, video);
+        await InjectMusicMetadataAsync(mediaFile, video, cancellationToken);
+        await InjectThumbnailAsync(mediaFile, video, cancellationToken);
     }
 }

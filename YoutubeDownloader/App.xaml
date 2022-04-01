@@ -53,6 +53,29 @@
                 <Setter Property="Minimum" Value="0" />
             </Style>
 
+            <Style TargetType="{x:Type Hyperlink}">
+                <Setter Property="TextDecorations" Value="Underline" />
+                <Setter Property="FontWeight" Value="Regular" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignCheckBoxDisabled}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="True">
+                        <Setter Property="Cursor" Value="Hand" />
+                    </Trigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsEnabled" Value="True" />
+                            <Condition Property="IsMouseOver" Value="True" />
+                        </MultiTrigger.Conditions>
+
+                        <Setter Property="Foreground" Value="{DynamicResource SecondaryHueMidBrush}" />
+                    </MultiTrigger>
+                </Style.Triggers>
+            </Style>
+
             <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type TextBox}" />
 
             <Style BasedOn="{StaticResource MaterialDesignComboBox}" TargetType="{x:Type ComboBox}" />
