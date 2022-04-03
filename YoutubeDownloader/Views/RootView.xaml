@@ -187,7 +187,7 @@
                                     <Image
                                         Width="32"
                                         VerticalAlignment="Center"
-                                        Source="{Binding Request.Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
+                                        Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -203,9 +203,9 @@
                                         VerticalAlignment="Center"
                                         FontSize="14"
                                         Foreground="{DynamicResource MaterialDesignBody}"
-                                        Text="{Binding Request.FileName}"
+                                        Text="{Binding FileName}"
                                         TextTrimming="CharacterEllipsis"
-                                        ToolTip="{Binding Request.FileName}" />
+                                        ToolTip="{Binding FileName}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

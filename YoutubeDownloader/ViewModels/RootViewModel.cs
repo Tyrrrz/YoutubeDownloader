@@ -209,12 +209,10 @@ public class RootViewModel : Screen
                 var videoOptions = await _videoDownloader.GetDownloadOptionsAsync(video.Id);
 
                 var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(video, videoOptions);
-
-                var download = await _dialogManager.ShowDialogAsync(dialog);
-                if (download is null)
+                if (await _dialogManager.ShowDialogAsync(dialog) is null)
                     return;
-
-
+                
+                EnqueueDownload(video, dialog.FilePath!, dialog.SelectedDownloadOption!);
             }
 
             // Multiple videos
