@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    MinWidth="500"
+    Width="500"
     d:DataContext="{d:DesignInstance Type=dialogs:MessageBoxViewModel}"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">

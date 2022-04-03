@@ -8,7 +8,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
-    MinWidth="500"
+    Width="500"
     d:DataContext="{d:DesignInstance Type=dialogs:DownloadSingleSetupViewModel}"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
