@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using Gress;
 using Stylet;
+using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.ViewModels.Framework;
@@ -18,6 +19,8 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     public IVideo? Video { get; set; }
+
+    public VideoDownloadOption? DownloadOption { get; set; }
 
     public string? FilePath { get; set; }
 
@@ -94,11 +97,13 @@ public static class DownloadViewModelExtensions
     public static DownloadViewModel CreateDownloadViewModel(
         this IViewModelFactory factory,
         IVideo video,
+        VideoDownloadOption downloadOption,
         string filePath)
     {
         var viewModel = factory.CreateDownloadViewModel();
 
         viewModel.Video = video;
+        viewModel.DownloadOption = downloadOption;
         viewModel.FilePath = filePath;
 
         return viewModel;

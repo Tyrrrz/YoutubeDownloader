@@ -73,7 +73,7 @@
                         VerticalAlignment="Center"
                         FontWeight="Light"
                         TextTrimming="CharacterEllipsis">
-                        <Hyperlink Command="{s:Action NavigateToVideo}" Focusable="False">
+                        <Hyperlink Command="{s:Action OpenVideo}" Focusable="False">
                             <Run Text="{Binding Video.Url, Converter={x:Static converters:ShortUrlConverter.Instance}, Mode=OneWay}" />
                         </Hyperlink>
                     </TextBlock>

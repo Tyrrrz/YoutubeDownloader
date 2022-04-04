@@ -20,12 +20,6 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.IsDarkModeEnabled = value;
     }
 
-    public string FileNameTemplate
-    {
-        get => _settingsService.FileNameTemplate;
-        set => _settingsService.FileNameTemplate = value;
-    }
-
     public int ParallelLimit
     {
         get => _settingsService.ParallelLimit;

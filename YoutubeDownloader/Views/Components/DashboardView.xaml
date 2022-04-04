@@ -142,10 +142,16 @@
                                     <MenuItem
                                         Command="{s:Action RemoveDownload}"
                                         CommandParameter="{Binding}"
-                                        Header="Remove download" />
-                                    <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove all inactive downloads" />
-                                    <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove all successful downloads" />
-                                    <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart all failed downloads" />
+                                        Header="Remove" />
+                                    <MenuItem
+                                        Command="{s:Action RestartDownload}"
+                                        CommandParameter="{Binding}"
+                                        Header="Restart" />
+                                    <Separator />
+                                    <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove all successful" />
+                                    <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove all inactive" />
+                                    <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart all failed" />
+                                    <MenuItem Command="{s:Action CancelAllDownloads}" Header="Cancel all" />
                                 </ContextMenu>
                             </Setter.Value>
                         </Setter>
@@ -238,7 +244,7 @@
                                             <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>
                                                     <!--  Pending  -->
-                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Initial}">
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Enqueued}">
                                                         <Setter Property="Text" Value="Pending..." />
                                                     </DataTrigger>
 
@@ -297,20 +303,6 @@
                                             Kind="CloseCircleOutline" />
                                     </Button>
 
-                                    <!--  Restart  -->
-                                    <Button
-                                        Padding="4,0,4,0"
-                                        VerticalAlignment="Center"
-                                        Command="{s:Action Restart}"
-                                        Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Restart download"
-                                        Visibility="{Binding CanRestart, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                                        <materialDesign:PackIcon
-                                            Width="24"
-                                            Height="24 "
-                                            Kind="Restart" />
-                                    </Button>
-
                                     <!--  Show file  -->
                                     <Button
                                         Padding="4,0,4,0"
@@ -344,9 +336,6 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-
-            <!--  Notifications  -->
         </Grid>
     </Grid>
-
 </UserControl>

@@ -16,7 +16,7 @@ public class RootViewModel : Screen
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
     private readonly UpdateService _updateService;
-    
+
     public SnackbarMessageQueue Notifications { get; } = new(TimeSpan.FromSeconds(5));
 
     public DashboardViewModel Dashboard { get; }
@@ -53,21 +53,18 @@ Press LEARN MORE to find ways that you can help.".Trim(),
             ProcessEx.StartShellExecute("https://tyrrrz.me");
         }
     }
-    
+
     private async Task CheckForUpdatesAsync()
     {
         try
         {
-            // Check for updates
             var updateVersion = await _updateService.CheckForUpdatesAsync();
             if (updateVersion is null)
                 return;
 
-            // Notify user of an update and prepare it
             Notifications.Enqueue($"Downloading update to {App.Name} v{updateVersion}...");
             await _updateService.PrepareUpdateAsync(updateVersion);
 
-            // Prompt user to install update (otherwise install it when application exits)
             Notifications.Enqueue(
                 "Update has been downloaded and will be installed when you exit",
                 "INSTALL NOW", () =>
@@ -89,7 +86,7 @@ Press LEARN MORE to find ways that you can help.".Trim(),
         await ShowWarInUkraineMessageAsync();
         await CheckForUpdatesAsync();
     }
-    
+
     protected override void OnViewLoaded()
     {
         base.OnViewLoaded();
@@ -111,7 +108,7 @@ Press LEARN MORE to find ways that you can help.".Trim(),
         base.OnClose();
 
         Dashboard.CancelAllDownloads();
-        
+
         _settingsService.Save();
         _updateService.FinalizeUpdate(false);
     }

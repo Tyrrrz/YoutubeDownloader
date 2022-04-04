@@ -19,14 +19,14 @@ internal class MediaTagInjector
             mediaFile.SetDescription(description);
 
         mediaFile.SetComment(
-            "Downloaded from YouTube using YoutubeDownloader" + Environment.NewLine +
+            "Downloaded using YoutubeDownloader" + Environment.NewLine +
             $"Video: {video.Title}" + Environment.NewLine +
             $"Video URL: {video.Url}" + Environment.NewLine +
             $"Channel: {video.Author.Title}" + Environment.NewLine +
             $"Channel URL: {video.Author.ChannelUrl}"
         );
-    } 
-    
+    }
+
     private async Task InjectMusicMetadataAsync(
         MediaFile mediaFile,
         IVideo video,
@@ -74,14 +74,12 @@ internal class MediaTagInjector
     {
         var thumbnailUrl =
             video.Thumbnails
-                .OrderByDescending(t =>
-                    string.Equals(
-                        t.TryGetImageFormat(),
-                        "jpg",
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                )
-                .ThenByDescending(t => t.Resolution.Area)
+                .Where(t => string.Equals(
+                    t.TryGetImageFormat(),
+                    "jpg",
+                    StringComparison.OrdinalIgnoreCase
+                ))
+                .OrderByDescending(t => t.Resolution.Area)
                 .Select(t => t.Url)
                 .FirstOrDefault() ??
             $"https://i.ytimg.com/vi/{video.Id}/hqdefault.jpg";
@@ -90,7 +88,7 @@ internal class MediaTagInjector
             await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken)
         );
     }
-    
+
     public async Task InjectTagsAsync(
         string filePath,
         IVideo video,

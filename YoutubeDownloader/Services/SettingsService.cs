@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using Tyrrrz.Settings;
-using YoutubeDownloader.Utils;
 
 namespace YoutubeDownloader.Services;
 
@@ -9,8 +8,6 @@ public partial class SettingsService : SettingsManager
     public bool IsAutoUpdateEnabled { get; set; } = true;
 
     public bool IsDarkModeEnabled { get; set; } = IsDarkModeEnabledByDefault();
-
-    public string FileNameTemplate { get; set; } = FileNameGenerator.DefaultTemplate;
 
     public int ParallelLimit { get; set; } = 2;
 

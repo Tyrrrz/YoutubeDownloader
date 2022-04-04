@@ -73,39 +73,6 @@
                             Unchecked="DarkModeToggleButton_Unchecked" />
                     </DockPanel>
 
-                    <!--  File name template  -->
-                    <DockPanel
-                        Margin="16,8"
-                        Background="Transparent"
-                        LastChildFill="False">
-                        <DockPanel.ToolTip>
-                            <TextBlock>
-                                <Run Text="Template used for generating file names for downloaded videos" />
-                                <LineBreak />
-                                <LineBreak />
-                                <Run Text="Available variables:" />
-                                <LineBreak />
-                                <Run FontWeight="SemiBold" Text="$num" />
-                                <Run Text="- video's position in the list (if applicable)" />
-                                <LineBreak />
-                                <Run FontWeight="SemiBold" Text="$title" />
-                                <Run Text="- video title" />
-                                <LineBreak />
-                                <Run FontWeight="SemiBold" Text="$author" />
-                                <Run Text="- video author" />
-                            </TextBlock>
-                        </DockPanel.ToolTip>
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Left"
-                            Text="File name template" />
-                        <TextBox
-                            Width="150"
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Right"
-                            Text="{Binding FileNameTemplate}" />
-                    </DockPanel>
-
                     <!--  Max concurrent downloads  -->
                     <DockPanel
                         Margin="16,8"

@@ -2,7 +2,7 @@
 
 public enum DownloadStatus
 {
-    Initial,
+    Enqueued,
     Started,
     Completed,
     Failed,
