@@ -40,7 +40,7 @@ public class DownloadSingleSetupViewModel : DialogScreen
 
         FilePath = _dialogManager.PromptSaveFilePath(
             $"{SelectedDownloadOption.Container.Name} file|*.{SelectedDownloadOption.Container.Name}",
-            PathEx.EscapeFileName(Video.Title)
+            PathEx.EscapeFileName(Video.Title + '.' + SelectedDownloadOption.Container.Name)
         );
 
         if (string.IsNullOrWhiteSpace(FilePath))

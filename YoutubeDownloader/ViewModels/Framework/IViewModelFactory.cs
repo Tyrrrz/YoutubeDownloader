@@ -7,10 +7,8 @@ namespace YoutubeDownloader.ViewModels.Framework;
 public interface IViewModelFactory
 {
     DashboardViewModel CreateDashboardViewModel();
-    
-    DownloadViewModel CreateDownloadViewModel();
 
-    DownloadSetupItemViewModel CreateDownloadSetupItemViewModel();
+    DownloadViewModel CreateDownloadViewModel();
 
     DownloadSingleSetupViewModel CreateDownloadSetupViewModel();
 
