@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Videos;
@@ -10,6 +11,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public class DownloadSingleSetupViewModel : DialogScreen
 {
     private readonly DialogManager _dialogManager;
+    private readonly SettingsService _settingsService;
 
     public IVideo? Video { get; set; }
 
@@ -19,9 +21,10 @@ public class DownloadSingleSetupViewModel : DialogScreen
 
     public string? FilePath { get; set; }
 
-    public DownloadSingleSetupViewModel(DialogManager dialogManager)
+    public DownloadSingleSetupViewModel(DialogManager dialogManager, SettingsService settingsService)
     {
         _dialogManager = dialogManager;
+        _settingsService = settingsService;
     }
 
     public void OpenVideo()
@@ -40,7 +43,11 @@ public class DownloadSingleSetupViewModel : DialogScreen
 
         FilePath = _dialogManager.PromptSaveFilePath(
             $"{SelectedDownloadOption.Container.Name} file|*.{SelectedDownloadOption.Container.Name}",
-            PathEx.EscapeFileName(Video.Title + '.' + SelectedDownloadOption.Container.Name)
+            FileNameTemplate.Apply(
+                _settingsService.FileNameTemplate,
+                Video,
+                SelectedDownloadOption
+            )
         );
 
         if (string.IsNullOrWhiteSpace(FilePath))

@@ -65,15 +65,18 @@ public class DashboardViewModel : PropertyChangedBase
         {
             try
             {
-                download.Status = DownloadStatus.Started;
+                await _downloadSemaphore.WrapAsync(async () =>
+                {
+                    download.Status = DownloadStatus.Started;
 
-                await _videoDownloader.DownloadAsync(
-                    filePath,
-                    video,
-                    downloadOption,
-                    download.Progress.Merge(progress),
-                    download.CancellationToken
-                );
+                    await _videoDownloader.DownloadAsync(
+                        filePath,
+                        video,
+                        downloadOption,
+                        download.Progress.Merge(progress),
+                        download.CancellationToken
+                    );
+                }, download.CancellationToken);
 
                 download.Status = DownloadStatus.Completed;
             }
@@ -167,8 +170,9 @@ public class DashboardViewModel : PropertyChangedBase
 
     public void RemoveDownload(DownloadViewModel download)
     {
-        download.Cancel();
         Downloads.Remove(download);
+        download.Cancel();
+        download.Dispose();
     }
 
     public void RemoveSuccessfulDownloads()

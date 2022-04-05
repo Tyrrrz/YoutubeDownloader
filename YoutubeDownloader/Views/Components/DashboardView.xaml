@@ -148,10 +148,10 @@
                                         CommandParameter="{Binding}"
                                         Header="Restart" />
                                     <Separator />
-                                    <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove all successful" />
-                                    <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove all inactive" />
-                                    <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart all failed" />
-                                    <MenuItem Command="{s:Action CancelAllDownloads}" Header="Cancel all" />
+                                    <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
+                                    <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove inactive downloads" />
+                                    <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart failed downloads" />
+                                    <MenuItem Command="{s:Action CancelAllDownloads}" Header="Cancel all downloads" />
                                 </ContextMenu>
                             </Setter.Value>
                         </Setter>
@@ -177,7 +177,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <Image
-                                    Width="32"
+                                    Width="48"
                                     VerticalAlignment="Center"
                                     Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
                             </DataTemplate>
@@ -273,7 +273,7 @@
                                                     <!--  Failed  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Failed}">
                                                         <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
-                                                        <Setter Property="Text" Value="✗ Failed" />
+                                                        <Setter Property="Text" Value="⚠ Failed" />
                                                         <Setter Property="ToolTip" Value="{Binding ErrorMessage}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
