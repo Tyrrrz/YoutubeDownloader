@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
@@ -27,6 +28,17 @@ public class DownloadSingleSetupViewModel : DialogScreen
         _settingsService = settingsService;
     }
 
+    public void OnViewFullyLoaded()
+    {
+        if (!string.IsNullOrWhiteSpace(_settingsService.LastFormat))
+        {
+            SelectedDownloadOption = AvailableDownloadOptions?
+                .FirstOrDefault(o =>
+                    string.Equals(o.Container.Name, _settingsService.LastFormat, StringComparison.OrdinalIgnoreCase)
+                );
+        }
+    }
+
     public void OpenVideo()
     {
         var url = Video?.Url;
@@ -41,8 +53,10 @@ public class DownloadSingleSetupViewModel : DialogScreen
         if (Video is null || SelectedDownloadOption is null)
             return;
 
+        var format = SelectedDownloadOption.Container.Name;
+
         FilePath = _dialogManager.PromptSaveFilePath(
-            $"{SelectedDownloadOption.Container.Name} file|*.{SelectedDownloadOption.Container.Name}",
+            $"{format} file|*.{format}",
             FileNameTemplate.Apply(
                 _settingsService.FileNameTemplate,
                 Video,
@@ -52,6 +66,8 @@ public class DownloadSingleSetupViewModel : DialogScreen
 
         if (string.IsNullOrWhiteSpace(FilePath))
             return;
+
+        _settingsService.LastFormat = format;
 
         Close(true);
     }

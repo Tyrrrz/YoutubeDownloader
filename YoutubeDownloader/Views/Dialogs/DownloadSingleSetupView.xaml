@@ -12,7 +12,7 @@
     d:DataContext="{d:DesignInstance Type=dialogs:DownloadSingleSetupViewModel}"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Loaded="{s:Action OnViewFullyLoaded}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

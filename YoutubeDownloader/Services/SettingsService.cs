@@ -16,6 +16,8 @@ public partial class SettingsService : SettingsManager
 
     public int ParallelLimit { get; set; } = 2;
 
+    public string? LastFormat { get; set; }
+
     public SettingsService()
     {
         Configuration.StorageSpace = StorageSpace.Instance;
