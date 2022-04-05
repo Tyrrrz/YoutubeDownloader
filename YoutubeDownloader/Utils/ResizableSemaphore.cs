@@ -31,8 +31,9 @@ internal class ResizableSemaphore : IDisposable
         {
             while (_count < MaxCount && _waiters.TryDequeue(out var waiter))
             {
-                waiter.TrySetResult();
-                _count++;
+                // Don't increment if the waiter has ben canceled
+                if (waiter.TrySetResult())
+                    _count++;
             }
         }
     }

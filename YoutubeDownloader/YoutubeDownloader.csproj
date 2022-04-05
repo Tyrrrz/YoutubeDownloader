@@ -29,12 +29,12 @@
 
   <!-- This downloads FFmpeg and copies it to output directory-->
   <Target Name="Download FFmpeg before build" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFfmpeg.ps1&quot;" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot;" />
     <Copy SourceFiles="$(ProjectDir)/ffmpeg.exe" DestinationFiles="$(OutDir)/ffmpeg.exe" />
   </Target>
 
   <Target Name="Download FFmpeg before publish" BeforeTargets="PrepareForPublish">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFfmpeg.ps1&quot;" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot;" />
     <Copy SourceFiles="$(ProjectDir)/ffmpeg.exe" DestinationFiles="$(PublishDir)/ffmpeg.exe" />
   </Target>
 
