@@ -23,9 +23,9 @@
             <!--  Title  -->
             <TextBlock
                 FontSize="19"
-                Text="{Binding Video.Title}"
+                Text="{Binding DownloadSetup.Video.Title}"
                 TextTrimming="CharacterEllipsis"
-                ToolTip="{Binding Video.Title}" />
+                ToolTip="{Binding DownloadSetup.Video.Title}" />
 
             <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                 <!--  Author  -->
@@ -40,7 +40,7 @@
                         Margin="3,0,0,0"
                         VerticalAlignment="Center"
                         FontWeight="Light"
-                        Text="{Binding Video.Author.Title}"
+                        Text="{Binding DownloadSetup.Video.Author.Title}"
                         TextTrimming="CharacterEllipsis" />
                 </StackPanel>
 
@@ -56,7 +56,7 @@
                         Margin="3,0,0,0"
                         VerticalAlignment="Center"
                         FontWeight="Light"
-                        Text="{Binding Video.Duration, TargetNullValue=Live}"
+                        Text="{Binding DownloadSetup.Video.Duration, TargetNullValue=Live}"
                         TextTrimming="CharacterEllipsis" />
                 </StackPanel>
 
@@ -73,20 +73,23 @@
                         VerticalAlignment="Center"
                         FontWeight="Light"
                         TextTrimming="CharacterEllipsis">
-                        <Hyperlink Command="{s:Action OpenVideo}" Focusable="False">
-                            <Run Text="{Binding Video.Url, Converter={x:Static converters:ShortUrlConverter.Instance}, Mode=OneWay}" />
+                        <Hyperlink
+                            s:View.ActionTarget="{Binding DownloadSetup}"
+                            Command="{s:Action OpenVideoPage}"
+                            Focusable="False">
+                            <Run Text="{Binding DownloadSetup.Video.Url, Converter={x:Static converters:ShortUrlConverter.Instance}, Mode=OneWay}" />
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
 
+        <!--  Thumbnail  -->
         <Border
             Grid.Row="1"
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
-            <!--  Thumbnail  -->
-            <Image Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlConverter.Instance}}" />
+            <Image Source="{Binding DownloadSetup.Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlConverter.Instance}}" />
         </Border>
 
         <Grid Grid.Row="2" Margin="16">
@@ -103,12 +106,37 @@
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     materialDesign:ComboBoxAssist.ShowSelectedItem="True"
-                    DisplayMemberPath="Label"
                     IsReadOnly="True"
-                    ItemsSource="{Binding AvailableDownloadOptions}"
-                    SelectedItem="{Binding SelectedDownloadOption}" />
+                    ItemsSource="{Binding DownloadSetup.AvailableDownloadOptions}"
+                    SelectedItem="{Binding DownloadSetup.SelectedDownloadOption}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <!--  Video quality  -->
+                                <Run FontWeight="SemiBold">
+                                    <Run.Style>
+                                        <Style TargetType="{x:Type Run}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Container.IsAudioOnly}" Value="False">
+                                                    <Setter Property="Text" Value="{Binding VideoQuality, Mode=OneWay}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Container.IsAudioOnly}" Value="True">
+                                                    <Setter Property="Text" Value="Audio" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Run.Style>
+                                </Run>
+
+                                <!--  Container  -->
+                                <Run Text="(" /><Run Text="{Binding Container, Mode=OneWay}" /><Run Text=")" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
 
+            <!--  Buttons  -->
             <StackPanel
                 Grid.Column="1"
                 HorizontalAlignment="Right"

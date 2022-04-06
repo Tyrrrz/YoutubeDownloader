@@ -9,10 +9,6 @@ namespace YoutubeDownloader.Core.Downloading;
 
 public partial record VideoDownloadOption(Container Container, IReadOnlyList<IStreamInfo> StreamInfos)
 {
-    public string Label => !Container.IsAudioOnly
-        ? $"{VideoQuality?.Label} / {Container.Name}"
-        : $"Audio / {Container.Name}";
-
     public VideoQuality? VideoQuality => Memo.Cache(this, () =>
         StreamInfos
             .OfType<IVideoStreamInfo>()
@@ -49,6 +45,7 @@ public partial record VideoDownloadOption
                     var audioStreamInfo = manifest
                         .GetAudioStreams()
                         .OrderByDescending(s => s.Container == videoStreamInfo.Container)
+                        .ThenByDescending(s => s is AudioOnlyStreamInfo)
                         .ThenByDescending(s => s.Bitrate)
                         .FirstOrDefault();
 
@@ -70,6 +67,7 @@ public partial record VideoDownloadOption
                 var audioStreamInfo = manifest
                     .GetAudioStreams()
                     .OrderByDescending(s => s.Container == Container.WebM)
+                    .ThenByDescending(s => s is AudioOnlyStreamInfo)
                     .ThenByDescending(s => s.Bitrate)
                     .FirstOrDefault();
 
@@ -85,6 +83,7 @@ public partial record VideoDownloadOption
                 var audioStreamInfo = manifest
                     .GetAudioStreams()
                     .OrderByDescending(s => s.Container == Container.Mp4)
+                    .ThenByDescending(s => s is AudioOnlyStreamInfo)
                     .ThenByDescending(s => s.Bitrate)
                     .FirstOrDefault();
 
@@ -95,16 +94,10 @@ public partial record VideoDownloadOption
             }
         }
 
-        // Deduplicate download options by label and container
+        // Deduplicate download options by video quality and container
         var comparer = new DelegateEqualityComparer<VideoDownloadOption>(
-            (x, y) =>
-                StringComparer.OrdinalIgnoreCase.Equals(x.Label, y.Label) &&
-                x.Container == y.Container,
-
-            x => HashCode.Combine(
-                StringComparer.OrdinalIgnoreCase.GetHashCode(x.Label),
-                x.Container
-            )
+            (x, y) => x.VideoQuality == y.VideoQuality && x.Container == y.Container,
+            x => HashCode.Combine(x.VideoQuality, x.Container)
         );
 
         var options = new HashSet<VideoDownloadOption>(comparer);

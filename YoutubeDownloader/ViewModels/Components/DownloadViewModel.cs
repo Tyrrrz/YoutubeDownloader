@@ -30,7 +30,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
-    public DownloadStatus Status { get; set; }
+    public DownloadStatus Status { get; set; } = DownloadStatus.Enqueued;
 
     public string? ErrorMessage { get; set; }
 
@@ -54,13 +54,13 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public async void ShowFile()
     {
-        if (string.IsNullOrWhiteSpace(FilePath) || !CanShowFile)
+        if (!CanShowFile)
             return;
 
         try
         {
             // Navigate to the file in Windows Explorer
-            ProcessEx.Start("explorer", new[] { "/select,", FilePath });
+            ProcessEx.Start("explorer", new[] { "/select,", FilePath! });
         }
         catch (Exception ex)
         {
@@ -74,12 +74,12 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public async void OpenFile()
     {
-        if (string.IsNullOrWhiteSpace(FilePath) || !CanOpenFile)
+        if (!CanOpenFile)
             return;
 
         try
         {
-            ProcessEx.StartShellExecute(FilePath);
+            ProcessEx.StartShellExecute(FilePath!);
         }
         catch (Exception ex)
         {

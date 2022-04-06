@@ -10,7 +10,11 @@ public interface IViewModelFactory
 
     DownloadViewModel CreateDownloadViewModel();
 
-    DownloadSingleSetupViewModel CreateDownloadSetupViewModel();
+    DownloadSetupViewModel CreateDownloadSetupViewModel();
+
+    DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel();
+
+    DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel();
 
     MessageBoxViewModel CreateMessageBoxViewModel();
 

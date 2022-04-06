@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gress;
@@ -56,7 +57,7 @@ public class DashboardViewModel : PropertyChangedBase
         _viewModelFactory.CreateSettingsViewModel()
     );
 
-    private void EnqueueDownload(IVideo video, string filePath, VideoDownloadOption downloadOption, int position = 0)
+    private void EnqueueDownload(IVideo video, VideoDownloadOption downloadOption, string filePath, int position = 0)
     {
         var download = _viewModelFactory.CreateDownloadViewModel(video, downloadOption, filePath);
         var progress = _progressMuxer.CreateInput();
@@ -116,11 +117,26 @@ public class DashboardViewModel : PropertyChangedBase
 
         try
         {
-            var queryResult = await _queryResolver.QueryAsync(Query.Split(Environment.NewLine), progress);
-            var videos = queryResult.Videos.ToArray();
+            var subQueries = Query.Split(Environment.NewLine);
+            var downloadSetups = new List<DownloadSetupViewModel>();
 
-            // No videos
-            if (videos.Length <= 0)
+            foreach (var subQuery in subQueries)
+            {
+                var videos = await _queryResolver.ResolveAsync(subQuery);
+                for (var i = 0; i < videos.Count; i++)
+                {
+                    var downloadOptions = await _videoDownloader.GetDownloadOptionsAsync(videos[i].Id);
+                    var downloadSetup = _viewModelFactory.CreateDownloadSetupViewModel(videos[i], downloadOptions);
+                    downloadSetups.Add(downloadSetup);
+
+                    progress.Report(
+                        Percentage.FromFraction((i + 1.0) / videos.Count / subQueries.Length)
+                    );
+                }
+            }
+
+            // No videos found
+            if (!downloadSetups.Any())
             {
                 await _dialogManager.ShowDialogAsync(
                     _viewModelFactory.CreateMessageBoxViewModel(
@@ -128,25 +144,26 @@ public class DashboardViewModel : PropertyChangedBase
                         "Couldn't find any videos based on the query or URL you provided"
                     )
                 );
+
+                return;
             }
 
-            // Single video
-            else if (videos.Length == 1)
+            var dialog = (DialogScreen) (
+                downloadSetups.Count == 1
+                    ? _viewModelFactory.CreateDownloadSingleSetupViewModel(downloadSetups.Single())
+                    : _viewModelFactory.CreateDownloadMultipleSetupViewModel(downloadSetups)
+            );
+
+            if (await _dialogManager.ShowDialogAsync(dialog) is null)
+                return;
+
+            foreach (var downloadSetup in downloadSetups.Where(setup => setup.IsSelected))
             {
-                var video = videos.Single();
-                var downloadOptions = await _videoDownloader.GetDownloadOptionsAsync(video.Id);
-
-                var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(video, downloadOptions);
-                if (await _dialogManager.ShowDialogAsync(dialog) is null)
-                    return;
-
-                EnqueueDownload(video, dialog.FilePath!, dialog.SelectedDownloadOption!);
-            }
-
-            // Multiple videos
-            else
-            {
-
+                EnqueueDownload(
+                    downloadSetup.Video!,
+                    downloadSetup.SelectedDownloadOption!,
+                    downloadSetup.FilePath!
+                );
             }
         }
         catch (Exception ex)
@@ -197,7 +214,7 @@ public class DashboardViewModel : PropertyChangedBase
     {
         var position = Math.Max(0, Downloads.IndexOf(download));
         RemoveDownload(download);
-        EnqueueDownload(download.Video!, download.FilePath!, download.DownloadOption!, position);
+        EnqueueDownload(download.Video!, download.DownloadOption!, download.FilePath!, position);
     }
 
     public void RestartFailedDownloads()

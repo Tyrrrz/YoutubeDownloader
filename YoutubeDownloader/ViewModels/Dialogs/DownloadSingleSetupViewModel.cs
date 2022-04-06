@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using YoutubeDownloader.Core.Downloading;
+﻿using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
+using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
-using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
@@ -14,13 +10,7 @@ public class DownloadSingleSetupViewModel : DialogScreen
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
-    public IVideo? Video { get; set; }
-
-    public IReadOnlyList<VideoDownloadOption>? AvailableDownloadOptions { get; set; }
-
-    public VideoDownloadOption? SelectedDownloadOption { get; set; }
-
-    public string? FilePath { get; set; }
+   public DownloadSetupViewModel? DownloadSetup { get; set; }
 
     public DownloadSingleSetupViewModel(DialogManager dialogManager, SettingsService settingsService)
     {
@@ -30,41 +20,23 @@ public class DownloadSingleSetupViewModel : DialogScreen
 
     public void OnViewFullyLoaded()
     {
-        if (!string.IsNullOrWhiteSpace(_settingsService.LastFormat))
-        {
-            SelectedDownloadOption = AvailableDownloadOptions?
-                .FirstOrDefault(o =>
-                    string.Equals(o.Container.Name, _settingsService.LastFormat, StringComparison.OrdinalIgnoreCase)
-                );
-        }
+        DownloadSetup!.RestoreDefaults();
     }
-
-    public void OpenVideo()
-    {
-        var url = Video?.Url;
-        if (!string.IsNullOrEmpty(url))
-            ProcessEx.StartShellExecute(url);
-    }
-
-    public bool CanConfirm => SelectedDownloadOption is not null;
 
     public void Confirm()
     {
-        if (Video is null || SelectedDownloadOption is null)
-            return;
+        var format = DownloadSetup!.SelectedDownloadOption!.Container.Name;
 
-        var format = SelectedDownloadOption.Container.Name;
-
-        FilePath = _dialogManager.PromptSaveFilePath(
+        DownloadSetup.FilePath = _dialogManager.PromptSaveFilePath(
             $"{format} file|*.{format}",
             FileNameTemplate.Apply(
                 _settingsService.FileNameTemplate,
-                Video,
-                SelectedDownloadOption
+                DownloadSetup.Video!,
+                DownloadSetup.SelectedDownloadOption!
             )
         );
 
-        if (string.IsNullOrWhiteSpace(FilePath))
+        if (string.IsNullOrWhiteSpace(DownloadSetup.FilePath))
             return;
 
         _settingsService.LastFormat = format;
@@ -77,14 +49,11 @@ public static class DownloadSingleSetupViewModelExtensions
 {
     public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
         this IViewModelFactory factory,
-        IVideo video,
-        IReadOnlyList<VideoDownloadOption> downloadOptions)
+        DownloadSetupViewModel downloadSetup)
     {
-        var viewModel = factory.CreateDownloadSetupViewModel();
+        var viewModel = factory.CreateDownloadSingleSetupViewModel();
 
-        viewModel.Video = video;
-        viewModel.AvailableDownloadOptions = downloadOptions;
-        viewModel.SelectedDownloadOption = downloadOptions.FirstOrDefault();
+        viewModel.DownloadSetup = downloadSetup;
 
         return viewModel;
     }

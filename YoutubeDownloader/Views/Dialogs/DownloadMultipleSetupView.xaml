@@ -1,0 +1,111 @@
+﻿<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.DownloadMultipleSetupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="https://github.com/canton7/Stylet"
+    d:DataContext="{d:DesignInstance Type=dialogs:DownloadMultipleSetupViewModel}"
+    mc:Ignorable="d">
+    <Grid Loaded="{s:Action OnViewFullyLoaded}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="16"
+            FontSize="19"
+            Text="Multiple videos"
+            TextTrimming="CharacterEllipsis" />
+
+        <!--  Videos  -->
+        <Border
+            Grid.Row="1"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderThickness="0,1">
+            <ItemsControl
+                Padding="8"
+                HorizontalContentAlignment="Stretch"
+                ItemsSource="{Binding DownloadSetups}"
+                ScrollViewer.CanContentScroll="False"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Thumbnail  -->
+                            <Image
+                                Grid.Column="0"
+                                Width="48"
+                                Height="48"
+                                Source="{Binding Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
+
+                            <!--  Info  -->
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
+                                <!--  Title  -->
+                                <TextBlock
+                                    FontSize="15"
+                                    Text="{Binding Video.Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip="{Binding Video.Title}" />
+
+                                <!--  Misc  -->
+                                <TextBlock
+                                    Margin="0,4,0,0"
+                                    FontWeight="Light"
+                                    TextTrimming="CharacterEllipsis">
+                                    <Run Text="{Binding Video.Duration, Mode=OneWay}" />
+                                    <Run Text="/" />
+                                    <Run Text="{Binding Video.Author, Mode=OneWay}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <!--  Buttons  -->
+        <StackPanel
+            Grid.Row="2"
+            Margin="16"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <!--  Download  -->
+            <Button
+                Command="{s:Action Confirm}"
+                IsDefault="True"
+                Style="{DynamicResource MaterialDesignOutlinedButton}">
+                <Button.Content>
+                    <TextBlock>
+                        <Run Text="DOWNLOAD" />
+                        <Run Text="(" /><Run Text="{Binding SelectedDownloadSetupsCount, FallbackValue=0, Mode=OneWay}" /><Run Text=")" />
+                    </TextBlock>
+                </Button.Content>
+            </Button>
+
+            <!--  Cancel  -->
+            <Button
+                Margin="8,0,0,0"
+                Command="{s:Action Close}"
+                Content="CANCEL"
+                IsCancel="True"
+                Style="{DynamicResource MaterialDesignOutlinedButton}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

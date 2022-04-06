@@ -133,29 +133,18 @@
                 ScrollViewer.CanContentScroll="False"
                 VerticalScrollBarVisibility="Auto"
                 Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
+                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove inactive downloads" />
+                        <Separator />
+                        <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart failed downloads" />
+                        <Separator />
+                        <MenuItem Command="{s:Action CancelAllDownloads}" Header="Cancel all downloads" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.RowStyle>
                     <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="{x:Type DataGridRow}">
-                        <!--  Context menu  -->
-                        <Setter Property="ContextMenu">
-                            <Setter.Value>
-                                <ContextMenu>
-                                    <MenuItem
-                                        Command="{s:Action RemoveDownload}"
-                                        CommandParameter="{Binding}"
-                                        Header="Remove" />
-                                    <MenuItem
-                                        Command="{s:Action RestartDownload}"
-                                        CommandParameter="{Binding}"
-                                        Header="Restart" />
-                                    <Separator />
-                                    <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
-                                    <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove inactive downloads" />
-                                    <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart failed downloads" />
-                                    <MenuItem Command="{s:Action CancelAllDownloads}" Header="Cancel all downloads" />
-                                </ContextMenu>
-                            </Setter.Value>
-                        </Setter>
-
                         <!--  Triggers  -->
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
@@ -178,6 +167,7 @@
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <Image
                                     Width="48"
+                                    Height="48"
                                     VerticalAlignment="Center"
                                     Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
                             </DataTemplate>
@@ -292,33 +282,19 @@
                                 <StackPanel
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
-                                    s:View.ActionTarget="{Binding}"
                                     Orientation="Horizontal">
-                                    <!--  Cancel  -->
-                                    <Button
-                                        Padding="4,0,4,0"
-                                        VerticalAlignment="Center"
-                                        Command="{s:Action Cancel}"
-                                        Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Cancel download"
-                                        Visibility="{Binding CanCancel, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                                        <materialDesign:PackIcon
-                                            Width="24"
-                                            Height="24 "
-                                            Kind="CloseCircleOutline" />
-                                    </Button>
-
                                     <!--  Show file  -->
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
                                         Command="{s:Action ShowFile}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Navigate to file"
+                                        ToolTip="Show file"
                                         Visibility="{Binding CanShowFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                         <materialDesign:PackIcon
                                             Width="24"
-                                            Height="24 "
+                                            Height="24"
                                             Kind="FileFindOutline" />
                                     </Button>
 
@@ -326,14 +302,45 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
                                         Command="{s:Action OpenFile}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
                                         ToolTip="Play"
                                         Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                         <materialDesign:PackIcon
                                             Width="24"
-                                            Height="24 "
+                                            Height="24"
                                             Kind="PlayCircleOutline" />
+                                    </Button>
+
+                                    <!--  Cancel download  -->
+                                    <Button
+                                        Padding="4,0,4,0"
+                                        VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        Command="{s:Action Cancel}"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Cancel download"
+                                        Visibility="{Binding CanCancel, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="CloseCircleOutline" />
+                                    </Button>
+
+                                    <!--  Restart download  -->
+                                    <Button
+                                        Padding="4,0,4,0"
+                                        VerticalAlignment="Center"
+                                        Command="{s:Action RestartDownload}"
+                                        CommandParameter="{Binding}"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Restart download"
+                                        Visibility="{Binding ErrorMessage, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="Restart" />
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>
