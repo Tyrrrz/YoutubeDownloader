@@ -19,6 +19,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <!--  Info  -->
         <StackPanel Grid.Row="0" Margin="16">
             <!--  Title  -->
             <TextBlock
@@ -77,7 +78,7 @@
                             s:View.ActionTarget="{Binding DownloadSetup}"
                             Command="{s:Action OpenVideoPage}"
                             Focusable="False">
-                            <Run Text="{Binding DownloadSetup.Video.Url, Converter={x:Static converters:ShortUrlConverter.Instance}, Mode=OneWay}" />
+                            <Run Text="Open on YouTube" />
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>

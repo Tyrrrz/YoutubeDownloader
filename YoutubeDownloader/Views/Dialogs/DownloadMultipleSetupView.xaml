@@ -5,6 +5,7 @@
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     d:DataContext="{d:DesignInstance Type=dialogs:DownloadMultipleSetupViewModel}"
@@ -29,55 +30,97 @@
             Grid.Row="1"
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
-            <ItemsControl
-                Padding="8"
-                HorizontalContentAlignment="Stretch"
-                ItemsSource="{Binding DownloadSetups}"
-                ScrollViewer.CanContentScroll="False"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+            <ScrollViewer CanContentScroll="False" HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl
+                    Padding="8"
+                    HorizontalContentAlignment="Stretch"
+                    ItemsSource="{Binding DownloadSetups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <!--  Thumbnail  -->
-                            <Image
-                                Grid.Column="0"
-                                Width="48"
-                                Height="48"
-                                Source="{Binding Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
+                                <!--  Thumbnail  -->
+                                <Image
+                                    Grid.Column="0"
+                                    Width="48"
+                                    Height="48"
+                                    Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
 
-                            <!--  Info  -->
-                            <StackPanel
-                                Grid.Column="1"
-                                Margin="8,0,0,0"
-                                VerticalAlignment="Center"
-                                Orientation="Vertical">
-                                <!--  Title  -->
-                                <TextBlock
-                                    FontSize="15"
-                                    Text="{Binding Video.Title}"
-                                    TextTrimming="CharacterEllipsis"
-                                    ToolTip="{Binding Video.Title}" />
+                                <!--  Info  -->
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Margin="8,0,0,0"
+                                    VerticalAlignment="Center">
+                                    <!--  Title  -->
+                                    <TextBlock
+                                        FontSize="16"
+                                        Text="{Binding Video.Title}"
+                                        TextTrimming="CharacterEllipsis"
+                                        ToolTip="{Binding Video.Title}" />
 
-                                <!--  Misc  -->
-                                <TextBlock
-                                    Margin="0,4,0,0"
-                                    FontWeight="Light"
-                                    TextTrimming="CharacterEllipsis">
-                                    <Run Text="{Binding Video.Duration, Mode=OneWay}" />
-                                    <Run Text="/" />
-                                    <Run Text="{Binding Video.Author, Mode=OneWay}" />
-                                </TextBlock>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                    <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                                        <!--  Author  -->
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="16"
+                                                Height="16"
+                                                VerticalAlignment="Center"
+                                                BorderThickness="1"
+                                                Kind="UserOutline" />
+                                            <TextBlock
+                                                Margin="3,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontWeight="Light"
+                                                Text="{Binding Video.Author.Title}"
+                                                TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+
+                                        <!--  Duration  -->
+                                        <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="16"
+                                                Height="16"
+                                                VerticalAlignment="Center"
+                                                BorderThickness="1"
+                                                Kind="ClockOutline" />
+                                            <TextBlock
+                                                Margin="3,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontWeight="Light"
+                                                Text="{Binding Video.Duration, TargetNullValue=Live}"
+                                                TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+
+                                        <!--  URL  -->
+                                        <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="16"
+                                                Height="16"
+                                                VerticalAlignment="Center"
+                                                BorderThickness="1"
+                                                Kind="Youtube" />
+                                            <TextBlock
+                                                Margin="3,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontWeight="Light"
+                                                TextTrimming="CharacterEllipsis">
+                                                <Hyperlink Command="{s:Action OpenVideoPage}" Focusable="False">
+                                                    <Run Text="Open on YouTube" />
+                                                </Hyperlink>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Border>
 
         <!--  Buttons  -->
