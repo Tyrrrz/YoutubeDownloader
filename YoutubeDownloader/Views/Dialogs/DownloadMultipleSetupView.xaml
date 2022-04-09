@@ -9,8 +9,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     d:DataContext="{d:DesignInstance Type=dialogs:DownloadMultipleSetupViewModel}"
+    Loaded="{s:Action OnViewLoaded}"
     mc:Ignorable="d">
-    <Grid Loaded="{s:Action OnViewFullyLoaded}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

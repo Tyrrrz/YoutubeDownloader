@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Gress;
 using YoutubeDownloader.Core.Utils;
 using YoutubeExplode;
 using YoutubeExplode.Channels;
@@ -40,5 +42,27 @@ public class QueryResolver
         {
             return await _youtube.Search.GetVideosAsync(query, cancellationToken).CollectAsync(100);
         }
+    }
+
+    public async Task<IReadOnlyList<IVideo>> ResolveAsync(
+        IReadOnlyList<string> queries,
+        IProgress<Percentage>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        var videos = new List<IVideo>();
+        var completed = 0;
+
+        foreach (var query in queries)
+        {
+            videos.AddRange(
+                await ResolveAsync(query, cancellationToken)
+            );
+
+            progress?.Report(
+                Percentage.FromFraction(1.0 * ++completed / queries.Count)
+            );
+        }
+
+        return videos;
     }
 }

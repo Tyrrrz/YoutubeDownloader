@@ -10,9 +10,10 @@
     xmlns:s="https://github.com/canton7/Stylet"
     Width="500"
     d:DataContext="{d:DesignInstance Type=dialogs:DownloadSingleSetupViewModel}"
+    Loaded="{s:Action OnViewLoaded}"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
-    <Grid Loaded="{s:Action OnViewFullyLoaded}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

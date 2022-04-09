@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 using Tyrrrz.Settings;
-using YoutubeDownloader.Models;
+using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Services;
 
@@ -10,19 +10,19 @@ public partial class SettingsService : SettingsManager
 
     public bool IsDarkModeEnabled { get; set; } = IsDarkModeEnabledByDefault();
 
-    public FileConflictResolution FileConflictResolution { get; set; } = FileConflictResolution.Overwrite;
+    public bool ShouldSkipExistingFiles { get; set; }
 
     public string FileNameTemplate { get; set; } = "$title";
 
     public int ParallelLimit { get; set; } = 2;
 
-    public string? LastFormat { get; set; }
+    public Container LastContainer { get; set; } = Container.Mp4;
 
     public SettingsService()
     {
         Configuration.StorageSpace = StorageSpace.Instance;
         Configuration.SubDirectoryPath = "";
-        Configuration.FileName = "Settings.dat";
+        Configuration.FileName = "Settings.json";
     }
 }
 
@@ -33,7 +33,8 @@ public partial class SettingsService
         try
         {
             return Registry.CurrentUser.OpenSubKey(
-                "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", false
+                "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                false
             )?.GetValue("AppsUseLightTheme") is 0;
         }
         catch

@@ -1,5 +1,6 @@
 ﻿using YoutubeDownloader.Core.Utils;
 using YoutubeExplode.Videos;
+using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core.Downloading;
 
@@ -8,7 +9,7 @@ public class FileNameTemplate
     public static string Apply(
         string template,
         IVideo video,
-        VideoDownloadOption downloadOption,
+        Container container,
         int? number = null) =>
         PathEx.EscapeFileName(
             template
@@ -16,6 +17,6 @@ public class FileNameTemplate
                 .Replace("$id", video.Id)
                 .Replace("$title", video.Title)
                 .Replace("$author", video.Author.Title)
-                .Trim() + '.' + downloadOption.Container.Name
+                .Trim() + '.' + container.Name
         );
 }

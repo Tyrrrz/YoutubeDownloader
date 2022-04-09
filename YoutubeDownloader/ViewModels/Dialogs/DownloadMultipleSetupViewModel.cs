@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.ViewModels.Components;
+using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Framework;
+using YoutubeExplode.Videos;
+using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
@@ -13,9 +16,22 @@ public class DownloadMultipleSetupViewModel : DialogScreen
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
-    public IReadOnlyList<DownloadSetupViewModel>? DownloadSetups { get; set; }
+    public IReadOnlyList<IVideo>? AvailableVideos { get; set; }
 
-    public int SelectedDownloadSetupsCount => DownloadSetups?.Count(s => s.IsSelected) ?? 0;
+    public IReadOnlyList<IVideo>? SelectedVideos { get; set; }
+
+    public IReadOnlyList<Container> AvailableContainers { get; } = new[]
+    {
+        Container.Mp4,
+        Container.WebM,
+        Container.Mp3,
+        new Container("ogg"),
+        new Container("m4a")
+    };
+
+    public Container SelectedContainer { get; set; } = Container.Mp4;
+
+    public IReadOnlyDictionary<IVideo, string>? FilePaths { get; set; }
 
     public DownloadMultipleSetupViewModel(DialogManager dialogManager, SettingsService settingsService)
     {
@@ -23,34 +39,46 @@ public class DownloadMultipleSetupViewModel : DialogScreen
         _settingsService = settingsService;
     }
 
-    public void OnViewFullyLoaded()
+    public void OnViewLoaded()
     {
-        foreach (var downloadSetup in DownloadSetups!)
-            downloadSetup.RestoreDefaults();
+        SelectedContainer = _settingsService.LastContainer;
     }
 
-    public bool CanConfirm => SelectedDownloadSetupsCount > 0;
+    public void OpenVideoPage(IVideo video) => ProcessEx.StartShellExecute(video.Url);
+
+    public bool CanConfirm => SelectedVideos!.Any();
 
     public void Confirm()
     {
-        if (SelectedDownloadSetupsCount <= 0)
-            return;
-
         var dirPath = _dialogManager.PromptDirectoryPath();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 
-        foreach (var downloadSetup in DownloadSetups!)
+        var filePaths = new Dictionary<IVideo, string>();
+
+        foreach (var video in SelectedVideos!)
         {
-            downloadSetup.FilePath = Path.Combine(
+            var baseFilePath = Path.Combine(
                 dirPath,
                 FileNameTemplate.Apply(
                     _settingsService.FileNameTemplate,
-                    downloadSetup.Video!,
-                    downloadSetup.SelectedDownloadOption!
+                    video,
+                    SelectedContainer
                 )
             );
+
+            var filePath = PathEx.GenerateUniquePath(baseFilePath);
+
+            // Download does not start immediately, so lock in the file path to avoid conflicts
+            DirectoryEx.CreateDirectoryForFile(filePath);
+            File.WriteAllBytes(filePath, Array.Empty<byte>());
+
+            filePaths[video] = filePath;
         }
+
+        FilePaths = filePaths;
+
+        _settingsService.LastContainer = SelectedContainer;
 
         Close(true);
     }
@@ -60,11 +88,15 @@ public static class DownloadMultipleSetupViewModelExtensions
 {
     public static DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel(
         this IViewModelFactory factory,
-        IReadOnlyList<DownloadSetupViewModel> downloadSetups)
+        IReadOnlyList<IVideo> availableVideos,
+        bool preselectVideos = true)
     {
         var viewModel = factory.CreateDownloadMultipleSetupViewModel();
 
-        viewModel.DownloadSetups = downloadSetups;
+        viewModel.AvailableVideos = availableVideos;
+        viewModel.SelectedVideos = preselectVideos
+            ? availableVideos
+            : Array.Empty<IVideo>();
 
         return viewModel;
     }

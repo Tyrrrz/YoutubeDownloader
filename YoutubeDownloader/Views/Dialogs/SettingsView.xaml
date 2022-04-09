@@ -73,22 +73,19 @@
                             Unchecked="DarkModeToggleButton_Unchecked" />
                     </DockPanel>
 
-                    <!--  Conflict resolution  -->
+                    <!--  Skip existing files  -->
                     <DockPanel
-                        Margin="16,8"
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="How to resolve file conflicts when downloading multiple videos">
+                        ToolTip="When selecting multiple videos to download, skip those that already have a matching file in the target directory">
                         <TextBlock
-                            VerticalAlignment="Center"
+                            Margin="16,8"
                             DockPanel.Dock="Left"
-                            Text="File conflict resolution" />
-                        <ComboBox
-                            Width="150"
-                            VerticalAlignment="Center"
+                            Text="Skip existing files" />
+                        <ToggleButton
+                            Margin="16,8"
                             DockPanel.Dock="Right"
-                            ItemsSource="{Binding AvailableFileConflictResolutions}"
-                            SelectedItem="{Binding FileConflictResolution}" />
+                            IsChecked="{Binding ShouldSkipExistingFiles}" />
                     </DockPanel>
 
                     <!--  File name template  -->
@@ -101,7 +98,7 @@
                                 <Run Text="Template used for generating file names for downloaded videos" />
                                 <LineBreak />
                                 <LineBreak />
-                                <Run Text="Available variables:" />
+                                <Run Text="Available tokens:" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$num" />
                                 <Run Text="- video's position in the list (if applicable)" />

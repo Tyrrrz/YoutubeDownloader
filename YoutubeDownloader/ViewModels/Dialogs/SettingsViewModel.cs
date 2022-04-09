@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using YoutubeDownloader.Models;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
 
@@ -22,13 +20,10 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.IsDarkModeEnabled = value;
     }
 
-    public IReadOnlyList<FileConflictResolution> AvailableFileConflictResolutions =>
-        Enum.GetValues<FileConflictResolution>();
-
-    public FileConflictResolution FileConflictResolution
+    public bool ShouldSkipExistingFiles
     {
-        get => _settingsService.FileConflictResolution;
-        set => _settingsService.FileConflictResolution = value;
+        get => _settingsService.ShouldSkipExistingFiles;
+        set => _settingsService.ShouldSkipExistingFiles = value;
     }
 
     public string FileNameTemplate

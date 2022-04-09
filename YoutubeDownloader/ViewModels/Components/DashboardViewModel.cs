@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gress;
@@ -13,6 +12,7 @@ using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Exceptions;
 using YoutubeExplode.Videos;
+using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
@@ -57,7 +57,11 @@ public class DashboardViewModel : PropertyChangedBase
         _viewModelFactory.CreateSettingsViewModel()
     );
 
-    private void EnqueueDownload(IVideo video, VideoDownloadOption downloadOption, string filePath, int position = 0)
+    private void EnqueueDownload(
+        IVideo video,
+        VideoDownloadOption downloadOption,
+        string filePath,
+        int position = 0)
     {
         var download = _viewModelFactory.CreateDownloadViewModel(video, downloadOption, filePath);
         var progress = _progressMuxer.CreateInput();
@@ -103,6 +107,20 @@ public class DashboardViewModel : PropertyChangedBase
         Downloads.Insert(position, download);
     }
 
+    private async void EnqueueDownload(
+        IVideo video,
+        Container container,
+        VideoQuality videoQuality,
+        string filePath,
+        int position = 0)
+    {
+        var downloadOptions = await _videoDownloader.GetDownloadOptionsAsync(video.Id);
+
+        var downloadOption = downloadOptions.FirstOrDefault(o => o.Container == container && o.VideoQuality == videoQuality);
+
+        EnqueueDownload(video, downloadOption, filePath, position);
+    }
+
     public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
 
     public async void ProcessQuery()
@@ -117,52 +135,51 @@ public class DashboardViewModel : PropertyChangedBase
 
         try
         {
-            var subQueries = Query.Split(Environment.NewLine);
-            var downloadSetups = new List<DownloadSetupViewModel>();
+            var videos = await _queryResolver.ResolveAsync(Query.Split(Environment.NewLine), progress);
 
-            foreach (var subQuery in subQueries)
+            // Single video
+            if (videos.Count == 1)
             {
-                var videos = await _queryResolver.ResolveAsync(subQuery);
-                for (var i = 0; i < videos.Count; i++)
-                {
-                    var downloadOptions = await _videoDownloader.GetDownloadOptionsAsync(videos[i].Id);
-                    var downloadSetup = _viewModelFactory.CreateDownloadSetupViewModel(videos[i], downloadOptions);
-                    downloadSetups.Add(downloadSetup);
+                var video = videos.Single();
+                var downloadOptions = await _videoDownloader.GetDownloadOptionsAsync(video.Id);
 
-                    progress.Report(
-                        Percentage.FromFraction((i + 1.0) / videos.Count / subQueries.Length)
+                var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(video, downloadOptions);
+                if (await _dialogManager.ShowDialogAsync(dialog) != true)
+                    return;
+
+                EnqueueDownload(
+                    video,
+                    dialog.SelectedDownloadOption!,
+                    dialog.FilePath!
+                );
+            }
+            // Multiple videos
+            else if (videos.Count > 1)
+            {
+                var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(videos);
+                if (await _dialogManager.ShowDialogAsync(dialog) != true)
+                    return;
+
+                foreach (var video in dialog.SelectedVideos!)
+                {
+                    var filePath = dialog.FilePaths![video];
+
+                    EnqueueDownload(
+                        video,
+                        dialog.SelectedContainer,
+                        dialog.SelectedVideoQuality,
+                        filePath
                     );
                 }
             }
-
             // No videos found
-            if (!downloadSetups.Any())
+            else
             {
                 await _dialogManager.ShowDialogAsync(
                     _viewModelFactory.CreateMessageBoxViewModel(
                         "Nothing found",
                         "Couldn't find any videos based on the query or URL you provided"
                     )
-                );
-
-                return;
-            }
-
-            var dialog = (DialogScreen) (
-                downloadSetups.Count == 1
-                    ? _viewModelFactory.CreateDownloadSingleSetupViewModel(downloadSetups.Single())
-                    : _viewModelFactory.CreateDownloadMultipleSetupViewModel(downloadSetups)
-            );
-
-            if (await _dialogManager.ShowDialogAsync(dialog) is null)
-                return;
-
-            foreach (var downloadSetup in downloadSetups.Where(setup => setup.IsSelected))
-            {
-                EnqueueDownload(
-                    downloadSetup.Video!,
-                    downloadSetup.SelectedDownloadOption!,
-                    downloadSetup.FilePath!
                 );
             }
         }

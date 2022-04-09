@@ -1,7 +1,12 @@
-﻿using YoutubeDownloader.Core.Downloading;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.ViewModels.Components;
+using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Framework;
+using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
@@ -10,7 +15,13 @@ public class DownloadSingleSetupViewModel : DialogScreen
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
-   public DownloadSetupViewModel? DownloadSetup { get; set; }
+    public IVideo? Video { get; set; }
+
+    public IReadOnlyList<VideoDownloadOption>? AvailableDownloadOptions { get; set; }
+
+    public VideoDownloadOption? SelectedDownloadOption { get; set; }
+
+    public string? FilePath { get; set; }
 
     public DownloadSingleSetupViewModel(DialogManager dialogManager, SettingsService settingsService)
     {
@@ -18,28 +29,36 @@ public class DownloadSingleSetupViewModel : DialogScreen
         _settingsService = settingsService;
     }
 
-    public void OnViewFullyLoaded()
+    public void OnViewLoaded()
     {
-        DownloadSetup!.RestoreDefaults();
+        SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(o =>
+            o.Container == _settingsService.LastContainer
+        );
     }
+
+    public void OpenVideoPage() => ProcessEx.StartShellExecute(Video!.Url);
 
     public void Confirm()
     {
-        var format = DownloadSetup!.SelectedDownloadOption!.Container.Name;
+        var container = SelectedDownloadOption!.Container;
 
-        DownloadSetup.FilePath = _dialogManager.PromptSaveFilePath(
-            $"{format} file|*.{format}",
+        FilePath = _dialogManager.PromptSaveFilePath(
+            $"{container.Name} file|*.{container.Name}",
             FileNameTemplate.Apply(
                 _settingsService.FileNameTemplate,
-                DownloadSetup.Video!,
-                DownloadSetup.SelectedDownloadOption!
+                Video!,
+                container
             )
         );
 
-        if (string.IsNullOrWhiteSpace(DownloadSetup.FilePath))
+        if (string.IsNullOrWhiteSpace(FilePath))
             return;
 
-        _settingsService.LastFormat = format;
+        // Download does not start immediately, so lock in the file path to avoid conflicts
+        DirectoryEx.CreateDirectoryForFile(FilePath);
+        File.WriteAllBytes(FilePath, Array.Empty<byte>());
+
+        _settingsService.LastContainer = container;
 
         Close(true);
     }
@@ -49,11 +68,13 @@ public static class DownloadSingleSetupViewModelExtensions
 {
     public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
         this IViewModelFactory factory,
-        DownloadSetupViewModel downloadSetup)
+        IVideo video,
+        IReadOnlyList<VideoDownloadOption> availableDownloadOptions)
     {
         var viewModel = factory.CreateDownloadSingleSetupViewModel();
 
-        viewModel.DownloadSetup = downloadSetup;
+        viewModel.Video = video;
+        viewModel.AvailableDownloadOptions = availableDownloadOptions;
 
         return viewModel;
     }
