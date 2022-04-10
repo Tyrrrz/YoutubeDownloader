@@ -68,7 +68,6 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             return;
 
         var downloads = new List<DownloadViewModel>();
-
         foreach (var video in SelectedVideos!)
         {
             var baseFilePath = Path.Combine(
@@ -79,6 +78,9 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
                     SelectedContainer
                 )
             );
+
+            if (_settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
+                continue;
 
             var filePath = PathEx.GenerateUniquePath(baseFilePath);
 
