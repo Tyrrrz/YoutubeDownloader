@@ -1,3 +1,15 @@
+### v1.9 (10-Apr-2022)
+
+- Improved the accuracy of automatically resolved metadata. Also expanded the list of injected media tags to include some additional information.
+- Added `$id` file name template token. It resolves to the ID of the video. (Thanks [@Cole](https://github.com/Cannon-Cole))
+- Added auto-detection for dark mode. If your system is configured to prefer dark mode in applications, DiscordChatExporter will use it by default instead of light mode.
+- Removed the subtitle selection drop down shown when downloading videos. Subtitles are now downloaded automatically and embedded inside the video file.
+- Removed the "inject media tags" option. Media tags are now always injected.
+- Removed the "excluded formats" option due to low usefulness.
+- Fixed an issue which occasionally prevented video thumbnails from being injected into video files properly.
+
+Note: some settings may be lost when upgrading from v1.8.x.
+
 ### v1.8.7 (07-Mar-2022)
 
 - Actually fixed it this time.
@@ -8,6 +20,7 @@
 
 ### v1.8.5 (06-Mar-2022)
 
+- Changed target runtime of the application from .NET 3.1 to .NET 6. Application should install the necessary prerequisites automatically. In case you're having trouble launching the app, you can try to install .NET 6 runtime manually [from here](https://dotnet.microsoft.com/en-us/download/dotnet/6.0/runtime) (look for the "Run desktop apps" section and choose the distribution appropriate for your system).
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.1.
 - Added messages about war in Ukraine.
 
