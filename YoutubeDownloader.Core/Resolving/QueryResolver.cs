@@ -21,8 +21,12 @@ public class QueryResolver
         string query,
         CancellationToken cancellationToken = default)
     {
+        // Only consider URLs when parsing IDs.
+        // All other queries are treated as search queries.
+        var isUrl = Uri.IsWellFormedUriString(query, UriKind.Absolute);
+
         // Playlist
-        if (PlaylistId.TryParse(query) is { } playlistId)
+        if (isUrl && PlaylistId.TryParse(query) is { } playlistId)
         {
             var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
             var videos = await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
@@ -30,14 +34,14 @@ public class QueryResolver
         }
 
         // Video
-        if (VideoId.TryParse(query) is { } videoId)
+        if (isUrl && VideoId.TryParse(query) is { } videoId)
         {
             var video = await _youtube.Videos.GetAsync(videoId, cancellationToken);
             return new QueryResult(QueryResultKind.Video, video.Title, new[] {video});
         }
 
         // Channel
-        if (ChannelId.TryParse(query) is { } channelId)
+        if (isUrl && ChannelId.TryParse(query) is { } channelId)
         {
             var channel = await _youtube.Channels.GetAsync(channelId, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channelId, cancellationToken);

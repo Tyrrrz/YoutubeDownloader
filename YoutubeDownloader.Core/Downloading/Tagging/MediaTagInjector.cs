@@ -36,27 +36,17 @@ internal class MediaTagInjector
         IVideo video,
         CancellationToken cancellationToken = default)
     {
-        // We need duration for confidence rating and all videos are expected to have it anyway
-        // since we're not working with live streams.
-        if (video.Duration is not { } videoDuration)
-            return;
-
         var recordings = await _musicBrainz.SearchRecordingsAsync(video.Title, cancellationToken);
 
-        // MusicBrainz does not provide any kind of absolute confidence rating, so we're
-        // going to choose the best fit by comparing video and recording durations.
         var recording = recordings
-            .Select(r => new
-            {
-                Recording = r,
-                // Rating range: (-inf, 1] where 1 is a perfect match
-                ConfidenceRating = 1 - (videoDuration - r.Duration).Duration() / r.Duration
-            })
-            // Accepted discrepancy: ~8 seconds on a 3 minute song
-            .Where(x => x.ConfidenceRating >= 0.95)
-            .OrderByDescending(x => x.ConfidenceRating)
-            .Select(r => r.Recording)
-            .FirstOrDefault();
+            .FirstOrDefault(r =>
+                // Recording title must be part of the video title.
+                // Recording artist must be part of the video title or channel title.
+                video.Title.Contains(r.Title, StringComparison.OrdinalIgnoreCase) && (
+                    video.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase) ||
+                    video.Author.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
+                )
+            );
 
         if (recording is null)
             return;

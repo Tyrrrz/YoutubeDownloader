@@ -6,6 +6,5 @@ internal record MusicBrainzRecording(
     string Artist,
     string? ArtistSort,
     string Title,
-    string? Album,
-    TimeSpan Duration
+    string? Album
 );

@@ -67,20 +67,11 @@ internal class MusicBrainzClient
                 .GetPropertyOrNull("title")?
                 .GetNonWhiteSpaceStringOrNull();
 
-            var duration = recordingJson
-                .GetPropertyOrNull("length")?
-                .GetDoubleOrNull()?
-                .Pipe(TimeSpan.FromMilliseconds) ?? TimeSpan.Zero;
-
-            if (duration == TimeSpan.Zero)
-                continue;
-
             recordings.Add(new MusicBrainzRecording(
                 artist,
                 artistSort,
                 title,
-                album,
-                duration
+                album
             ));
         }
 
