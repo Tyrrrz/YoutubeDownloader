@@ -2,13 +2,13 @@
 
 - Improved the accuracy of automatically resolved metadata. Also expanded the list of injected media tags to include some additional information.
 - Added `$id` file name template token. It resolves to the ID of the video. (Thanks [@Cole](https://github.com/Cannon-Cole))
-- Added auto-detection for dark mode. If your system is configured to prefer dark mode in applications, DiscordChatExporter will use it by default instead of light mode.
+- Added auto-detection for dark mode. If your system is configured to prefer dark mode in applications, YoutubeDownloader will use it by default instead of light mode.
 - Removed the subtitle selection drop down shown when downloading videos. Subtitles are now downloaded automatically and embedded inside the video file.
 - Removed the "inject media tags" option. Media tags are now always injected.
 - Removed the "excluded formats" option due to low usefulness.
 - Fixed an issue which occasionally prevented video thumbnails from being injected into video files properly.
 
-Note: some settings may be lost when upgrading from v1.8.x.
+⚠ Warning: some settings may be lost when upgrading from v1.8.x.
 
 ### v1.8.7 (07-Mar-2022)
 
