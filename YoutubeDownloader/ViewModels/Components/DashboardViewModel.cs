@@ -131,7 +131,10 @@ public class DashboardViewModel : PropertyChangedBase
 
         try
         {
-            var result = await _queryResolver.ResolveAsync(Query.Split(Environment.NewLine), progress);
+            var result = await _queryResolver.ResolveAsync(
+                Query.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+                progress
+            );
 
             // Single video
             if (result.Videos.Count == 1)

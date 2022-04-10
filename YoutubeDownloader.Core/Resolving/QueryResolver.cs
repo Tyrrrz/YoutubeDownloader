@@ -26,7 +26,7 @@ public class QueryResolver
         {
             var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
             var videos = await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
-            return new QueryResult(QueryResultKind.Playlist, playlist.Title, videos);
+            return new QueryResult(QueryResultKind.Playlist, $"Playlist: {playlist.Title}", videos);
         }
 
         // Video
@@ -41,7 +41,7 @@ public class QueryResolver
         {
             var channel = await _youtube.Channels.GetAsync(channelId, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channelId, cancellationToken);
-            return new QueryResult(QueryResultKind.Channel, channel.Title, videos);
+            return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
 
         // Search
@@ -79,6 +79,6 @@ public class QueryResolver
             );
         }
 
-        return new QueryResult(QueryResultKind.Aggregate, "Multiple queries", videos);
+        return new QueryResult(QueryResultKind.Aggregate, $"{queries.Count} queries", videos);
     }
 }
