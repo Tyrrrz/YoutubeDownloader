@@ -25,9 +25,9 @@
             <!--  Title  -->
             <TextBlock
                 FontSize="19"
-                Text="{Binding DownloadSetup.Video.Title}"
+                Text="{Binding Video.Title}"
                 TextTrimming="CharacterEllipsis"
-                ToolTip="{Binding DownloadSetup.Video.Title}">
+                ToolTip="{Binding Video.Title}">
                 <TextBlock.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{s:Action CopyTitle}" Header="Copy" />
@@ -48,12 +48,12 @@
                         Margin="3,0,0,0"
                         VerticalAlignment="Center"
                         FontWeight="Light"
-                        Text="{Binding DownloadSetup.Video.Author.Title}"
+                        Text="{Binding Video.Author.Title}"
                         TextTrimming="CharacterEllipsis" />
                 </StackPanel>
 
                 <!--  Duration  -->
-                <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
+                <StackPanel Margin="16,0,0,0" Orientation="Horizontal">
                     <materialDesign:PackIcon
                         Width="16"
                         Height="16"
@@ -64,7 +64,7 @@
                         Margin="3,0,0,0"
                         VerticalAlignment="Center"
                         FontWeight="Light"
-                        Text="{Binding DownloadSetup.Video.Duration, TargetNullValue=Live}"
+                        Text="{Binding Video.Duration, TargetNullValue=Live}"
                         TextTrimming="CharacterEllipsis" />
                 </StackPanel>
             </StackPanel>
@@ -75,7 +75,7 @@
             Grid.Row="1"
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
-            <Image Source="{Binding DownloadSetup.Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlConverter.Instance}}" />
+            <Image Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlConverter.Instance}}" />
         </Border>
 
         <Grid Grid.Row="2" Margin="16">
@@ -93,8 +93,8 @@
                     VerticalAlignment="Center"
                     materialDesign:ComboBoxAssist.ShowSelectedItem="True"
                     IsReadOnly="True"
-                    ItemsSource="{Binding DownloadSetup.AvailableDownloadOptions}"
-                    SelectedItem="{Binding DownloadSetup.SelectedDownloadOption}">
+                    ItemsSource="{Binding AvailableDownloadOptions}"
+                    SelectedItem="{Binding SelectedDownloadOption}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>

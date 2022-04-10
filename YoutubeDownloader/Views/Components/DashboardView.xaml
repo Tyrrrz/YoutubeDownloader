@@ -228,6 +228,9 @@
                                         <ProgressBar.Style>
                                             <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
                                                 <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Enqueued}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled}">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
@@ -252,6 +255,7 @@
                                                 <Style.Triggers>
                                                     <!--  Pending  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Enqueued}">
+                                                        <Setter Property="Opacity" Value="0.7" />
                                                         <Setter Property="Text" Value="Pending..." />
                                                     </DataTrigger>
 
