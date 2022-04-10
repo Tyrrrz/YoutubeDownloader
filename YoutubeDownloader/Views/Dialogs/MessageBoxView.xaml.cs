@@ -1,10 +1,9 @@
-﻿namespace YoutubeDownloader.Views.Dialogs
+﻿namespace YoutubeDownloader.Views.Dialogs;
+
+public partial class MessageBoxView
 {
-    public partial class MessageBoxView
+    public MessageBoxView()
     {
-        public MessageBoxView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

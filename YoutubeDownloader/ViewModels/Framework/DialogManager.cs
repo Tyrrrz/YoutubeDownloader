@@ -1,71 +1,74 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using MaterialDesignThemes.Wpf;
 using Ookii.Dialogs.Wpf;
 using Stylet;
 
-namespace YoutubeDownloader.ViewModels.Framework
-{
-    public class DialogManager
-    {
-        private readonly IViewManager _viewManager;
+namespace YoutubeDownloader.ViewModels.Framework;
 
-        public DialogManager(IViewManager viewManager)
+public class DialogManager : IDisposable
+{
+    private readonly IViewManager _viewManager;
+    private readonly SemaphoreSlim _dialogLock = new(1, 1);
+
+    public DialogManager(IViewManager viewManager)
+    {
+        _viewManager = viewManager;
+    }
+
+    public async ValueTask<T?> ShowDialogAsync<T>(DialogScreen<T> dialogScreen)
+    {
+        var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
+
+        void OnDialogOpened(object? openSender, DialogOpenedEventArgs openArgs)
         {
-            _viewManager = viewManager;
+            void OnScreenClosed(object? closeSender, EventArgs args)
+            {
+                openArgs.Session.Close();
+                dialogScreen.Closed -= OnScreenClosed;
+            }
+            dialogScreen.Closed += OnScreenClosed;
         }
 
-        public async Task<T?> ShowDialogAsync<T>(DialogScreen<T> dialogScreen)
+        await _dialogLock.WaitAsync();
+        try
         {
-            // Get the view that renders this viewmodel
-            var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
-
-            // Set up event routing that will close the view when called from viewmodel
-            void OnDialogOpened(object? openSender, DialogOpenedEventArgs openArgs)
-            {
-                // Delegate to close the dialog and unregister event handler
-                void OnScreenClosed(object? closeSender, EventArgs closeArgs)
-                {
-                    openArgs.Session.Close();
-                    dialogScreen.Closed -= OnScreenClosed;
-                }
-
-                dialogScreen.Closed += OnScreenClosed;
-            }
-
-            // Show view
             await DialogHost.Show(view, OnDialogOpened);
-
-            // Return the result
             return dialogScreen.DialogResult;
         }
-
-        public string? PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
+        finally
         {
-            // Create dialog
-            var dialog = new VistaSaveFileDialog
-            {
-                Filter = filter,
-                AddExtension = true,
-                FileName = defaultFilePath,
-                DefaultExt = Path.GetExtension(defaultFilePath)
-            };
-
-            // Show dialog and return result
-            return dialog.ShowDialog() == true ? dialog.FileName : null;
+            _dialogLock.Release();
         }
+    }
 
-        public string? PromptDirectoryPath(string defaultDirPath = "")
+    public string? PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
+    {
+        var dialog = new VistaSaveFileDialog
         {
-            // Create dialog
-            var dialog = new VistaFolderBrowserDialog
-            {
-                SelectedPath = defaultDirPath
-            };
+            Filter = filter,
+            AddExtension = true,
+            FileName = defaultFilePath,
+            DefaultExt = Path.GetExtension(defaultFilePath)
+        };
 
-            // Show dialog and return result
-            return dialog.ShowDialog() == true ? dialog.SelectedPath : null;
-        }
+        return dialog.ShowDialog() == true ? dialog.FileName : null;
+    }
+
+    public string? PromptDirectoryPath(string defaultDirPath = "")
+    {
+        var dialog = new VistaFolderBrowserDialog
+        {
+            SelectedPath = defaultDirPath
+        };
+
+        return dialog.ShowDialog() == true ? dialog.SelectedPath : null;
+    }
+
+    public void Dispose()
+    {
+        _dialogLock.Dispose();
     }
 }

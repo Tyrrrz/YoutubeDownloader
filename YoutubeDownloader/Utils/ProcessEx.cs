@@ -1,17 +1,42 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace YoutubeDownloader.Utils
+namespace YoutubeDownloader.Utils;
+
+internal static class ProcessEx
 {
-    internal static class ProcessEx
+    public static void Start(string path, IReadOnlyList<string>? arguments = null)
     {
-        public static void StartShellExecute(string path)
+        using var process = new Process
         {
-            var startInfo = new ProcessStartInfo(path)
+            StartInfo = new ProcessStartInfo(path)
+        };
+
+        if (arguments is not null)
+        {
+            foreach (var argument in arguments)
+                process.StartInfo.ArgumentList.Add(argument);
+        }
+
+        process.Start();
+    }
+
+    public static void StartShellExecute(string path, IReadOnlyList<string>? arguments = null)
+    {
+        using var process = new Process
+        {
+            StartInfo = new ProcessStartInfo(path)
             {
                 UseShellExecute = true
-            };
+            }
+        };
 
-            using (Process.Start(startInfo)) {}
+        if (arguments is not null)
+        {
+            foreach (var argument in arguments)
+                process.StartInfo.ArgumentList.Add(argument);
         }
+
+        process.Start();
     }
 }

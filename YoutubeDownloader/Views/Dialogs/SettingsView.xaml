@@ -4,153 +4,168 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
-    MinWidth="300"
+    Width="380"
     d:DataContext="{d:DesignInstance Type=dialogs:SettingsViewModel}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
         <TextBlock
-            Margin="16"
-            FontSize="17"
+            Grid.Row="0"
+            Margin="16,16,16,8"
+            FontSize="19"
+            FontWeight="Light"
             Text="Settings" />
 
-        <!--  Auto-updates  -->
-        <DockPanel Background="Transparent" LastChildFill="False">
-            <DockPanel.ToolTip>
-                <TextBlock>
-                    <Run Text="Perform automatic updates on every launch" />
-                    <LineBreak />
-                    <Run FontWeight="SemiBold" Text="Warning:" />
-                    <Run Text="disabling this is NOT recommended because the application will stop working when integration with YouTube inevitably breaks in the future" />
-                </TextBlock>
-            </DockPanel.ToolTip>
-            <TextBlock
-                Margin="16,8"
-                DockPanel.Dock="Left"
-                Text="Auto-updates" />
-            <ToggleButton
-                Margin="16,8"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding IsAutoUpdateEnabled}" />
-        </DockPanel>
+        <Border
+            Grid.Row="1"
+            Padding="0,8"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderThickness="0,1">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!--  Auto-updates  -->
+                    <DockPanel Background="Transparent" LastChildFill="False">
+                        <DockPanel.ToolTip>
+                            <TextBlock>
+                                <Run Text="Perform automatic updates on every launch" />
+                                <LineBreak />
+                                <Run FontWeight="SemiBold" Text="Warning:" />
+                                <Run Text="disabling this is NOT recommended because the application will stop working when integration with YouTube inevitably breaks in the future" />
+                            </TextBlock>
+                        </DockPanel.ToolTip>
+                        <TextBlock
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Auto-updates" />
+                        <ToggleButton
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding IsAutoUpdateEnabled}" />
+                    </DockPanel>
 
-        <!--  Dark mode  -->
-        <DockPanel
-            Background="Transparent"
-            LastChildFill="False"
-            ToolTip="Use darker colors in the UI">
-            <TextBlock
-                Margin="16,8"
-                DockPanel.Dock="Left"
-                Text="Dark mode" />
-            <ToggleButton
-                x:Name="DarkModeToggleButton"
-                Margin="16,8"
-                Checked="DarkModeToggleButton_Checked"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding IsDarkModeEnabled}"
-                Unchecked="DarkModeToggleButton_Unchecked" />
-        </DockPanel>
+                    <!--  Dark mode  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Use darker colors in the UI">
+                        <TextBlock
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Dark mode" />
+                        <ToggleButton
+                            x:Name="DarkModeToggleButton"
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            Checked="DarkModeToggleButton_Checked"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding IsDarkModeEnabled}"
+                            Unchecked="DarkModeToggleButton_Unchecked" />
+                    </DockPanel>
 
-        <!--  Inject tags  -->
-        <DockPanel
-            Background="Transparent"
-            LastChildFill="False"
-            ToolTip="Media tags can be automatically inferred from video title and injected into output file">
-            <TextBlock
-                Margin="16,8"
-                DockPanel.Dock="Left"
-                Text="Automatically inject media tags" />
-            <ToggleButton
-                Margin="16,8"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding ShouldInjectTags}" />
-        </DockPanel>
+                    <!--  Skip existing files  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="When selecting multiple videos to download, skip those that already have a matching file in the target directory">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Skip existing files" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ShouldSkipExistingFiles}" />
+                    </DockPanel>
 
-        <!--  Skip existing files  -->
-        <DockPanel
-            Background="Transparent"
-            LastChildFill="False"
-            ToolTip="When selecting multiple videos to download, skip those that already have a matching file in the directory">
-            <TextBlock
-                Margin="16,8"
-                DockPanel.Dock="Left"
-                Text="Skip downloads for files that already exist" />
-            <ToggleButton
-                Margin="16,8"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding ShouldSkipExistingFiles}" />
-        </DockPanel>
+                    <!--  File name template  -->
+                    <DockPanel
+                        Margin="16,8"
+                        Background="Transparent"
+                        LastChildFill="False">
+                        <DockPanel.ToolTip>
+                            <TextBlock>
+                                <Run Text="Template used for generating file names for downloaded videos" />
+                                <LineBreak />
+                                <LineBreak />
+                                <Run Text="Available tokens:" />
+                                <LineBreak />
+                                <Run FontWeight="SemiBold" Text="$num" />
+                                <Run Text="- video's position in the list (if applicable)" />
+                                <LineBreak />
+                                <Run FontWeight="SemiBold" Text="$id" />
+                                <Run Text="- video ID" />
+                                <LineBreak />
+                                <Run FontWeight="SemiBold" Text="$title" />
+                                <Run Text="- video title" />
+                                <LineBreak />
+                                <Run FontWeight="SemiBold" Text="$author" />
+                                <Run Text="- video author" />
+                            </TextBlock>
+                        </DockPanel.ToolTip>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="File name template" />
+                        <TextBox
+                            Width="150"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="{Binding FileNameTemplate}" />
+                    </DockPanel>
 
-        <!--  File name template  -->
-        <TextBox
-            Margin="16,8"
-            materialDesign:HintAssist.Hint="File name template"
-            materialDesign:HintAssist.IsFloating="True"
-            Text="{Binding FileNameTemplate}">
-            <TextBox.ToolTip>
-                <TextBlock>
-                    <Run Text="Template used for generating file names for downloaded videos" />
-                    <LineBreak />
-                    <LineBreak />
-                    <Run Text="Available variables:" />
-                    <LineBreak />
-                    <Run FontWeight="SemiBold" Text="$num" />
-                    <Run Text="- video's position in the list (if applicable)" />
-                    <LineBreak />
-                    <Run FontWeight="SemiBold" Text="$title" />
-                    <Run Text="- video title" />
-                    <LineBreak />
-                    <Run FontWeight="SemiBold" Text="$author" />
-                    <Run Text="- video author" />
-                </TextBlock>
-            </TextBox.ToolTip>
-        </TextBox>
-
-        <!--  Excluded container formats  -->
-        <TextBox
-            Margin="16,8"
-            materialDesign:HintAssist.Hint="Excluded container formats"
-            materialDesign:HintAssist.IsFloating="True"
-            Text="{Binding ExcludedContainerFormats}">
-            <TextBox.ToolTip>
-                <TextBlock>
-                    <Run Text="Comma separated list of container formats excluded from format list when downloading a video" />
-                    <LineBreak />
-                    <LineBreak />
-                    <Run Text="Ex: webm,ogg" />
-                </TextBlock>
-            </TextBox.ToolTip>
-        </TextBox>
-
-        <!--  Max concurrent downloads  -->
-        <StackPanel Background="Transparent" ToolTip="How many downloads can be active at one time">
-            <TextBlock Margin="16,8,16,4">
-                <Run Text="Maximum concurrent downloads:" />
-                <Run FontWeight="DemiBold" Text="{Binding MaxConcurrentDownloads, Mode=OneWay}" />
-            </TextBlock>
-            <Slider
-                Margin="16,4,16,8"
-                IsSnapToTickEnabled="True"
-                Maximum="10"
-                Minimum="1"
-                TickFrequency="1"
-                Value="{Binding MaxConcurrentDownloads}" />
-        </StackPanel>
+                    <!--  Max concurrent downloads  -->
+                    <DockPanel
+                        Margin="16,8"
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="How many downloads can be active at one time">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Parallel limit"
+                            TextAlignment="Right" />
+                        <StackPanel
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                Margin="10,0"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{Binding ParallelLimit}" />
+                            <Slider
+                                Width="150"
+                                VerticalAlignment="Center"
+                                Maximum="10"
+                                Minimum="1"
+                                Style="{DynamicResource MaterialDesignThinSlider}"
+                                Value="{Binding ParallelLimit}" />
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
 
         <!--  Save button  -->
         <Button
-            Margin="8"
-            HorizontalAlignment="Right"
+            Grid.Row="2"
+            Margin="16"
+            HorizontalAlignment="Stretch"
             Command="{s:Action Close}"
             Content="SAVE"
             IsCancel="True"
             IsDefault="True"
-            Style="{DynamicResource MaterialDesignFlatButton}" />
-    </StackPanel>
+            Style="{DynamicResource MaterialDesignOutlinedButton}" />
+    </Grid>
 </UserControl>

@@ -6,10 +6,9 @@
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
-    MinWidth="500"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    Width="500"
     d:DataContext="{d:DesignInstance Type=dialogs:MessageBoxViewModel}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
     Style="{DynamicResource MaterialDesignRoot}"
     mc:Ignorable="d">
     <Grid>
@@ -22,29 +21,53 @@
         <!--  Title  -->
         <TextBlock
             Grid.Row="0"
-            Margin="8,16"
+            Margin="16"
             FontSize="19"
-            FontWeight="SemiBold"
+            FontWeight="Light"
             Text="{Binding Title}"
             TextTrimming="CharacterEllipsis"
             ToolTip="{Binding Title}" />
 
         <!--  Message  -->
-        <TextBlock
+        <Border
             Grid.Row="1"
-            Margin="8,0,8,8"
-            Text="{Binding Message}"
-            TextWrapping="Wrap" />
+            Padding="0,8"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderThickness="0,1">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <TextBlock
+                    Margin="16,8"
+                    Text="{Binding Message}"
+                    TextWrapping="Wrap" />
+            </ScrollViewer>
+        </Border>
 
-        <!--  Close  -->
-        <Button
+        <UniformGrid
             Grid.Row="2"
-            Margin="8"
+            Margin="16"
             HorizontalAlignment="Right"
-            Command="{s:Action Close}"
-            Content="CLOSE"
-            IsCancel="True"
-            IsDefault="True"
-            Style="{DynamicResource MaterialDesignFlatButton}" />
+            Columns="{Binding ButtonsCount}">
+            <!--  OK  -->
+            <Button
+                Command="{s:Action Close}"
+                Content="{Binding OkButtonText}"
+                IsDefault="True"
+                Style="{DynamicResource MaterialDesignOutlinedButton}"
+                Visibility="{Binding IsOkButtonVisible, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                <Button.CommandParameter>
+                    <system:Boolean>True</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+
+            <!--  Cancel  -->
+            <Button
+                Margin="8,0,0,0"
+                HorizontalAlignment="Stretch"
+                Command="{s:Action Close}"
+                Content="{Binding CancelButtonText}"
+                IsCancel="True"
+                Style="{DynamicResource MaterialDesignOutlinedButton}"
+                Visibility="{Binding IsCancelButtonVisible, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+        </UniformGrid>
     </Grid>
 </UserControl>
