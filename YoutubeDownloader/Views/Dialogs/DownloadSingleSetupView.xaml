@@ -27,7 +27,13 @@
                 FontSize="19"
                 Text="{Binding DownloadSetup.Video.Title}"
                 TextTrimming="CharacterEllipsis"
-                ToolTip="{Binding DownloadSetup.Video.Title}" />
+                ToolTip="{Binding DownloadSetup.Video.Title}">
+                <TextBlock.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{s:Action CopyTitle}" Header="Copy" />
+                    </ContextMenu>
+                </TextBlock.ContextMenu>
+            </TextBlock>
 
             <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                 <!--  Author  -->
@@ -60,28 +66,6 @@
                         FontWeight="Light"
                         Text="{Binding DownloadSetup.Video.Duration, TargetNullValue=Live}"
                         TextTrimming="CharacterEllipsis" />
-                </StackPanel>
-
-                <!--  URL  -->
-                <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
-                    <materialDesign:PackIcon
-                        Width="16"
-                        Height="16"
-                        VerticalAlignment="Center"
-                        BorderThickness="1"
-                        Kind="Link" />
-                    <TextBlock
-                        Margin="3,0,0,0"
-                        VerticalAlignment="Center"
-                        FontWeight="Light"
-                        TextTrimming="CharacterEllipsis">
-                        <Hyperlink
-                            s:View.ActionTarget="{Binding DownloadSetup}"
-                            Command="{s:Action OpenVideoPage}"
-                            Focusable="False">
-                            <Run Text="Open on YouTube" />
-                        </Hyperlink>
-                    </TextBlock>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

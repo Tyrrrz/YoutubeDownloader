@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
@@ -16,53 +17,61 @@ public class QueryResolver
 {
     private readonly YoutubeClient _youtube = new(Http.Client);
 
-    public async Task<IReadOnlyList<IVideo>> ResolveAsync(
+    public async Task<QueryResult> ResolveAsync(
         string query,
         CancellationToken cancellationToken = default)
     {
         // Playlist
         if (PlaylistId.TryParse(query) is { } playlistId)
         {
-            return await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
+            var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
+            var videos = await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
+            return new QueryResult(QueryResultKind.Playlist, playlist.Title, videos);
         }
 
         // Video
         if (VideoId.TryParse(query) is { } videoId)
         {
-            return new[] {await _youtube.Videos.GetAsync(videoId, cancellationToken)};
+            var video = await _youtube.Videos.GetAsync(videoId, cancellationToken);
+            return new QueryResult(QueryResultKind.Video, video.Title, new[] {video});
         }
 
         // Channel
         if (ChannelId.TryParse(query) is { } channelId)
         {
-            return await _youtube.Channels.GetUploadsAsync(channelId, cancellationToken);
+            var channel = await _youtube.Channels.GetAsync(channelId, cancellationToken);
+            var videos = await _youtube.Channels.GetUploadsAsync(channelId, cancellationToken);
+            return new QueryResult(QueryResultKind.Channel, channel.Title, videos);
         }
 
         // Search
         {
-            return await _youtube.Search.GetVideosAsync(query, cancellationToken).CollectAsync(100);
+            var videos = await _youtube.Search.GetVideosAsync(query, cancellationToken).CollectAsync(20);
+            return new QueryResult(QueryResultKind.Search, $"Search: {query}", videos);
         }
     }
 
-    public async Task<IReadOnlyList<IVideo>> ResolveAsync(
+    public async Task<QueryResult> ResolveAsync(
         IReadOnlyList<string> queries,
         IProgress<Percentage>? progress = null,
         CancellationToken cancellationToken = default)
     {
+        if (queries.Count == 1)
+            return await ResolveAsync(queries.Single(), cancellationToken);
+
         var videos = new List<IVideo>();
         var completed = 0;
 
         foreach (var query in queries)
         {
-            videos.AddRange(
-                await ResolveAsync(query, cancellationToken)
-            );
+            var result = await ResolveAsync(query, cancellationToken);
+            videos.AddRange(result.Videos);
 
             progress?.Report(
                 Percentage.FromFraction(1.0 * ++completed / queries.Count)
             );
         }
 
-        return videos;
+        return new QueryResult(QueryResultKind.Aggregate, "Multiple queries", videos);
     }
 }

@@ -22,15 +22,21 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public VideoDownloadOption? DownloadOption { get; set; }
 
+    public VideoDownloadPreference? DownloadPreference { get; set; }
+
     public string? FilePath { get; set; }
 
     public string? FileName => Path.GetFileName(FilePath);
 
     public ProgressContainer<Percentage> Progress { get; } = new();
 
+    public bool IsProgressIndeterminate => Progress.Current.Fraction is <= 0 or >= 1;
+
     public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
     public DownloadStatus Status { get; set; } = DownloadStatus.Enqueued;
+
+    public bool IsCanceledOrFailed => Status is DownloadStatus.Canceled or DownloadStatus.Failed;
 
     public string? ErrorMessage { get; set; }
 
@@ -38,6 +44,8 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
+
+        Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
     }
 
     public bool CanCancel => Status == DownloadStatus.Started;
@@ -104,6 +112,21 @@ public static class DownloadViewModelExtensions
 
         viewModel.Video = video;
         viewModel.DownloadOption = downloadOption;
+        viewModel.FilePath = filePath;
+
+        return viewModel;
+    }
+
+    public static DownloadViewModel CreateDownloadViewModel(
+        this IViewModelFactory factory,
+        IVideo video,
+        VideoDownloadPreference downloadPreference,
+        string filePath)
+    {
+        var viewModel = factory.CreateDownloadViewModel();
+
+        viewModel.Video = video;
+        viewModel.DownloadPreference = downloadPreference;
         viewModel.FilePath = filePath;
 
         return viewModel;

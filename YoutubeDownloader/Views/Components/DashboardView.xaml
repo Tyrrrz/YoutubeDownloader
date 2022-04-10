@@ -29,15 +29,26 @@
             <materialDesign:Card Grid.Column="0" Margin="12,12,0,12">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
+                    <!--  Search icon  -->
+                    <materialDesign:PackIcon
+                        Grid.Column="0"
+                        Width="24"
+                        Height="24"
+                        Margin="8"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource PrimaryHueMidBrush}"
+                        Kind="Search" />
+
                     <!--  Query  -->
                     <TextBox
                         x:Name="QueryTextBox"
-                        Grid.Column="0"
-                        Margin="6"
+                        Grid.Column="1"
+                        Margin="0,6,6,8"
                         VerticalAlignment="Bottom"
                         materialDesign:HintAssist.Hint="URL or search query"
                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
@@ -51,7 +62,7 @@
 
                     <!--  Process query button  -->
                     <Button
-                        Grid.Column="1"
+                        Grid.Column="2"
                         Margin="0,6,6,6"
                         Padding="4"
                         Command="{s:Action ProcessQuery}"
@@ -210,6 +221,7 @@
                                         Grid.Column="0"
                                         Margin="0,0,6,0"
                                         Foreground="{DynamicResource SecondaryHueMidBrush}"
+                                        IsIndeterminate="{Binding IsProgressIndeterminate}"
                                         Maximum="1"
                                         Minimum="0"
                                         Value="{Binding Progress.Current.Fraction, Mode=OneWay}">
@@ -336,7 +348,7 @@
                                         CommandParameter="{Binding}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
                                         ToolTip="Restart download"
-                                        Visibility="{Binding ErrorMessage, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        Visibility="{Binding IsCanceledOrFailed, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                         <materialDesign:PackIcon
                                             Width="24"
                                             Height="24"

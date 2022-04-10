@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace YoutubeDownloader.Utils;
 
-internal class ResizableSemaphore : IDisposable
+internal partial class ResizableSemaphore : IDisposable
 {
     private readonly object _lock = new();
     private readonly Queue<TaskCompletionSource> _waiters = new();
@@ -17,11 +17,20 @@ internal class ResizableSemaphore : IDisposable
 
     public int MaxCount
     {
-        get => _maxCount;
+        get
+        {
+            lock (_lock)
+            {
+                return _maxCount;
+            }
+        }
         set
         {
-            _maxCount = value;
-            Refresh();
+            lock (_lock)
+            {
+                _maxCount = value;
+                Refresh();
+            }
         }
     }
 
@@ -38,12 +47,12 @@ internal class ResizableSemaphore : IDisposable
         }
     }
 
-    public async Task WaitAsync(CancellationToken cancellationToken = default)
+    public async Task<IDisposable> AcquireAsync(CancellationToken cancellationToken = default)
     {
         if (_isDisposed)
             throw new ObjectDisposedException(GetType().Name);
 
-        var waiter = new TaskCompletionSource();
+        var waiter = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 
         await using (_cts.Token.Register(() => waiter.TrySetCanceled(_cts.Token)))
         await using (cancellationToken.Register(() => waiter.TrySetCanceled(cancellationToken)))
@@ -55,6 +64,8 @@ internal class ResizableSemaphore : IDisposable
             }
 
             await waiter.Task;
+
+            return new AcquiredAccess(this);
         }
     }
 
@@ -67,24 +78,23 @@ internal class ResizableSemaphore : IDisposable
         }
     }
 
-    public async Task WrapAsync(Func<Task> getTask, CancellationToken cancellationToken = default)
-    {
-        await WaitAsync(cancellationToken);
-
-        try
-        {
-            await getTask();
-        }
-        finally
-        {
-            Release();
-        }
-    }
-
     public void Dispose()
     {
         _isDisposed = true;
         _cts.Cancel();
         _cts.Dispose();
+    }
+}
+
+internal partial class ResizableSemaphore
+{
+    private class AcquiredAccess : IDisposable
+    {
+        private readonly ResizableSemaphore _semaphore;
+
+        public AcquiredAccess(ResizableSemaphore semaphore) =>
+            _semaphore = semaphore;
+
+        public void Dispose() => _semaphore.Release();
     }
 }

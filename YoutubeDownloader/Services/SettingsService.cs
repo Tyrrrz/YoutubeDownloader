@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Tyrrrz.Settings;
+using YoutubeDownloader.Core.Downloading;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Services;
@@ -18,11 +19,13 @@ public partial class SettingsService : SettingsManager
 
     public Container LastContainer { get; set; } = Container.Mp4;
 
+    public VideoQualityPreference LastVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
+
     public SettingsService()
     {
         Configuration.StorageSpace = StorageSpace.Instance;
         Configuration.SubDirectoryPath = "";
-        Configuration.FileName = "Settings.json";
+        Configuration.FileName = "Settings.dat";
     }
 }
 

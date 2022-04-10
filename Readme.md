@@ -34,12 +34,12 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 ## Features
 
-- Download individual videos
-- Download videos from playlists, channels, or search
-- Selectable video quality
-- Variety of output formats: mp4, webm, mp3, ogg
-- Multiple parallel downloads
-- Automatic media tagging
+- Download videos by URL
+- Download videos from playlists or channels
+- Download videos by search query
+- Selectable video quality and format
+- Automatically embed subtitles
+- Automatically inject media tags
 
 ## Screenshots
 

@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
+using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadSingleSetupViewModel : DialogScreen
+public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 {
+    private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
@@ -23,8 +26,12 @@ public class DownloadSingleSetupViewModel : DialogScreen
 
     public string? FilePath { get; set; }
 
-    public DownloadSingleSetupViewModel(DialogManager dialogManager, SettingsService settingsService)
+    public DownloadSingleSetupViewModel(
+        IViewModelFactory viewModelFactory,
+        DialogManager dialogManager,
+        SettingsService settingsService)
     {
+        _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _settingsService = settingsService;
     }
@@ -36,7 +43,7 @@ public class DownloadSingleSetupViewModel : DialogScreen
         );
     }
 
-    public void OpenVideoPage() => ProcessEx.StartShellExecute(Video!.Url);
+    public void CopyTitle() => Clipboard.SetText(Video!.Title);
 
     public void Confirm()
     {
@@ -60,7 +67,9 @@ public class DownloadSingleSetupViewModel : DialogScreen
 
         _settingsService.LastContainer = container;
 
-        Close(true);
+        Close(
+            _viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, FilePath!)
+        );
     }
 }
 

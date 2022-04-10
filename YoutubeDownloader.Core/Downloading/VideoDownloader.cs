@@ -10,7 +10,6 @@ using YoutubeExplode;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.ClosedCaptions;
-using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core.Downloading;
 
@@ -27,16 +26,27 @@ public class VideoDownloader
         return VideoDownloadOption.ResolveAll(manifest);
     }
 
-    private async Task DownloadAsync(
+    public async Task<VideoDownloadOption> GetBestDownloadOptionAsync(
+        VideoId videoId,
+        VideoDownloadPreference preference,
+        CancellationToken cancellationToken = default)
+    {
+        var options = await GetDownloadOptionsAsync(videoId, cancellationToken);
+
+        return
+            preference.TryGetBestOption(options) ??
+            throw new InvalidOperationException("No suitable download option found.");
+    }
+
+    public async Task DownloadAsync(
         string filePath,
         IVideo video,
-        Container container,
-        IReadOnlyList<IStreamInfo> streamInfos,
+        VideoDownloadOption downloadOption,
         IProgress<Percentage>? progress = null,
         CancellationToken cancellationToken = default)
     {
         // If the target container supports subtitles, embed them in the video too
-        var trackInfos = !container.IsAudioOnly
+        var trackInfos = !downloadOption.Container.IsAudioOnly
             ? (await _youtube.Videos.ClosedCaptions.GetManifestAsync(video.Id, cancellationToken)).Tracks
             : Array.Empty<ClosedCaptionTrackInfo>();
 
@@ -45,10 +55,10 @@ public class VideoDownloader
             Directory.CreateDirectory(dirPath);
 
         await _youtube.Videos.DownloadAsync(
-            streamInfos,
+            downloadOption.StreamInfos,
             trackInfos,
             new ConversionRequestBuilder(filePath)
-                .SetContainer(container)
+                .SetContainer(downloadOption.Container)
                 .SetPreset(ConversionPreset.Medium)
                 .Build(),
             progress?.ToDoubleBased(),
@@ -64,19 +74,4 @@ public class VideoDownloader
             // Not critical, ignore
         }
     }
-
-    public async Task DownloadAsync(
-        string filePath,
-        IVideo video,
-        VideoDownloadOption downloadOption,
-        IProgress<Percentage>? progress = null,
-        CancellationToken cancellationToken = default) =>
-        await DownloadAsync(
-            filePath,
-            video,
-            downloadOption.Container,
-            downloadOption.StreamInfos,
-            progress,
-            cancellationToken
-        );
 }

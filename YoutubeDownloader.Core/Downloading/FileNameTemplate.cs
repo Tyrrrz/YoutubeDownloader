@@ -17,6 +17,7 @@ public class FileNameTemplate
                 .Replace("$id", video.Id)
                 .Replace("$title", video.Title)
                 .Replace("$author", video.Author.Title)
+                .Replace("$uploadDate", (video as Video)?.UploadDate.ToString("yyyy-MM-dd") ?? "")
                 .Trim() + '.' + container.Name
         );
 }

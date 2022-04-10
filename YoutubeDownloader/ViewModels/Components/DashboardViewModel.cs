@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Gress;
@@ -11,8 +12,6 @@ using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Exceptions;
-using YoutubeExplode.Videos;
-using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
@@ -57,41 +56,52 @@ public class DashboardViewModel : PropertyChangedBase
         _viewModelFactory.CreateSettingsViewModel()
     );
 
-    private void EnqueueDownload(
-        IVideo video,
-        VideoDownloadOption downloadOption,
-        string filePath,
-        int position = 0)
+    private void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
-        var download = _viewModelFactory.CreateDownloadViewModel(video, downloadOption, filePath);
         var progress = _progressMuxer.CreateInput();
 
         Task.Run(async () =>
         {
             try
             {
-                await _downloadSemaphore.WrapAsync(async () =>
-                {
-                    download.Status = DownloadStatus.Started;
+                using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
 
-                    await _videoDownloader.DownloadAsync(
-                        filePath,
-                        video,
-                        downloadOption,
-                        download.Progress.Merge(progress),
+                download.Status = DownloadStatus.Started;
+
+                var downloadOption =
+                    download.DownloadOption ??
+                    await _videoDownloader.GetBestDownloadOptionAsync(
+                        download.Video!.Id,
+                        download.DownloadPreference!,
                         download.CancellationToken
                     );
-                }, download.CancellationToken);
+
+                await _videoDownloader.DownloadAsync(
+                    download.FilePath!,
+                    download.Video!,
+                    downloadOption,
+                    download.Progress.Merge(progress),
+                    download.CancellationToken
+                );
 
                 download.Status = DownloadStatus.Completed;
             }
-            catch (OperationCanceledException)
-            {
-                download.Status = DownloadStatus.Canceled;
-            }
             catch (Exception ex)
             {
-                download.Status = DownloadStatus.Failed;
+                try
+                {
+                    // Delete incompletely downloaded file
+                    File.Delete(download.FilePath!);
+                }
+                catch
+                {
+                    // Ignore
+                }
+
+                download.Status =
+                    ex is OperationCanceledException
+                        ? DownloadStatus.Canceled
+                        : DownloadStatus.Failed;
 
                 // Short error message for YouTube-related errors, full for others
                 download.ErrorMessage = ex is YoutubeExplodeException
@@ -101,24 +111,11 @@ public class DashboardViewModel : PropertyChangedBase
             finally
             {
                 progress.ReportCompletion();
+                download.Dispose();
             }
         });
 
         Downloads.Insert(position, download);
-    }
-
-    private async void EnqueueDownload(
-        IVideo video,
-        Container container,
-        VideoQuality videoQuality,
-        string filePath,
-        int position = 0)
-    {
-        var downloadOptions = await _videoDownloader.GetDownloadOptionsAsync(video.Id);
-
-        var downloadOption = downloadOptions.FirstOrDefault(o => o.Container == container && o.VideoQuality == videoQuality);
-
-        EnqueueDownload(video, downloadOption, filePath, position);
     }
 
     public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
@@ -135,42 +132,39 @@ public class DashboardViewModel : PropertyChangedBase
 
         try
         {
-            var videos = await _queryResolver.ResolveAsync(Query.Split(Environment.NewLine), progress);
+            var result = await _queryResolver.ResolveAsync(Query.Split(Environment.NewLine), progress);
 
             // Single video
-            if (videos.Count == 1)
+            if (result.Videos.Count == 1)
             {
-                var video = videos.Single();
+                var video = result.Videos.Single();
                 var downloadOptions = await _videoDownloader.GetDownloadOptionsAsync(video.Id);
 
-                var dialog = _viewModelFactory.CreateDownloadSingleSetupViewModel(video, downloadOptions);
-                if (await _dialogManager.ShowDialogAsync(dialog) != true)
+                var download = await _dialogManager.ShowDialogAsync(
+                    _viewModelFactory.CreateDownloadSingleSetupViewModel(video, downloadOptions)
+                );
+
+                if (download is null)
                     return;
 
-                EnqueueDownload(
-                    video,
-                    dialog.SelectedDownloadOption!,
-                    dialog.FilePath!
-                );
+                EnqueueDownload(download);
             }
             // Multiple videos
-            else if (videos.Count > 1)
+            else if (result.Videos.Count > 1)
             {
-                var dialog = _viewModelFactory.CreateDownloadMultipleSetupViewModel(videos);
-                if (await _dialogManager.ShowDialogAsync(dialog) != true)
+                var downloads = await _dialogManager.ShowDialogAsync(
+                    _viewModelFactory.CreateDownloadMultipleSetupViewModel(
+                        result.Title,
+                        result.Videos,
+                        result.Kind is not QueryResultKind.Search and not QueryResultKind.Aggregate
+                    )
+                );
+
+                if (downloads is null)
                     return;
 
-                foreach (var video in dialog.SelectedVideos!)
-                {
-                    var filePath = dialog.FilePaths![video];
-
-                    EnqueueDownload(
-                        video,
-                        dialog.SelectedContainer,
-                        dialog.SelectedVideoQuality,
-                        filePath
-                    );
-                }
+                foreach (var download in downloads)
+                    EnqueueDownload(download);
             }
             // No videos found
             else
@@ -231,7 +225,20 @@ public class DashboardViewModel : PropertyChangedBase
     {
         var position = Math.Max(0, Downloads.IndexOf(download));
         RemoveDownload(download);
-        EnqueueDownload(download.Video!, download.DownloadOption!, download.FilePath!, position);
+
+        var newDownload = download.DownloadOption is not null
+            ? _viewModelFactory.CreateDownloadViewModel(
+                download.Video!,
+                download.DownloadOption,
+                download.FilePath!
+            )
+            : _viewModelFactory.CreateDownloadViewModel(
+                download.Video!,
+                download.DownloadPreference!,
+                download.FilePath!
+            );
+
+        EnqueueDownload(newDownload, position);
     }
 
     public void RestartFailedDownloads()
