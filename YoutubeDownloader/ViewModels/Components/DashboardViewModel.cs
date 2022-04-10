@@ -98,10 +98,9 @@ public class DashboardViewModel : PropertyChangedBase
                     // Ignore
                 }
 
-                download.Status =
-                    ex is OperationCanceledException
-                        ? DownloadStatus.Canceled
-                        : DownloadStatus.Failed;
+                download.Status = ex is OperationCanceledException
+                    ? DownloadStatus.Canceled
+                    : DownloadStatus.Failed;
 
                 // Short error message for YouTube-related errors, full for others
                 download.ErrorMessage = ex is YoutubeExplodeException

@@ -24,15 +24,15 @@ public record VideoDownloadPreference(
             VideoQualityPreference.Highest => orderedOptions
                 .LastOrDefault(o => o.Container == PreferredContainer),
 
-            VideoQualityPreference.High => orderedOptions
+            VideoQualityPreference.UpTo1080p => orderedOptions
                 .Where(o => o.VideoQuality?.MaxHeight <= 1080)
                 .LastOrDefault(o => o.Container == PreferredContainer),
 
-            VideoQualityPreference.Medium => orderedOptions
+            VideoQualityPreference.UpTo720p => orderedOptions
                 .Where(o => o.VideoQuality?.MaxHeight <= 720)
                 .LastOrDefault(o => o.Container == PreferredContainer),
 
-            VideoQualityPreference.Low => orderedOptions
+            VideoQualityPreference.UpTo480p => orderedOptions
                 .Where(o => o.VideoQuality?.MaxHeight <= 480)
                 .LastOrDefault(o => o.Container == PreferredContainer),
 

@@ -24,8 +24,6 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 
     public VideoDownloadOption? SelectedDownloadOption { get; set; }
 
-    public string? FilePath { get; set; }
-
     public DownloadSingleSetupViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
@@ -49,7 +47,7 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
     {
         var container = SelectedDownloadOption!.Container;
 
-        FilePath = _dialogManager.PromptSaveFilePath(
+        var filePath = _dialogManager.PromptSaveFilePath(
             $"{container.Name} file|*.{container.Name}",
             FileNameTemplate.Apply(
                 _settingsService.FileNameTemplate,
@@ -58,17 +56,17 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
             )
         );
 
-        if (string.IsNullOrWhiteSpace(FilePath))
+        if (string.IsNullOrWhiteSpace(filePath))
             return;
 
         // Download does not start immediately, so lock in the file path to avoid conflicts
-        DirectoryEx.CreateDirectoryForFile(FilePath);
-        File.WriteAllBytes(FilePath, Array.Empty<byte>());
+        DirectoryEx.CreateDirectoryForFile(filePath);
+        File.WriteAllBytes(filePath, Array.Empty<byte>());
 
         _settingsService.LastContainer = container;
 
         Close(
-            _viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, FilePath!)
+            _viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath)
         );
     }
 }

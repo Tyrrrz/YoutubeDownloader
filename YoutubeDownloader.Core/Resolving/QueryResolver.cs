@@ -60,12 +60,19 @@ public class QueryResolver
             return await ResolveAsync(queries.Single(), cancellationToken);
 
         var videos = new List<IVideo>();
+        var videoIds = new HashSet<VideoId>();
+
         var completed = 0;
 
         foreach (var query in queries)
         {
             var result = await ResolveAsync(query, cancellationToken);
-            videos.AddRange(result.Videos);
+
+            foreach (var video in result.Videos)
+            {
+                if (videoIds.Add(video.Id))
+                    videos.Add(video);
+            }
 
             progress?.Report(
                 Percentage.FromFraction(1.0 * ++completed / queries.Count)

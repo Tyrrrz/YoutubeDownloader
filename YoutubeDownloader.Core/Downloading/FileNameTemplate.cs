@@ -10,7 +10,7 @@ public class FileNameTemplate
         string template,
         IVideo video,
         Container container,
-        int? number = null) =>
+        string? number = null) =>
         PathEx.EscapeFileName(
             template
                 .Replace("$num", number is not null ? $"[{number}]" : "")

@@ -135,15 +135,12 @@
         </Border>
 
         <!--  Preferences  -->
-        <Grid Grid.Row="2" Margin="16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
+        <DockPanel
+            Grid.Row="2"
+            Margin="16"
+            LastChildFill="False">
             <!--  Container preference  -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Container:" />
                 <ComboBox
                     Width="150"
@@ -156,7 +153,7 @@
 
             <!--  Video quality preference  -->
             <StackPanel
-                Grid.Column="2"
+                DockPanel.Dock="Right"
                 IsEnabled="{Binding SelectedContainer.IsAudioOnly, Converter={x:Static converters:InverseBoolConverter.Instance}}"
                 Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Video quality:" />
@@ -174,7 +171,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
-        </Grid>
+        </DockPanel>
 
         <!--  Buttons  -->
         <StackPanel

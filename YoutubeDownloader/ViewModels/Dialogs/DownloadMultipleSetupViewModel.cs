@@ -57,7 +57,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
         SelectedVideoQualityPreference = _settingsService.LastVideoQualityPreference;
     }
 
-    public void CopyTitle() => Clipboard.SetText(Title);
+    public void CopyTitle() => Clipboard.SetText(Title!);
 
     public bool CanConfirm => SelectedVideos!.Any();
 
@@ -68,14 +68,17 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             return;
 
         var downloads = new List<DownloadViewModel>();
-        foreach (var video in SelectedVideos!)
+        for (var i = 0; i < SelectedVideos!.Count; i++)
         {
+            var video = SelectedVideos[i];
+
             var baseFilePath = Path.Combine(
                 dirPath,
                 FileNameTemplate.Apply(
                     _settingsService.FileNameTemplate,
                     video,
-                    SelectedContainer
+                    SelectedContainer,
+                    (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
                 )
             );
 
