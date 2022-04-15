@@ -11,6 +11,8 @@ public partial class SettingsService : SettingsManager
 
     public bool IsDarkModeEnabled { get; set; } = IsDarkModeEnabledByDefault();
 
+    public bool ShouldInjectTags { get; set; } = true;
+
     public bool ShouldSkipExistingFiles { get; set; }
 
     public string FileNameTemplate { get; set; } = "$title";

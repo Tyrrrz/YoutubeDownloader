@@ -38,7 +38,7 @@
                                 <Run Text="Perform automatic updates on every launch" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="Warning:" />
-                                <Run Text="disabling this is NOT recommended because the application will stop working when integration with YouTube inevitably breaks in the future" />
+                                <Run Text="it's recommended to leave this option enabled to ensure that the app is compatible with the latest version of YouTube" />
                             </TextBlock>
                         </DockPanel.ToolTip>
                         <TextBlock
@@ -73,11 +73,26 @@
                             Unchecked="DarkModeToggleButton_Unchecked" />
                     </DockPanel>
 
+                    <!--  Inject tags  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Inject media tags into downloaded files">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Inject media tags" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ShouldInjectTags}" />
+                    </DockPanel>
+
                     <!--  Skip existing files  -->
                     <DockPanel
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="When selecting multiple videos to download, skip those that already have a matching file in the target directory">
+                        ToolTip="When selecting multiple videos to download, skip those that already have matching files in the target directory">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
@@ -129,7 +144,7 @@
                         Margin="16,8"
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="How many downloads can be active at one time">
+                        ToolTip="How many downloads can be active at the same time">
                         <TextBlock
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"

@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
-using YoutubeDownloader.Core.Downloading.Tagging;
 using YoutubeDownloader.Core.Utils;
 using YoutubeExplode;
 using YoutubeExplode.Converter;
@@ -16,7 +15,6 @@ namespace YoutubeDownloader.Core.Downloading;
 public class VideoDownloader
 {
     private readonly YoutubeClient _youtube = new(Http.Client);
-    private readonly MediaTagInjector _tagInjector = new();
 
     public async Task<IReadOnlyList<VideoDownloadOption>> GetDownloadOptionsAsync(
         VideoId videoId,
@@ -64,14 +62,5 @@ public class VideoDownloader
             progress?.ToDoubleBased(),
             cancellationToken
         );
-
-        try
-        {
-            await _tagInjector.InjectTagsAsync(filePath, video, cancellationToken);
-        }
-        catch
-        {
-            // Not critical, ignore
-        }
     }
 }

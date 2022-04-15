@@ -6,9 +6,9 @@ using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeExplode.Videos;
 
-namespace YoutubeDownloader.Core.Downloading.Tagging;
+namespace YoutubeDownloader.Core.Tagging;
 
-internal class MediaTagInjector
+public class MediaTagInjector
 {
     private readonly MusicBrainzClient _musicBrainz = new();
 

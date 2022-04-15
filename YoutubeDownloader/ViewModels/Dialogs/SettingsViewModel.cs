@@ -20,6 +20,12 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.IsDarkModeEnabled = value;
     }
 
+    public bool ShouldInjectTags
+    {
+        get => _settingsService.ShouldInjectTags;
+        set => _settingsService.ShouldInjectTags = value;
+    }
+
     public bool ShouldSkipExistingFiles
     {
         get => _settingsService.ShouldSkipExistingFiles;

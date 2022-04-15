@@ -7,6 +7,7 @@ using Gress.Completable;
 using Stylet;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
+using YoutubeDownloader.Core.Tagging;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -19,12 +20,14 @@ public class DashboardViewModel : PropertyChangedBase
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
+    private readonly SettingsService _settingsService;
 
     private readonly AutoResetProgressMuxer _progressMuxer;
     private readonly ResizableSemaphore _downloadSemaphore = new();
 
     private readonly QueryResolver _queryResolver = new();
     private readonly VideoDownloader _videoDownloader = new();
+    private readonly MediaTagInjector _mediaTagInjector = new();
 
     public bool IsBusy { get; private set; }
 
@@ -43,10 +46,11 @@ public class DashboardViewModel : PropertyChangedBase
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
+        _settingsService = settingsService;
 
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
 
-        settingsService.BindAndInvoke(o => o.ParallelLimit, (_, e) => _downloadSemaphore.MaxCount = e.NewValue);
+        _settingsService.BindAndInvoke(o => o.ParallelLimit, (_, e) => _downloadSemaphore.MaxCount = e.NewValue);
         Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
     }
 
@@ -83,6 +87,22 @@ public class DashboardViewModel : PropertyChangedBase
                     download.Progress.Merge(progress),
                     download.CancellationToken
                 );
+
+                if (_settingsService.ShouldInjectTags)
+                {
+                    try
+                    {
+                        await _mediaTagInjector.InjectTagsAsync(
+                            download.FilePath!,
+                            download.Video!,
+                            download.CancellationToken
+                        );
+                    }
+                    catch
+                    {
+                        // Media tagging is not critical
+                    }
+                }
 
                 download.Status = DownloadStatus.Completed;
             }

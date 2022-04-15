@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using JsonExtensions.Http;
 using JsonExtensions.Reading;
 using YoutubeDownloader.Core.Utils;
-using YoutubeDownloader.Core.Utils.Extensions;
 
-namespace YoutubeDownloader.Core.Downloading.Tagging;
+namespace YoutubeDownloader.Core.Tagging;
 
 internal class MusicBrainzClient
 {
