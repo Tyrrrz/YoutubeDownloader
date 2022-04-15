@@ -1,3 +1,7 @@
+### v1.9.1 (15-Apr-2022)
+
+- Re-added the option to disable media tagging in settings.
+
 ### v1.9 (10-Apr-2022)
 
 - Improved the accuracy of automatically resolved metadata. Also expanded the list of injected media tags to include some additional information.
