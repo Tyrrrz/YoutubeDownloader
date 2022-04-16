@@ -25,7 +25,7 @@ public class MediaTagInjector
             Environment.NewLine +
             $"Video URL: {video.Url}" +
             Environment.NewLine +
-            $"Channel: {video.Author.Title}" +
+            $"Channel: {video.Author.ChannelTitle}" +
             Environment.NewLine +
             $"Channel URL: {video.Author.ChannelUrl}"
         );
@@ -44,7 +44,7 @@ public class MediaTagInjector
                 // Recording artist must be part of the video title or channel title.
                 video.Title.Contains(r.Title, StringComparison.OrdinalIgnoreCase) && (
                     video.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase) ||
-                    video.Author.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
+                    video.Author.ChannelTitle.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
                 )
             );
 
