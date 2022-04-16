@@ -1,3 +1,7 @@
+### v1.9.2 (16-Apr-2022)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.1.2.
+
 ### v1.9.1 (15-Apr-2022)
 
 - Re-added the option to disable media tagging in settings.
