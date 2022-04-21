@@ -1,7 +1,7 @@
 # YoutubeDownloader
 
 [![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://vshymanskyy.github.io/StandWithUkraine)
-[![Build](https://img.shields.io/github/workflow/status/Tyrrrz/YoutubeDownloader/CI/master)](https://github.com/Tyrrrz/YoutubeDownloader/actions)
+[![Build](https://img.shields.io/github/workflow/status/Tyrrrz/YoutubeDownloader/main/master)](https://github.com/Tyrrrz/YoutubeDownloader/actions)
 [![Release](https://img.shields.io/github/release/Tyrrrz/YoutubeDownloader.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
 [![Downloads](https://img.shields.io/github/downloads/Tyrrrz/YoutubeDownloader/total.svg)](https://github.com/Tyrrrz/YoutubeDownloader/releases)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
@@ -30,7 +30,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 ## Download
 
 - 🟢 **[Stable release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
-- 🟠 [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions?query=workflow%3ACI)
+- 🟠 [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions/workflows/main.yml)
 
 ## Features
 

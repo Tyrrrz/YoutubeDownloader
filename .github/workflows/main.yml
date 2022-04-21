@@ -1,0 +1,93 @@
+name: main
+
+on: [push, pull_request]
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          # Fixed version, workaround for https://github.com/dotnet/core/issues/7176
+          dotnet-version: 6.0.100
+
+      - name: Publish
+        run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: YoutubeDownloader
+          path: YoutubeDownloader/bin/Publish
+
+  deploy:
+    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: YoutubeDownloader
+          path: YoutubeDownloader
+
+      - name: Create package
+        run: Compress-Archive -Path YoutubeDownloader/* -DestinationPath YoutubeDownloader.zip -Force
+        shell: pwsh
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            [Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)
+          draft: false
+          prerelease: false
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_name: YoutubeDownloader.zip
+          asset_path: YoutubeDownloader.zip
+          asset_content_type: application/zip
+
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get release version
+        id: get_version
+        uses: dawidd6/action-get-tag@v1
+
+      - name: Notify Discord
+        uses: satak/webrequest-action@v1.2.4
+        with:
+          url: ${{ secrets.DISCORD_WEBHOOK }}
+          method: POST
+          headers: |
+            {
+              "ContentType": "application/json; charset=UTF-8"
+            }
+          payload: |
+            {
+              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get-version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get-version.outputs.tag }}/Changelog.md>"
+            }
