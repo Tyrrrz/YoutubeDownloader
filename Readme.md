@@ -43,6 +43,6 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 ## Screenshots
 
-![list](.screenshots/list.png)
-![single](.screenshots/single.png)
-![multiple](.screenshots/multiple.png)
+![list](.assets/list.png)
+![single](.assets/single.png)
+![multiple](.assets/multiple.png)
