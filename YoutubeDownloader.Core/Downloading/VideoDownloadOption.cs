@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using YoutubeDownloader.Core.Utils;
-using YoutubeDownloader.Core.Utils.Extensions;
-using YoutubeExplode.Videos.Streams;
-
-namespace YoutubeDownloader.Core.Downloading;
+﻿namespace YoutubeDownloader.Core.Downloading;
 
 public partial record VideoDownloadOption(Container Container, IReadOnlyList<IStreamInfo> StreamInfos)
 {

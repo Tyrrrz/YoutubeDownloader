@@ -1,18 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Gress;
-using Gress.Completable;
-using Stylet;
-using YoutubeDownloader.Core.Downloading;
-using YoutubeDownloader.Core.Resolving;
-using YoutubeDownloader.Core.Tagging;
-using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
-using YoutubeDownloader.ViewModels.Dialogs;
-using YoutubeDownloader.ViewModels.Framework;
-using YoutubeExplode.Exceptions;
+﻿using Stylet;
 
 namespace YoutubeDownloader.ViewModels.Components;
 

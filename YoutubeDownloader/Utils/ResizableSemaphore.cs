@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace YoutubeDownloader.Utils;
+﻿namespace YoutubeDownloader.Utils;
 
 internal partial class ResizableSemaphore : IDisposable
 {

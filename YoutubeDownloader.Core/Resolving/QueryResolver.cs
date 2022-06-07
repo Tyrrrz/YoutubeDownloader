@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Gress;
-using YoutubeDownloader.Core.Utils;
-using YoutubeExplode;
-using YoutubeExplode.Channels;
-using YoutubeExplode.Common;
-using YoutubeExplode.Playlists;
-using YoutubeExplode.Videos;
-
-namespace YoutubeDownloader.Core.Resolving;
+﻿namespace YoutubeDownloader.Core.Resolving;
 
 public class QueryResolver
 {

@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using YoutubeDownloader.Core.Utils.Extensions;
 
 namespace YoutubeDownloader.Core.Utils;
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YoutubeDownloader.Core.Utils.Extensions;
+﻿namespace YoutubeDownloader.Core.Utils.Extensions;
 
 internal static class GenericExtensions
 {

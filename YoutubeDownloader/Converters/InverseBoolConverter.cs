@@ -1,8 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-
-namespace YoutubeDownloader.Converters;
+﻿namespace YoutubeDownloader.Converters;
 
 [ValueConversion(typeof(bool), typeof(bool))]
 public class InverseBoolConverter : IValueConverter

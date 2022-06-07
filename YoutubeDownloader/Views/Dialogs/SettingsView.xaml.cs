@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace YoutubeDownloader.Views.Dialogs;
+﻿namespace YoutubeDownloader.Views.Dialogs;
 
 public partial class SettingsView
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Data;
-using YoutubeExplode.Videos;
-
-namespace YoutubeDownloader.Converters;
+﻿namespace YoutubeDownloader.Converters;
 
 [ValueConversion(typeof(IVideo), typeof(string))]
 public class VideoToLowestQualityThumbnailUrlConverter : IValueConverter

@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace YoutubeDownloader.Views.Components;
+﻿namespace YoutubeDownloader.Views.Components;
 
 public partial class DashboardView
 {

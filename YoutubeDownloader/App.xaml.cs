@@ -1,10 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Windows.Media;
-using MaterialDesignThemes.Wpf;
-using YoutubeDownloader.Utils;
-
-namespace YoutubeDownloader;
+﻿namespace YoutubeDownloader;
 
 public partial class App
 {

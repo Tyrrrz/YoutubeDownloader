@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace YoutubeDownloader.Utils;
+﻿namespace YoutubeDownloader.Utils;
 
 internal static class DirectoryEx
 {

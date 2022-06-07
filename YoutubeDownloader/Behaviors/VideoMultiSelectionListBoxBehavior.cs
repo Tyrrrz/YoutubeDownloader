@@ -1,6 +1,4 @@
-﻿using YoutubeExplode.Videos;
-
-namespace YoutubeDownloader.Behaviors;
+﻿namespace YoutubeDownloader.Behaviors;
 
 public class VideoMultiSelectionListBoxBehavior : MultiSelectionListBoxBehavior<IVideo>
 {

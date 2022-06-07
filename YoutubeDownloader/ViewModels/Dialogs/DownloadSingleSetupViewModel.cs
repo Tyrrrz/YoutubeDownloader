@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using YoutubeDownloader.Core.Downloading;
-using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
-using YoutubeDownloader.ViewModels.Components;
-using YoutubeDownloader.ViewModels.Framework;
-using YoutubeExplode.Videos;
-
-namespace YoutubeDownloader.ViewModels.Dialogs;
+﻿namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 {

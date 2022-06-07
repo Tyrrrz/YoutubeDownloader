@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using YoutubeExplode.Common;
 
 namespace YoutubeDownloader.Core.Utils.Extensions;
 

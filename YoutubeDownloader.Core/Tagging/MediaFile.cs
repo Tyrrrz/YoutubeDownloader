@@ -1,8 +1,4 @@
-﻿using System;
-using TagLib;
-using TagFile = TagLib.File;
-
-namespace YoutubeDownloader.Core.Tagging;
+﻿namespace YoutubeDownloader.Core.Tagging;
 
 internal partial class MediaFile : IDisposable
 {

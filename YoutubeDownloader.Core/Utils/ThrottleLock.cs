@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace YoutubeDownloader.Core.Utils;
+﻿namespace YoutubeDownloader.Core.Utils;
 
 internal class ThrottleLock : IDisposable
 {

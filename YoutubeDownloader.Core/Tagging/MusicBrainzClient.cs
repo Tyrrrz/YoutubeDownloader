@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using JsonExtensions.Http;
-using JsonExtensions.Reading;
-using YoutubeDownloader.Core.Utils;
-
-namespace YoutubeDownloader.Core.Tagging;
+﻿namespace YoutubeDownloader.Core.Tagging;
 
 internal class MusicBrainzClient
 {

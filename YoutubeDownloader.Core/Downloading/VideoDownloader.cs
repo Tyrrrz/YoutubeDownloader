@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Gress;
-using YoutubeDownloader.Core.Utils;
-using YoutubeExplode;
+﻿using System.IO;
 using YoutubeExplode.Converter;
-using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.ClosedCaptions;
-
 namespace YoutubeDownloader.Core.Downloading;
 
 public class VideoDownloader

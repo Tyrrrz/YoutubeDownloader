@@ -1,9 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-using YoutubeDownloader.Core.Downloading;
-
-namespace YoutubeDownloader.Converters;
+﻿namespace YoutubeDownloader.Converters;
 
 [ValueConversion(typeof(VideoQualityPreference), typeof(string))]
 public class VideoQualityPreferenceToStringConverter : IValueConverter

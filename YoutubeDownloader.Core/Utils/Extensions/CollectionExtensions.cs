@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace YoutubeDownloader.Core.Utils.Extensions;
+﻿namespace YoutubeDownloader.Core.Utils.Extensions;
 
 internal static class CollectionExtensions
 {

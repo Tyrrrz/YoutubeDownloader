@@ -1,12 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using YoutubeDownloader.Core.Utils;
-using YoutubeDownloader.Core.Utils.Extensions;
-using YoutubeExplode.Videos;
-
-namespace YoutubeDownloader.Core.Tagging;
+﻿namespace YoutubeDownloader.Core.Tagging;
 
 public class MediaTagInjector
 {

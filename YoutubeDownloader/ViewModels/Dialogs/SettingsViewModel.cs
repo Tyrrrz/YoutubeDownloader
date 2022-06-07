@@ -1,8 +1,4 @@
-﻿using System;
-using YoutubeDownloader.Services;
-using YoutubeDownloader.ViewModels.Framework;
-
-namespace YoutubeDownloader.ViewModels.Dialogs;
+﻿namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public class SettingsViewModel : DialogScreen
 {

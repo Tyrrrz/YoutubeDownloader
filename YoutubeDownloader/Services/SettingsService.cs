@@ -1,9 +1,4 @@
-﻿using Microsoft.Win32;
-using Tyrrrz.Settings;
-using YoutubeDownloader.Core.Downloading;
-using YoutubeExplode.Videos.Streams;
-
-namespace YoutubeDownloader.Services;
+﻿namespace YoutubeDownloader.Services;
 
 public partial class SettingsService : SettingsManager
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YoutubeDownloader.Core.Utils;
+﻿namespace YoutubeDownloader.Core.Utils;
 
 internal class DelegateEqualityComparer<T> : IEqualityComparer<T>
 {

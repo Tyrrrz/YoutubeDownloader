@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using MaterialDesignThemes.Wpf;
-using Ookii.Dialogs.Wpf;
-using Stylet;
+﻿using Stylet;
 
 namespace YoutubeDownloader.ViewModels.Framework;
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Onova;
-using Onova.Exceptions;
-using Onova.Services;
-
-namespace YoutubeDownloader.Services;
+﻿namespace YoutubeDownloader.Services;
 
 public class UpdateService : IDisposable
 {

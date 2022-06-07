@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-
-namespace YoutubeDownloader.Utils;
+﻿namespace YoutubeDownloader.Utils;
 
 internal static class ProcessEx
 {

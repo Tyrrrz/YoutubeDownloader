@@ -1,13 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using Gress;
-using Stylet;
-using YoutubeDownloader.Core.Downloading;
-using YoutubeDownloader.Utils;
-using YoutubeDownloader.ViewModels.Dialogs;
-using YoutubeDownloader.ViewModels.Framework;
-using YoutubeExplode.Videos;
+﻿using Stylet;
 
 namespace YoutubeDownloader.ViewModels.Components;
 

@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-
-namespace YoutubeDownloader.Utils;
+﻿namespace YoutubeDownloader.Utils;
 
 internal static class MediaColor
 {

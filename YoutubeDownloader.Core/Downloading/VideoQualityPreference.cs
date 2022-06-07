@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YoutubeDownloader.Core.Downloading;
+﻿namespace YoutubeDownloader.Core.Downloading;
 
 public enum VideoQualityPreference
 {

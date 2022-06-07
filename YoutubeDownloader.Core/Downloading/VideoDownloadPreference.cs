@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using YoutubeExplode.Videos.Streams;
-
-namespace YoutubeDownloader.Core.Downloading;
+﻿namespace YoutubeDownloader.Core.Downloading;
 
 public record VideoDownloadPreference(
     Container PreferredContainer,
