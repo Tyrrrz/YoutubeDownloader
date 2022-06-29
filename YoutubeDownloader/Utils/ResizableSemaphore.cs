@@ -69,7 +69,7 @@ internal partial class ResizableSemaphore : IDisposable
         }
     }
 
-    public void Release()
+    private void Release()
     {
         lock (_lock)
         {

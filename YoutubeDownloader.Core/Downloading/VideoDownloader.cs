@@ -36,7 +36,7 @@ public class VideoDownloader
             throw new InvalidOperationException("No suitable download option found.");
     }
 
-    public async Task DownloadAsync(
+    public async Task DownloadVideoAsync(
         string filePath,
         IVideo video,
         VideoDownloadOption downloadOption,

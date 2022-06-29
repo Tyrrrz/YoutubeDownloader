@@ -80,7 +80,7 @@ public class DashboardViewModel : PropertyChangedBase
                         download.CancellationToken
                     );
 
-                await _videoDownloader.DownloadAsync(
+                await _videoDownloader.DownloadVideoAsync(
                     download.FilePath!,
                     download.Video!,
                     downloadOption,
