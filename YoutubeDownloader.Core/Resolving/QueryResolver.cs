@@ -48,10 +48,18 @@ public class QueryResolver
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
 
-        // User
+        // Channel (by username)
         if (isUrl && UserName.TryParse(query) is { } userName)
         {
             var channel = await _youtube.Channels.GetByUserAsync(userName, cancellationToken);
+            var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
+            return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
+        }
+
+        // Channel (by slug)
+        if (isUrl && ChannelSlug.TryParse(query) is { } channelSlug)
+        {
+            var channel = await _youtube.Channels.GetBySlugAsync(channelSlug, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
