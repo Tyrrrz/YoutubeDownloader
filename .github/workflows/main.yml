@@ -89,5 +89,5 @@ jobs:
             }
           payload: |
             {
-              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get-version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get-version.outputs.tag }}/Changelog.md>"
+              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get_version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get_version.outputs.tag }}/Changelog.md>"
             }
