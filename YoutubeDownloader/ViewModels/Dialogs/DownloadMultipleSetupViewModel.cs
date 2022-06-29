@@ -85,7 +85,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             if (_settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
                 continue;
 
-            var filePath = PathEx.GenerateUniquePath(baseFilePath);
+            var filePath = PathEx.EnsureUniquePath(baseFilePath);
 
             // Download does not start immediately, so lock in the file path to avoid conflicts
             DirectoryEx.CreateDirectoryForFile(filePath);

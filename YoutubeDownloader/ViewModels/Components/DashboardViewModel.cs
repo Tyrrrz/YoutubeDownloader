@@ -16,7 +16,7 @@ using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
-public class DashboardViewModel : PropertyChangedBase
+public class DashboardViewModel : PropertyChangedBase, IDisposable
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
@@ -178,6 +178,7 @@ public class DashboardViewModel : PropertyChangedBase
                     _viewModelFactory.CreateDownloadMultipleSetupViewModel(
                         result.Title,
                         result.Videos,
+                        // Pre-select videos if they come from a single query and not from search
                         result.Kind is not QueryResultKind.Search and not QueryResultKind.Aggregate
                     )
                 );
@@ -276,5 +277,10 @@ public class DashboardViewModel : PropertyChangedBase
     {
         foreach (var download in Downloads)
             download.Cancel();
+    }
+
+    public void Dispose()
+    {
+        _downloadSemaphore.Dispose();
     }
 }
