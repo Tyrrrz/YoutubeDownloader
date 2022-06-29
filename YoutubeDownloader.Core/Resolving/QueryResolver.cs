@@ -22,7 +22,7 @@ public class QueryResolver
         CancellationToken cancellationToken = default)
     {
         // Only consider URLs when parsing IDs.
-        // All other queries are treated as search queries.
+        // All other queries should be treated as search queries.
         var isUrl = Uri.IsWellFormedUriString(query, UriKind.Absolute);
 
         // Playlist
@@ -45,6 +45,14 @@ public class QueryResolver
         {
             var channel = await _youtube.Channels.GetAsync(channelId, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channelId, cancellationToken);
+            return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
+        }
+
+        // User
+        if (isUrl && UserName.TryParse(query) is { } userName)
+        {
+            var channel = await _youtube.Channels.GetByUserAsync(userName, cancellationToken);
+            var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
 
