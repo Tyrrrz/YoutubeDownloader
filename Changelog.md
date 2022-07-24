@@ -20,7 +20,8 @@
 - Removed the "excluded formats" option due to low usefulness.
 - Fixed an issue which occasionally prevented video thumbnails from being injected into video files properly.
 
-⚠ Warning: some settings may be lost when upgrading from v1.8.x.
+> **Warning**:
+> Some settings may be lost when upgrading from v1.8.x.
 
 ### v1.8.7 (07-Mar-2022)
 
