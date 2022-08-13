@@ -3,7 +3,7 @@ name: main
 on: [push, pull_request]
 
 jobs:
-  publish:
+  package:
     runs-on: windows-latest
 
     env:
@@ -32,7 +32,7 @@ jobs:
 
   deploy:
     if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-    needs: publish
+    needs: package
     runs-on: ubuntu-latest
 
     steps:
