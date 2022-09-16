@@ -1,3 +1,7 @@
+### v1.9.4 (16-Sep-2022)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.2.2.
+
 ### v1.9.3 (29-Jun-2022)
 
 - Added support for looking up channels by user page URLs (e.g. https://www.youtube.com/user/BlenderFoundation) and custom channel URLs (e.g. https://www.youtube.com/c/BlenderFoundation).
