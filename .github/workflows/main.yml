@@ -18,8 +18,7 @@ jobs:
       - name: Install .NET
         uses: actions/setup-dotnet@v2
         with:
-          # Fixed version, workaround for https://github.com/dotnet/core/issues/7176
-          dotnet-version: 6.0.100
+          dotnet-version: 6.0.x
 
       - name: Publish
         run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
