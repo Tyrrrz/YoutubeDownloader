@@ -10,4 +10,12 @@
     <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
+  <!--
+    Even though the project builds against .NET 6, some dependencies
+    apparently rely on a specific version of the runtime.
+  -->
+  <PropertyGroup>
+    <RuntimeFrameworkVersion>6.0.9</RuntimeFrameworkVersion>
+  </PropertyGroup>
+
 </Project>
