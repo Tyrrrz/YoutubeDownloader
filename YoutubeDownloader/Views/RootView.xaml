@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     Width="600"
     Height="580"
     d:DataContext="{d:DesignInstance Type=viewModels:RootViewModel}"
@@ -19,11 +20,12 @@
         <TaskbarItemInfo ProgressState="Normal" ProgressValue="{Binding Dashboard.Progress.Current.Fraction}" />
     </Window.TaskbarItemInfo>
     <materialDesign:DialogHost
+        x:Name="DialogHost"
         CloseOnClickAway="True"
         Loaded="{s:Action OnViewFullyLoaded}"
         SnackbarMessageQueue="{Binding Notifications}"
         Style="{DynamicResource MaterialDesignEmbeddedDialogHost}">
-        <Grid>
+        <Grid IsEnabled="{Binding IsOpen, ElementName=DialogHost, Converter={x:Static converters:InverseBoolConverter.Instance}}">
             <ContentControl s:View.Model="{Binding Dashboard}" />
             <materialDesign:Snackbar MessageQueue="{Binding Notifications}" />
         </Grid>
