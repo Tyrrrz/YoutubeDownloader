@@ -50,7 +50,7 @@ Press LEARN MORE to find ways that you can help.".Trim(),
 
         if (await _dialogManager.ShowDialogAsync(dialog) == true)
         {
-            ProcessEx.StartShellExecute("https://tyrrrz.me");
+            ProcessEx.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
         }
     }
 
