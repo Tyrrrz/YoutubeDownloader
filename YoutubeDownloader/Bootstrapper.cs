@@ -10,37 +10,41 @@ using System.Windows;
 using System.Windows.Threading;
 #endif
 
-namespace YoutubeDownloader
+namespace YoutubeDownloader;
+
+public class Bootstrapper : Bootstrapper<RootViewModel>
 {
-    public class Bootstrapper : Bootstrapper<RootViewModel>
+    protected override void OnStart()
     {
-        protected override void OnStart()
-        {
-            base.OnStart();
+        base.OnStart();
 
-            // Set default theme
-            // (preferred theme will be chosen later, once the settings are loaded)
-            App.SetLightTheme();
+        // Set default theme
+        // (preferred theme will be set later, once the settings are loaded)
+        App.SetLightTheme();
 
-            // Increase maximum concurrent connections
-            ServicePointManager.DefaultConnectionLimit = 20;
-        }
+        // Increase maximum concurrent connections
+        ServicePointManager.DefaultConnectionLimit = 20;
+    }
 
-        protected override void ConfigureIoC(IStyletIoCBuilder builder)
-        {
-            base.ConfigureIoC(builder);
+    protected override void ConfigureIoC(IStyletIoCBuilder builder)
+    {
+        base.ConfigureIoC(builder);
 
-            builder.Bind<SettingsService>().ToSelf().InSingletonScope();
-            builder.Bind<IViewModelFactory>().ToAbstractFactory();
-        }
+        builder.Bind<SettingsService>().ToSelf().InSingletonScope();
+        builder.Bind<IViewModelFactory>().ToAbstractFactory();
+    }
 
 #if !DEBUG
-        protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
-        {
-            base.OnUnhandledException(e);
+    protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
+    {
+        base.OnUnhandledException(e);
 
-            MessageBox.Show(e.Exception.ToString(), "Error occured", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-#endif
+        MessageBox.Show(
+            e.Exception.ToString(),
+            "Error occured",
+            MessageBoxButton.OK,
+            MessageBoxImage.Error
+        );
     }
+#endif
 }
