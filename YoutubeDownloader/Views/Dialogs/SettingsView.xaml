@@ -168,6 +168,36 @@
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
                     </DockPanel>
+                    <!--  Enable Proxy server -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="When selecting will use proxy to downloading.">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Use Proxy" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding UseProxy}" />
+                    </DockPanel>
+                    <!--  Proxy Server template  -->
+                    <DockPanel
+                        Margin="16,8"
+                        Background="Transparent"
+                        LastChildFill="False">
+                        
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Proxy Uri" />
+                        <TextBox
+                            Width="150"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="{Binding ProxyAddress}" />
+                    </DockPanel>
                 </StackPanel>
             </ScrollViewer>
         </Border>

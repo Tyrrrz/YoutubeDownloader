@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Core.Utils.Extensions;
+using YoutubeExplode;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Core.Tagging;
@@ -11,7 +13,12 @@ namespace YoutubeDownloader.Core.Tagging;
 public class MediaTagInjector
 {
     private readonly MusicBrainzClient _musicBrainz = new();
-
+    private HttpClient client=new ();
+    public void Reset()
+    {
+        client =  Http.Client;
+        _musicBrainz.Reset();
+    }
     private void InjectMiscMetadata(MediaFile mediaFile, IVideo video)
     {
         var description = (video as Video)?.Description;
@@ -79,7 +86,7 @@ public class MediaTagInjector
             $"https://i.ytimg.com/vi/{video.Id}/hqdefault.jpg";
 
         mediaFile.SetThumbnail(
-            await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken)
+            await client.GetByteArrayAsync(thumbnailUrl, cancellationToken)
         );
     }
 

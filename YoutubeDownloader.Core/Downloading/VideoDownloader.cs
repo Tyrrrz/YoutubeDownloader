@@ -14,7 +14,12 @@ namespace YoutubeDownloader.Core.Downloading;
 
 public class VideoDownloader
 {
-    private readonly YoutubeClient _youtube = new(Http.Client);
+    private  YoutubeClient _youtube = new();
+
+    public void Reset()
+    {
+        _youtube = new YoutubeClient(Http.Client);
+    }
 
     public async Task<IReadOnlyList<VideoDownloadOption>> GetDownloadOptionsAsync(
         VideoId videoId,

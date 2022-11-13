@@ -15,7 +15,12 @@ namespace YoutubeDownloader.Core.Resolving;
 
 public class QueryResolver
 {
-    private readonly YoutubeClient _youtube = new(Http.Client);
+    private  YoutubeClient _youtube = new YoutubeClient();
+
+    public void Reset()
+    {
+        _youtube = new YoutubeClient(Http.Client);
+    }
 
     public async Task<QueryResult> ResolveAsync(
         string query,
@@ -24,7 +29,6 @@ public class QueryResolver
         // Only consider URLs when parsing IDs.
         // All other queries should be treated as search queries.
         var isUrl = Uri.IsWellFormedUriString(query, UriKind.Absolute);
-
         // Playlist
         if (isUrl && PlaylistId.TryParse(query) is { } playlistId)
         {

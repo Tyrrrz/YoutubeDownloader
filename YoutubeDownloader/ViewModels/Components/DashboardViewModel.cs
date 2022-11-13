@@ -52,13 +52,27 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
         _settingsService.BindAndInvoke(o => o.ParallelLimit, (_, e) => _downloadSemaphore.MaxCount = e.NewValue);
         Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
+        Reset();
+    }
+
+    private void Reset()
+    {
+        Proxy.Apply(_settingsService.UseProxy, _settingsService.ProxyAddress);
+        _videoDownloader.Reset();
+        _queryResolver.Reset();
+        _mediaTagInjector.Reset();
     }
 
     public bool CanShowSettings => !IsBusy;
 
-    public async void ShowSettings() => await _dialogManager.ShowDialogAsync(
+    public async void ShowSettings()
+    {
+        await _dialogManager.ShowDialogAsync(
         _viewModelFactory.CreateSettingsViewModel()
     );
+   
+        Reset();
+    }
 
     private void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
@@ -145,7 +159,6 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             return;
 
         IsBusy = true;
-
         // Small weight to not offset any existing download operations
         var progress = _progressMuxer.CreateInput(0.01);
 

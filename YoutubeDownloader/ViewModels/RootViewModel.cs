@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MaterialDesignThemes.Wpf;
 using Stylet;
+using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Components;
@@ -58,6 +59,7 @@ Press LEARN MORE to find ways that you can help.".Trim(),
     {
         try
         {
+            _updateService.Reset();
             var updateVersion = await _updateService.CheckForUpdatesAsync();
             if (updateVersion is null)
                 return;
@@ -83,6 +85,7 @@ Press LEARN MORE to find ways that you can help.".Trim(),
 
     public async void OnViewFullyLoaded()
     {
+        Proxy.Apply(_settingsService.UseProxy, _settingsService.ProxyAddress);
         await ShowWarInUkraineMessageAsync();
         await CheckForUpdatesAsync();
     }
@@ -92,7 +95,7 @@ Press LEARN MORE to find ways that you can help.".Trim(),
         base.OnViewLoaded();
 
         _settingsService.Load();
-
+      
         if (_settingsService.IsDarkModeEnabled)
         {
             App.SetDarkTheme();

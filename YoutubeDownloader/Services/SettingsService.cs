@@ -22,6 +22,8 @@ public partial class SettingsService : SettingsManager
     public Container LastContainer { get; set; } = Container.Mp4;
 
     public VideoQualityPreference LastVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
+    public string ProxyAddress { get;  set; }="socks4://127.0.0.1:7890";
+    public bool UseProxy { get;  set; }=false;
 
     public SettingsService()
     {

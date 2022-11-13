@@ -44,6 +44,17 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
 
+    public string ProxyAddress
+    {
+        get => _settingsService.ProxyAddress;
+        set => _settingsService.ProxyAddress = value;
+    }
+    public bool UseProxy
+    {
+        get => _settingsService.UseProxy;
+        set => _settingsService.UseProxy = value;
+    }
+    
     public SettingsViewModel(SettingsService settingsService)
     {
         _settingsService = settingsService;

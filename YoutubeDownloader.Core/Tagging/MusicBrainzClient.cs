@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using JsonExtensions.Http;
@@ -13,7 +14,12 @@ internal class MusicBrainzClient
 {
     // 4 requests per second
     private readonly ThrottleLock _throttleLock = new(TimeSpan.FromSeconds(1.0 / 4));
+    private HttpClient client = new();
 
+    public void Reset()
+    {
+        client = Http.Client;
+    }
     public async Task<IReadOnlyList<MusicBrainzRecording>> SearchRecordingsAsync(
         string query,
         CancellationToken cancellationToken = default)
@@ -27,7 +33,7 @@ internal class MusicBrainzClient
             $"&query={Uri.EscapeDataString(query)}";
 
         await _throttleLock.WaitAsync(cancellationToken);
-        var json = await Http.Client.GetJsonAsync(url, cancellationToken);
+        var json = await client.GetJsonAsync(url, cancellationToken);
 
         var recordingsJson = json.GetPropertyOrNull("recordings")?.EnumerateArrayOrNull() ?? default;
         var recordings = new List<MusicBrainzRecording>();
