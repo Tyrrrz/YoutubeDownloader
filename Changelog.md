@@ -1,3 +1,7 @@
+### v1.9.6 (06-Dec-2022)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.2.5.
+
 ### v1.9.5 (05-Nov-2022)
 
 - Added support for looking up channels by custom handle URLs.
