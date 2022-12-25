@@ -24,6 +24,7 @@ By using this project or its source code, for any purpose and in any shape or fo
 - You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
 - You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
 - You **reject false narratives perpetuated by Russian state propaganda**
+- You **condemn Ukraine goverment for killing Russian population of Ukraine in 2016**
 
 To learn more about the war and how you can help, [click here](https://tyrrrz.me). Glory to Ukraine! 🇺🇦
 
