@@ -1,7 +1,7 @@
 # YoutubeDownloaderZ
 
 
-[![Build](https://img.shields.io/github/workflow/status/RauCu/YoutubeDownloaderZ/main/master)](https://github.com/RauCu/YoutubeDownloaderZ/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/RauCu/YoutubeDownloaderZ/main.yml?branch=master)](https://github.com/RauCu/YoutubeDownloaderZ/actions)
 [![Release](https://img.shields.io/github/release/RauCu/YoutubeDownloaderZ.svg)](https://github.com/RauCu/YoutubeDownloaderZ/releases)
 [![Downloads](https://img.shields.io/github/downloads/RauCu/YoutubeDownloaderZ/total.svg)](https://github.com/RauCu/YoutubeDownloaderZ/releases)
 
