@@ -15,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -22,6 +23,8 @@
         <Grid Grid.Row="0" Background="{DynamicResource MaterialDesignDarkBackground}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -31,6 +34,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -50,7 +54,7 @@
                         Grid.Column="1"
                         Margin="0,6,6,8"
                         VerticalAlignment="Bottom"
-                        materialDesign:HintAssist.Hint="URL or search query"
+                        materialDesign:HintAssist.Hint="Đường link Youtube hoặc từ khóa tìm kiếm"
                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                         AcceptsReturn="True"
                         BorderThickness="0"
@@ -58,17 +62,33 @@
                         MaxLines="4"
                         PreviewKeyDown="QueryTextBox_OnPreviewKeyDown"
                         Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
-                        VerticalScrollBarVisibility="Auto" />
-
-                    <!--  Process query button  -->
+                        VerticalScrollBarVisibility="Auto" TextChanged="QueryTextBox_TextChanged" />
+                    
+                    <!--  Delete query button  -->
                     <Button
                         Grid.Column="2"
+                        Margin="0,6,6,6"
+                        Padding="4"
+                        Command="{s:Action DeleteQuery}"
+                        IsDefault="False"
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        IsEnabled="{Binding CanProcessQuery, Mode=OneWay}"
+                        ToolTip="Xóa">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="CloseThick" />
+                    </Button>
+                    
+                    <!--  Process query button  -->
+                    <Button
+                        Grid.Column="3"
                         Margin="0,6,6,6"
                         Padding="4"
                         Command="{s:Action ProcessQuery}"
                         IsDefault="True"
                         Style="{DynamicResource MaterialDesignFlatButton}"
-                        ToolTip="Process query (Enter)">
+                        ToolTip="Tìm">
                         <materialDesign:PackIcon
                             Width="24"
                             Height="24"
@@ -85,7 +105,7 @@
                 Command="{s:Action ShowSettings}"
                 Foreground="{DynamicResource MaterialDesignDarkForeground}"
                 Style="{DynamicResource MaterialDesignFlatButton}"
-                ToolTip="Settings">
+                ToolTip="Cài đặt">
                 <Button.Resources>
                     <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
                 </Button.Resources>
@@ -93,6 +113,39 @@
                     Width="24"
                     Height="24"
                     Kind="Settings" />
+            </Button>
+            <Button
+                Grid.Column="2"
+                Margin="6"
+                Padding="4"
+                Command="{s:Action Help}"
+                Foreground="{DynamicResource MaterialDesignDarkForeground}"
+                Style="{DynamicResource MaterialDesignFlatButton}"
+                ToolTip="Hướng dẫn">
+                <Button.Resources>
+                    <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
+                </Button.Resources>
+                <materialDesign:PackIcon
+                    Width="24"
+                    Height="24"
+                    Kind="HelpCircleOutline" />
+            </Button>
+
+            <Button
+                Grid.Column="3"
+                Margin="6"
+                Padding="4"
+                Command="{s:Action UploadVideo}"
+                Foreground="{DynamicResource MaterialDesignDarkForeground}"
+                Style="{DynamicResource MaterialDesignFlatButton}"
+                ToolTip="Tải lên">
+                <Button.Resources>
+                    <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
+                </Button.Resources>
+                <materialDesign:PackIcon
+                    Width="24"
+                    Height="24"
+                    Kind="FileUploadOutline" />
             </Button>
         </Grid>
 
@@ -104,11 +157,11 @@
             Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
 
         <!--  Content  -->
-        <Grid Grid.Row="2" Background="{DynamicResource MaterialDesignCardBackground}">
+        <Grid Grid.Row="3" Background="{DynamicResource MaterialDesignCardBackground}" >
             <!--  Placeholder  -->
             <StackPanel
                 Margin="8,32,8,8"
-                HorizontalAlignment="Center"
+                
                 Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}">
                 <materialDesign:PackIcon
                     Width="258"
@@ -123,15 +176,18 @@
                     FontWeight="Light"
                     TextAlignment="Center"
                     TextWrapping="Wrap">
-                    <Run Text="Copy-paste a" />
-                    <Run FontWeight="SemiBold" Text="URL" />
-                    <Run Text="or enter a" />
-                    <Run FontWeight="SemiBold" Text="search query" />
-                    <Run Text="to start downloading" />
+                    <Run Text="Sao chép và dán" />
+                    <Run FontWeight="SemiBold" Text="đường link Youtube" />
+                    <Run Text="hoặc nhập vào " />
+                    <Run FontWeight="SemiBold" Text="từ khóa tìm kiếm" />
+                    <Run Text="rồi bấm phím" />
+                    <Run FontWeight="SemiBold" Text="Enter" />
+                    <Run Text="để bắt đầu tải" />
                     <LineBreak />
-                    <Run Text="Press" />
+                    <LineBreak />
+                    <Run Text="Hoặc bấm phím" />
                     <Run FontWeight="SemiBold" Text="Shift+Enter" />
-                    <Run Text="to add multiple items" />
+                    <Run Text="để thêm nhiều đường link Youtube hoặc nhiều từ khóa tìm kiếm" />
                 </TextBlock>
             </StackPanel>
 
@@ -144,14 +200,25 @@
                 ScrollViewer.CanContentScroll="False"
                 VerticalScrollBarVisibility="Auto"
                 Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                <DataGrid.Resources>
+                <Style TargetType="ScrollBar">
+                    <Style.Triggers>
+                        <Trigger Property="Orientation" Value="Vertical">
+                            <Setter Property="Width" Value="35"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
-                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove inactive downloads" />
+                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Ẩn các dòng TẢI XONG" />
+                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Ẩn TẤT CẢ" />
                         <Separator />
-                        <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart failed downloads" />
+                        <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Tải các dòng THẤT BẠI" />
                         <Separator />
-                        <MenuItem Command="{s:Action CancelAllDownloads}" Header="Cancel all downloads" />
+                        <MenuItem Command="{s:Action RestartCancelDownloads}" Header="Tải các dòng BỊ HỦY" />
+                        <Separator />
+                        <MenuItem Command="{s:Action CancelAllDownloads}" Header="Hủy tải TẤT CẢ" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.RowStyle>
@@ -173,28 +240,32 @@
                 <!--  Columns  -->
                 <DataGrid.Columns>
                     <!--  Thumbnail  -->
-                    <DataGridTemplateColumn>
+                    <DataGridTemplateColumn MinWidth="130" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <Image
-                                    Width="48"
-                                    Height="48"
+                                    Width="120"
+                                    Height="90"
+                                    Stretch="None"
                                     VerticalAlignment="Center"
                                     Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
                             </DataTemplate>
+                            
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
                     <!--  File name  -->
                     <DataGridTemplateColumn
-                        Width="*"
-                        Header="File"
+                        MinWidth="300"
+                        Header="Tệp"
                         SortMemberPath="FileName">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <TextBlock
                                     VerticalAlignment="Center"
-                                    FontSize="14"
+                                    FontSize="18"
+                                    TextWrapping="WrapWithOverflow"
+                                    Width="300"
                                     Foreground="{DynamicResource MaterialDesignBody}"
                                     Text="{Binding FileName}"
                                     TextTrimming="CharacterEllipsis"
@@ -205,15 +276,16 @@
 
                     <!--  Status  -->
                     <DataGridTemplateColumn
-                        MinWidth="100"
-                        Header="Status"
+                        MinWidth="200"
+                        Width="*"
+                        Header="Trạng thái"
                         SortMemberPath="ProgressOperation.Progress">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
                                     <!--  Progress  -->
@@ -234,10 +306,25 @@
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled}">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled_low_quality}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled_too_short}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled_too_long}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Completed}">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Completed_Already}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>                                                    
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Failed}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Deleted}">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -248,6 +335,7 @@
                                     <!--  Status  -->
                                     <TextBlock
                                         Grid.Column="1"
+                                        HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         TextTrimming="CharacterEllipsis">
                                         <TextBlock.Style>
@@ -256,7 +344,7 @@
                                                     <!--  Pending  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Enqueued}">
                                                         <Setter Property="Opacity" Value="0.7" />
-                                                        <Setter Property="Text" Value="Pending..." />
+                                                        <Setter Property="Text" Value="CHỜ TẢI ..." />
                                                     </DataTrigger>
 
                                                     <!--  Downloading  -->
@@ -267,67 +355,127 @@
                                                     <!--  Successful  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Completed}">
                                                         <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
-                                                        <Setter Property="Text" Value="✓ Done" />
+                                                        <Setter Property="Text" Value="✓ TẢI XONG" />
+                                                    </DataTrigger>
+
+                                                    <!--  Successful already -->
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Completed_Already}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                        <Setter Property="Text" Value="✓ TẢI TRƯỚC RỒI" />
                                                     </DataTrigger>
 
                                                     <!--  Canceled  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled}">
                                                         <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
-                                                        <Setter Property="Text" Value="✗ Canceled" />
+                                                        <Setter Property="Text" Value="✗ BỊ HỦY" />
+                                                    </DataTrigger>
+
+                                                    <!--  Canceled_low_quality  -->
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled_low_quality}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
+                                                        <Setter Property="Text" Value="✗ CHẤT LƯỢNG THẤP &lt; 720p" />
+                                                    </DataTrigger>
+
+                                                    <!--  Canceled_too_short  -->
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled_too_short}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
+                                                        <Setter Property="Text" Value="✗ NGẮN HƠN 1 PHÚT" />
+                                                    </DataTrigger>
+
+                                                    <!--  Canceled_too_long  -->
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled_too_long}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
+                                                        <Setter Property="Text" Value="✗ DÀI HƠN 1 GIỜ" />
                                                     </DataTrigger>
 
                                                     <!--  Failed  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Failed}">
                                                         <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
-                                                        <Setter Property="Text" Value="⚠ Failed" />
+                                                        <Setter Property="Text" Value="⚠ THẤT BẠI" />
                                                         <Setter Property="ToolTip" Value="{Binding ErrorMessage}" />
                                                     </DataTrigger>
+
+                                                    <!--  Deleted  -->
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Deleted}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
+                                                        <Setter Property="Text" Value="⚠ ĐÃ XÓA" />
+                                                        <Setter Property="ToolTip" Value="{Binding ErrorMessage}" />
+                                                    </DataTrigger>
+
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
+
                                 </Grid>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
                     <!--  Buttons  -->
-                    <DataGridTemplateColumn MinWidth="100">
+                    <DataGridTemplateColumn 
+                        MinWidth="300">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <StackPanel
+                                    DockPanel.Dock="Right"
                                     HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
                                     Orientation="Horizontal">
-                                    <!--  Show file  -->
+
+                                    <!--  Upload status -->
+                                    <StackPanel  VerticalAlignment="Center"
+                                    Visibility="Collapsed"
+                                    >
+                                        <ComboBox materialDesign:ComboBoxAssist.ShowSelectedItem="False">
+                                            <ComboBoxItem
+                                                IsSelected="True"
+                                                Content="CHƯA RÕ" />
+                                            <ComboBoxItem
+                                                 Content="KHÔNG ĐĂNG" />
+                                            <ComboBoxItem
+                                                 Content="CHƯA ĐĂNG" />
+                                            <ComboBoxItem
+                                                Content="ĐÃ CÔNG KHAI" />
+                                            <ComboBoxItem
+                                                Content="CHƯA CÔNG KHAI" />
+                                        </ComboBox>
+                                        <CheckBox
+                                            x:Name="ClassicModeCheckBox"
+                                            IsThreeState="False"
+                                            IsChecked="True"
+                                            Content="CHỌN ĐỂ ĐĂNG" />
+                                    </StackPanel>
+                                    
+                                    <!--  Search on GJW  -->
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
                                         s:View.ActionTarget="{Binding}"
-                                        Command="{s:Action ShowFile}"
+                                        Command="{s:Action SearchOnGJW}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Show file"
-                                        Visibility="{Binding CanShowFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        ToolTip="Tìm trên GJW"
+                                        Visibility="Visible">
                                         <materialDesign:PackIcon
                                             Width="24"
                                             Height="24"
-                                            Kind="FileFindOutline" />
+                                            Kind="SearchWeb" />
                                     </Button>
 
-                                    <!--  Open file  -->
+                                    <!--  Watch on Youtube  -->
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
                                         s:View.ActionTarget="{Binding}"
-                                        Command="{s:Action OpenFile}"
+                                        Command="{s:Action WathOnYoutube}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Play"
-                                        Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        ToolTip="Xem trên Youtube"
+                                        Visibility="Visible">
                                         <materialDesign:PackIcon
                                             Width="24"
                                             Height="24"
-                                            Kind="PlayCircleOutline" />
+                                            Kind="Youtube" />
                                     </Button>
+
 
                                     <!--  Cancel download  -->
                                     <Button
@@ -336,7 +484,7 @@
                                         s:View.ActionTarget="{Binding}"
                                         Command="{s:Action Cancel}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Cancel download"
+                                        ToolTip="Hủy tải"
                                         Visibility="{Binding CanCancel, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                         <materialDesign:PackIcon
                                             Width="24"
@@ -351,13 +499,94 @@
                                         Command="{s:Action RestartDownload}"
                                         CommandParameter="{Binding}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Restart download"
+                                        ToolTip="Tải lại"
                                         Visibility="{Binding IsCanceledOrFailed, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                                         <materialDesign:PackIcon
                                             Width="24"
                                             Height="24"
                                             Kind="Restart" />
                                     </Button>
+
+                                    <!--  Show file  -->
+                                    <!--
+                                    <Button
+                                        Padding="4,0,4,0"
+                                        VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        Command="{s:Action ShowFile}"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Mở thư mục tải"
+                                        Visibility="{Binding CanShowFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="FileFindOutline" />
+                                    </Button>
+                                    -->
+
+                                    <!--  Open file  -->
+                                    <Button
+                                        Padding="4,0,4,0"
+                                        VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        Command="{s:Action OpenFile}"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Mở tệp"
+                                        Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="PlayCircleOutline" />
+                                    </Button>
+
+                                    <!--  Copy video title  -->
+                                    <!--
+                                    <Button
+                                        Padding="4,0,4,0"
+                                        VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        Command="{s:Action CopyVideoTitle}"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Sao chép tên video"
+                                        Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="ContentCopy" />
+                                    </Button>
+                                     -->
+
+                                    <!--  Upload video-->
+                                    <Button
+                                        Padding="4,0,4,0"
+                                        VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        Command="{s:Action Upload}"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Đăng lên GJW"
+                                        Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="CloudUpload" />
+                                    </Button>
+
+
+                                    <!--  Delete file  -->
+                                    <Button
+                                        Padding="4,0,4,0"
+                                        VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        Command="{s:Action DeleteFile}"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Xóa tệp"
+                                        Visibility="{Binding CanOpenFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="DeleteOutline" />
+                                    </Button>
+
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

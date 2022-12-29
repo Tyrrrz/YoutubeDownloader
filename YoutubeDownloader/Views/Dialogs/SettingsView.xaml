@@ -22,7 +22,7 @@
             Margin="16,16,16,8"
             FontSize="19"
             FontWeight="Light"
-            Text="Settings" />
+            Text="Cài đặt" />
 
         <Border
             Grid.Row="1"
@@ -35,34 +35,57 @@
                     <DockPanel Background="Transparent" LastChildFill="False">
                         <DockPanel.ToolTip>
                             <TextBlock>
-                                <Run Text="Perform automatic updates on every launch" />
+                                <Run Text="Kiểm tra cập nhật mỗi khi phần mềm được mở" />
                                 <LineBreak />
-                                <Run FontWeight="SemiBold" Text="Warning:" />
-                                <Run Text="it's recommended to leave this option enabled to ensure that the app is compatible with the latest version of YouTube" />
+                                <Run FontWeight="SemiBold" Text="Cảnh báo:" />
+                                <Run Text="Khuyến nghị nên bật chế độ tự động cập nhật để đảm bảo phần mềm tương thích với bản mới nhất của Youtube" />
                             </TextBlock>
                         </DockPanel.ToolTip>
                         <TextBlock
                             Margin="16,8"
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="Auto-updates" />
+                            Text="Tự động cập nhật" />
                         <ToggleButton
                             Margin="16,8"
                             VerticalAlignment="Center"
                             DockPanel.Dock="Right"
                             IsChecked="{Binding IsAutoUpdateEnabled}" />
                     </DockPanel>
-
-                    <!--  Dark mode  -->
+                    <!--  Join beta channel  -->
                     <DockPanel
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="Use darker colors in the UI">
+                        IsEnabled ="{Binding IsAutoUpdateEnabled}">
+                        <DockPanel.ToolTip>
+                            <TextBlock>
+                                <Run Text="Cập nhật với bản thử nghiệm thay vì bản chính thức?" />
+                                <LineBreak />
+                                <Run FontWeight="SemiBold" Text="Cảnh báo:" />
+                                <Run Text="Bản thử nghiệm dùng thể thử những tính năng mới, do đó có thể không ổn định" />
+                            </TextBlock>
+                        </DockPanel.ToolTip>
                         <TextBlock
                             Margin="16,8"
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="Dark mode" />
+                            Text="        Cập nhật với bản thử nghiệm thay vì bản chính thức" FontStyle="Italic" FontSize="10" />
+                        <ToggleButton
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding UsePreviewVersion}" />
+                    </DockPanel>
+                    <!--  Dark mode  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Sử dụng nền tối cho giao diện">
+                        <TextBlock
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Chế độ nền tối" />
                         <ToggleButton
                             x:Name="DarkModeToggleButton"
                             Margin="16,8"
@@ -77,11 +100,11 @@
                     <DockPanel
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="Inject media tags into downloaded files">
+                        ToolTip="Chèn các thẻ media vào các tệp tải về">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
-                            Text="Inject media tags" />
+                            Text="Chèn thẻ media" />
                         <ToggleButton
                             Margin="16,8"
                             DockPanel.Dock="Right"
@@ -92,11 +115,11 @@
                     <DockPanel
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="When selecting multiple videos to download, skip those that already have matching files in the target directory">
+                        ToolTip="Trong chế độ tải nhiều video, bỏ qua không tải lại những video nào đã có trong thư mục tải về">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
-                            Text="Skip existing files" />
+                            Text="Bỏ qua không tải tệp đã có" />
                         <ToggleButton
                             Margin="16,8"
                             DockPanel.Dock="Right"
@@ -105,33 +128,34 @@
 
                     <!--  File name template  -->
                     <DockPanel
+                        Visibility="Collapsed"
                         Margin="16,8"
                         Background="Transparent"
                         LastChildFill="False">
                         <DockPanel.ToolTip>
                             <TextBlock>
-                                <Run Text="Template used for generating file names for downloaded videos" />
+                                <Run Text="Định dạng cấu trúc cho tên tệp" />
                                 <LineBreak />
                                 <LineBreak />
-                                <Run Text="Available tokens:" />
+                                <Run Text="token khả dụng:" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$num" />
-                                <Run Text="- video's position in the list (if applicable)" />
+                                <Run Text="- thứ tự video trong danh sách (nếu có)" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$id" />
-                                <Run Text="- video ID" />
+                                <Run Text="- Id của video" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$title" />
-                                <Run Text="- video title" />
+                                <Run Text="- tiêu đề của video" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$author" />
-                                <Run Text="- video author" />
+                                <Run Text="- tác giả của video" />
                             </TextBlock>
                         </DockPanel.ToolTip>
                         <TextBlock
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="File name template" />
+                            Text="Định dạng cấu trúc cho tên tệp" />
                         <TextBox
                             Width="150"
                             VerticalAlignment="Center"
@@ -144,11 +168,11 @@
                         Margin="16,8"
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="How many downloads can be active at the same time">
+                        ToolTip="Tải cùng lúc đồng thời bao nhiêu video?">
                         <TextBlock
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="Parallel limit"
+                            Text="Tải cùng lúc bao nhiêu video"
                             TextAlignment="Right" />
                         <StackPanel
                             VerticalAlignment="Center"
@@ -168,6 +192,25 @@
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
                     </DockPanel>
+                    <!--  download all channel's video or just most viewed video only -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Thay vì tải tất cả video của kênh, thì chỉ tải những video nào được xem nhiều nhất (trong top 50)?">
+                        <TextBlock
+                            Height="48"
+                            TextWrapping="Wrap"
+                            TextTrimming="CharacterEllipsis"
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Chỉ tải những video nào được xem nhiều nhất (trong top 50)?" Width="240" />
+                        <ToggleButton
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding DownloadMostViewedVideoOnly}" />
+                    </DockPanel>
+
                 </StackPanel>
             </ScrollViewer>
         </Border>
@@ -178,7 +221,7 @@
             Margin="16"
             HorizontalAlignment="Stretch"
             Command="{s:Action Close}"
-            Content="SAVE"
+            Content="LƯU"
             IsCancel="True"
             IsDefault="True"
             Style="{DynamicResource MaterialDesignOutlinedButton}" />

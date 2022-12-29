@@ -1,12 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Gress" Version="2.0.1" />
+    <PackageReference Include="InputSimulator" Version="1.0.4" />
     <PackageReference Include="JsonExtensions" Version="1.2.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.6.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="YoutubeExplode" Version="6.2.5" />
-    <PackageReference Include="YoutubeExplode.Converter" Version="6.2.5" />
+    <PackageReference Include="WebDriverManager" Version="2.16.1" />
+    <PackageReference Include="YoutubeExplodeZ" Version="6.2.51" />
+    <PackageReference Include="YoutubeExplodeZ.Converter" Version="6.2.51" />
   </ItemGroup>
 
 </Project>

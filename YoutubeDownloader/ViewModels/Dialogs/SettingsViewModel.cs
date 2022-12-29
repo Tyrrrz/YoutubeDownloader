@@ -13,6 +13,11 @@ public class SettingsViewModel : DialogScreen
         get => _settingsService.IsAutoUpdateEnabled;
         set => _settingsService.IsAutoUpdateEnabled = value;
     }
+    public bool UsePreviewVersion
+    {
+        get => _settingsService.UsePreviewVersion;
+        set => _settingsService.UsePreviewVersion = value;
+    }
 
     public bool IsDarkModeEnabled
     {
@@ -42,6 +47,12 @@ public class SettingsViewModel : DialogScreen
     {
         get => _settingsService.ParallelLimit;
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
+    }
+
+    public bool DownloadMostViewedVideoOnly
+    {
+        get => _settingsService.DownloadMostViewedVideoOnly;
+        set => _settingsService.DownloadMostViewedVideoOnly = value;
     }
 
     public SettingsViewModel(SettingsService settingsService)

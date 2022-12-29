@@ -31,7 +31,7 @@ public partial record VideoDownloadOption
             foreach (var videoStreamInfo in videoStreams)
             {
                 // Muxed stream
-                if (videoStreamInfo is MuxedStreamInfo)
+                if (videoStreamInfo is MuxedStreamInfo && videoStreamInfo.Container == Container.Mp4)
                 {
                     yield return new VideoDownloadOption(
                         videoStreamInfo.Container,
@@ -42,6 +42,7 @@ public partial record VideoDownloadOption
                 else
                 {
                     // Prefer audio stream with the same container
+                    
                     var audioStreamInfo = manifest
                         .GetAudioStreams()
                         .OrderByDescending(s => s.Container == videoStreamInfo.Container)
@@ -49,13 +50,14 @@ public partial record VideoDownloadOption
                         .ThenByDescending(s => s.Bitrate)
                         .FirstOrDefault();
 
-                    if (audioStreamInfo is not null)
+                    if (audioStreamInfo is not null && videoStreamInfo.Container == Container.Mp4)
                     {
                         yield return new VideoDownloadOption(
                             videoStreamInfo.Container,
                             new IStreamInfo[] { videoStreamInfo, audioStreamInfo }
                         );
                     }
+                    
                 }
             }
         }
@@ -103,7 +105,9 @@ public partial record VideoDownloadOption
         var options = new HashSet<VideoDownloadOption>(comparer);
 
         options.AddRange(GetVideoAndAudioOptions());
-        options.AddRange(GetAudioOnlyOptions());
+        // remove audio option
+        //options.AddRange(GetAudioOnlyOptions());
+
 
         return options.ToArray();
     }

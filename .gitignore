@@ -22,3 +22,8 @@ bld/
 
 # FFmpeg binary
 ffmpeg.exe
+#
+.vscode/
+.vs/
+YoutubeDownloader/Properties/
+YoutubeDownloader.Core/Properties/

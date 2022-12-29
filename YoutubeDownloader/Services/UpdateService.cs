@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Onova;
 using Onova.Exceptions;
@@ -8,8 +8,14 @@ namespace YoutubeDownloader.Services;
 
 public class UpdateService : IDisposable
 {
-    private readonly IUpdateManager _updateManager = new UpdateManager(
-        new GithubPackageResolver("Tyrrrz", "YoutubeDownloader", "YoutubeDownloader.zip"),
+    private IUpdateManager _updateManager;
+    private readonly IUpdateManager _updateManagerPreview = new UpdateManager(
+        new GithubPackageResolver("raucuqua1003", "YoutubeDownloader", "YoutubeDownloaderDev.zip"),
+        new ZipPackageExtractor()
+    );
+
+    private readonly IUpdateManager _updateManagerRelease = new UpdateManager(
+        new GithubPackageResolver("raucuqua1003", "YoutubeDownloader", "YoutubeDownloader.zip"),
         new ZipPackageExtractor()
     );
 
@@ -22,13 +28,15 @@ public class UpdateService : IDisposable
     public UpdateService(SettingsService settingsService)
     {
         _settingsService = settingsService;
+        _updateManager = _settingsService.UsePreviewVersion ? _updateManagerPreview : _updateManagerRelease;
     }
 
     public async Task<Version?> CheckForUpdatesAsync()
     {
+
         if (!_settingsService.IsAutoUpdateEnabled)
             return null;
-
+        _updateManager = _settingsService.UsePreviewVersion ? _updateManagerPreview : _updateManagerRelease;
         var check = await _updateManager.CheckForUpdatesAsync();
         return check.CanUpdate ? check.LastVersion : null;
     }
@@ -40,6 +48,7 @@ public class UpdateService : IDisposable
 
         try
         {
+            _updateManager = _settingsService.UsePreviewVersion ? _updateManagerPreview : _updateManagerRelease;
             await _updateManager.PrepareUpdateAsync(_updateVersion = version);
             _updatePrepared = true;
         }
@@ -63,6 +72,7 @@ public class UpdateService : IDisposable
 
         try
         {
+            _updateManager = _settingsService.UsePreviewVersion ? _updateManagerPreview : _updateManagerRelease;
             _updateManager.LaunchUpdater(_updateVersion, needRestart);
             _updaterLaunched = true;
         }

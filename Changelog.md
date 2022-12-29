@@ -1,3 +1,16 @@
+### v1.9.61 (12-Dec-2022)
+
+- Merged to Upstream version v1.9.6
+- Added download most viewed video only (top 50) & all video with only once search channel query
+- Added caching data to local file
+- Added download video thumbnails, channel avatar & banner
+- Added download filter : ignore low quality video (<720p), shorter than 1 mintue, longer than 1 hour
+- Used "[order_number]-[title]-[id]-[DownloadStatus]" format for file name
+- Added 2 upgrade modes: release, preview
+- Added support Window 32bit (by using the version 32bit of ffmpeg.exe)
+- Added "Watch on Youtube", "Check on GJW", "Delete", "Copy title", "Help", "Upload" button
+- Changed "restared download" order
+
 ### v1.9.6 (06-Dec-2022)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.2.5.

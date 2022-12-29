@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,11 +27,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
 
     public IReadOnlyList<Container> AvailableContainers { get; } = new[]
     {
-        Container.Mp4,
-        Container.WebM,
-        Container.Mp3,
-        new Container("ogg"),
-        new Container("m4a")
+        Container.Mp4
     };
 
     public Container SelectedContainer { get; set; } = Container.Mp4;
@@ -68,28 +64,29 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             return;
 
         var downloads = new List<DownloadViewModel>();
+        Database.Load(dirPath);
+
         for (var i = 0; i < SelectedVideos!.Count; i++)
         {
             var video = SelectedVideos[i];
+            VideoInfo? videoInfo = Database.Find(video!.Id);
+            int number;
+            if(videoInfo == null){
+                Database.InsertOrUpdate(new VideoInfo(0, video!.Title, video!.Id, "", ""));
+                number = Database.Count();
+            }else{
+                // already exist, get it
+                number = videoInfo.Number;
+            }
 
-            var baseFilePath = Path.Combine(
-                dirPath,
-                FileNameTemplate.Apply(
-                    _settingsService.FileNameTemplate,
-                    video,
-                    SelectedContainer,
-                    (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
-                )
-            );
-
-            if (_settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
-                continue;
-
-            var filePath = PathEx.EnsureUniquePath(baseFilePath);
-
-            // Download does not start immediately, so lock in the file path to avoid conflicts
-            DirectoryEx.CreateDirectoryForFile(filePath);
-            File.WriteAllBytes(filePath, Array.Empty<byte>());
+            var filePath = Path.Combine(
+                    dirPath,
+                    FileNameTemplate.Apply(
+                        _settingsService.FileNameTemplate,
+                        video!,
+                        SelectedContainer,
+                        (number).ToString().PadLeft(YoutubeDownloader.Utils.AppConsts.LenNumber, '0')
+                    ));    
 
             downloads.Add(
                 _viewModelFactory.CreateDownloadViewModel(
@@ -104,6 +101,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
         _settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
 
         Close(downloads);
+        Database.Save();
     }
 }
 

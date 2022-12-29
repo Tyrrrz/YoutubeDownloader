@@ -13,9 +13,9 @@ public class FileNameTemplate
         string? number = null) =>
         PathEx.EscapeFileName(
             template
-                .Replace("$num", number is not null ? $"[{number}]" : "")
-                .Replace("$id", video.Id)
+                .Replace("$num", number is not null ? $"{number}" : "xx")
                 .Replace("$title", video.Title)
+                .Replace("$id", video.Id)
                 .Replace("$author", video.Author.ChannelTitle)
                 .Replace("$uploadDate", (video as Video)?.UploadDate.ToString("yyyy-MM-dd") ?? "")
                 .Trim() + '.' + container.Name

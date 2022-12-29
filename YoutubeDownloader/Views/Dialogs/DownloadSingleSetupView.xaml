@@ -67,6 +67,22 @@
                         Text="{Binding Video.Duration, TargetNullValue=Live}"
                         TextTrimming="CharacterEllipsis" />
                 </StackPanel>
+                
+                <!--  ViewCount  -->
+                <StackPanel Margin="16,0,0,0" Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Width="16"
+                        Height="16"
+                        VerticalAlignment="Center"
+                        BorderThickness="1"
+                        Kind="EyeArrowLeftOutline" />
+                    <TextBlock
+                        Margin="3,0,0,0"
+                        VerticalAlignment="Center"
+                        FontWeight="Light"
+                        Text="{Binding Video.Engagement.ViewCount, TargetNullValue=Live}"
+                        TextTrimming="CharacterEllipsis" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
 
@@ -86,7 +102,7 @@
 
             <!--  Download option  -->
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Text="Format:" />
+                <TextBlock VerticalAlignment="Center" Text="Định dạng:" />
                 <ComboBox
                     Width="150"
                     Margin="8,0,0,0"
@@ -130,7 +146,7 @@
                 <!--  Download  -->
                 <Button
                     Command="{s:Action Confirm}"
-                    Content="DOWNLOAD"
+                    Content="TẢI XUỐNG"
                     IsDefault="True"
                     Style="{DynamicResource MaterialDesignOutlinedButton}" />
 
@@ -138,7 +154,7 @@
                 <Button
                     Margin="8,0,0,0"
                     Command="{s:Action Close}"
-                    Content="CANCEL"
+                    Content="HỦY BỎ"
                     IsCancel="True"
                     Style="{DynamicResource MaterialDesignOutlinedButton}" />
             </StackPanel>

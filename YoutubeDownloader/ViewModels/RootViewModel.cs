@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using MaterialDesignThemes.Wpf;
 using Stylet;
@@ -36,24 +36,6 @@ public class RootViewModel : Screen
 
         DisplayName = $"{App.Name} v{App.VersionString}";
     }
-
-    private async Task ShowWarInUkraineMessageAsync()
-    {
-        var dialog = _viewModelFactory.CreateMessageBoxViewModel(
-            "Ukraine is at war!", @"
-My country, Ukraine, has been invaded by Russian military forces in an act of aggression that can only be described as genocide.
-Be on the right side of history! Consider supporting Ukraine in its fight for freedom.
-
-Press LEARN MORE to find ways that you can help.".Trim(),
-            "LEARN MORE", "CLOSE"
-        );
-
-        if (await _dialogManager.ShowDialogAsync(dialog) == true)
-        {
-            ProcessEx.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
-        }
-    }
-
     private async Task CheckForUpdatesAsync()
     {
         try
@@ -62,12 +44,12 @@ Press LEARN MORE to find ways that you can help.".Trim(),
             if (updateVersion is null)
                 return;
 
-            Notifications.Enqueue($"Downloading update to {App.Name} v{updateVersion}...");
+            Notifications.Enqueue($"Đang tải bản mới v{updateVersion}...");
             await _updateService.PrepareUpdateAsync(updateVersion);
 
             Notifications.Enqueue(
-                "Update has been downloaded and will be installed when you exit",
-                "INSTALL NOW", () =>
+                "Bản mới đã tải xong và sẽ được cài khi đóng ứng dụng",
+                "CÀI ĐẶT NGAY", () =>
                 {
                     _updateService.FinalizeUpdate(true);
                     RequestClose();
@@ -77,13 +59,12 @@ Press LEARN MORE to find ways that you can help.".Trim(),
         catch
         {
             // Failure to update shouldn't crash the application
-            Notifications.Enqueue("Failed to perform application update");
+            Notifications.Enqueue("Cập nhật thất bại");
         }
     }
 
     public async void OnViewFullyLoaded()
     {
-        await ShowWarInUkraineMessageAsync();
         await CheckForUpdatesAsync();
     }
 

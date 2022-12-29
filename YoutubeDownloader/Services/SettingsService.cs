@@ -8,16 +8,17 @@ namespace YoutubeDownloader.Services;
 public partial class SettingsService : SettingsManager
 {
     public bool IsAutoUpdateEnabled { get; set; } = true;
-
+    public bool UsePreviewVersion { get; set; } = false;
     public bool IsDarkModeEnabled { get; set; } = IsDarkModeEnabledByDefault();
 
     public bool ShouldInjectTags { get; set; } = true;
 
     public bool ShouldSkipExistingFiles { get; set; }
 
-    public string FileNameTemplate { get; set; } = "$title";
+    public string FileNameTemplate { get; set; } = "[$num]-[$title]-[$id]";
 
-    public int ParallelLimit { get; set; } = 2;
+    public int ParallelLimit { get; set; } = 4;
+    public bool DownloadMostViewedVideoOnly { get; set; } = true;
 
     public Container LastContainer { get; set; } = Container.Mp4;
 

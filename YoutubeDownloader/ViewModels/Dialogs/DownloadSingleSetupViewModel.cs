@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -45,29 +45,36 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 
     public void Confirm()
     {
-        var container = SelectedDownloadOption!.Container;
-
-        var filePath = _dialogManager.PromptSaveFilePath(
-            $"{container.Name} file|*.{container.Name}",
-            FileNameTemplate.Apply(
-                _settingsService.FileNameTemplate,
-                Video!,
-                container
-            )
-        );
-
-        if (string.IsNullOrWhiteSpace(filePath))
+        var dirPath = _dialogManager.PromptDirectoryPath();
+        if (string.IsNullOrWhiteSpace(dirPath))
             return;
+        var container = SelectedDownloadOption!.Container;
+        Database.Load(dirPath);
+        VideoInfo? videoInfo = Database.Find(Video!.Id);
+        int number;
+        if(videoInfo == null){
+            Database.InsertOrUpdate(new VideoInfo(0, Video!.Title, Video!.Id, "",""));
+            number = Database.Count();
+        }else{
+            // already exist, get it
+            number = videoInfo.Number;
+        }
 
-        // Download does not start immediately, so lock in the file path to avoid conflicts
-        DirectoryEx.CreateDirectoryForFile(filePath);
-        File.WriteAllBytes(filePath, Array.Empty<byte>());
+        var filePath = Path.Combine(
+                dirPath,
+                FileNameTemplate.Apply(
+                    _settingsService.FileNameTemplate,
+                    Video!,
+                    container,
+                    (number).ToString().PadLeft(YoutubeDownloader.Utils.AppConsts.LenNumber, '0')
+                ));   
 
         _settingsService.LastContainer = container;
 
         Close(
             _viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath)
         );
+        Database.Save();
     }
 }
 

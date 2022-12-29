@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -30,7 +30,7 @@ public class QueryResolver
         {
             var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
             var videos = await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
-            return new QueryResult(QueryResultKind.Playlist, $"Playlist: {playlist.Title}", videos);
+            return new QueryResult(QueryResultKind.Playlist, $"Danh sách phát: {playlist.Title}", videos);
         }
 
         // Video
@@ -45,7 +45,7 @@ public class QueryResolver
         {
             var channel = await _youtube.Channels.GetAsync(channelId, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channelId, cancellationToken);
-            return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
+            return new QueryResult(QueryResultKind.Channel, $"Kênh: {channel.Title}", videos);
         }
 
         // Channel (by handle)
@@ -53,7 +53,7 @@ public class QueryResolver
         {
             var channel = await _youtube.Channels.GetByHandleAsync(channelHandle, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
-            return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
+            return new QueryResult(QueryResultKind.Channel, $"Kênh: {channel.Title}", videos);
         }
 
         // Channel (by username)
@@ -61,7 +61,7 @@ public class QueryResolver
         {
             var channel = await _youtube.Channels.GetByUserAsync(userName, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
-            return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
+            return new QueryResult(QueryResultKind.Channel, $"Kênh: {channel.Title}", videos);
         }
 
         // Channel (by slug)
@@ -69,13 +69,13 @@ public class QueryResolver
         {
             var channel = await _youtube.Channels.GetBySlugAsync(channelSlug, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
-            return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
+            return new QueryResult(QueryResultKind.Channel, $"Kênh: {channel.Title}", videos);
         }
 
         // Search
         {
             var videos = await _youtube.Search.GetVideosAsync(query, cancellationToken).CollectAsync(20);
-            return new QueryResult(QueryResultKind.Search, $"Search: {query}", videos);
+            return new QueryResult(QueryResultKind.Search, $"Từ khóa: {query}", videos);
         }
     }
 
@@ -107,6 +107,6 @@ public class QueryResolver
             );
         }
 
-        return new QueryResult(QueryResultKind.Aggregate, $"{queries.Count} queries", videos);
+        return new QueryResult(QueryResultKind.Aggregate, $"{queries.Count} truy vấn", videos);
     }
 }
