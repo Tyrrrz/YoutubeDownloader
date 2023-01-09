@@ -10,12 +10,12 @@ public class UpdateService : IDisposable
 {
     private IUpdateManager _updateManager;
     private readonly IUpdateManager _updateManagerPreview = new UpdateManager(
-        new GithubPackageResolver("raucuqua1003", "YoutubeDownloader", "YoutubeDownloaderDev.zip"),
+        new GithubPackageResolver("RauCu", "YoutubeDownloaderZ", "YoutubeDownloaderZPreview.zip"),
         new ZipPackageExtractor()
     );
 
     private readonly IUpdateManager _updateManagerRelease = new UpdateManager(
-        new GithubPackageResolver("raucuqua1003", "YoutubeDownloader", "YoutubeDownloader.zip"),
+        new GithubPackageResolver("RauCu", "YoutubeDownloaderZ", "YoutubeDownloaderZ.zip"),
         new ZipPackageExtractor()
     );
 

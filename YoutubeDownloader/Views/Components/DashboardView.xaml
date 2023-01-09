@@ -453,7 +453,7 @@
                                         s:View.ActionTarget="{Binding}"
                                         Command="{s:Action SearchOnGJW}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Tìm trên GJW"
+                                        ToolTip="Kiểm tra trùng trên GJW"
                                         Visibility="Visible">
                                         <materialDesign:PackIcon
                                             Width="24"
@@ -507,22 +507,8 @@
                                             Kind="Restart" />
                                     </Button>
 
-                                    <!--  Show file  -->
-                                    <!--
-                                    <Button
-                                        Padding="4,0,4,0"
-                                        VerticalAlignment="Center"
-                                        s:View.ActionTarget="{Binding}"
-                                        Command="{s:Action ShowFile}"
-                                        Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Mở thư mục tải"
-                                        Visibility="{Binding CanShowFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                                        <materialDesign:PackIcon
-                                            Width="24"
-                                            Height="24"
-                                            Kind="FileFindOutline" />
-                                    </Button>
-                                    -->
+                                    
+                                    
 
                                     <!--  Open file  -->
                                     <Button
@@ -540,7 +526,7 @@
                                     </Button>
 
                                     <!--  Copy video title  -->
-                                    <!--
+
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
@@ -554,7 +540,22 @@
                                             Height="24"
                                             Kind="ContentCopy" />
                                     </Button>
-                                     -->
+
+                                    <!--  Show file  -->
+
+                                    <Button
+                                        Padding="4,0,4,0"
+                                        VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        Command="{s:Action ShowFile}"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Mở thư mục tải"
+                                        Visibility="{Binding CanShowFile, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="FileFindOutline" />
+                                    </Button>
 
                                     <!--  Upload video-->
                                     <Button

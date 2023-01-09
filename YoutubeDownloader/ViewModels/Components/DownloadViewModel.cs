@@ -115,7 +115,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         {
             Clipboard.SetText(Video!.Title);
             //MessageBox.Show("Tên video đã được sao chép (copy)!", "Sao chép tên video", MessageBoxButton.OK, MessageBoxImage.Information);
-            ToolTip tooltip = new ToolTip{ Content = "Tên video đã được sao chép." };
+            ToolTip tooltip = new ToolTip{ Content = "Tiêu đề video đã được sao chép" };
             tooltip.Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse;
             tooltip.IsOpen = true;
             tooltip.StaysOpen = false;
@@ -163,10 +163,10 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         prompt.AcceptButton = confirmation;
 
         // TODO: remove after testing done
-        string email = "raucuqua1002@gmail.com";
-        string pass = "Testing123";
-        emailTextBox.Text = email;
-        passswordTextBox.Text = pass;
+        //string email = "raucuqua1002@gmail.com";
+        //string pass = "Testing123";
+        //emailTextBox.Text = email;
+        //passswordTextBox.Text = pass;
 
         return prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK ? emailTextBox.Text + "]-[" + passswordTextBox.Text : "";
     }
