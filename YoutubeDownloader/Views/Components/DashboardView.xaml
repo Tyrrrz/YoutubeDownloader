@@ -11,6 +11,12 @@
     d:DataContext="{d:DesignInstance Type=components:DashboardViewModel}"
     FocusManager.FocusedElement="{Binding ElementName=QueryTextBox}"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <!-- DataGrid's autosizing breaks when it's filled with rows while it's collapsed (rather than hidden) -->
+        <ResourceDictionary>
+            <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" FalseVisibility="Hidden" />
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -143,7 +149,7 @@
                 ItemsSource="{Binding Downloads}"
                 ScrollViewer.CanContentScroll="False"
                 VerticalScrollBarVisibility="Auto"
-                Visibility="{Binding Downloads.Count, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                Visibility="{Binding Downloads.Count, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
