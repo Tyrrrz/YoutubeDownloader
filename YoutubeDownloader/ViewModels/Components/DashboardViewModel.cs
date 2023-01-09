@@ -39,6 +39,8 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
     public BindableCollection<DownloadViewModel> Downloads { get; } = new();
 
+    public bool IsDownloadsAvailable => Downloads.Any();
+
     public DashboardViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
@@ -52,6 +54,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
         _settingsService.BindAndInvoke(o => o.ParallelLimit, (_, e) => _downloadSemaphore.MaxCount = e.NewValue);
         Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
+        Downloads.Bind(o => o.Count, (_, _) => NotifyOfPropertyChange(() => IsDownloadsAvailable));
     }
 
     public bool CanShowSettings => !IsBusy;

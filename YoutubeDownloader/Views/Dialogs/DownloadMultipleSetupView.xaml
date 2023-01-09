@@ -128,7 +128,7 @@
                                 Margin="8,0,0,0"
                                 VerticalAlignment="Center"
                                 Kind="Check"
-                                Visibility="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Converter={x:Static s:BoolToVisibilityConverter.Instance}, Mode=OneWay}" />
+                                Visibility="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrCollapsed}, Mode=OneWay}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

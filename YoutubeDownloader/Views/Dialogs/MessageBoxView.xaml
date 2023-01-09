@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     Width="500"
     d:DataContext="{d:DesignInstance Type=dialogs:MessageBoxViewModel}"
     Style="{DynamicResource MaterialDesignRoot}"
@@ -53,7 +54,7 @@
                 Content="{Binding OkButtonText}"
                 IsDefault="True"
                 Style="{DynamicResource MaterialDesignOutlinedButton}"
-                Visibility="{Binding IsOkButtonVisible, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+                Visibility="{Binding IsOkButtonVisible, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrCollapsed}}">
                 <Button.CommandParameter>
                     <system:Boolean>True</system:Boolean>
                 </Button.CommandParameter>
@@ -67,7 +68,7 @@
                 Content="{Binding CancelButtonText}"
                 IsCancel="True"
                 Style="{DynamicResource MaterialDesignOutlinedButton}"
-                Visibility="{Binding IsCancelButtonVisible, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+                Visibility="{Binding IsCancelButtonVisible, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrCollapsed}}" />
         </UniformGrid>
     </Grid>
 </UserControl>
