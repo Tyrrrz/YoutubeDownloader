@@ -12,6 +12,7 @@
     FocusManager.FocusedElement="{Binding ElementName=QueryTextBox}"
     mc:Ignorable="d">
     <UserControl.Resources>
+        <!-- DataGrid's autosizing breaks when it's filled with rows while it's collapsed (rather than hidden) -->
         <ResourceDictionary>
             <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" FalseVisibility="Hidden" />
         </ResourceDictionary>
