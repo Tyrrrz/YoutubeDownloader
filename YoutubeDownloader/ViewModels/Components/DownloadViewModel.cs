@@ -163,10 +163,10 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         prompt.AcceptButton = confirmation;
 
         // TODO: remove after testing done
-        string email = "raucuqua1002@gmail.com";
-        string pass = "Testing123";
-        emailTextBox.Text = email;
-        passswordTextBox.Text = pass;
+        //string email = "raucuqua1002@gmail.com";
+        //string pass = "Testing123";
+        //emailTextBox.Text = email;
+        //passswordTextBox.Text = pass;
 
         return prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK ? emailTextBox.Text + "]-[" + passswordTextBox.Text : "";
     }

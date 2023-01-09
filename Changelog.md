@@ -1,3 +1,7 @@
+### v1.9.62 (10-Jan-2023)
+
+- Fixed cannot auto upload to GJW
+
 ### v1.9.61 (12-Dec-2022)
 
 - Merged to Upstream version v1.9.6

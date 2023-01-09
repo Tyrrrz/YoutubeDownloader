@@ -109,10 +109,22 @@ public static class Http
                 //sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_V);
                 sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
 
+                // select 720
+                try
+                {
+                    WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+                    string select720BtnXpath = "/html/body/div[4]/div[3]/div/div[3]/button[2]";
+                    wait2.Until(driver => driver.FindElement(By.XPath(select720BtnXpath)));
+                    IWebElement elementBtnSelect720 = driver.FindElement(By.XPath(select720BtnXpath));
+                    elementBtnSelect720.Click();
+                }
+                catch (Exception)
+                {
+                }
 
                 // select thumbnail
-                
-                string selectThumnailBtnXpath = "//div[normalize-space() = 'Upload Thumbnail']";
+
+                string selectThumnailBtnXpath = "/html/body/div[3]/div[3]/div/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/label/span";
                 wait.Until(driver => driver.FindElement(By.XPath(selectThumnailBtnXpath)));
                 IWebElement elementBtnSelectThumnail = driver.FindElement(By.XPath(selectThumnailBtnXpath));
                 elementBtnSelectThumnail.Click();
@@ -133,7 +145,7 @@ public static class Http
 
                 // category
                 Thread.Sleep(1000);
-                string categoryXpath = "/html/body/div[3]/div[3]/div/div/div/div/div[2]/div/div[3]/div/div[1]/div/div/div/div/input";
+                string categoryXpath = "/html/body/div[3]/div[3]/div/div/div[1]/div/div[2]/div/div[3]/div/div[1]/div/div/div/div/input";
                 wait.Until(driver => driver.FindElement(By.XPath(categoryXpath)));
                 IWebElement categoryElement = driver.FindElement(By.XPath(categoryXpath));
                 string selectedCategory = categoryElement.GetAttribute("value");
@@ -144,7 +156,7 @@ public static class Http
 
                 // save button
                 Thread.Sleep(1000);
-                string selectSaveBtnXpath = "/html/body/div[3]/div[3]/div/div/div/div/div[3]/button";
+                string selectSaveBtnXpath = "/html/body/div[3]/div[3]/div/div/div[2]/button[2]";
                 wait.Until(driver=>driver.FindElement(By.XPath(selectSaveBtnXpath)));
                 IWebElement elementBtnSave = driver.FindElement(By.XPath(selectSaveBtnXpath));
                 elementBtnSave.Click();

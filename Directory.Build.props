@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <Version>1.9.61</Version>
+    <Version>1.9.62</Version>
     <Company>RauCu</Company>
     <Copyright>Copyright (C) RauCu</Copyright>
     <LangVersion>preview</LangVersion>
