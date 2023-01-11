@@ -13,10 +13,10 @@
   <ItemGroup>
     <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.4.0" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.0.1" />
-    <PackageReference Include="MaterialDesignColors" Version="2.0.9" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
+    <PackageReference Include="MaterialDesignColors" Version="2.1.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.7.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    <PackageReference Include="Onova" Version="2.6.2" />
+    <PackageReference Include="Onova" Version="2.6.3" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="Stylet" Version="1.3.6" />
     <PackageReference Include="Tyrrrz.Settings" Version="1.3.4" />
