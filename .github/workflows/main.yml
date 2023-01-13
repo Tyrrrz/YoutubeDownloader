@@ -51,8 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: YoutubeDownloader.zip
-          name: ${{ github.ref_name }}
-          tag_name: ${{ github.ref }}
           body: |
             [Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)
 
