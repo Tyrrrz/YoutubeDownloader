@@ -45,7 +45,7 @@ jobs:
         run: Compress-Archive -Path YoutubeDownloader/* -DestinationPath YoutubeDownloader.zip -Force
         shell: pwsh
 
-      - name: Upload to Release
+      - name: Create release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
