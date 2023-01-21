@@ -30,8 +30,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
         Container.Mp4,
         Container.WebM,
         Container.Mp3,
-        new Container("ogg"),
-        new Container("m4a")
+        new Container("ogg")
     };
 
     public Container SelectedContainer { get; set; } = Container.Mp4;

@@ -103,10 +103,10 @@
                                     <Run.Style>
                                         <Style TargetType="{x:Type Run}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Container.IsAudioOnly}" Value="False">
+                                                <DataTrigger Binding="{Binding IsAudioOnly}" Value="False">
                                                     <Setter Property="Text" Value="{Binding VideoQuality, Mode=OneWay}" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding Container.IsAudioOnly}" Value="True">
+                                                <DataTrigger Binding="{Binding IsAudioOnly}" Value="True">
                                                     <Setter Property="Text" Value="Audio" />
                                                 </DataTrigger>
                                             </Style.Triggers>
