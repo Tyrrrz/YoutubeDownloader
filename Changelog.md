@@ -1,3 +1,8 @@
+### v1.9.8 (27-Jan-2023)
+
+- Added an audio-only `webm` download option when downloading single videos.
+- Fixed an issue where trying to download a video in the `m4a` format resulted in an error. This option has been replaced with an audio-only `mp4` download option. 
+
 ### v1.9.7 (11-Jan-2023)
 
 - Switched from .NET 6.0 to .NET 7.0. The application should update the required prerequisites automatically.
@@ -238,9 +243,9 @@
 
 ### v1.2 (19-Jan-2019)
 
-- Added video quality selection when dowloading a single video. For playlists and search results, the highest video quality available for selected format is used.
+- Added video quality selection when downloading a single video. For playlists and search results, the highest video quality available for selected format is used.
 - Added support for `ogg` format.
-- Added support for `webm` format when dowloading a single video. May not always be available.
+- Added support for `webm` format when downloading a single video. May not always be available.
 - Updated the app icon to make it more distinct from YoutubeExplode.
 - Fixed an issue where child FFmpeg processes would not exit after the user closes the app while there are active downloads.
 - Fixed an issue where the app could sometimes crash when checking for updates.
