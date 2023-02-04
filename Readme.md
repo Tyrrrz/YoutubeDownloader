@@ -16,6 +16,9 @@ It also supports searching by keywords, which is helpful if you want to quickly 
 
 This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 
+> 📝 Want to learn more about how YouTube works under the hood?
+> Check out the article I wrote entitled [Reverse-Engineering YouTube: Revisited](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited).
+
 ## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
 
 By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
