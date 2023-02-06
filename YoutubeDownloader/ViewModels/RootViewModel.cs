@@ -50,7 +50,7 @@ public class RootViewModel : Screen
             Click LEARN MORE to find ways that you can help.
             """,
             "LEARN MORE",
-            "CANCEL"
+            "CLOSE"
         );
 
         // Disable this message in the future
