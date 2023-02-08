@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.4.0" PrivateAssets="all" />
+    <PackageReference Include="FuckRussia" Version="1.0.0" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.0.1" />
     <PackageReference Include="MaterialDesignColors" Version="2.1.1" />
     <PackageReference Include="MaterialDesignThemes" Version="4.7.1" />
