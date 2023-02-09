@@ -113,7 +113,7 @@ public class RootViewModel : Screen
         }
 
         // App has just been updated, display changelog
-        if (_settingsService.LastAppVersion != App.Version)
+        if (_settingsService.LastAppVersion is not null && _settingsService.LastAppVersion != App.Version)
         {
             Notifications.Enqueue(
                 $"Successfully updated to {App.Name} v{App.VersionString}",
