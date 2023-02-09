@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using System;
+using Microsoft.Win32;
 using Tyrrrz.Settings;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeExplode.Videos.Streams;
@@ -20,6 +21,8 @@ public partial class SettingsService : SettingsManager
     public string FileNameTemplate { get; set; } = "$title";
 
     public int ParallelLimit { get; set; } = 2;
+
+    public Version? LastAppVersion { get; set; }
 
     public Container LastContainer { get; set; } = Container.Mp4;
 
