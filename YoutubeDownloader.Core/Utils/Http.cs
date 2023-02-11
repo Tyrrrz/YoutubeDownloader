@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace YoutubeDownloader.Core.Utils;
 
@@ -14,7 +15,7 @@ internal static class Http
             {
                 new ProductInfoHeaderValue(
                     "YoutubeDownloader",
-                    typeof(Http).Assembly.GetName().Version?.ToString(3)
+                    Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)
                 )
             }
         }

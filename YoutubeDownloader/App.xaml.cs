@@ -8,7 +8,7 @@ namespace YoutubeDownloader;
 
 public partial class App
 {
-    private static Assembly Assembly { get; } = typeof(App).Assembly;
+    private static Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
 
     public static string Name { get; } = Assembly.GetName().Name!;
 
