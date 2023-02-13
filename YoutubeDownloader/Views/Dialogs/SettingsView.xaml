@@ -45,7 +45,7 @@
                             Margin="16,8"
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="Auto-updates" />
+                            Text="Auto-update" />
                         <ToggleButton
                             Margin="16,8"
                             VerticalAlignment="Center"
@@ -116,16 +116,16 @@
                                 <Run Text="Available tokens:" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$num" />
-                                <Run Text="- video's position in the list (if applicable)" />
+                                <Run Text="— video's position in the list (if applicable)" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$id" />
-                                <Run Text="- video ID" />
+                                <Run Text="— video ID" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$title" />
-                                <Run Text="- video title" />
+                                <Run Text="— video title" />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="$author" />
-                                <Run Text="- video author" />
+                                <Run Text="— video author" />
                             </TextBlock>
                         </DockPanel.ToolTip>
                         <TextBlock
