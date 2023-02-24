@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.9.9 (25-Feb-2023)
+
+- Added a notification when the application is updated to a new version, containing the changelog link.
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.2.7.
+
 ## v1.9.8 (27-Jan-2023)
 
 - Added an audio-only `webm` download option when downloading single videos.
