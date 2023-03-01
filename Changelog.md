@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.9.10 (02-Mar-2023)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.2.8.
+
 ## v1.9.9 (25-Feb-2023)
 
 - Added a notification when the application is updated to a new version, containing the changelog link.
