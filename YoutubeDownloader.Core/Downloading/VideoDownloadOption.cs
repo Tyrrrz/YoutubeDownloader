@@ -13,11 +13,7 @@ public partial record VideoDownloadOption(
     IReadOnlyList<IStreamInfo> StreamInfos)
 {
     public VideoQuality? VideoQuality => Memo.Cache(this, () =>
-        StreamInfos
-            .OfType<IVideoStreamInfo>()
-            .Select(s => s.VideoQuality)
-            .OrderByDescending(q => q)
-            .FirstOrDefault()
+        StreamInfos.OfType<IVideoStreamInfo>().MaxBy(s => s.VideoQuality)?.VideoQuality
     );
 }
 
