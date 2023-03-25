@@ -88,6 +88,21 @@
                             IsChecked="{Binding ShouldInjectTags}" />
                     </DockPanel>
 
+                    <!--  Download Thumbnail  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Download thumbnail into the path of downloaded files">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Download Thumbnail" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding DownloadThumbnail}" />
+                    </DockPanel>
+                    
                     <!--  Skip existing files  -->
                     <DockPanel
                         Background="Transparent"

@@ -26,6 +26,12 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.ShouldInjectTags = value;
     }
 
+    public bool DownloadThumbnail
+    {
+        get => _settingsService.ShouldDownloadThumbnail;
+        set => _settingsService.ShouldDownloadThumbnail = value;
+    }
+
     public bool ShouldSkipExistingFiles
     {
         get => _settingsService.ShouldSkipExistingFiles;

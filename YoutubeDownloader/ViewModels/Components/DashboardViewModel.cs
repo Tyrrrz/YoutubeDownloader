@@ -28,6 +28,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
     private readonly QueryResolver _queryResolver = new();
     private readonly VideoDownloader _videoDownloader = new();
     private readonly MediaTagInjector _mediaTagInjector = new();
+    private readonly ThumbnailDownloader _thumbnailDownloader = new();
 
     public bool IsBusy { get; private set; }
 
@@ -105,6 +106,11 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
                     {
                         // Media tagging is not critical
                     }
+                }
+
+                if (_settingsService.ShouldDownloadThumbnail)
+                {
+                    await _thumbnailDownloader.DownloadThumbnailAsync(download.FilePath!, download.Video!);
                 }
 
                 download.Status = DownloadStatus.Completed;
