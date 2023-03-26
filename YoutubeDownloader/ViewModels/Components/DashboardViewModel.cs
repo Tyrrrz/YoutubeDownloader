@@ -29,6 +29,8 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
     private readonly VideoDownloader _videoDownloader = new();
     private readonly MediaTagInjector _mediaTagInjector = new();
     private readonly ThumbnailDownloader _thumbnailDownloader = new();
+    private readonly ClosedCaptionsDownloader _closedCaptionsDownloader = new();
+    private readonly Translater _translater = new();
 
     public bool IsBusy { get; private set; }
 
@@ -110,7 +112,16 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
                 if (_settingsService.ShouldDownloadThumbnail)
                 {
-                    await _thumbnailDownloader.DownloadThumbnailAsync(download.FilePath!, download.Video!);
+                    await _thumbnailDownloader.DownloadThumbnailAsync(download.FilePath!, download.Video!, download.CancellationToken);
+                }
+
+                if (_settingsService.ShouldDownloadClosedCaptions)
+                {
+                    await _closedCaptionsDownloader.DownloadCCAsync(download.FilePath!, download.Video!, download.CancellationToken);
+                }
+                if (!string.IsNullOrWhiteSpace(_settingsService.TranslateKey))
+                {
+                    await _translater.TranslateAsync(download.Video!, download.FilePath!, _settingsService.TranslateKey, download.CancellationToken);
                 }
 
                 download.Status = DownloadStatus.Completed;

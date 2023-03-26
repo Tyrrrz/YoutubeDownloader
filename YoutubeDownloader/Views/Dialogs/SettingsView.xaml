@@ -100,9 +100,24 @@
                         <ToggleButton
                             Margin="16,8"
                             DockPanel.Dock="Right"
-                            IsChecked="{Binding DownloadThumbnail}" />
+                            IsChecked="{Binding ShouldDownloadThumbnail}" />
                     </DockPanel>
-                    
+
+                    <!--  Download ClosedCaption  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Download ClosedCaption into the path of downloaded files">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Download ClosedCaption" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ShouldDownloadClosedCaption}" />
+                    </DockPanel>
+
                     <!--  Skip existing files  -->
                     <DockPanel
                         Background="Transparent"
@@ -154,6 +169,27 @@
                             Text="{Binding FileNameTemplate}" />
                     </DockPanel>
 
+                    <!--  File name template  -->
+                    <DockPanel
+                        Margin="16,8"
+                        Background="Transparent"
+                        LastChildFill="False">
+                        <DockPanel.ToolTip>
+                            <TextBlock>
+                                <Run Text="Translate Key for Microsoft Translate API" />
+                            </TextBlock>
+                        </DockPanel.ToolTip>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Translate Key" />
+                        <TextBox
+                            Width="150"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="{Binding TranslateKey}" />
+                    </DockPanel>
+                    
                     <!--  Max concurrent downloads  -->
                     <DockPanel
                         Margin="16,8"

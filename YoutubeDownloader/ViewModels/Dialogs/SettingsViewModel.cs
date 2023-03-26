@@ -26,10 +26,16 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.ShouldInjectTags = value;
     }
 
-    public bool DownloadThumbnail
+    public bool ShouldDownloadThumbnail
     {
         get => _settingsService.ShouldDownloadThumbnail;
         set => _settingsService.ShouldDownloadThumbnail = value;
+    }
+
+    public bool ShouldDownloadClosedCaption
+    {
+        get => _settingsService.ShouldDownloadClosedCaptions;
+        set => _settingsService.ShouldDownloadClosedCaptions = value;
     }
 
     public bool ShouldSkipExistingFiles
@@ -42,6 +48,12 @@ public class SettingsViewModel : DialogScreen
     {
         get => _settingsService.FileNameTemplate;
         set => _settingsService.FileNameTemplate = value;
+    }
+
+    public string TranslateKey
+    {
+        get => _settingsService.TranslateKey;
+        set => _settingsService.TranslateKey = value;
     }
 
     public int ParallelLimit
