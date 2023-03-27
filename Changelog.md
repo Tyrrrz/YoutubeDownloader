@@ -3,6 +3,10 @@
 ## v1.9.10 (02-Mar-2023)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.2.8.
+- 添加部分功能：
+	- 下载视频封面
+	- 下载字幕文件（当字幕文件没有中文时，自动翻译字幕文件）
+	- 自动翻译标题和视频简介
 
 ## v1.9.9 (25-Feb-2023)
 
