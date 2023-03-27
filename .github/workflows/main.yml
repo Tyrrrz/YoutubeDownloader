@@ -53,26 +53,3 @@ jobs:
           files: YoutubeDownloader.zip
           body: |
             [Changelog](https://github.com/SinnoSong/YoutubeDownloader/blob/master/Changelog.md)
-
-  notify:
-    needs: deploy
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Get release version
-        id: get_version
-        uses: dawidd6/action-get-tag@v1
-
-      - name: Notify Discord
-        uses: satak/webrequest-action@v1.2.4
-        with:
-          url: ${{ secrets.DISCORD_WEBHOOK }}
-          method: POST
-          headers: |
-            {
-              "ContentType": "application/json; charset=UTF-8"
-            }
-          payload: |
-            {
-              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get_version.outputs.tag }}`\nChangelog: <https://github.com/SinnoSong/YoutubeDownloader/blob/${{ steps.get_version.outputs.tag }}/Changelog.md>"
-            }
