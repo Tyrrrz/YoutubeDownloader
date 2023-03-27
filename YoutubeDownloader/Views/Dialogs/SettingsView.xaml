@@ -118,6 +118,21 @@
                             IsChecked="{Binding ShouldDownloadClosedCaption}" />
                     </DockPanel>
 
+                    <!--  Translate ClosedCaption to Chinese  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Translate ClosedCaption to Chinese">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Translate ClosedCaption to Chinese" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ShouldTranslateCCToChinese}" />
+                    </DockPanel>
+                    
                     <!--  Skip existing files  -->
                     <DockPanel
                         Background="Transparent"
@@ -169,7 +184,7 @@
                             Text="{Binding FileNameTemplate}" />
                     </DockPanel>
 
-                    <!--  File name template  -->
+                    <!--  Translate key  -->
                     <DockPanel
                         Margin="16,8"
                         Background="Transparent"

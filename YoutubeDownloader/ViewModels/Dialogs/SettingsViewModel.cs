@@ -38,6 +38,12 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.ShouldDownloadClosedCaptions = value;
     }
 
+    public bool ShouldTranslateCCToChinese
+    {
+        get => _settingsService.ShouldTranslateCCToChinese;
+        set => _settingsService.ShouldTranslateCCToChinese = value;
+    }
+
     public bool ShouldSkipExistingFiles
     {
         get => _settingsService.ShouldSkipExistingFiles;

@@ -117,7 +117,11 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
                 if (_settingsService.ShouldDownloadClosedCaptions)
                 {
-                    await _closedCaptionsDownloader.DownloadCCAsync(download.FilePath!, download.Video!, download.CancellationToken);
+                    var tuple = await _closedCaptionsDownloader.DownloadCCAsync(download.FilePath!, download.Video!, download.CancellationToken);
+                    if (!tuple.Item1 && !string.IsNullOrWhiteSpace(_settingsService.TranslateKey) && !string.IsNullOrWhiteSpace(tuple.Item2))
+                    {
+                        await _translater.TranslateSrtAsync(tuple.Item2, _settingsService.TranslateKey);
+                    }
                 }
                 if (!string.IsNullOrWhiteSpace(_settingsService.TranslateKey))
                 {
