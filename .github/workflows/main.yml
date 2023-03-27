@@ -52,7 +52,7 @@ jobs:
         with:
           files: YoutubeDownloader.zip
           body: |
-            [Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)
+            [Changelog](https://github.com/SinnoSong/YoutubeDownloader/blob/master/Changelog.md)
 
   notify:
     needs: deploy
@@ -74,5 +74,5 @@ jobs:
             }
           payload: |
             {
-              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get_version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get_version.outputs.tag }}/Changelog.md>"
+              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get_version.outputs.tag }}`\nChangelog: <https://github.com/SinnoSong/YoutubeDownloader/blob/${{ steps.get_version.outputs.tag }}/Changelog.md>"
             }
