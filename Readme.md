@@ -1,6 +1,6 @@
 # YoutubeDownloader
 
-[英文](README_EN.md)
+[英文](Readme_EN.md)
 
 [![Build](https://img.shields.io/github/actions/workflow/status/SinnoSong/YoutubeDownloader/main.yml?branch=master)](https://github.com/SinnoSong/YoutubeDownloader/actions)
 [![Release](https://img.shields.io/github/release/SinnoSong/YoutubeDownloader.svg)](https://github.com/SinnoSong/YoutubeDownloader/releases)
