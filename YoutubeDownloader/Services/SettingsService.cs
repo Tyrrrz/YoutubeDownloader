@@ -29,6 +29,7 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public string FileNameTemplate { get; set; } = "$title";
     public string TranslateKey { get; set; } = "";
+    public string BaiduAppId { get; set; } = "";
 
     public int ParallelLimit { get; set; } = 2;
 

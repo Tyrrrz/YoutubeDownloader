@@ -62,6 +62,12 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.TranslateKey = value;
     }
 
+    public string BaiduAppId
+    {
+        get => _settingsService.BaiduAppId;
+        set => _settingsService.BaiduAppId = value;
+    }
+
     public int ParallelLimit
     {
         get => _settingsService.ParallelLimit;
