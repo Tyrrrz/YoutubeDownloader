@@ -60,19 +60,17 @@ jobs:
 
     steps:
       - name: Get release version
-        id: get_version
-        uses: dawidd6/action-get-tag@v1
+        id: get-version
+        uses: tyrrrz/action-get-tag@v1
 
       - name: Notify Discord
-        uses: satak/webrequest-action@v1.2.4
+        uses: tyrrrz/action-http-request@v1
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: POST
           headers: |
-            {
-              "ContentType": "application/json; charset=UTF-8"
-            }
+            ContentType: application/json; charset=UTF-8
           payload: |
             {
-              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get_version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get_version.outputs.tag }}/Changelog.md>"
+              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get-version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get-version.outputs.tag }}/Changelog.md>"
             }
