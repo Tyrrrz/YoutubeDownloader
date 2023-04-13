@@ -14,10 +14,11 @@
 You can copy-paste URL of any video, playlist or channel and download it directly to a format of your choice.
 It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
 
-This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
+> **Note**:
+> This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 
 > 📝 Want to learn more about how YouTube works under the hood?
-> See [Reverse-Engineering YouTube: Revisited](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited).
+> [Read this article](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited).
 
 ## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
 
