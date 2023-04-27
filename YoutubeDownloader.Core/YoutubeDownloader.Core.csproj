@@ -4,8 +4,8 @@
     <PackageReference Include="Gress" Version="2.1.0" />
     <PackageReference Include="JsonExtensions" Version="1.2.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="YoutubeExplode" Version="6.2.8" />
-    <PackageReference Include="YoutubeExplode.Converter" Version="6.2.8" />
+    <PackageReference Include="YoutubeExplode" Version="6.2.13" />
+    <PackageReference Include="YoutubeExplode.Converter" Version="6.2.13" />
   </ItemGroup>
 
 </Project>
