@@ -9,7 +9,7 @@ namespace YoutubeDownloader.Services;
 public class UpdateService : IDisposable
 {
     private readonly IUpdateManager _updateManager = new UpdateManager(
-        new GithubPackageResolver("Tyrrrz", "YoutubeDownloader", "YoutubeDownloader.zip"),
+        new GithubPackageResolver("SinnoSong", "YoutubeDownloader", "YoutubeDownloader.zip"),
         new ZipPackageExtractor()
     );
 
