@@ -21,10 +21,15 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
     public bool IsDarkModeEnabled { get; set; } = IsDarkModeEnabledByDefault();
 
     public bool ShouldInjectTags { get; set; } = true;
+    public bool ShouldDownloadThumbnail { get; set; } = true;
+    public bool ShouldDownloadClosedCaptions { get; set; } = true;
+    public bool ShouldTranslateCCToChinese { get; set; } = true;
 
     public bool ShouldSkipExistingFiles { get; set; }
 
     public string FileNameTemplate { get; set; } = "$title";
+    public string TranslateKey { get; set; } = "";
+    public string BaiduAppId { get; set; } = "";
 
     public int ParallelLimit { get; set; } = 2;
 

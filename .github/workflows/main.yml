@@ -52,25 +52,4 @@ jobs:
         with:
           files: YoutubeDownloader.zip
           body: |
-            [Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)
-
-  notify:
-    needs: deploy
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Get release version
-        id: get-version
-        uses: tyrrrz/action-get-tag@v1
-
-      - name: Notify Discord
-        uses: tyrrrz/action-http-request@v1
-        with:
-          url: ${{ secrets.DISCORD_WEBHOOK }}
-          method: POST
-          headers: |
-            Content-Type: application/json; charset=UTF-8
-          body: |
-            {
-              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get-version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get-version.outputs.tag }}/Changelog.md>"
-            }
+            [Changelog](https://github.com/SinnoSong/YoutubeDownloader/blob/master/Changelog.md)

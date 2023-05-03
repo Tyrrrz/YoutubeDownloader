@@ -88,6 +88,51 @@
                             IsChecked="{Binding ShouldInjectTags}" />
                     </DockPanel>
 
+                    <!--  Download Thumbnail  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Download thumbnail into the path of downloaded files">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Download Thumbnail" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ShouldDownloadThumbnail}" />
+                    </DockPanel>
+
+                    <!--  Download ClosedCaption  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Download ClosedCaption into the path of downloaded files">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Download ClosedCaption" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ShouldDownloadClosedCaption}" />
+                    </DockPanel>
+
+                    <!--  Translate ClosedCaption to Chinese  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Translate ClosedCaption to Chinese">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Translate ClosedCaption to Chinese" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ShouldTranslateCCToChinese}" />
+                    </DockPanel>
+                    
                     <!--  Skip existing files  -->
                     <DockPanel
                         Background="Transparent"
@@ -137,6 +182,48 @@
                             VerticalAlignment="Center"
                             DockPanel.Dock="Right"
                             Text="{Binding FileNameTemplate}" />
+                    </DockPanel>
+
+                    <!--  Translate key  -->
+                    <DockPanel
+                        Margin="16,8"
+                        Background="Transparent"
+                        LastChildFill="False">
+                        <DockPanel.ToolTip>
+                            <TextBlock>
+                                <Run Text="Translate Key for Microsoft Translate API" />
+                            </TextBlock>
+                        </DockPanel.ToolTip>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Translate Key" />
+                        <TextBox
+                            Width="150"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="{Binding TranslateKey}" />
+                    </DockPanel>
+
+                    <!--  Baidu Translate AppId  -->
+                    <DockPanel
+                        Margin="16,8"
+                        Background="Transparent"
+                        LastChildFill="False">
+                        <DockPanel.ToolTip>
+                            <TextBlock>
+                                <Run Text="AppId for Baidu Translate API" />
+                            </TextBlock>
+                        </DockPanel.ToolTip>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Baidu AppId" />
+                        <TextBox
+                            Width="150"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="{Binding BaiduAppId}" />
                     </DockPanel>
 
                     <!--  Max concurrent downloads  -->
