@@ -21,13 +21,16 @@ jobs:
           dotnet-version: 7.0.x
 
       - name: Publish
-        run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
+        run: >
+          dotnet publish YoutubeDownloader
+          --output YoutubeDownloader/bin/publish
+          --configuration Release
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: YoutubeDownloader
-          path: YoutubeDownloader/bin/Publish
+          path: YoutubeDownloader/bin/publish
 
   deploy:
     if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
@@ -42,8 +45,12 @@ jobs:
           path: YoutubeDownloader
 
       - name: Create package
-        run: Compress-Archive -Path YoutubeDownloader/* -DestinationPath YoutubeDownloader.zip -Force
         shell: pwsh
+        run: >
+          Compress-Archive
+          -Path YoutubeDownloader/*
+          -DestinationPath YoutubeDownloader.zip
+          -Force
 
       - name: Create release
         uses: softprops/action-gh-release@v1
