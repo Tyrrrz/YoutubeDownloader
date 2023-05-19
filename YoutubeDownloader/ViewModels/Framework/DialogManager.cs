@@ -37,6 +37,7 @@ public class DialogManager : IDisposable
 
                 dialogScreen.Closed -= OnScreenClosed;
             }
+
             dialogScreen.Closed += OnScreenClosed;
         }
 

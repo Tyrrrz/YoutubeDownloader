@@ -13,7 +13,7 @@ public class VideoToLowestQualityThumbnailUrlConverter : IValueConverter
 
     public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture) =>
         value is IVideo video
-            ? video.Thumbnails.OrderBy(t => t.Resolution.Area).FirstOrDefault()?.Url
+            ? video.Thumbnails.MinBy(t => t.Resolution.Area)?.Url
             : null;
 
     public object ConvertBack(object? value, Type targetType, object parameter, CultureInfo culture) =>

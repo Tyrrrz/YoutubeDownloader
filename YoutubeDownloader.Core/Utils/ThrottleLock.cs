@@ -10,8 +10,7 @@ internal class ThrottleLock : IDisposable
     private readonly TimeSpan _interval;
     private DateTimeOffset _lastRequestInstant = DateTimeOffset.MinValue;
 
-    public ThrottleLock(TimeSpan interval) =>
-        _interval = interval;
+    public ThrottleLock(TimeSpan interval) => _interval = interval;
 
     public async Task WaitAsync(CancellationToken cancellationToken = default)
     {

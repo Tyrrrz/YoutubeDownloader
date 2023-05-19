@@ -31,9 +31,9 @@ public static class MessageBoxViewModelExtensions
         string? cancelButtonText)
     {
         var viewModel = factory.CreateMessageBoxViewModel();
+
         viewModel.Title = title;
         viewModel.Message = message;
-
         viewModel.IsOkButtonVisible = !string.IsNullOrWhiteSpace(okButtonText);
         viewModel.OkButtonText = okButtonText;
         viewModel.IsCancelButtonVisible = !string.IsNullOrWhiteSpace(cancelButtonText);

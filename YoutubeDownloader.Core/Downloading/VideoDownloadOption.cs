@@ -23,11 +23,11 @@ public partial record VideoDownloadOption
     {
         IEnumerable<VideoDownloadOption> GetVideoAndAudioOptions()
         {
-            var videoStreams = manifest
+            var videoStreamInfos = manifest
                 .GetVideoStreams()
                 .OrderByDescending(v => v.VideoQuality);
 
-            foreach (var videoStreamInfo in videoStreams)
+            foreach (var videoStreamInfo in videoStreamInfos)
             {
                 // Muxed stream
                 if (videoStreamInfo is MuxedStreamInfo)

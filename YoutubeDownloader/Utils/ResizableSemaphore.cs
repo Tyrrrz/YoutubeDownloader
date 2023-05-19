@@ -40,7 +40,7 @@ internal partial class ResizableSemaphore : IDisposable
         {
             while (_count < MaxCount && _waiters.TryDequeue(out var waiter))
             {
-                // Don't increment if the waiter has ben canceled
+                // Don't increment if the waiter has been canceled
                 if (waiter.TrySetResult())
                     _count++;
             }

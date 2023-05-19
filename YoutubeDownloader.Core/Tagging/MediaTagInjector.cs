@@ -19,15 +19,13 @@ public class MediaTagInjector
             mediaFile.SetDescription(description);
 
         mediaFile.SetComment(
-            "Downloaded using YoutubeDownloader (https://github.com/Tyrrrz/YoutubeDownloader)" +
-            Environment.NewLine +
-            $"Video: {video.Title}" +
-            Environment.NewLine +
-            $"Video URL: {video.Url}" +
-            Environment.NewLine +
-            $"Channel: {video.Author.ChannelTitle}" +
-            Environment.NewLine +
-            $"Channel URL: {video.Author.ChannelUrl}"
+            $"""
+            Downloaded using YoutubeDownloader (https://github.com/Tyrrrz/YoutubeDownloader)
+            Video: {video.Title}
+            Video URL: {video.Url}
+            Channel: {video.Author.ChannelTitle}
+            Channel URL: {video.Author.ChannelUrl}
+            """
         );
     }
 
@@ -38,15 +36,14 @@ public class MediaTagInjector
     {
         var recordings = await _musicBrainz.SearchRecordingsAsync(video.Title, cancellationToken);
 
-        var recording = recordings
-            .FirstOrDefault(r =>
-                // Recording title must be part of the video title.
-                // Recording artist must be part of the video title or channel title.
-                video.Title.Contains(r.Title, StringComparison.OrdinalIgnoreCase) && (
-                    video.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase) ||
-                    video.Author.ChannelTitle.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
-                )
-            );
+        var recording = recordings.FirstOrDefault(r =>
+            // Recording title must be a part of the video title.
+            // Recording artist must be a part of the video title or channel title.
+            video.Title.Contains(r.Title, StringComparison.OrdinalIgnoreCase) && (
+                video.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase) ||
+                video.Author.ChannelTitle.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
+            )
+        );
 
         if (recording is null)
             return;

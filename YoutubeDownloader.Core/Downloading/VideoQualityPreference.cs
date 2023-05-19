@@ -2,6 +2,7 @@
 
 namespace YoutubeDownloader.Core.Downloading;
 
+// ReSharper disable InconsistentNaming
 public enum VideoQualityPreference
 {
     Lowest,
@@ -10,6 +11,7 @@ public enum VideoQualityPreference
     UpTo1080p,
     Highest
 }
+// ReSharper restore InconsistentNaming
 
 public static class VideoQualityPreferenceExtensions
 {

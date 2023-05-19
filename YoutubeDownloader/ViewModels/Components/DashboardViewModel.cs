@@ -113,7 +113,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             {
                 try
                 {
-                    // Delete incompletely downloaded file
+                    // Delete the incompletely downloaded file
                     File.Delete(download.FilePath!);
                 }
                 catch
@@ -149,7 +149,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
         IsBusy = true;
 
-        // Small weight to not offset any existing download operations
+        // Small weight so as to not offset any existing download operations
         var progress = _progressMuxer.CreateInput(0.01);
 
         try

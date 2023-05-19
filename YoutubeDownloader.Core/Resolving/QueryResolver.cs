@@ -91,7 +91,6 @@ public class QueryResolver
         var videoIds = new HashSet<VideoId>();
 
         var completed = 0;
-
         foreach (var query in queries)
         {
             var result = await ResolveAsync(query, cancellationToken);
