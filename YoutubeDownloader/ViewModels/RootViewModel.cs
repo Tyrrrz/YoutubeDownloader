@@ -58,9 +58,7 @@ public class RootViewModel : Screen
         _settingsService.Save();
 
         if (await _dialogManager.ShowDialogAsync(dialog) == true)
-        {
             ProcessEx.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
-        }
     }
 
     private async Task CheckForUpdatesAsync()
@@ -102,7 +100,7 @@ public class RootViewModel : Screen
 
         _settingsService.Load();
 
-        // Sync theme with settings
+        // Sync the theme with settings
         if (_settingsService.IsDarkModeEnabled)
         {
             App.SetDarkTheme();
@@ -112,7 +110,7 @@ public class RootViewModel : Screen
             App.SetLightTheme();
         }
 
-        // App has just been updated, display changelog
+        // App has just been updated, display the changelog
         if (_settingsService.LastAppVersion is not null && _settingsService.LastAppVersion != App.Version)
         {
             Notifications.Enqueue(

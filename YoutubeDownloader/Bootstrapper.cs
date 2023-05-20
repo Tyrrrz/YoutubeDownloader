@@ -18,8 +18,8 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
     {
         base.OnStart();
 
-        // Set default theme
-        // (preferred theme will be set later, once the settings are loaded)
+        // Set the default theme.
+        // Preferred theme will be set later, once the settings are loaded.
         App.SetLightTheme();
 
         // Increase maximum concurrent connections
