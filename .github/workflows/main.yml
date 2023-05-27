@@ -3,8 +3,11 @@ name: main
 on: [push, pull_request]
 
 jobs:
-  package:
+  pack:
     runs-on: windows-latest
+    permissions:
+      actions: write
+      contents: read
 
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -34,8 +37,11 @@ jobs:
 
   deploy:
     if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-    needs: package
+    needs: pack
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
 
     steps:
       - name: Download artifacts
@@ -64,6 +70,8 @@ jobs:
   notify:
     needs: deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Get release version
