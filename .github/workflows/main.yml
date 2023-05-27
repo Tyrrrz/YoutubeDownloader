@@ -59,13 +59,13 @@ jobs:
           -Force
 
       - name: Create release
-        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: YoutubeDownloader.zip
-          body: |
-            [Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)
+        run: >
+          gh release create ${{ github.ref_name }} YoutubeDownloader.zip
+          --title ${{ github.ref_name }}
+          --notes "[Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)"
+          --verify-tag
 
   notify:
     needs: deploy
@@ -74,10 +74,6 @@ jobs:
       contents: read
 
     steps:
-      - name: Get release version
-        id: get-version
-        uses: tyrrrz/action-get-tag@v1
-
       - name: Notify Discord
         uses: tyrrrz/action-http-request@v1
         with:
@@ -87,5 +83,5 @@ jobs:
             Content-Type: application/json; charset=UTF-8
           body: |
             {
-              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get-version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get-version.outputs.tag }}/Changelog.md>"
+              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ github.ref_name }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ github.ref_name }}/Changelog.md>"
             }
