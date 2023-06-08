@@ -62,8 +62,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
-          gh release create ${{ github.ref_name }} YoutubeDownloader.zip
-          --title ${{ github.ref_name }}
+          gh release create "${{ github.ref_name }}"
+          "YoutubeDownloader.zip"
+          --repo "${{ github.event.repository.full_name }}"
+          --title "${{ github.ref_name }}"
           --notes "[Changelog](${{ github.event.repository.html_url }}/blob/${{ github.ref_name }}/Changelog.md)"
           --verify-tag
 
