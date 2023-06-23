@@ -249,6 +249,8 @@
                                     <TextBlock
                                         Grid.Column="1"
                                         VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        MouseLeftButtonUp="{s:Action CopyErrorMessage}"
                                         TextTrimming="CharacterEllipsis">
                                         <TextBlock.Style>
                                             <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
@@ -280,7 +282,8 @@
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Failed}">
                                                         <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
                                                         <Setter Property="Text" Value="⚠ Failed" />
-                                                        <Setter Property="ToolTip" Value="{Binding ErrorMessage}" />
+                                                        <Setter Property="ToolTip" Value="Click to copy the error message" />
+                                                        <Setter Property="Cursor" Value="Hand" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
