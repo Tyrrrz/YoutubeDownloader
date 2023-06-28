@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.9.13 (28-Jun-2023)
+
+- Changed how failed downloads are presented in the UI. The error message corresponding to a failed download is no longer shown in the tooltip when you hover over the "Failed" status text. Instead, you can click on the status text to copy the error message to the clipboard. This should make it easier to include the error in a bug report.
+- Fixed an issue which prevented videos longer than 24 hours from being downloaded.
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.2.16.
+
 ## v1.9.12 (25-May-2023)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.2.15.
