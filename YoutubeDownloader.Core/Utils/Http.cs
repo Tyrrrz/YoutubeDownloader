@@ -33,12 +33,12 @@ public class AuthHandler : DelegatingHandler
 {
     public AuthHandler() => InnerHandler = new HttpClientHandler();
     
-    public string? Sapisid { get; set; }
+    public string? Papisid { get; set; }
     public string? Psid { get; set; }
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) 
     {
-        if(Sapisid is null || Psid is null)
+        if(Papisid is null || Psid is null)
             return base.SendAsync(request, cancellationToken);
         
         const string origin = "https://www.youtube.com";
@@ -49,8 +49,8 @@ public class AuthHandler : DelegatingHandler
         request.Headers.Remove("X-Origin");
         request.Headers.Remove("Referer");
         
-        request.Headers.Add("Cookie", $"CONSENT=YES+cb; YSC=DwKYllHNwuw; SAPISID={Sapisid}; __Secure-3PAPISID={Sapisid}; __Secure-3PSID={Psid}");
-        request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateSidBasedAuth(Sapisid, origin)}");
+        request.Headers.Add("Cookie", $"CONSENT=YES+cb; YSC=DwKYllHNwuw; __Secure-3PAPISID={Papisid}; __Secure-3PSID={Psid}");
+        request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateSidBasedAuth(Papisid, origin)}");
         request.Headers.Add("Origin", origin);
         request.Headers.Add("X-Origin", origin);
         request.Headers.Add("Referer", origin);

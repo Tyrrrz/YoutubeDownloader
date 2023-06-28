@@ -173,7 +173,7 @@
                         Margin="16,8"
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="How many downloads can be active at the same time">
+                        ToolTip="Cookie used in requests">
                         <TextBlock
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
@@ -184,14 +184,14 @@
                             Width="150"
                             VerticalAlignment="Center"
                             DockPanel.Dock="Right"
-                            Text="{Binding Sapisid}" />
+                            Text="{Binding Papisid}" />
                     </DockPanel>
                         
                     <DockPanel
                         Margin="16,8"
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip="How many downloads can be active at the same time">
+                        ToolTip="Cookie used in requests">
                         <TextBlock
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"

@@ -28,7 +28,7 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public int ParallelLimit { get; set; } = 2;
     
-    public string? Sapisid { get; set; }
+    public string? Papisid { get; set; }
     
     public string? Psid { get; set; }
 
