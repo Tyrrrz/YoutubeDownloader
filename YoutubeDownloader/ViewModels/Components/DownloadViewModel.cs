@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Windows;
 using Gress;
 using Stylet;
 using YoutubeDownloader.Core.Downloading;
@@ -95,6 +96,16 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
                 _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message)
             );
         }
+    }
+
+    public bool CanCopyErrorMessage => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+    public void CopyErrorMessage()
+    {
+        if (!CanCopyErrorMessage)
+            return;
+
+        Clipboard.SetText(ErrorMessage!);
     }
 
     public void Dispose() => _cancellationTokenSource.Dispose();
