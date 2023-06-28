@@ -168,6 +168,42 @@
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
                     </DockPanel>
+                    
+                    <DockPanel
+                        Margin="16,8"
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="How many downloads can be active at the same time">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="SAPISID cookie"
+                            TextAlignment="Right" />
+                        
+                        <TextBox
+                            Width="150"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="{Binding Sapisid}" />
+                    </DockPanel>
+                        
+                    <DockPanel
+                        Margin="16,8"
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="How many downloads can be active at the same time">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="__Secure-3PSID cookie"
+                            TextAlignment="Right" />
+                        
+                        <TextBox
+                            Width="150"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="{Binding Psid}" />
+                    </DockPanel>
                 </StackPanel>
             </ScrollViewer>
         </Border>

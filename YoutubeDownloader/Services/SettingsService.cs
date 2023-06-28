@@ -27,6 +27,10 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
     public string FileNameTemplate { get; set; } = "$title";
 
     public int ParallelLimit { get; set; } = 2;
+    
+    public string? Sapisid { get; set; }
+    
+    public string? Psid { get; set; }
 
     public Version? LastAppVersion { get; set; }
 

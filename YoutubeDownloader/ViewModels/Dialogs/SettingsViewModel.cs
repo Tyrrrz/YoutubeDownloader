@@ -43,6 +43,18 @@ public class SettingsViewModel : DialogScreen
         get => _settingsService.ParallelLimit;
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
+    
+    public string? Sapisid
+    {
+        get => _settingsService.Sapisid;
+        set => _settingsService.Sapisid = value;
+    }
+    
+    public string? Psid
+    {
+        get => _settingsService.Psid;
+        set => _settingsService.Psid = value;
+    }
 
     public SettingsViewModel(SettingsService settingsService)
     {
