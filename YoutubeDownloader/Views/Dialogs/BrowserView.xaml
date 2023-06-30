@@ -12,7 +12,7 @@
         Height="450">
     <Grid>
         <wpf:WebView2 
-            x:Name="webBrowser"
+            x:Name="WebBrowser"
             Source="https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.youtube.com"
             NavigationCompleted="WebBrowser_OnNavigationCompleted"/>
     </Grid>
