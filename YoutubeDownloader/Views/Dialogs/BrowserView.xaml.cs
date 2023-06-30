@@ -19,8 +19,8 @@ public partial class BrowserView
         
         if (isLogged)
         {
-            ViewModel.Sapisid = cookies?.First(i => i.Name == "SAPISID")?.Value;
-            ViewModel.Psid = cookies?.First(i => i.Name == "__Secure-3PSID")?.Value;
+            ViewModel.Sapisid = cookies?.FirstOrDefault(i => i.Name == "SAPISID")?.Value ?? cookies?.FirstOrDefault(i => i.Name == "__Secure-3PAPISID")?.Value;
+            ViewModel.Psid = cookies?.FirstOrDefault(i => i.Name == "__Secure-3PSID")?.Value;
             webBrowser.CoreWebView2.CookieManager.DeleteAllCookies();
             webBrowser.Dispose();
             ViewModel.Close(true);

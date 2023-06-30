@@ -16,6 +16,7 @@ public class BrowserViewModel : DialogScreen
 
     public string? Sapisid
     {
+        get => _settingsService.Sapisid;
         set => _settingsService.Sapisid = value;
     }
     
