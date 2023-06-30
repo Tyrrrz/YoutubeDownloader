@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
 
@@ -7,6 +8,15 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public class SettingsViewModel : DialogScreen
 {
     private readonly SettingsService _settingsService;
+    private readonly IViewModelFactory _viewModelFactory;
+    private readonly DialogManager _dialogManager;
+
+    public SettingsViewModel(SettingsService settingsService, IViewModelFactory viewModelFactory, DialogManager dialogManager)
+    {
+        _settingsService = settingsService;
+        _viewModelFactory = viewModelFactory;
+        _dialogManager = dialogManager;
+    }
 
     public bool IsAutoUpdateEnabled
     {
@@ -44,20 +54,21 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
     
-    public string? Papisid
+    public async Task Login()
     {
-        get => _settingsService.Papisid;
-        set => _settingsService.Papisid = value;
+        Close();
+        await _dialogManager.ShowDialogAsync(
+            _viewModelFactory.CreateBrowserSettingsViewModel()
+        );
     }
     
-    public string? Psid
+    public void Logout()
     {
-        get => _settingsService.Psid;
-        set => _settingsService.Psid = value;
+        _settingsService.Sapisid = null;
+        _settingsService.Psid = null;
+        Refresh();
     }
-
-    public SettingsViewModel(SettingsService settingsService)
-    {
-        _settingsService = settingsService;
-    }
+    
+    public bool IsLogged => _settingsService.Sapisid is not null && _settingsService.Psid is not null;
+    public bool IsNotLogged => !IsLogged;
 }

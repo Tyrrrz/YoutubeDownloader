@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     Width="380"
@@ -169,41 +170,25 @@
                         </StackPanel>
                     </DockPanel>
                     
-                    <DockPanel
-                        Margin="16,8"
-                        Background="Transparent"
-                        LastChildFill="False"
-                        ToolTip="Cookie used in requests">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Left"
-                            Text="SAPISID cookie"
-                            TextAlignment="Right" />
-                        
-                        <TextBox
-                            Width="150"
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Right"
-                            Text="{Binding Papisid}" />
-                    </DockPanel>
-                        
-                    <DockPanel
-                        Margin="16,8"
-                        Background="Transparent"
-                        LastChildFill="False"
-                        ToolTip="Cookie used in requests">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Left"
-                            Text="__Secure-3PSID cookie"
-                            TextAlignment="Right" />
-                        
-                        <TextBox
-                            Width="150"
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Right"
-                            Text="{Binding Psid}" />
-                    </DockPanel>
+                    <Button
+                        Margin="16"
+                        HorizontalAlignment="Stretch"
+                        Command="{s:Action Logout}"
+                        Content="Logout"
+                        IsCancel="True"
+                        IsDefault="True"
+                        Visibility="{Binding IsLogged, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrCollapsed}}"
+                        Style="{DynamicResource MaterialDesignOutlinedButton}" />
+                    
+                    <Button
+                        Margin="16"
+                        HorizontalAlignment="Stretch"
+                        Command="{s:Action Login}"
+                        Content="Login"
+                        IsCancel="True"
+                        IsDefault="True"
+                        Visibility="{Binding IsNotLogged, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrCollapsed}}"
+                        Style="{DynamicResource MaterialDesignOutlinedButton}" />
                 </StackPanel>
             </ScrollViewer>
         </Border>
