@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
@@ -64,11 +65,10 @@ public class SettingsViewModel : DialogScreen
     
     public void Logout()
     {
-        _settingsService.Sapisid = null;
-        _settingsService.Psid = null;
+        _settingsService.Cookies = new Dictionary<string, string>();
         Refresh();
     }
     
-    public bool IsLogged => _settingsService.Sapisid is not null && _settingsService.Psid is not null;
+    public bool IsLogged => _settingsService.Cookies.Count > 0;
     public bool IsNotLogged => !IsLogged;
 }

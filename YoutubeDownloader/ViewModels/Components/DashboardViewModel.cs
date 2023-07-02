@@ -54,8 +54,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
 
         _settingsService.BindAndInvoke(o => o.ParallelLimit, (_, e) => _downloadSemaphore.MaxCount = e.NewValue);
-        _settingsService.BindAndInvoke(o => o.Sapisid, (_ ,e ) => Http.AuthHandler.Papisid = e.NewValue);
-        _settingsService.BindAndInvoke(o => o.Psid, (_ ,e ) => Http.AuthHandler.Psid = e.NewValue);
+        _settingsService.BindAndInvoke(o => o.Cookies, (_ ,e ) => Http.AuthHandler.Cookies = e.NewValue);
         Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
         Downloads.Bind(o => o.Count, (_, _) => NotifyOfPropertyChange(() => IsDownloadsAvailable));
     }

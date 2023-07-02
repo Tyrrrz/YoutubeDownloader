@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
@@ -28,9 +29,7 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public int ParallelLimit { get; set; } = 2;
     
-    public string? Sapisid { get; set; }
-    
-    public string? Psid { get; set; }
+    public Dictionary<string,string> Cookies { get; set; } = new();
 
     public Version? LastAppVersion { get; set; }
 

@@ -9,4 +9,6 @@ internal static class CollectionExtensions
         foreach (var i in items)
             source.Add(i);
     }
+    
+    public static string Join<T>(this IEnumerable<T> source, string separator) => string.Join(separator, source);
 }

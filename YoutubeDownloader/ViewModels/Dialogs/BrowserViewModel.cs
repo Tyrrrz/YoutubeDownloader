@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
 
@@ -8,19 +8,11 @@ public class BrowserViewModel : DialogScreen
 {
     private readonly SettingsService _settingsService;
 
-    public BrowserViewModel(SettingsService settingsService)
-    {
-        _settingsService = settingsService;
-    }
+    public BrowserViewModel(SettingsService settingsService) => _settingsService = settingsService;
 
-
-    public string? Sapisid
+    public Dictionary<string, string> Cookies
     {
-        set => _settingsService.Sapisid = value;
-    }
-    
-    public string? Psid
-    {
-        set => _settingsService.Psid = value;
+        get => _settingsService.Cookies;
+        set => _settingsService.Cookies = value;
     }
 }
