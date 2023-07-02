@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
@@ -69,6 +70,6 @@ public class SettingsViewModel : DialogScreen
         Refresh();
     }
     
-    public bool IsLogged => _settingsService.Cookies.Count > 0;
+    public bool IsLogged => _settingsService.Cookies.Any();
     public bool IsNotLogged => !IsLogged;
 }
