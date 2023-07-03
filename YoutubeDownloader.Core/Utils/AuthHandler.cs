@@ -26,13 +26,13 @@ public class AuthHandler : DelegatingHandler
         get => _cookieContainer.GetCookies(new Uri("https://www.youtube.com")).DistinctBy(i => i.Name).ToDictionary(i => i.Name, i => i.Value);
     }
 
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) 
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) 
     {
         const string origin = "https://www.youtube.com";
         var papisid = Cookies.TryGetValue("SAPISID") ?? Cookies.TryGetValue("__Secure-3PAPISID");
         
         if (papisid is null)
-            return await base.SendAsync(request, cancellationToken);
+            return base.SendAsync(request, cancellationToken);
 
         request.Headers.Remove("Cookie");
         request.Headers.Remove("Authorization");
@@ -45,8 +45,7 @@ public class AuthHandler : DelegatingHandler
         request.Headers.Add("X-Origin", origin);
         request.Headers.Add("Referer", origin);
         
-        var response = await base.SendAsync(request, cancellationToken);
-        return response;
+        return base.SendAsync(request, cancellationToken);
     }
     
     private static string GenerateSidBasedAuth(string sid, string origin)
