@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     Width="380"
@@ -168,6 +169,26 @@
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
                     </DockPanel>
+                    
+                    <Button
+                        Margin="16"
+                        HorizontalAlignment="Stretch"
+                        Command="{s:Action Logout}"
+                        Content="Logout"
+                        IsCancel="True"
+                        IsDefault="True"
+                        Visibility="{Binding IsLogged, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrCollapsed}}"
+                        Style="{DynamicResource MaterialDesignOutlinedButton}" />
+                    
+                    <Button
+                        Margin="16"
+                        HorizontalAlignment="Stretch"
+                        Command="{s:Action Login}"
+                        Content="Login"
+                        IsCancel="True"
+                        IsDefault="True"
+                        Visibility="{Binding IsNotLogged, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrCollapsed}}"
+                        Style="{DynamicResource MaterialDesignOutlinedButton}" />
                 </StackPanel>
             </ScrollViewer>
         </Border>

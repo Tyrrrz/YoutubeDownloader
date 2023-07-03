@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
@@ -27,6 +28,8 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
     public string FileNameTemplate { get; set; } = "$title";
 
     public int ParallelLimit { get; set; } = 2;
+    
+    public Dictionary<string,string> Cookies { get; set; } = new();
 
     public Version? LastAppVersion { get; set; }
 

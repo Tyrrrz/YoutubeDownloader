@@ -17,4 +17,6 @@ public interface IViewModelFactory
     MessageBoxViewModel CreateMessageBoxViewModel();
 
     SettingsViewModel CreateSettingsViewModel();
+    
+    BrowserViewModel CreateBrowserSettingsViewModel();
 }

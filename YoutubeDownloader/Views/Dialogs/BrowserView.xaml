@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="YoutubeDownloader.Views.Dialogs.BrowserView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+        xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        d:DataContext="{d:DesignInstance Type=dialogs:BrowserViewModel}"
+        Style="{DynamicResource MaterialDesignRoot}"
+        mc:Ignorable="d"
+        Width="380"
+        Height="450">
+    <Grid>
+        <wpf:WebView2 
+            x:Name="WebBrowser"
+            Source="https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.youtube.com"
+            NavigationCompleted="WebBrowser_OnNavigationCompleted"/>
+    </Grid>
+</UserControl>
