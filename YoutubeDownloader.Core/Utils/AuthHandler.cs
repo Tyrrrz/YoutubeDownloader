@@ -39,7 +39,6 @@ public class AuthHandler : DelegatingHandler
         request.Headers.Remove("Origin");
         request.Headers.Remove("X-Origin");
         request.Headers.Remove("Referer");
-        request.Headers.Remove("X-Goog-AuthUser");
         
         request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateSidBasedAuth(papisid, origin)}");
         request.Headers.Add("Origin", origin);
