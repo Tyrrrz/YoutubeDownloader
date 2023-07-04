@@ -12,7 +12,9 @@ using YoutubeDownloader.Core.Utils.Extensions;
 namespace YoutubeDownloader.Core.Utils;
 
 public class AuthHandler : DelegatingHandler
-{
+{ 
+    private const string Origin = "https://www.youtube.com";
+    private readonly Uri _baseUri = new(Origin);
     private readonly CookieContainer _cookieContainer = new();
 
     public AuthHandler() => InnerHandler = new HttpClientHandler()
@@ -22,13 +24,12 @@ public class AuthHandler : DelegatingHandler
     
     public Dictionary<string,string> Cookies
     {
-        set => _cookieContainer.SetCookies(new Uri("https://www.youtube.com"), value.Select(i => $"{i.Key}={i.Value}").Join(","));
-        get => _cookieContainer.GetCookies(new Uri("https://www.youtube.com")).DistinctBy(i => i.Name).ToDictionary(i => i.Name, i => i.Value);
+        set => _cookieContainer.SetCookies(_baseUri, value.Select(i => $"{i.Key}={i.Value}").Join(","));
+        get => _cookieContainer.GetCookies(_baseUri).DistinctBy(i => i.Name).ToDictionary(i => i.Name, i => i.Value);
     }
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) 
     {
-        const string origin = "https://www.youtube.com";
         var papisid = Cookies.TryGetValue("SAPISID") ?? Cookies.TryGetValue("__Secure-3PAPISID");
         
         if (papisid is null)
@@ -40,10 +41,10 @@ public class AuthHandler : DelegatingHandler
         request.Headers.Remove("X-Origin");
         request.Headers.Remove("Referer");
         
-        request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateSidBasedAuth(papisid, origin)}");
-        request.Headers.Add("Origin", origin);
-        request.Headers.Add("X-Origin", origin);
-        request.Headers.Add("Referer", origin);
+        request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateSidBasedAuth(papisid, Origin)}");
+        request.Headers.Add("Origin", Origin);
+        request.Headers.Add("X-Origin", Origin);
+        request.Headers.Add("Referer", Origin);
         
         return base.SendAsync(request, cancellationToken);
     }
