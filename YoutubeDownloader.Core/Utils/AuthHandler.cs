@@ -22,10 +22,8 @@ public class AuthHandler : DelegatingHandler
         foreach (Cookie cookie in _innerHandler.CookieContainer.GetCookies(_baseUri))
              cookie.Expired = true;
 
-        if (string.IsNullOrWhiteSpace(cookies))
-            return;
-         
-        _innerHandler.CookieContainer.SetCookies(_baseUri, cookies);
+        if (!string.IsNullOrWhiteSpace(cookies))
+            _innerHandler.CookieContainer.SetCookies(_baseUri, cookies);
     }
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
