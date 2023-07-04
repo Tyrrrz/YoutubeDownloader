@@ -13,21 +13,19 @@ public class AuthHandler : DelegatingHandler
 {
     private const string Origin = "https://www.youtube.com";
     private readonly Uri _baseUri = new(Origin);
-    private HttpClientHandler _innerHandler = new();
+    private readonly HttpClientHandler _innerHandler = new();
 
     public AuthHandler() => InnerHandler = _innerHandler;
 
     public void SetCookies(string cookies)
     {
-
-        //Invalidate all cookies without creating a new one 
-         foreach (Cookie cookie in _innerHandler.CookieContainer.GetCookies(_baseUri))
+        foreach (Cookie cookie in _innerHandler.CookieContainer.GetCookies(_baseUri))
              cookie.Expired = true;
 
-         if (string.IsNullOrWhiteSpace(cookies))
-             return;
+        if (string.IsNullOrWhiteSpace(cookies))
+            return;
          
-         _innerHandler.CookieContainer.SetCookies(_baseUri, cookies);
+        _innerHandler.CookieContainer.SetCookies(_baseUri, cookies);
     }
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
