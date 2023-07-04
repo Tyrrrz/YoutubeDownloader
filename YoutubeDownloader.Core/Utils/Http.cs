@@ -6,7 +6,7 @@ namespace YoutubeDownloader.Core.Utils;
 
 public static class Http
 {
-    public static AuthHandler AuthHandler { get; } = new();
+    public static AuthHandler AuthHandler { get; set; } = new();
     public static HttpClient Client { get; } = new(AuthHandler, true)
     {
         DefaultRequestHeaders =
