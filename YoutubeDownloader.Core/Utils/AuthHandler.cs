@@ -13,7 +13,11 @@ public class AuthHandler : DelegatingHandler
 {
     private const string Origin = "https://www.youtube.com";
     private readonly Uri _baseUri = new(Origin);
-    private readonly HttpClientHandler _innerHandler = new();
+    private readonly HttpClientHandler _innerHandler = new()
+    {
+        UseCookies = true,
+        CookieContainer = new CookieContainer()
+    };
 
     public AuthHandler() => InnerHandler = _innerHandler;
 
@@ -28,10 +32,13 @@ public class AuthHandler : DelegatingHandler
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var papisid = _innerHandler.CookieContainer.GetCookies(_baseUri)["SAPISID"] ?? _innerHandler.CookieContainer.GetCookies(_baseUri)["__Secure-3PAPISID"];
+        var papisid = _innerHandler.CookieContainer.GetCookies(_baseUri)["__Secure-3PAPISID"] ?? _innerHandler.CookieContainer.GetCookies(_baseUri)["SAPISID"];
 
         if (papisid is null)
             return base.SendAsync(request, cancellationToken);
+        
+        //Sometimes SAPISID cookie is not set, so we set it manually
+        _innerHandler.CookieContainer.SetCookies(_baseUri, $"SAPISID={papisid.Value}");
 
         request.Headers.Remove("Cookie");
         request.Headers.Remove("Authorization");
