@@ -39,6 +39,8 @@ public class AuthHandler : DelegatingHandler
         
         //Sometimes SAPISID cookie is not set, so we set it manually
         _innerHandler.CookieContainer.SetCookies(_baseUri, $"SAPISID={papisid.Value}");
+        //set consent
+        _innerHandler.CookieContainer.SetCookies(_baseUri, "CONSENT=YES+cb.20210328-17-p0.en+FX+%s");
 
         request.Headers.Remove("Cookie");
         request.Headers.Remove("Authorization");
@@ -50,6 +52,7 @@ public class AuthHandler : DelegatingHandler
         request.Headers.Add("Origin", Origin);
         request.Headers.Add("X-Origin", Origin);
         request.Headers.Add("Referer", Origin);
+        request.Headers.Add("X-Goog-AuthUser", "0");
 
         return base.SendAsync(request, cancellationToken);
     }
