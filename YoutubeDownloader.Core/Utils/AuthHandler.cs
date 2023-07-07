@@ -34,21 +34,21 @@ public class AuthHandler : DelegatingHandler
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var papisid = _innerHandler.CookieContainer.GetCookies(_baseUri)["__Secure-3PAPISID"] ?? _innerHandler.CookieContainer.GetCookies(_baseUri)["SAPISID"];
-
-        if (papisid is null)
+        var sapisid = _innerHandler.CookieContainer.GetCookies(_baseUri)["__Secure-3PAPISID"] ?? _innerHandler.CookieContainer.GetCookies(_baseUri)["SAPISID"];
+        
+        if (sapisid is null)
             return base.SendAsync(request, cancellationToken);
+        
+        if(_innerHandler.CookieContainer.GetCookies(_baseUri)["SAPISID"] is null)
+            _innerHandler.CookieContainer.Add(_baseUri, new Cookie("SAPISID", sapisid.Value));
 
-        request.Headers.Remove("Cookie");
         request.Headers.Remove("Authorization");
         request.Headers.Remove("Origin");
         request.Headers.Remove("X-Origin");
-        request.Headers.Remove("Referer");
 
-        request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateSidBasedAuth(papisid.Value, Origin)}");
+        request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateSidBasedAuth(sapisid.Value, Origin)}");
         request.Headers.Add("Origin", Origin);
         request.Headers.Add("X-Origin", Origin);
-        request.Headers.Add("Referer", Origin);
         
         if (PageId is not null)
         {
