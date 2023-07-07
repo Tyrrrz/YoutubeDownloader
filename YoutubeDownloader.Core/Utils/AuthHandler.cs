@@ -49,12 +49,12 @@ public class AuthHandler : DelegatingHandler
         request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateSidBasedAuth(sapisid.Value, Origin)}");
         request.Headers.Add("Origin", Origin);
         request.Headers.Add("X-Origin", Origin);
-        
+        //Set to 0 as it is only allowed to be logged in with one account
+        request.Headers.Add("X-Goog-AuthUser", "0");
+
+        //Needed if there are brand accounts (Secondary channels)
         if (PageId is not null)
-        {
-            request.Headers.Add("X-Goog-AuthUser", "0");
             request.Headers.Add("X-Goog-PageId", PageId);
-        }
 
         return base.SendAsync(request, cancellationToken);
     }
