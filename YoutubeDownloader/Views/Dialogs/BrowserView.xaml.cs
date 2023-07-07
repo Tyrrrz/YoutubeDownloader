@@ -34,7 +34,7 @@ public partial class BrowserView
             if (isRequired && id is not null) ViewModel.PageId = id;
 
 
-            WebBrowser.CoreWebView2.CookieManager.DeleteAllCookies();
+            await WebBrowser.CoreWebView2.Profile.ClearBrowsingDataAsync();
             WebBrowser.Dispose();
             ViewModel.Close();
         }
