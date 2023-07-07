@@ -20,6 +20,8 @@ public class AuthHandler : DelegatingHandler
     };
 
     public AuthHandler() => InnerHandler = _innerHandler;
+    
+    public string? PageId { get; set; }
 
     public void SetCookies(string cookies)
     {
@@ -36,11 +38,6 @@ public class AuthHandler : DelegatingHandler
 
         if (papisid is null)
             return base.SendAsync(request, cancellationToken);
-        
-        //Sometimes SAPISID cookie is not set, so we set it manually
-        _innerHandler.CookieContainer.SetCookies(_baseUri, $"SAPISID={papisid.Value}");
-        //set consent
-        _innerHandler.CookieContainer.SetCookies(_baseUri, "CONSENT=YES+cb.20210328-17-p0.en+FX+%s");
 
         request.Headers.Remove("Cookie");
         request.Headers.Remove("Authorization");
@@ -52,7 +49,12 @@ public class AuthHandler : DelegatingHandler
         request.Headers.Add("Origin", Origin);
         request.Headers.Add("X-Origin", Origin);
         request.Headers.Add("Referer", Origin);
-        request.Headers.Add("X-Goog-AuthUser", "0");
+        
+        if (PageId is not null)
+        {
+            request.Headers.Add("X-Goog-AuthUser", "0");
+            request.Headers.Add("X-Goog-PageId", PageId);
+        }
 
         return base.SendAsync(request, cancellationToken);
     }

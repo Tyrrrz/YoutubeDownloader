@@ -57,6 +57,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
         _settingsService.BindAndInvoke(o => o.ParallelLimit, (_, e) => _downloadSemaphore.MaxCount = e.NewValue);
         _settingsService.BindAndInvoke(o => o.Cookies, (_ ,e ) => Http.AuthHandler.SetCookies(e.NewValue.Select(i => $"{i.Key}={i.Value}").Join(",")));
+        _settingsService.BindAndInvoke(o => o.PageId, (_, e) => Http.AuthHandler.PageId = e.NewValue);
         Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
         Downloads.Bind(o => o.Count, (_, _) => NotifyOfPropertyChange(() => IsDownloadsAvailable));
     }
