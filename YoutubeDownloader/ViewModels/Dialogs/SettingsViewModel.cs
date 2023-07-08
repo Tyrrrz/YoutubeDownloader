@@ -67,6 +67,7 @@ public class SettingsViewModel : DialogScreen
     public void Logout()
     {
         _settingsService.Cookies = new Dictionary<string, string>();
+        _settingsService.PageId = null;
         Refresh();
     }
     

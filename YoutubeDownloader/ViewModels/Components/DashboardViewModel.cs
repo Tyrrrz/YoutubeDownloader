@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Gress;
 using Gress.Completable;
@@ -9,6 +10,7 @@ using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
 using YoutubeDownloader.Core.Utils;
+using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -54,7 +56,8 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
 
         _settingsService.BindAndInvoke(o => o.ParallelLimit, (_, e) => _downloadSemaphore.MaxCount = e.NewValue);
-        _settingsService.BindAndInvoke(o => o.Cookies, (_ ,e ) => Http.AuthHandler.Cookies = e.NewValue);
+        _settingsService.BindAndInvoke(o => o.Cookies, (_ ,e ) => Http.AuthHandler.SetCookies(e.NewValue.Select(i => $"{i.Key}={i.Value}").Join(",")));
+        _settingsService.BindAndInvoke(o => o.PageId, (_, e) => Http.AuthHandler.PageId = e.NewValue);
         Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
         Downloads.Bind(o => o.Count, (_, _) => NotifyOfPropertyChange(() => IsDownloadsAvailable));
     }

@@ -30,6 +30,7 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
     public int ParallelLimit { get; set; } = 2;
     
     public Dictionary<string,string> Cookies { get; set; } = new();
+    public string? PageId { get; set; }
 
     public Version? LastAppVersion { get; set; }
 

@@ -15,4 +15,10 @@ public class BrowserViewModel : DialogScreen
         get => _settingsService.Cookies;
         set => _settingsService.Cookies = value;
     }
+    
+    public string? PageId 
+    {
+        get => _settingsService.PageId;
+        set => _settingsService.PageId = value;
+    }
 }
