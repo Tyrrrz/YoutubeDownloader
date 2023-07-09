@@ -21,8 +21,8 @@ public class QueryResolver
         string query,
         CancellationToken cancellationToken = default)
     {
-        // Only consider URLs when parsing IDs.
-        // All other queries should be treated as search queries.
+        // Only consider URLs for parsing IDs.
+        // All other queries should be treated as search keywords.
         var isUrl = Uri.IsWellFormedUriString(query, UriKind.Absolute);
 
         // Playlist
