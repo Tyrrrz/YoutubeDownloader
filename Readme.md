@@ -48,6 +48,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 - Selectable video quality and format
 - Automatically embed subtitles
 - Automatically inject media tags
+- Log in with a YouTube account to access private content
 
 ## Screenshots
 
