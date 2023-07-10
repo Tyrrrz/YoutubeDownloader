@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
@@ -15,7 +16,10 @@ namespace YoutubeDownloader.Core.Resolving;
 
 public class QueryResolver
 {
-    private readonly YoutubeClient _youtube = new(Http.Client);
+    private readonly YoutubeClient _youtube;
+
+    public QueryResolver(HttpClient http) =>
+        _youtube = new YoutubeClient(http);
 
     public async Task<QueryResult> ResolveAsync(
         string query,

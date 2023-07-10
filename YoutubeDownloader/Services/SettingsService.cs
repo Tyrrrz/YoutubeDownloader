@@ -33,7 +33,7 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public Version? LastAppVersion { get; set; }
 
-    public Dictionary<string, string>? LastAuthCookies { get; set; }
+    public IReadOnlyDictionary<string, string>? LastAuthCookies { get; set; }
 
     // STJ cannot properly serialize immutable structs
     [JsonConverter(typeof(ContainerJsonConverter))]

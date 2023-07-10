@@ -130,8 +130,8 @@
                 HorizontalAlignment="Center"
                 Visibility="{Binding IsDownloadsAvailable, Converter={x:Static converters:BoolToVisibilityConverter.CollapsedOrVisible}}">
                 <materialDesign:PackIcon
-                    Width="258"
-                    Height="258"
+                    Width="256"
+                    Height="256"
                     HorizontalAlignment="Center"
                     Foreground="{DynamicResource MaterialDesignDivider}"
                     Kind="Youtube" />

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Windows;
+﻿using System.Net;
 using Stylet;
 using StyletIoC;
 using YoutubeDownloader.Services;
@@ -27,24 +24,6 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
 
         // Increase maximum concurrent connections
         ServicePointManager.DefaultConnectionLimit = 20;
-    }
-
-    protected override void OnExit(ExitEventArgs args)
-    {
-        // Remove WebView2 browsing data
-        try
-        {
-            Directory.Delete(
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "YoutubeDownloader.exe.WebView2"),
-                true
-            );
-        }
-        catch
-        {
-            // Ignore
-        }
-
-        base.OnExit(args);
     }
 
     protected override void ConfigureIoC(IStyletIoCBuilder builder)

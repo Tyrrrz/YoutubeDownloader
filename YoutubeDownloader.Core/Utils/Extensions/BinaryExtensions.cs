@@ -9,7 +9,7 @@ internal static class BinaryExtensions
         var buffer = new StringBuilder(2 * data.Length);
 
         foreach (var b in data)
-            buffer.Append(b.ToString("X2"));
+            buffer.Append(b.ToString("x2"));
 
         return buffer.ToString();
     }

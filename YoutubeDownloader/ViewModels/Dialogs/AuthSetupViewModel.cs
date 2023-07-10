@@ -10,7 +10,13 @@ public class AuthSetupViewModel : DialogScreen
 {
     private readonly SettingsService _settingsService;
 
-    public bool IsAuthenticated => _settingsService.LastAuthCookies?.Any() == true;
+    public IReadOnlyDictionary<string, string>? Cookies
+    {
+        get => _settingsService.LastAuthCookies;
+        set => _settingsService.LastAuthCookies = value;
+    }
+
+    public bool IsAuthenticated => Cookies?.Any() == true;
 
     public AuthSetupViewModel(SettingsService settingsService)
     {
@@ -18,12 +24,12 @@ public class AuthSetupViewModel : DialogScreen
 
         _settingsService.BindAndInvoke(
             o => o.LastAuthCookies,
+            (_, _) => NotifyOfPropertyChange(() => Cookies)
+        );
+
+        this.BindAndInvoke(
+            o => o.Cookies,
             (_, _) => NotifyOfPropertyChange(() => IsAuthenticated)
         );
     }
-
-    public void SaveCookies(IReadOnlyDictionary<string, string> cookies) =>
-        _settingsService.LastAuthCookies = cookies.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-    public void ResetCookies() => _settingsService.LastAuthCookies = null;
 }

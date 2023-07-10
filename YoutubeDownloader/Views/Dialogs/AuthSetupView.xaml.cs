@@ -24,7 +24,7 @@ public partial class AuthSetupView
 
     private void LogoutHyperlink_OnClick(object sender, RoutedEventArgs args)
     {
-        ViewModel.ResetCookies();
+        ViewModel.Cookies = null;
         NavigateToLoginPage();
     }
 
@@ -47,7 +47,7 @@ public partial class AuthSetupView
 
     private void WebBrowser_OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs args)
     {
-        // Reset existing browser cookies if the user is logging in (again)
+        // Reset existing browser cookies if the user is attempting to log in (again)
         if (string.Equals(args.Uri, LoginPageUrl, StringComparison.OrdinalIgnoreCase))
             WebBrowser.CoreWebView2.CookieManager.DeleteAllCookies();
     }
@@ -56,12 +56,20 @@ public partial class AuthSetupView
     {
         var url = WebBrowser.Source.AbsoluteUri.TrimEnd('/');
 
-        // Navigated to the home page
+        // Navigated to the home page (presumably after a successful login)
         if (string.Equals(url, HomePageUrl, StringComparison.OrdinalIgnoreCase))
         {
             // Extract the cookies that the browser received after logging in
-            var cookies = await WebBrowser.CoreWebView2.CookieManager.GetCookiesAsync(WebBrowser.Source.AbsoluteUri);
-            ViewModel.SaveCookies(cookies.ToDictionary(i => i.Name, i => i.Value));
+            var cookies = await WebBrowser.CoreWebView2.CookieManager.GetCookiesAsync("");
+            ViewModel.Cookies = cookies.ToDictionary(i => i.Name, i => i.Value);
         }
+    }
+
+    private async void WebBrowser_OnUnloaded(object sender, RoutedEventArgs args)
+    {
+        // This will most likely not work because WebView2 would still be running at this point,
+        // and there doesn't seem to be any way to shut it down using the .NET API.
+        if (WebBrowser.CoreWebView2?.Profile is not null)
+            await WebBrowser.CoreWebView2.Profile.ClearBrowsingDataAsync();
     }
 }

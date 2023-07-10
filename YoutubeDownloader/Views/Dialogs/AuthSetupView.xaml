@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
@@ -34,26 +35,36 @@
             BorderThickness="0,1">
             <Grid>
                 <!--  Current auth info & logout  -->
-                <TextBlock
+                <StackPanel
                     Margin="16"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    FontSize="18"
-                    TextAlignment="Center"
                     Visibility="{Binding IsAuthenticated, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                    <Run Text="You are currently authenticated" />
-                    <LineBreak />
-                    <Hyperlink
-                        x:Name="LogoutHyperlink"
-                        Click="LogoutHyperlink_OnClick"
-                        FontWeight="SemiBold">
-                        Reset credentials
-                    </Hyperlink>
-                </TextBlock>
+                    <materialDesign:PackIcon
+                        Width="196"
+                        Height="196"
+                        HorizontalAlignment="Center"
+                        Foreground="{DynamicResource MaterialDesignDivider}"
+                        Kind="AccountCheck" />
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="18"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap">
+                        <Run FontWeight="Light" Text="You are currently authenticated" />
+                        <LineBreak />
+                        <Hyperlink x:Name="LogoutHyperlink" Click="LogoutHyperlink_OnClick">
+                            Log out
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
 
                 <!--  Placeholder  -->
                 <TextBlock
                     Margin="16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
                     FontSize="18"
                     Text="Loading..."
                     Visibility="{Binding IsAuthenticated, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}" />
@@ -65,6 +76,7 @@
                     Loaded="WebBrowser_OnLoaded"
                     NavigationCompleted="WebBrowser_OnNavigationCompleted"
                     NavigationStarting="WebBrowser_OnNavigationStarting"
+                    Unloaded="WebBrowser_OnUnloaded"
                     Visibility="{Binding IsAuthenticated, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}">
                     <wpf:WebView2.CreationProperties>
                         <wpf:CoreWebView2CreationProperties IsInPrivateModeEnabled="True" />

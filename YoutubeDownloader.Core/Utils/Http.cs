@@ -6,19 +6,21 @@ namespace YoutubeDownloader.Core.Utils;
 
 public static class Http
 {
-    public static AuthHandler AuthHandler { get; } = new();
-    public static HttpClient Client { get; } = new(AuthHandler, true)
-    {
-        DefaultRequestHeaders =
+    public static HttpClient Client { get; } = CreateClient();
+
+    public static HttpClient CreateClient(HttpMessageHandler? handler = null) =>
+        new(handler ?? new SocketsHttpHandler(), true)
         {
-            // Required by some of the services we're using
-            UserAgent =
+            DefaultRequestHeaders =
             {
-                new ProductInfoHeaderValue(
-                    "YoutubeDownloader",
-                    Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)
-                )
+                // Required by some of the services we're using
+                UserAgent =
+                {
+                    new ProductInfoHeaderValue(
+                        "YoutubeDownloader",
+                        Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)
+                    )
+                }
             }
-        }
-    };
+        };
 }
