@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
@@ -14,7 +15,10 @@ namespace YoutubeDownloader.Core.Downloading;
 
 public class VideoDownloader
 {
-    private readonly YoutubeClient _youtube = new(Http.Client);
+    private readonly YoutubeClient _youtube;
+
+    public VideoDownloader(HttpClient http) =>
+        _youtube = new YoutubeClient(http);
 
     public async Task<IReadOnlyList<VideoDownloadOption>> GetDownloadOptionsAsync(
         VideoId videoId,

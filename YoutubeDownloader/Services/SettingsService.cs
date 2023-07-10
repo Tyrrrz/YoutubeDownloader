@@ -21,6 +21,8 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public bool IsDarkModeEnabled { get; set; } = IsDarkModeEnabledByDefault();
 
+    public bool IsAuthPersisted { get; set; } = true;
+
     public bool ShouldInjectTags { get; set; } = true;
 
     public bool ShouldSkipExistingFiles { get; set; }
@@ -28,11 +30,10 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
     public string FileNameTemplate { get; set; } = "$title";
 
     public int ParallelLimit { get; set; } = 2;
-    
-    public Dictionary<string,string> Cookies { get; set; } = new();
-    public string? PageId { get; set; }
 
     public Version? LastAppVersion { get; set; }
+
+    public IReadOnlyDictionary<string, string>? LastAuthCookies { get; set; }
 
     // STJ cannot properly serialize immutable structs
     [JsonConverter(typeof(ContainerJsonConverter))]
@@ -43,6 +44,18 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
     public SettingsService()
         : base(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat"))
     {
+    }
+
+    public override void Save()
+    {
+        // Clear the cookies if they are not supposed to be persisted
+        var lastAuthCookies = LastAuthCookies;
+        if (!IsAuthPersisted)
+            LastAuthCookies = null;
+
+        base.Save();
+
+        LastAuthCookies = lastAuthCookies;
     }
 }
 

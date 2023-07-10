@@ -46,7 +46,10 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
 
-        Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
+        Progress.Bind(
+            o => o.Current,
+            (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
+        );
     }
 
     public bool CanCancel => Status is DownloadStatus.Enqueued or DownloadStatus.Started;

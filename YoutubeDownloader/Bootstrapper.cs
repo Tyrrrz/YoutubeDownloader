@@ -35,12 +35,12 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
     }
 
 #if !DEBUG
-    protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
+    protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs args)
     {
-        base.OnUnhandledException(e);
+        base.OnUnhandledException(args);
 
         MessageBox.Show(
-            e.Exception.ToString(),
+            args.Exception.ToString(),
             "Error occured",
             MessageBoxButton.OK,
             MessageBoxImage.Error
