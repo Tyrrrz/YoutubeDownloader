@@ -92,10 +92,10 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         {
             try
             {
-                using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
-
                 using var http = CreateHttpClient();
                 var downloader = new VideoDownloader(http);
+
+                using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
 
                 download.Status = DownloadStatus.Started;
 
