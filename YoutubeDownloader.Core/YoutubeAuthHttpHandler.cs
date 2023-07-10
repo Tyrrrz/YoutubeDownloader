@@ -18,11 +18,13 @@ public partial class YoutubeAuthHttpHandler : DelegatingHandler
     public YoutubeAuthHttpHandler(IReadOnlyDictionary<string, string> cookies)
     {
         foreach (var (key, value) in cookies)
-            _cookieContainer.Add(YoutubeHost, new Cookie(key, value));
+            _cookieContainer.Add(YoutubeDomainUri, new Cookie(key, value));
 
         InnerHandler = new SocketsHttpHandler
         {
             UseCookies = true,
+            // Need to use a cookie container because YouTube sets additional cookies
+            // even after the initial authentication.
             CookieContainer = _cookieContainer
         };
     }
@@ -32,8 +34,12 @@ public partial class YoutubeAuthHttpHandler : DelegatingHandler
         CancellationToken cancellationToken)
     {
         var cookies = _cookieContainer
-            .GetCookies(YoutubeHost)
-            .ToDictionary(c => c.Name, c => c.Value);
+            .GetCookies(YoutubeDomainUri)
+            // Most specific cookies first
+            .OrderByDescending(c => string.Equals(c.Domain, YoutubeDomain, StringComparison.OrdinalIgnoreCase))
+            // Discard less specific cookies
+            .DistinctBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(c => c.Name, c => c.Value, StringComparer.OrdinalIgnoreCase);
 
         var sessionId =
             cookies.GetValueOrDefault("__Secure-3PAPISID") ??
@@ -43,16 +49,16 @@ public partial class YoutubeAuthHttpHandler : DelegatingHandler
         {
             // If only __Secure-3PAPISID is present, add SAPISID manually
             if (!cookies.ContainsKey("SAPISID"))
-                _cookieContainer.Add(YoutubeHost, new Cookie("SAPISID", sessionId));
+                _cookieContainer.Add(YoutubeDomainUri, new Cookie("SAPISID", sessionId));
 
             request.Headers.Remove("Authorization");
             request.Headers.Add("Authorization", $"SAPISIDHASH {GenerateAuthHash(sessionId)}");
 
             request.Headers.Remove("Origin");
-            request.Headers.Add("Origin", YoutubeHost.ToString().TrimEnd('/'));
+            request.Headers.Add("Origin", YoutubeDomain);
 
             request.Headers.Remove("X-Origin");
-            request.Headers.Add("X-Origin", YoutubeHost.ToString().TrimEnd('/'));
+            request.Headers.Add("X-Origin", YoutubeDomain);
 
             // Set to 0 as it is only allowed to be logged in with one account
             request.Headers.Add("X-Goog-AuthUser", "0");
@@ -64,15 +70,16 @@ public partial class YoutubeAuthHttpHandler : DelegatingHandler
 
 public partial class YoutubeAuthHttpHandler
 {
-    private static readonly Uri YoutubeHost = new("https://www.youtube.com");
+    private const string YoutubeDomain = "https://www.youtube.com";
+    private static readonly Uri YoutubeDomainUri = new(YoutubeDomain);
 
     private static string GenerateAuthHash(string sessionId)
     {
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000;
 
-        var token = $"{timestamp} {sessionId} {YoutubeHost.ToString().TrimEnd('/')}";
+        var token = $"{timestamp} {sessionId} {YoutubeDomain}";
         var tokenHash = SHA1.HashData(Encoding.UTF8.GetBytes(token)).ToHex();
 
-        return timestamp + '_' + tokenHash;
+        return timestamp + "_" + tokenHash;
     }
 }
