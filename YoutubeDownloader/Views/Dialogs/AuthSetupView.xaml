@@ -34,7 +34,7 @@
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
             <Grid>
-                <!--  Current auth info & logout  -->
+                <!--  Current auth status & logout link  -->
                 <StackPanel
                     Margin="16"
                     HorizontalAlignment="Center"

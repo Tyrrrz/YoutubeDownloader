@@ -10,13 +10,13 @@ public interface IViewModelFactory
 
     DownloadViewModel CreateDownloadViewModel();
 
+    AuthSetupViewModel CreateAuthSetupViewModel();
+
     DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel();
 
     DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel();
 
     MessageBoxViewModel CreateMessageBoxViewModel();
-
-    AuthSetupViewModel CreateAuthSetupViewModel();
 
     SettingsViewModel CreateSettingsViewModel();
 }

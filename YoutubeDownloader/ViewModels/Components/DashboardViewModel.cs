@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -12,6 +11,7 @@ using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
 using YoutubeDownloader.Core.Utils;
+using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -68,10 +68,6 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         );
     }
 
-    private HttpClient CreateHttpClient() => Http.CreateClient(
-        new YoutubeAuthHttpHandler(_settingsService.LastAuthCookies ?? new Dictionary<string, string>())
-    );
-
     public bool CanShowAuthSetup => !IsBusy;
 
     public async void ShowAuthSetup() => await _dialogManager.ShowDialogAsync(
@@ -82,6 +78,10 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
     public async void ShowSettings() => await _dialogManager.ShowDialogAsync(
         _viewModelFactory.CreateSettingsViewModel()
+    );
+
+    private HttpClient CreateHttpClient() => Http.CreateClient(
+        _settingsService.LastAuthCookies?.Pipe(c => new YoutubeAuthHttpHandler(c))
     );
 
     private void EnqueueDownload(DownloadViewModel download, int position = 0)
@@ -179,20 +179,17 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         try
         {
             using var http = CreateHttpClient();
-            var resolver = new QueryResolver(http);
 
-            var result = await resolver.ResolveAsync(
+            var result = await new QueryResolver(http).ResolveAsync(
                 Query.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
                 progress
             );
-
-            var downloader = new VideoDownloader(http);
 
             // Single video
             if (result.Videos.Count == 1)
             {
                 var video = result.Videos.Single();
-                var downloadOptions = await downloader.GetDownloadOptionsAsync(video.Id);
+                var downloadOptions = await new VideoDownloader(http).GetDownloadOptionsAsync(video.Id);
 
                 var download = await _dialogManager.ShowDialogAsync(
                     _viewModelFactory.CreateDownloadSingleSetupViewModel(video, downloadOptions)

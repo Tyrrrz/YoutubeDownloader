@@ -75,7 +75,7 @@ public partial class YoutubeAuthHttpHandler
 
     private static string GenerateAuthHash(string sessionId)
     {
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000;
+        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         var token = $"{timestamp} {sessionId} {YoutubeDomain}";
         var tokenHash = SHA1.HashData(Encoding.UTF8.GetBytes(token)).ToHex();
