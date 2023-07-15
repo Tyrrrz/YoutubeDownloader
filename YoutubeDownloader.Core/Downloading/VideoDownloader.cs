@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
+using YoutubeDownloader.Core.Utils;
 using YoutubeExplode;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos;
@@ -16,8 +17,8 @@ public class VideoDownloader
 {
     private readonly YoutubeClient _youtube;
 
-    public VideoDownloader(HttpClient http) =>
-        _youtube = new YoutubeClient(http);
+    public VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null) =>
+        _youtube = new YoutubeClient(Http.Client, initialCookies ?? Array.Empty<Cookie>());
 
     public async Task<IReadOnlyList<VideoDownloadOption>> GetDownloadOptionsAsync(
         VideoId videoId,

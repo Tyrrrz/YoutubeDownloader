@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
+using YoutubeDownloader.Core.Utils;
 using YoutubeExplode;
 using YoutubeExplode.Channels;
 using YoutubeExplode.Common;
@@ -17,8 +18,8 @@ public class QueryResolver
 {
     private readonly YoutubeClient _youtube;
 
-    public QueryResolver(HttpClient http) =>
-        _youtube = new YoutubeClient(http);
+    public QueryResolver(IReadOnlyList<Cookie>? initialCookies = null) =>
+        _youtube = new YoutubeClient(Http.Client, initialCookies ?? Array.Empty<Cookie>());
 
     public async Task<QueryResult> ResolveAsync(
         string query,

@@ -1,17 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Gress;
 using Gress.Completable;
 using Stylet;
-using YoutubeDownloader.Core;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
-using YoutubeDownloader.Core.Utils;
-using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -80,10 +76,6 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         _viewModelFactory.CreateSettingsViewModel()
     );
 
-    private HttpClient CreateHttpClient() => Http.CreateClient(
-        _settingsService.LastAuthCookies?.Pipe(c => new YoutubeAuthHttpHandler(c))
-    );
-
     private void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
         var progress = _progressMuxer.CreateInput();
@@ -92,8 +84,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         {
             try
             {
-                using var http = CreateHttpClient();
-                var downloader = new VideoDownloader(http);
+                var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
 
                 using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
 
@@ -178,9 +169,10 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
         try
         {
-            using var http = CreateHttpClient();
+            var resolver = new QueryResolver(_settingsService.LastAuthCookies);
+            var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
 
-            var result = await new QueryResolver(http).ResolveAsync(
+            var result = await resolver.ResolveAsync(
                 Query.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
                 progress
             );
@@ -189,7 +181,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             if (result.Videos.Count == 1)
             {
                 var video = result.Videos.Single();
-                var downloadOptions = await new VideoDownloader(http).GetDownloadOptionsAsync(video.Id);
+                var downloadOptions = await downloader.GetDownloadOptionsAsync(video.Id);
 
                 var download = await _dialogManager.ShowDialogAsync(
                     _viewModelFactory.CreateDownloadSingleSetupViewModel(video, downloadOptions)
