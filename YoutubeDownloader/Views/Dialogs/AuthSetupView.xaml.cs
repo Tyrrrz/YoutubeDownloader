@@ -60,8 +60,8 @@ public partial class AuthSetupView
         if (string.Equals(url, HomePageUrl, StringComparison.OrdinalIgnoreCase))
         {
             // Extract the cookies that the browser received after logging in
-            var cookies = await WebBrowser.CoreWebView2.CookieManager.GetCookiesAsync("");
-            ViewModel.Cookies = cookies.ToDictionary(i => i.Name, i => i.Value);
+            var cookies = await WebBrowser.CoreWebView2.CookieManager.GetCookiesAsync(url);
+            ViewModel.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
         }
     }
 

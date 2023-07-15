@@ -15,26 +15,32 @@ public partial class YoutubeAuthHttpHandler : DelegatingHandler
 {
     private readonly CookieContainer _cookieContainer = new();
 
-    public YoutubeAuthHttpHandler(IReadOnlyDictionary<string, string> cookies)
+    public YoutubeAuthHttpHandler(IReadOnlyList<Cookie> cookies)
     {
-        foreach (var (key, value) in cookies)
-            _cookieContainer.Add(YoutubeDomainUri, new Cookie(key, value));
-
         InnerHandler = new SocketsHttpHandler
         {
-            UseCookies = true,
             // Need to use a cookie container because YouTube sets additional cookies
             // even after the initial authentication.
+            UseCookies = true,
             CookieContainer = _cookieContainer
         };
+
+        // Pre-fill the cookie container
+        foreach (var cookie in cookies)
+            _cookieContainer.Add(cookie);
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
+        // Project the cookies into a dictionary because we'll need to access them by name
         var cookies = _cookieContainer
             .GetCookies(YoutubeDomainUri)
+            .Where(c =>
+                !c.Expired &&
+                (c.Expires == default || c.Expires > DateTimeOffset.Now)
+            )
             // Most specific cookies first
             .OrderByDescending(c => string.Equals(c.Domain, YoutubeDomain, StringComparison.OrdinalIgnoreCase))
             // Discard less specific cookies
