@@ -85,6 +85,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             try
             {
                 var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
+                var tagInjector = new MediaTagInjector();
 
                 using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
 
@@ -110,7 +111,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
                 {
                     try
                     {
-                        await new MediaTagInjector().InjectTagsAsync(
+                        await tagInjector.InjectTagsAsync(
                             download.FilePath!,
                             download.Video!,
                             download.CancellationToken
