@@ -53,7 +53,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 - Automatically embed subtitles
 - Automatically inject media tags
 - Log in with a YouTube account to access private content
-
+meow meow nigga
 ## Screenshots
 
 ![list](.assets/list.png)
