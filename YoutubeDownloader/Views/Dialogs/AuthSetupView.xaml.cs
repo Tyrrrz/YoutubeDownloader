@@ -10,6 +10,7 @@ namespace YoutubeDownloader.Views.Dialogs;
 public partial class AuthSetupView
 {
     private const string HomePageUrl = "https://www.youtube.com";
+    private string UDF = "";
     private static readonly string LoginPageUrl =
         $"https://accounts.google.com/ServiceLogin?continue={WebUtility.UrlEncode(HomePageUrl)}";
 
@@ -43,6 +44,7 @@ public partial class AuthSetupView
         WebBrowser.CoreWebView2.Settings.IsPasswordAutosaveEnabled = false;
         WebBrowser.CoreWebView2.Settings.IsStatusBarEnabled = false;
         WebBrowser.CoreWebView2.Settings.IsSwipeNavigationEnabled = false;
+        WebBrowser.CoreWebView2.Environment.BrowserProcessExited += BrowserExitComplete;
     }
 
     private void WebBrowser_OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs args)
@@ -60,16 +62,24 @@ public partial class AuthSetupView
         if (string.Equals(url, HomePageUrl, StringComparison.OrdinalIgnoreCase))
         {
             // Extract the cookies that the browser received after logging in
-            var cookies = await WebBrowser.CoreWebView2.CookieManager.GetCookiesAsync(url);
-            ViewModel.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
+            var cookies = await WebBrowser.CoreWebView2.CookieManager.GetCookiesAsync("");
+            ViewModel.Cookies = cookies.ToDictionary(i => i.Name, i => i.Value);
         }
     }
 
-    private async void WebBrowser_OnUnloaded(object sender, RoutedEventArgs args)
+    private async void Button_Click(object sender, RoutedEventArgs e)
     {
-        // This will most likely not work because WebView2 would still be running at this point,
-        // and there doesn't seem to be any way to shut it down using the .NET API.
-        if (WebBrowser.CoreWebView2?.Profile is not null)
+        if (WebBrowser.CoreWebView2 is not null)
+        {
+            UDF = WebBrowser.CoreWebView2.Environment.UserDataFolder;
             await WebBrowser.CoreWebView2.Profile.ClearBrowsingDataAsync();
+        }
+        WebBrowser.Dispose();
+    }
+
+    private void BrowserExitComplete(object? sender, CoreWebView2BrowserProcessExitedEventArgs e)
+    {
+        if (UDF != "" && System.IO.Directory.Exists(UDF))
+            System.IO.Directory.Delete(UDF, true);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace YoutubeDownloader.Core.Utils.Extensions;
 
-public static class BinaryExtensions
+internal static class BinaryExtensions
 {
     public static string ToHex(this byte[] data)
     {

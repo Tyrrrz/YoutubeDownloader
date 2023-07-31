@@ -129,6 +129,7 @@ public class RootViewModel : Screen
 
         Dashboard.CancelAllDownloads();
 
+
         _settingsService.Save();
         _updateService.FinalizeUpdate(false);
     }

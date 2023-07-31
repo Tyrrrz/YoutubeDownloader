@@ -34,7 +34,7 @@
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
             <Grid>
-                <!--  Current auth status & logout link  -->
+                <!--  Current auth info & logout  -->
                 <StackPanel
                     Margin="16"
                     HorizontalAlignment="Center"
@@ -76,7 +76,6 @@
                     Loaded="WebBrowser_OnLoaded"
                     NavigationCompleted="WebBrowser_OnNavigationCompleted"
                     NavigationStarting="WebBrowser_OnNavigationStarting"
-                    Unloaded="WebBrowser_OnUnloaded"
                     Visibility="{Binding IsAuthenticated, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}">
                     <wpf:WebView2.CreationProperties>
                         <wpf:CoreWebView2CreationProperties IsInPrivateModeEnabled="True" />
@@ -94,6 +93,7 @@
             Content="CLOSE"
             IsCancel="True"
             IsDefault="True"
-            Style="{DynamicResource MaterialDesignOutlinedButton}" />
+            Style="{DynamicResource MaterialDesignOutlinedButton}"
+            Click="Button_Click" />
     </Grid>
 </UserControl>

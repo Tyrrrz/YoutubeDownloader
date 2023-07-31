@@ -4,7 +4,7 @@ using System.Text;
 
 namespace YoutubeDownloader.Core.Utils;
 
-public static class PathEx
+internal static class PathEx
 {
     private static readonly HashSet<char> InvalidFileNameChars = new(Path.GetInvalidFileNameChars());
 

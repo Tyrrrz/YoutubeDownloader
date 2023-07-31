@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace YoutubeDownloader.Core.Utils;
 
-public static class Memo
+internal static class Memo
 {
     private static class ForValue<T>
     {

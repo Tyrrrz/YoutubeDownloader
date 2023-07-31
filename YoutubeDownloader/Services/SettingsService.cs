@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cogwheel;
@@ -34,7 +33,7 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public Version? LastAppVersion { get; set; }
 
-    public IReadOnlyList<Cookie>? LastAuthCookies { get; set; }
+    public IReadOnlyDictionary<string, string>? LastAuthCookies { get; set; }
 
     // STJ cannot properly serialize immutable structs
     [JsonConverter(typeof(ContainerJsonConverter))]

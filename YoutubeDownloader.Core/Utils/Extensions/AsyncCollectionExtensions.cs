@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace YoutubeDownloader.Core.Utils.Extensions;
 
-public static class AsyncCollectionExtensions
+internal static class AsyncCollectionExtensions
 {
     private static async ValueTask<IReadOnlyList<T>> CollectAsync<T>(
         this IAsyncEnumerable<T> asyncEnumerable)

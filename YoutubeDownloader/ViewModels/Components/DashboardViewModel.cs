@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Gress;
 using Gress.Completable;
 using Stylet;
+using YoutubeDownloader.Core;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
+using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -64,6 +68,10 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         );
     }
 
+    private HttpClient CreateHttpClient() => Http.CreateClient(
+        new YoutubeAuthHttpHandler(_settingsService.LastAuthCookies ?? new Dictionary<string, string>())
+    );
+
     public bool CanShowAuthSetup => !IsBusy;
 
     public async void ShowAuthSetup() => await _dialogManager.ShowDialogAsync(
@@ -84,8 +92,8 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         {
             try
             {
-                var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
-                var tagInjector = new MediaTagInjector();
+                using var http = CreateHttpClient();
+                var downloader = new VideoDownloader(http);
 
                 using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
 
@@ -111,7 +119,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
                 {
                     try
                     {
-                        await tagInjector.InjectTagsAsync(
+                        await new MediaTagInjector().InjectTagsAsync(
                             download.FilePath!,
                             download.Video!,
                             download.CancellationToken
@@ -170,13 +178,15 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
         try
         {
-            var resolver = new QueryResolver(_settingsService.LastAuthCookies);
-            var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
+            using var http = CreateHttpClient();
+            var resolver = new QueryResolver(http);
 
             var result = await resolver.ResolveAsync(
                 Query.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
                 progress
             );
+
+            var downloader = new VideoDownloader(http);
 
             // Single video
             if (result.Videos.Count == 1)
@@ -217,7 +227,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
                 await _dialogManager.ShowDialogAsync(
                     _viewModelFactory.CreateMessageBoxViewModel(
                         "Nothing found",
-                        "Couldn't find any videos based on the query or URL you provided"
+                        "Couldn't find any videos Please enter vaild query or URL"
                     )
                 );
             }
@@ -227,10 +237,9 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             await _dialogManager.ShowDialogAsync(
                 _viewModelFactory.CreateMessageBoxViewModel(
                     "Error",
-                    // Short error message for YouTube-related errors, full for others
-                    ex is YoutubeExplodeException
-                        ? ex.Message
-                        : ex.ToString()
+                   // Short error message for YouTube-related errors, full for others
+                    
+                   (ex is YoutubeExplodeException) ? ex.Message : $"{ex.ToString()} \"Please Check your internet connection\" "
                 )
             );
         }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace YoutubeDownloader.Core.Utils;
 
-public class ThrottleLock : IDisposable
+internal class ThrottleLock : IDisposable
 {
     private readonly SemaphoreSlim _semaphore = new(1, 1);
     private readonly TimeSpan _interval;
