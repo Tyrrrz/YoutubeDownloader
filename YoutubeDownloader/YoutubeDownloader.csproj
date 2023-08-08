@@ -17,7 +17,7 @@
     <PackageReference Include="Gress" Version="2.1.1" />
     <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1823.32" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1901.177" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="Onova" Version="2.6.10" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
