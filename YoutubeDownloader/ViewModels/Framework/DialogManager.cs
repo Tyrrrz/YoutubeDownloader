@@ -53,7 +53,7 @@ public class DialogManager : IDisposable
         }
     }
 
-    public string? PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
+    public string? PromptSaveFilePath(string filter = "Tout les fichiers|*.*", string defaultFilePath = "")
     {
         var dialog = new VistaSaveFileDialog
         {

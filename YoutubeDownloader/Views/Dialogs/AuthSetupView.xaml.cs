@@ -72,4 +72,8 @@ public partial class AuthSetupView
         if (WebBrowser.CoreWebView2?.Profile is not null)
             await WebBrowser.CoreWebView2.Profile.ClearBrowsingDataAsync();
     }
-}
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+
+    }

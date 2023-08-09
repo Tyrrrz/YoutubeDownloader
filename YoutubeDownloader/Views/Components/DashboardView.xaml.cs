@@ -20,4 +20,9 @@ public partial class DashboardView
             AccessKeyManager.ProcessKey(null, "\x000D", false);
         }
     }
+
+    private void QueryTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+
+    }
 }

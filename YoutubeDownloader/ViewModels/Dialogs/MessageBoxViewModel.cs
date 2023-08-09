@@ -46,5 +46,5 @@ public static class MessageBoxViewModelExtensions
         this IViewModelFactory factory,
         string title,
         string message) =>
-        factory.CreateMessageBoxViewModel(title, message, "CLOSE", null);
+        factory.CreateMessageBoxViewModel(title, message, "Fermer", null);
 }

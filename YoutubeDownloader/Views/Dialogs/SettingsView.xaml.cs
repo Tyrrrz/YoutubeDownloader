@@ -14,4 +14,9 @@ public partial class SettingsView
 
     private void DarkModeToggleButton_OnUnchecked(object sender, RoutedEventArgs args) =>
         App.SetLightTheme();
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

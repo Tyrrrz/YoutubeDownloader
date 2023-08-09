@@ -142,7 +142,7 @@
             LastChildFill="False">
             <!--  Container preference  -->
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Text="Container:" />
+                <TextBlock VerticalAlignment="Center" ><Run Text="Format"/><LineBreak/><Run Text=":"/></TextBlock>
                 <ComboBox
                     Width="150"
                     Margin="8,0,0,0"
@@ -157,7 +157,7 @@
                 DockPanel.Dock="Right"
                 IsEnabled="{Binding SelectedContainer.IsAudioOnly, Converter={x:Static converters:InverseBoolConverter.Instance}}"
                 Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Text="Video quality:" />
+                <TextBlock VerticalAlignment="Center" Text="Qualité:" />
                 <ComboBox
                     Width="150"
                     Margin="8,0,0,0"
@@ -185,21 +185,16 @@
                 Command="{s:Action Confirm}"
                 IsDefault="True"
                 Style="{DynamicResource MaterialDesignOutlinedButton}">
-                <Button.Content>
-                    <TextBlock>
-                        <Run Text="DOWNLOAD" />
-                        <Run Text="(" /><Run Text="{Binding SelectedVideos.Count, FallbackValue=0, Mode=OneWay}" /><Run Text=")" />
-                    </TextBlock>
-                </Button.Content>
+                <TextBlock><Run Text="Telecharger "/><Run Text="("/><Run/><Run Text=")"/></TextBlock>
             </Button>
 
             <!--  Cancel  -->
             <Button
                 Margin="8,0,0,0"
                 Command="{s:Action Close}"
-                Content="CANCEL"
+                Content="Annuler"
                 IsCancel="True"
-                Style="{DynamicResource MaterialDesignOutlinedButton}" />
+                Style="{DynamicResource MaterialDesignOutlinedButton}" Click="Button_Click" />
         </StackPanel>
     </Grid>
 </UserControl>

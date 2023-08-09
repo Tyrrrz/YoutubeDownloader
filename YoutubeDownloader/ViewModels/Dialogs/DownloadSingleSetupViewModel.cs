@@ -48,7 +48,7 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
         var container = SelectedDownloadOption!.Container;
 
         var filePath = _dialogManager.PromptSaveFilePath(
-            $"{container.Name} file|*.{container.Name}",
+            $"{container.Name} fichier|*.{container.Name}",
             FileNameTemplate.Apply(
                 _settingsService.FileNameTemplate,
                 Video!,

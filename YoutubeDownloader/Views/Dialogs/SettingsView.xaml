@@ -23,7 +23,7 @@
             Margin="16"
             FontSize="19"
             FontWeight="Light"
-            Text="Settings" />
+            Text="Paramètre" />
 
         <Border
             Grid.Row="1"
@@ -46,7 +46,7 @@
                             Margin="16,8"
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="Auto-update" />
+                            Text="Mise à jour automatique" />
                         <ToggleButton
                             Margin="16,8"
                             VerticalAlignment="Center"
@@ -63,7 +63,8 @@
                             Margin="16,8"
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="Dark mode" />
+                            Text="Theme Sombre"
+                            />
                         <ToggleButton
                             x:Name="DarkModeToggleButton"
                             Margin="16,8"
@@ -83,7 +84,7 @@
                             Margin="16,8"
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="Persist authentication" />
+                            Text="Persister l'authentification" />
                         <ToggleButton
                             Margin="16,8"
                             VerticalAlignment="Center"
@@ -99,7 +100,7 @@
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
-                            Text="Inject media tags" />
+                            Text="Injecter des balises média" />
                         <ToggleButton
                             Margin="16,8"
                             DockPanel.Dock="Right"
@@ -114,7 +115,7 @@
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
-                            Text="Skip existing files" />
+                            Text="Ignorer les fichiers existants" />
                         <ToggleButton
                             Margin="16,8"
                             DockPanel.Dock="Right"
@@ -149,7 +150,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="File name template" />
+                            Text="Modèle de nom de fichier" />
                         <TextBox
                             Width="150"
                             VerticalAlignment="Center"
@@ -166,7 +167,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             DockPanel.Dock="Left"
-                            Text="Parallel limit"
+                            Text="Limite parallèle"
                             TextAlignment="Right" />
                         <StackPanel
                             VerticalAlignment="Center"
@@ -196,9 +197,9 @@
             Margin="16"
             HorizontalAlignment="Stretch"
             Command="{s:Action Close}"
-            Content="CLOSE"
+            Content="Fermer"
             IsCancel="True"
             IsDefault="True"
-            Style="{DynamicResource MaterialDesignOutlinedButton}" />
+            Style="{DynamicResource MaterialDesignOutlinedButton}" Click="Button_Click" />
     </Grid>
 </UserControl>

@@ -51,7 +51,7 @@
                         Grid.Column="1"
                         Margin="0,6,6,8"
                         VerticalAlignment="Bottom"
-                        materialDesign:HintAssist.Hint="URL or search query"
+                        materialDesign:HintAssist.Hint="Saisir votre adresse URL ici"
                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                         AcceptsReturn="True"
                         BorderThickness="0"
@@ -59,7 +59,7 @@
                         MaxLines="4"
                         PreviewKeyDown="QueryTextBox_OnPreviewKeyDown"
                         Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
-                        VerticalScrollBarVisibility="Auto" />
+                        VerticalScrollBarVisibility="Auto" TextChanged="QueryTextBox_TextChanged" />
 
                     <!--  Process query button  -->
                     <Button
@@ -144,13 +144,13 @@
                     TextWrapping="Wrap">
                     <Run Text="Copy-paste a" />
                     <Run FontWeight="SemiBold" Text="URL" />
-                    <Run Text="or enter a" />
+                    <Run Text="ou entrez un" />
                     <Run FontWeight="SemiBold" Text="search query" />
-                    <Run Text="to start downloading" />
+                    <Run Text="pour commencer le téléchargement" />
                     <LineBreak />
                     <Run Text="Press" />
                     <Run FontWeight="SemiBold" Text="Shift+Enter" />
-                    <Run Text="to add multiple items" />
+                    <Run Text="pour ajouter plusieurs éléments" />
                 </TextBlock>
             </StackPanel>
 
@@ -165,12 +165,12 @@
                 Visibility="{Binding IsDownloadsAvailable, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrHidden}}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
-                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove inactive downloads" />
+                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Supprimer les téléchargements réussis" />
+                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Supprimer les téléchargements inactifs" />
                         <Separator />
-                        <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart failed downloads" />
+                        <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Redémarrer les téléchargements ayant échoué" />
                         <Separator />
-                        <MenuItem Command="{s:Action CancelAllDownloads}" Header="Cancel all downloads" />
+                        <MenuItem Command="{s:Action CancelAllDownloads}" Header="Annuler tous les téléchargements" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.RowStyle>
@@ -277,7 +277,7 @@
                                                     <!--  Pending  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Enqueued}">
                                                         <Setter Property="Opacity" Value="0.7" />
-                                                        <Setter Property="Text" Value="Pending..." />
+                                                        <Setter Property="Text" Value="En attente..." />
                                                     </DataTrigger>
 
                                                     <!--  Downloading  -->
@@ -288,20 +288,20 @@
                                                     <!--  Successful  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Completed}">
                                                         <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
-                                                        <Setter Property="Text" Value="✓ Done" />
+                                                        <Setter Property="Text" Value="✓ Téléchargement Terminer" />
                                                     </DataTrigger>
 
                                                     <!--  Canceled  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Canceled}">
                                                         <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
-                                                        <Setter Property="Text" Value="✗ Canceled" />
+                                                        <Setter Property="Text" Value="✗ Téléchargement annuler" />
                                                     </DataTrigger>
 
                                                     <!--  Failed  -->
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Failed}">
                                                         <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
-                                                        <Setter Property="Text" Value="⚠ Failed" />
-                                                        <Setter Property="ToolTip" Value="Click to copy the error message" />
+                                                        <Setter Property="Text" Value="⚠ Téléchragement Échoué" />
+                                                        <Setter Property="ToolTip" Value="Cliquez pour copier le message d'erreur" />
                                                         <Setter Property="Cursor" Value="Hand" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -373,7 +373,7 @@
                                         Command="{s:Action RestartDownload}"
                                         CommandParameter="{Binding}"
                                         Style="{DynamicResource MaterialDesignFlatButton}"
-                                        ToolTip="Restart download"
+                                        ToolTip="Redémarrer le téléchargement"
                                         Visibility="{Binding IsCanceledOrFailed, Converter={x:Static converters:BoolToVisibilityConverter.VisibleOrCollapsed}}">
                                         <materialDesign:PackIcon
                                             Width="24"

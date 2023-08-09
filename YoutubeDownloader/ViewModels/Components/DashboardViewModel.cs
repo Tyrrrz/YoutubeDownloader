@@ -216,8 +216,8 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             {
                 await _dialogManager.ShowDialogAsync(
                     _viewModelFactory.CreateMessageBoxViewModel(
-                        "Nothing found",
-                        "Couldn't find any videos based on the query or URL you provided"
+                        "Rien n'a été trouvé",
+                        "Verifiez que l'url est correcte"
                     )
                 );
             }

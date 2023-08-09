@@ -77,7 +77,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         catch (Exception ex)
         {
             await _dialogManager.ShowDialogAsync(
-                _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message)
+                _viewModelFactory.CreateMessageBoxViewModel("Erreur", ex.Message)
             );
         }
     }
@@ -96,7 +96,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         catch (Exception ex)
         {
             await _dialogManager.ShowDialogAsync(
-                _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message)
+                _viewModelFactory.CreateMessageBoxViewModel("Erreur", ex.Message)
             );
         }
     }
