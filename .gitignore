@@ -4,6 +4,7 @@
 *.userosscache
 *.sln.docstates
 .idea/
+.vs
 
 # Build results
 [Dd]ebug/
