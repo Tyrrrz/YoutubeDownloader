@@ -11,6 +11,7 @@
         mc:Ignorable="d"
         x:Class="YoutubeDownloader.Views.RootView"
         x:DataType="viewModels:RootViewModel"
+        Icon="/favicon.ico"
         Title="RootView">
     
     <dialogHost:DialogHost
