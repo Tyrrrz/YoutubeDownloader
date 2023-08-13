@@ -1,8 +1,20 @@
-﻿using System;
+using System;
+using System.Net;
 using System.Reflection;
-using System.Windows.Media;
-using MaterialDesignThemes.Wpf;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input.Platform;
+using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.Styling;
+using AvaloniaWebView;
+using Material.Styles.Themes;
+using PropertyChanged;
+using Stylet;
+using StyletIoC;
+using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
+using YoutubeDownloader.ViewModels;
+using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader;
 
@@ -10,7 +22,7 @@ public partial class App
 {
     private static Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
 
-    public static string Name { get; } = Assembly.GetName().Name!;
+    public new static string Name { get; } = Assembly.GetName().Name!;
 
     public static Version Version { get; } = Assembly.GetName().Version!;
 
@@ -21,37 +33,103 @@ public partial class App
     public static string ChangelogUrl { get; } = ProjectUrl + "/blob/master/Changelog.md";
 }
 
-public partial class App
+[DoNotNotify]
+public partial class App : StyletApplication<RootViewModel>
 {
     private static Theme LightTheme { get; } = Theme.Create(
-        new MaterialDesignLightTheme(),
+        Theme.Light,
         MediaColor.FromHex("#343838"),
         MediaColor.FromHex("#F9A825")
     );
 
     private static Theme DarkTheme { get; } = Theme.Create(
-        new MaterialDesignDarkTheme(),
+        Theme.Dark,
         MediaColor.FromHex("#E8E8E8"),
         MediaColor.FromHex("#F9A825")
     );
 
     public static void SetLightTheme()
     {
-        var paletteHelper = new PaletteHelper();
-        paletteHelper.SetTheme(LightTheme);
+        App.Current!.RequestedThemeVariant = ThemeVariant.Light;
+        var theme = App.Current!.LocateMaterialTheme<MaterialThemeBase>();
+        theme.CurrentTheme = LightTheme;
 
-        Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.DarkGreen);
-        Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.DarkOrange);
-        Current.Resources["FailedBrush"] = new SolidColorBrush(Colors.DarkRed);
+        Current!.Resources["SuccessBrush"] = new SolidColorBrush(Colors.DarkGreen);
+        Current!.Resources["CanceledBrush"] = new SolidColorBrush(Colors.DarkOrange);
+        Current!.Resources["FailedBrush"] = new SolidColorBrush(Colors.DarkRed);
     }
 
     public static void SetDarkTheme()
     {
-        var paletteHelper = new PaletteHelper();
-        paletteHelper.SetTheme(DarkTheme);
+        App.Current!.RequestedThemeVariant = ThemeVariant.Dark;
+        var theme = App.Current!.LocateMaterialTheme<MaterialThemeBase>();
+        theme.CurrentTheme = DarkTheme;
 
-        Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
-        Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
-        Current.Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
+        Current!.Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
+        Current!.Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
+        Current!.Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
     }
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+
+        // Set the default theme.
+        // Preferred theme will be set later, once the settings are loaded.
+        //App.SetLightTheme();
+
+        // Increase maximum concurrent connections
+        ServicePointManager.DefaultConnectionLimit = 20;
+    }
+
+    public override void Initialize()
+    {
+        AvaloniaXamlLoader.Load(this);
+        base.Initialize();
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        base.OnFrameworkInitializationCompleted();
+    }
+
+    public override void RegisterServices()
+    {
+        base.RegisterServices();
+
+        AvaloniaWebViewBuilder.Initialize(default);
+    }
+
+    protected override void ConfigureIoC(IStyletIoCBuilder builder)
+    {
+        base.ConfigureIoC(builder);
+
+        builder.Bind<SettingsService>().ToSelf().InSingletonScope();
+        builder.Bind<IViewModelFactory>().ToAbstractFactory();
+        builder.Bind<IClipboard>().ToFactory(ctx => (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.Clipboard);
+    }
+
+    protected override void OnLaunch()
+    {
+        base.OnLaunch();
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classicDesktopStyleApplicationLifetime)
+        {
+            classicDesktopStyleApplicationLifetime.MainWindow = GetActiveWindow();
+        }
+    }
+
+    // tODO
+#if !DEBUG
+    protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs args)
+    {
+        base.OnUnhandledException(args);
+
+        MessageBox.Show(
+            args.Exception.ToString(),
+            "Error occured",
+            MessageBoxButton.OK,
+            MessageBoxImage.Error
+        );
+    }
+#endif
 }

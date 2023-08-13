@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MaterialDesignThemes.Wpf;
-using Ookii.Dialogs.Wpf;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
+using DialogHostAvalonia;
 using Stylet;
 
 namespace YoutubeDownloader.ViewModels.Framework;
@@ -53,31 +57,99 @@ public class DialogManager : IDisposable
         }
     }
 
-    public string? PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
+    public async Task<string?> PromptSaveFilePath(string? filter = null, string defaultFilePath = "")
     {
-        var dialog = new VistaSaveFileDialog
-        {
-            Filter = filter,
-            AddExtension = true,
-            FileName = defaultFilePath,
-            DefaultExt = Path.GetExtension(defaultFilePath)
-        };
+        var topLevel = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
-        return dialog.ShowDialog() == true ? dialog.FileName : null;
+        var storageProvider = topLevel?.StorageProvider;
+        if (storageProvider is null)
+        {
+            return null;
+        }
+
+        var filePickResult = await storageProvider.SaveFilePickerAsync(new()
+        {
+            FileTypeChoices = ParseFileTypes(filter),
+            SuggestedFileName = defaultFilePath,
+            DefaultExtension = Path.GetExtension(defaultFilePath).TrimStart('.')
+        });
+
+        if (filePickResult?.Path is Uri path)
+        {
+            return path.LocalPath;
+        }
+
+        return null;
     }
 
-    public string? PromptDirectoryPath(string defaultDirPath = "")
+    public async Task<string?> PromptDirectoryPath(string defaultDirPath = "")
     {
-        var dialog = new VistaFolderBrowserDialog
-        {
-            SelectedPath = defaultDirPath
-        };
+        var topLevel = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
-        return dialog.ShowDialog() == true ? dialog.SelectedPath : null;
+        var storageProvider = topLevel?.StorageProvider;
+        if (storageProvider is null)
+        {
+            return null;
+        }
+
+        var startLocation = await GetStorageFolder(storageProvider, defaultDirPath);
+        var folderPickResult = await storageProvider.OpenFolderPickerAsync(new()
+        {
+            AllowMultiple = false,
+            SuggestedStartLocation = startLocation
+        });
+
+
+        if (folderPickResult.FirstOrDefault()?.Path is Uri path)
+        {
+            return path.LocalPath;
+        }
+
+        return null;
     }
 
     public void Dispose()
     {
         _dialogLock.Dispose();
+    }
+
+    private static async Task<IStorageFolder?> GetStorageFolder(IStorageProvider storageProvider, string path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return null;
+        }
+
+        var storageFolder = await storageProvider.TryGetFolderFromPathAsync(path);
+
+        return storageFolder;
+    }
+
+    private static IReadOnlyList<FilePickerFileType> ParseFileTypes(string? filterString)
+    {
+        if (filterString is null)
+        {
+            return new[] { FilePickerFileTypes.All };
+        }
+
+        var filters = new List<FilePickerFileType>();
+
+        var filterStrings = filterString.Split('|').Chunk(2);
+
+        foreach (var filter in filterStrings)
+        {
+            if (filter.Length == 2)
+            {
+                var extensions = filter[1].Split(";").ToArray();
+                var appleTypeIdentifiers = extensions.Select(s => s.Replace("*.", "public.")).ToArray();
+                filters.Add(new FilePickerFileType(filter[0])
+                {
+                    Patterns = extensions,
+                    AppleUniformTypeIdentifiers = appleTypeIdentifiers
+                });
+            }
+        }
+
+        return filters;
     }
 }

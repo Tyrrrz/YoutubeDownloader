@@ -1,32 +1,26 @@
-﻿<Window
-    x:Class="YoutubeDownloader.Views.RootView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:s="https://github.com/canton7/Stylet"
-    xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
-    Width="600"
-    Height="580"
-    d:DataContext="{d:DesignInstance Type=viewModels:RootViewModel}"
-    Background="{DynamicResource MaterialDesignBackground}"
-    Icon="/YoutubeDownloader;component/favicon.ico"
-    Style="{DynamicResource MaterialDesignRoot}"
-    WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
-    <Window.TaskbarItemInfo>
-        <TaskbarItemInfo ProgressState="Normal" ProgressValue="{Binding Dashboard.Progress.Current.Fraction}" />
-    </Window.TaskbarItemInfo>
-    <materialDesign:DialogHost
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+        xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:s="using:Stylet.Xaml"
+        xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
+        Width="600"
+        Height="580"
+        mc:Ignorable="d"
+        x:Class="YoutubeDownloader.Views.RootView"
+        x:DataType="viewModels:RootViewModel"
+        Title="RootView">
+    
+    <dialogHost:DialogHost
         x:Name="DialogHost"
         Loaded="{s:Action OnViewFullyLoaded}"
-        SnackbarMessageQueue="{Binding Notifications}"
-        Style="{DynamicResource MaterialDesignEmbeddedDialogHost}">
-        <Grid IsEnabled="{Binding IsOpen, ElementName=DialogHost, Converter={x:Static converters:InverseBoolConverter.Instance}}">
-            <ContentControl s:View.Model="{Binding Dashboard}" />
-            <materialDesign:Snackbar MessageQueue="{Binding Notifications}" />
-        </Grid>
-    </materialDesign:DialogHost>
+        CloseOnClickAway="True">
+        <materialDesign:SnackbarHost HostName="Root">
+            <Grid>
+                <ContentControl s:View.Model="{Binding Dashboard}"/>
+            </Grid>
+        </materialDesign:SnackbarHost>
+    </dialogHost:DialogHost>
 </Window>

@@ -1,6 +1,10 @@
-﻿namespace YoutubeDownloader.Views;
+using Avalonia.Controls;
+using PropertyChanged;
 
-public partial class RootView
+namespace YoutubeDownloader.Views;
+
+[DoNotNotify]
+public partial class RootView : Window
 {
     public RootView()
     {

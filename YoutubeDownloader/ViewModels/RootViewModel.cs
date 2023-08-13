@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MaterialDesignThemes.Wpf;
+using Avalonia.Threading;
+using Material.Styles.Controls;
+using Material.Styles.Models;
 using Stylet;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -17,7 +19,7 @@ public class RootViewModel : Screen
     private readonly SettingsService _settingsService;
     private readonly UpdateService _updateService;
 
-    public SnackbarMessageQueue Notifications { get; } = new(TimeSpan.FromSeconds(5));
+    private readonly TimeSpan _snackbarMessageDuration = TimeSpan.FromSeconds(5);
 
     public DashboardViewModel Dashboard { get; }
 
@@ -69,22 +71,28 @@ public class RootViewModel : Screen
             if (updateVersion is null)
                 return;
 
-            Notifications.Enqueue($"Downloading update to {App.Name} v{updateVersion}...");
+            SnackbarHost.Post(new SnackbarModel($"Downloading update to {App.Name} v{updateVersion}...", _snackbarMessageDuration), null, DispatcherPriority.Normal);
             await _updateService.PrepareUpdateAsync(updateVersion);
 
-            Notifications.Enqueue(
+            SnackbarHost.Post(new SnackbarModel(
                 "Update has been downloaded and will be installed when you exit",
-                "INSTALL NOW", () =>
+                _snackbarMessageDuration,
+                new SnackbarButtonModel
                 {
-                    _updateService.FinalizeUpdate(true);
-                    RequestClose();
-                }
-            );
+                    Text = "INSTALL NOW",
+                    Action = () =>
+                    {
+                        _updateService.FinalizeUpdate(true);
+                        RequestClose();
+                    }
+                }),
+                null,
+                DispatcherPriority.Normal);
         }
         catch
         {
             // Failure to update shouldn't crash the application
-            Notifications.Enqueue("Failed to perform application update");
+            SnackbarHost.Post(new SnackbarModel("Failed to perform application update", _snackbarMessageDuration), null, DispatcherPriority.Normal);
         }
     }
 
@@ -113,10 +121,11 @@ public class RootViewModel : Screen
         // App has just been updated, display the changelog
         if (_settingsService.LastAppVersion is not null && _settingsService.LastAppVersion != App.Version)
         {
-            Notifications.Enqueue(
-                $"Successfully updated to {App.Name} v{App.VersionString}",
-                "CHANGELOG", () => ProcessEx.StartShellExecute(App.ChangelogUrl)
-            );
+            // TODO
+            //Notifications.Enqueue(
+            //    $"Successfully updated to {App.Name} v{App.VersionString}",
+            //    "CHANGELOG", () => ProcessEx.StartShellExecute(App.ChangelogUrl)
+            //);
 
             _settingsService.LastAppVersion = App.Version;
             _settingsService.Save();

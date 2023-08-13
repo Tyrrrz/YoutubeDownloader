@@ -1,6 +1,10 @@
-﻿namespace YoutubeDownloader.Views.Dialogs;
+using Avalonia.Controls;
+using PropertyChanged;
 
-public partial class DownloadSingleSetupView
+namespace YoutubeDownloader.Views.Dialogs;
+
+[DoNotNotify]
+public partial class DownloadSingleSetupView : UserControl
 {
     public DownloadSingleSetupView()
     {

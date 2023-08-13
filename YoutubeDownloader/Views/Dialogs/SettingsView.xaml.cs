@@ -1,8 +1,11 @@
-﻿using System.Windows;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using PropertyChanged;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class SettingsView
+[DoNotNotify]
+public partial class SettingsView : UserControl
 {
     public SettingsView()
     {
@@ -10,7 +13,7 @@ public partial class SettingsView
     }
 
     private void DarkModeToggleButton_OnChecked(object sender, RoutedEventArgs args) =>
-        App.SetDarkTheme();
+    App.SetDarkTheme();
 
     private void DarkModeToggleButton_OnUnchecked(object sender, RoutedEventArgs args) =>
         App.SetLightTheme();

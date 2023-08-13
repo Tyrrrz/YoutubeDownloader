@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using System.Windows;
+using System.Threading.Tasks;
+using Avalonia.Input.Platform;
 using Gress;
+using PropertyChanged;
 using Stylet;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Utils;
@@ -16,7 +18,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
-
+    private readonly IClipboard _clipboard;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     public IVideo? Video { get; set; }
@@ -35,16 +37,20 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
+    [AlsoNotifyFor(nameof(IsRunning))]
     public DownloadStatus Status { get; set; } = DownloadStatus.Enqueued;
+
+    public bool IsRunning => Status is DownloadStatus.Started;
 
     public bool IsCanceledOrFailed => Status is DownloadStatus.Canceled or DownloadStatus.Failed;
 
     public string? ErrorMessage { get; set; }
 
-    public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager)
+    public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, IClipboard clipboard)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
+        _clipboard = clipboard;
 
         Progress.Bind(
             o => o.Current,
@@ -103,12 +109,12 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public bool CanCopyErrorMessage => !string.IsNullOrWhiteSpace(ErrorMessage);
 
-    public void CopyErrorMessage()
+    public async Task CopyErrorMessage()
     {
         if (!CanCopyErrorMessage)
             return;
 
-        Clipboard.SetText(ErrorMessage!);
+        await _clipboard.SetTextAsync(ErrorMessage!);
     }
 
     public void Dispose() => _cancellationTokenSource.Dispose();

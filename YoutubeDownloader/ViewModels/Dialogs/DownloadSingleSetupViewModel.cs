@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using Avalonia.Input.Platform;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -17,6 +19,7 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
+    private readonly IClipboard _clipboard;
 
     public IVideo? Video { get; set; }
 
@@ -27,11 +30,13 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
     public DownloadSingleSetupViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
-        SettingsService settingsService)
+        SettingsService settingsService,
+        IClipboard clipboard)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _settingsService = settingsService;
+        _clipboard = clipboard;
     }
 
     public void OnViewLoaded()
@@ -41,13 +46,13 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
         );
     }
 
-    public void CopyTitle() => Clipboard.SetText(Video!.Title);
+    public async Task CopyTitle() => await _clipboard.SetTextAsync(Video!.Title);
 
-    public void Confirm()
+    public async Task Confirm()
     {
         var container = SelectedDownloadOption!.Container;
 
-        var filePath = _dialogManager.PromptSaveFilePath(
+        var filePath = await _dialogManager.PromptSaveFilePath(
             $"{container.Name} file|*.{container.Name}",
             FileNameTemplate.Apply(
                 _settingsService.FileNameTemplate,

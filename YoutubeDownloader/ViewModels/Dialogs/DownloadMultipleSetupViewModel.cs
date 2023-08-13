@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
+using Avalonia.Input.Platform;
+using PropertyChanged;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -18,12 +21,13 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
+    private readonly IClipboard _clipboard;
 
     public string? Title { get; set; }
 
     public IReadOnlyList<IVideo>? AvailableVideos { get; set; }
 
-    public IReadOnlyList<IVideo>? SelectedVideos { get; set; }
+    public ObservableCollection<IVideo> SelectedVideos { get; set; } = new ObservableCollection<IVideo>();
 
     public IReadOnlyList<Container> AvailableContainers { get; } = new[]
     {
@@ -43,11 +47,14 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
     public DownloadMultipleSetupViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
-        SettingsService settingsService)
+        SettingsService settingsService,
+        IClipboard clipboard)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _settingsService = settingsService;
+        _clipboard = clipboard;
+        SelectedVideos.CollectionChanged += (sender, args) => NotifyOfPropertyChange(nameof(CanConfirm));
     }
 
     public void OnViewLoaded()
@@ -56,13 +63,13 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
         SelectedVideoQualityPreference = _settingsService.LastVideoQualityPreference;
     }
 
-    public void CopyTitle() => Clipboard.SetText(Title!);
+    public async Task CopyTitle() => await _clipboard.SetTextAsync(Title!);
 
     public bool CanConfirm => SelectedVideos!.Any();
 
-    public void Confirm()
+    public async Task Confirm()
     {
-        var dirPath = _dialogManager.PromptDirectoryPath();
+        var dirPath = await _dialogManager.PromptDirectoryPath();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 
@@ -118,9 +125,11 @@ public static class DownloadMultipleSetupViewModelExtensions
 
         viewModel.Title = title;
         viewModel.AvailableVideos = availableVideos;
-        viewModel.SelectedVideos = preselectVideos
-            ? availableVideos
-            : Array.Empty<IVideo>();
+
+        if (preselectVideos)
+        {
+            viewModel.SelectedVideos = new ObservableCollection<IVideo>(availableVideos);
+        }
 
         return viewModel;
     }

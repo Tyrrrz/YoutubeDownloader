@@ -5,8 +5,8 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Avalonia.Styling;
 using Cogwheel;
-using Microsoft.Win32;
 using PropertyChanged;
 using YoutubeDownloader.Core.Downloading;
 using Container = YoutubeExplode.Videos.Streams.Container;
@@ -64,17 +64,7 @@ public partial class SettingsService
 {
     private static bool IsDarkModeEnabledByDefault()
     {
-        try
-        {
-            return Registry.CurrentUser.OpenSubKey(
-                "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
-                false
-            )?.GetValue("AppsUseLightTheme") is 0;
-        }
-        catch
-        {
-            return false;
-        }
+        return App.Current?.ActualThemeVariant == ThemeVariant.Dark;
     }
 }
 
