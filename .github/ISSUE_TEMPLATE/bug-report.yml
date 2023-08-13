@@ -6,12 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### 📖 Important
-
         - Avoid generic or vague titles such as "Something's not working" or "A couple of problems" — be as descriptive as possible.
-        - Keep your issue focused on one single problem. If you have multiple bug reports, please create separate issues for each of them.
+        - Keep your issue focused on one single problem. If you have multiple bug reports, please create a separate issue for each of them.
         - Issues should represent **complete and actionable** work items. If you are unsure about something or have a question, please start a [discussion](https://github.com/Tyrrrz/YoutubeDownloader/discussions/new) instead.
-        - Remember that YoutubeDownloader is an open-source project funded by the community. If you find it useful, **please consider [donating](https://tyrrrz.me/donate) to support its development**.
+        - Remember that **YoutubeDownloader** is an open-source project funded by the community. If you find it useful, **please consider [donating](https://tyrrrz.me/donate) to support its development**.
 
         ___
 
