@@ -1,10 +1,8 @@
-using Avalonia.Controls;
-using PropertyChanged;
+using YoutubeDownloader.Views.Components;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-[DoNotNotify]
-public partial class MessageBoxView : UserControl
+public partial class MessageBoxView : UserControlBase
 {
     public MessageBoxView()
     {

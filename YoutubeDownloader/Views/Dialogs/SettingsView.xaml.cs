@@ -1,11 +1,9 @@
-using Avalonia.Controls;
 using Avalonia.Interactivity;
-using PropertyChanged;
+using YoutubeDownloader.Views.Components;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-[DoNotNotify]
-public partial class SettingsView : UserControl
+public partial class SettingsView : UserControlBase
 {
     public SettingsView()
     {

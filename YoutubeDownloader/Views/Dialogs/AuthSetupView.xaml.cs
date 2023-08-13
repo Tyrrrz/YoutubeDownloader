@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Net;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
-using PropertyChanged;
 using WebViewCore.Events;
 using YoutubeDownloader.ViewModels.Dialogs;
+using YoutubeDownloader.Views.Components;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-[DoNotNotify]
-public partial class AuthSetupView : UserControl
+public partial class AuthSetupView : UserControlBase
 {
     private const string HomePageUrl = "https://www.youtube.com";
     private static readonly string LoginPageUrl =
@@ -40,6 +38,7 @@ public partial class AuthSetupView : UserControl
         }
     }
 
+    // TODO
     //private void WebBrowser_OnCoreWebView2InitializationCompleted(
     //    object? sender,
     //    CoreWebView2InitializationCompletedEventArgs args)

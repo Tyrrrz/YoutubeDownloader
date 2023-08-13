@@ -1,12 +1,9 @@
-using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using PropertyChanged;
 
 namespace YoutubeDownloader.Views.Components;
 
-[DoNotNotify]
-public partial class DashboardView : UserControl
+public partial class DashboardView : UserControlBase
 {
     public DashboardView()
     {
