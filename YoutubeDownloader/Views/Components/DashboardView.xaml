@@ -37,7 +37,6 @@
                    FontSize="16"
                    MaxLines="4"
                    Theme="{StaticResource SoloTextBox}"
-                   KeyDown="QueryTextBox_OnPreviewKeyDown"
                    Text="{Binding Query}">
                     <TextBox.InnerLeftContent>
                         <!--  Search icon  -->
