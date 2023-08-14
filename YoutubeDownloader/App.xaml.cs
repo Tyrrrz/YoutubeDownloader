@@ -38,14 +38,14 @@ public partial class App : StyletApplication<RootViewModel>
 {
     private static Theme LightTheme { get; } = Theme.Create(
         Theme.Light,
-        MediaColor.FromHex("#343838"),
-        MediaColor.FromHex("#F9A825")
+        Color.Parse("#343838"),
+        Color.Parse("#F9A825")
     );
 
     private static Theme DarkTheme { get; } = Theme.Create(
         Theme.Dark,
-        MediaColor.FromHex("#E8E8E8"),
-        MediaColor.FromHex("#F9A825")
+        Color.Parse("#E8E8E8"),
+        Color.Parse("#F9A825")
     );
 
     public static void SetLightTheme()

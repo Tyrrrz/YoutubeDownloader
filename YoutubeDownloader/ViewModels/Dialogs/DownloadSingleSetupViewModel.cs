@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using Avalonia.Input.Platform;
+using Avalonia.Platform.Storage;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -52,8 +52,13 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
     {
         var container = SelectedDownloadOption!.Container;
 
+        var fileType = new FilePickerFileType($"{container.Name} file")
+        {
+            Patterns = new[] { $"*.{container.Name}" },
+        };
+
         var filePath = await _dialogManager.PromptSaveFilePath(
-            $"{container.Name} file|*.{container.Name}",
+            new[] { fileType },
             FileNameTemplate.Apply(
                 _settingsService.FileNameTemplate,
                 Video!,

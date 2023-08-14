@@ -57,7 +57,7 @@ public class DialogManager : IDisposable
         }
     }
 
-    public async Task<string?> PromptSaveFilePath(string? filter = null, string defaultFilePath = "")
+    public async Task<string?> PromptSaveFilePath(IReadOnlyList<FilePickerFileType>? fileTypes = null, string defaultFilePath = "")
     {
         var topLevel = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
@@ -69,7 +69,7 @@ public class DialogManager : IDisposable
 
         var filePickResult = await storageProvider.SaveFilePickerAsync(new()
         {
-            FileTypeChoices = ParseFileTypes(filter),
+            FileTypeChoices = fileTypes,
             SuggestedFileName = defaultFilePath,
             DefaultExtension = Path.GetExtension(defaultFilePath).TrimStart('.')
         });
@@ -123,33 +123,5 @@ public class DialogManager : IDisposable
         var storageFolder = await storageProvider.TryGetFolderFromPathAsync(path);
 
         return storageFolder;
-    }
-
-    private static IReadOnlyList<FilePickerFileType> ParseFileTypes(string? filterString)
-    {
-        if (filterString is null)
-        {
-            return new[] { FilePickerFileTypes.All };
-        }
-
-        var filters = new List<FilePickerFileType>();
-
-        var filterStrings = filterString.Split('|').Chunk(2);
-
-        foreach (var filter in filterStrings)
-        {
-            if (filter.Length == 2)
-            {
-                var extensions = filter[1].Split(";").ToArray();
-                var appleTypeIdentifiers = extensions.Select(s => s.Replace("*.", "public.")).ToArray();
-                filters.Add(new FilePickerFileType(filter[0])
-                {
-                    Patterns = extensions,
-                    AppleUniformTypeIdentifiers = appleTypeIdentifiers
-                });
-            }
-        }
-
-        return filters;
     }
 }
