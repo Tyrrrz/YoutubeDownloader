@@ -12,9 +12,11 @@ public partial record VideoDownloadOption(
     bool IsAudioOnly,
     IReadOnlyList<IStreamInfo> StreamInfos)
 {
-    public VideoQuality? VideoQuality => Memo.Cache(this, () =>
+    private readonly Lazy<VideoQuality?> _videoQualityLazy = new(() =>
         StreamInfos.OfType<IVideoStreamInfo>().MaxBy(s => s.VideoQuality)?.VideoQuality
     );
+
+    public VideoQuality? VideoQuality => _videoQualityLazy.Value;
 }
 
 public partial record VideoDownloadOption
