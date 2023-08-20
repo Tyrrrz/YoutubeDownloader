@@ -12,7 +12,6 @@
         <themes:MaterialTheme BaseTheme="Light" />
         <dialogHostAvalonia:DialogHostStyles />
         <materialIcons:MaterialIconStyles />
-        <StyleInclude Source="avares://Material.DataGrid/DataGrid.xaml"/>
 
         <Style Selector="ProgressBar">
             <Setter Property="BorderThickness" Value="0" />
@@ -97,7 +96,7 @@
         <SolidColorBrush x:Key="FailedBrush" Color="{DynamicResource FailedColor}" />
     
         <!-- ControlThemes-->
-        <ControlTheme x:Key="MaterialDesignRoot" TargetType="{x:Type Control}">
+        <ControlTheme x:Key="MaterialDesignRoot" TargetType="{x:Type Control}" BasedOn="{StaticResource MaterialUserControl}">
             <Setter Property="TextElement.FontFamily" Value="{DynamicResource MaterialDesignFont}" />
             <Setter Property="TextElement.FontSize" Value="13" />
             <Setter Property="TextElement.FontWeight" Value="Regular" />

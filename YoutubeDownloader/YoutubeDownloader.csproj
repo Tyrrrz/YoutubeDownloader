@@ -33,7 +33,8 @@
     <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.5.1" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.1.1" />
     <PackageReference Include="HyperText.Avalonia" Version="11.0.0-rc1" />
-    <PackageReference Include="Material.Avalonia" Version="3.0.0-avalonia11-preview5.225-nightly" />
+    <PackageReference Include="Material.Avalonia" Version="3.0.0-avalonia11-preview6.17-nightly" />
+    <PackageReference Include="Material.Avalonia.DataGrid" Version="3.0.0-avalonia11-preview6.17-nightly" />
     <PackageReference Include="Material.Icons.Avalonia" Version="2.0.1" />
     <PackageReference Include="Onova" Version="2.6.10" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
