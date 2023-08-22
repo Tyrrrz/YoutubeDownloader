@@ -70,7 +70,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public bool CanShowFile => Status == DownloadStatus.Completed;
 
-    public async void ShowFile()
+    public async Task ShowFile()
     {
         if (!CanShowFile)
             return;
@@ -90,7 +90,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public bool CanOpenFile => Status == DownloadStatus.Completed;
 
-    public async void OpenFile()
+    public async Task OpenFile()
     {
         if (!CanOpenFile)
             return;

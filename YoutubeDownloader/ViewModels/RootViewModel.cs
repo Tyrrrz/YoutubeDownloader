@@ -87,7 +87,7 @@ public class RootViewModel : Screen
         }
     }
 
-    public async void OnViewFullyLoaded()
+    public async Task OnViewFullyLoaded()
     {
         await ShowUkraineSupportMessageAsync();
         await CheckForUpdatesAsync();

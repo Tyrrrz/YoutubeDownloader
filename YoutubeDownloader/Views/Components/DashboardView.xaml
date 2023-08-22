@@ -55,7 +55,7 @@
                             x:Name="ProcessQueryButton"
                             Margin="0,6,6,6"
                             Padding="4"
-                            Command="{s:Action ProcessQuery}"
+                            Command="{Binding ProcessQuery}"
                             IsDefault="True"
                             Theme="{StaticResource FlatButton}"
                             ToolTip.Tip="Process query (Enter)">
@@ -73,7 +73,7 @@
                 Grid.Column="1"
                 Margin="6"
                 Padding="4"
-                Command="{s:Action ShowAuthSetup}"
+                Command="{Binding ShowAuthSetup}"
                 Foreground="{DynamicResource MaterialDesignDarkForeground}"
                 Theme="{StaticResource FlatButton}"
                 ToolTip.Tip="Authentication">
@@ -91,7 +91,7 @@
                 Grid.Column="2"
                 Margin="6"
                 Padding="4"
-                Command="{s:Action ShowSettings}"
+                Command="{Binding ShowSettings}"
                 Foreground="{DynamicResource MaterialDesignDarkForeground}"
                 Theme="{StaticResource FlatButton}"
                 ToolTip.Tip="Settings">
@@ -283,8 +283,7 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        s:View.ActionTarget="{Binding}"
-                                        Command="{s:Action ShowFile}"
+                                        Command="{Binding ShowFile}"
                                         Theme="{DynamicResource FlatButton}"
                                         ToolTip.Tip="Show file"
                                         IsVisible="{Binding CanShowFile}">
@@ -298,8 +297,7 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        s:View.ActionTarget="{Binding}"
-                                        Command="{s:Action OpenFile}"
+                                        Command="{Binding OpenFile}"
                                         Theme="{DynamicResource FlatButton}"
                                         ToolTip.Tip="Play"
                                         IsVisible="{Binding CanOpenFile}">

@@ -66,13 +66,13 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
     public bool CanShowAuthSetup => !IsBusy;
 
-    public async void ShowAuthSetup() => await _dialogManager.ShowDialogAsync(
+    public async Task ShowAuthSetup() => await _dialogManager.ShowDialogAsync(
         _viewModelFactory.CreateAuthSetupViewModel()
     );
 
     public bool CanShowSettings => !IsBusy;
 
-    public async void ShowSettings() => await _dialogManager.ShowDialogAsync(
+    public async Task ShowSettings() => await _dialogManager.ShowDialogAsync(
         _viewModelFactory.CreateSettingsViewModel()
     );
 
@@ -158,7 +158,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
     public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
 
-    public async void ProcessQuery()
+    public async Task ProcessQuery()
     {
         if (string.IsNullOrWhiteSpace(Query))
             return;
