@@ -67,11 +67,13 @@
                     IsVisible="{Binding !IsAuthenticated}" />
 
                 <!--  Browser  -->
-                <WebView 
+                <Panel x:Name="WebPanel"
+                       IsVisible="{Binding !IsAuthenticated}"/>
+                <!--<WebView 
                     x:Name="WebBrowser"
                     Loaded="WebBrowser_OnLoaded"
                     WebViewCreated="WebBrowser_OnWebViewCreated"
-                    />
+                    />-->
                 <!--<wpf:WebView2
                     x:Name="WebBrowser"
                     CoreWebView2InitializationCompleted="WebBrowser_OnCoreWebView2InitializationCompleted"

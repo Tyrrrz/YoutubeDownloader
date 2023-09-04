@@ -26,6 +26,7 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Include="Avalonia.Diagnostics" Version="11.0.4" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.0.2" />
+    <PackageReference Include="CefGlue.Avalonia" Version="106.5249.19-avalonia11" />
     <PackageReference Include="Cogwheel" Version="2.0.3" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="Deorcify" Version="1.0.2" PrivateAssets="all" />
