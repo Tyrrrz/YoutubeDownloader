@@ -2,17 +2,17 @@ name: main
 
 on: [push, pull_request]
 
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
 jobs:
   pack:
     runs-on: windows-latest
     permissions:
       actions: write
       contents: read
-
-    env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-      DOTNET_NOLOGO: true
-      DOTNET_CLI_TELEMETRY_OPTOUT: true
 
     steps:
       - name: Checkout
