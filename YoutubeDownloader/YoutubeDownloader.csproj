@@ -33,10 +33,10 @@
     <PackageReference Include="DialogHost.Avalonia" Version="0.7.6" />
     <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.5.1" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.1.1" />
-    <PackageReference Include="HyperText.Avalonia" Version="11.0.0-rc1" />
-    <PackageReference Include="Material.Avalonia" Version="3.0.0-avalonia11-preview6.17-nightly" />
-    <PackageReference Include="Material.Avalonia.DataGrid" Version="3.0.0-avalonia11-preview6.17-nightly" />
-    <PackageReference Include="Material.Icons.Avalonia" Version="2.0.1" />
+    <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1938.49" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="Onova" Version="2.6.10" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
     <PackageReference Include="Stylet.Avalonia" Version="0.2.0" />

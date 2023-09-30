@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.10.3 (31-Aug-2023)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.3.3.
+
+## v1.10.2 (18-Aug-2023)
+
+- Fixed various YouTube-related issues. Updated to YoutubeExplode v6.3.2.
+
 ## v1.10.1 (15-Jul-2023)
 
 - Fixed an issue which prevented authentication from working properly.
