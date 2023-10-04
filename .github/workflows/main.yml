@@ -77,7 +77,7 @@ jobs:
 
     steps:
       - name: Notify Discord
-        uses: tyrrrz/action-http-request@28a403e52ea0f292b85a1850aeab1b90abc54be0 # 1.0.0
+        uses: tyrrrz/action-http-request@66a047c7508f4418114d1080fbfc348621cdc78f # 1.1.0
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: POST
@@ -88,3 +88,4 @@ jobs:
               "avatar_url": "https://raw.githubusercontent.com/${{ github.event.repository.full_name }}/${{ github.ref_name }}/favicon.png",
               "content": "**${{ github.event.repository.name }}** new version released!\nVersion: `${{ github.ref_name }}`\nChangelog: <${{ github.event.repository.html_url }}/blob/${{ github.ref_name }}/Changelog.md>"
             }
+          retry-count: 5
