@@ -18,7 +18,7 @@
     <Grid RowDefinitions="Auto, Auto, *">
 
         <!--  Toolbar  -->
-        <Grid Grid.Row="0" Background="{DynamicResource MaterialDesignDarkBackground}">
+        <Grid Grid.Row="0" Background="{DynamicResource MaterialDarkBackgroundBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="50" />
@@ -27,7 +27,7 @@
 
             <!--  Query and process query button  -->
             <materialDesign:Card Grid.Column="0" Margin="12,12,0,12" Height="44" Padding="8,0,8,0"
-                                 Background="{DynamicResource MaterialDesignCardBackground}">
+                                 Background="{DynamicResource MaterialCardBackgroundBrush}">
                 <TextBox
                    x:Name="QueryTextBox"
                    Margin="0,6,6,8"
@@ -37,7 +37,7 @@
                    BorderThickness="0"
                    FontSize="16"
                    MaxLines="4"
-                   Theme="{StaticResource SoloTextBox}"
+                   Theme="{DynamicResource SoloTextBox}"
                    Text="{Binding Query}">
                     <TextBox.InnerLeftContent>
                         <!--  Search icon  -->
@@ -57,11 +57,12 @@
                             Padding="4"
                             Command="{Binding ProcessQuery}"
                             IsDefault="True"
-                            Theme="{StaticResource FlatButton}"
+                            Theme="{StaticResource MaterialFlatButton}"
                             ToolTip.Tip="Process query (Enter)">
                             <materialIcon:MaterialIcon
                                 Width="24"
                                 Height="24"
+                                Foreground="{DynamicResource PrimaryHueMidBrush}"
                                 Kind="ArrowRight" />
                         </Button>
                     </TextBox.InnerRightContent>
@@ -74,8 +75,8 @@
                 Margin="6"
                 Padding="4"
                 Command="{Binding ShowAuthSetup}"
-                Foreground="{DynamicResource MaterialDesignDarkForeground}"
-                Theme="{StaticResource FlatButton}"
+                Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                Theme="{StaticResource MaterialFlatButton}"
                 ToolTip.Tip="Authentication">
                 <Button.Resources>
                     <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
@@ -92,8 +93,8 @@
                 Margin="6"
                 Padding="4"
                 Command="{Binding ShowSettings}"
-                Foreground="{DynamicResource MaterialDesignDarkForeground}"
-                Theme="{StaticResource FlatButton}"
+                Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                Theme="{StaticResource MaterialFlatButton}"
                 ToolTip.Tip="Settings">
                 <Button.Resources>
                     <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
@@ -108,12 +109,12 @@
         <!--  Progress  -->
         <ProgressBar
             Grid.Row="1"
-            Background="{DynamicResource MaterialDesignDarkBackground}"
+            Background="{DynamicResource MaterialDarkBackgroundBrush}"
             IsIndeterminate="{Binding IsProgressIndeterminate}"
             Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
 
         <!--  Content  -->
-        <Grid Grid.Row="2" Background="{DynamicResource MaterialDesignCardBackground}">
+        <Grid Grid.Row="2" Background="{DynamicResource MaterialCardBackgroundBrush}">
             <!--  Placeholder  -->
             <StackPanel
                 Margin="8,32,8,8"
@@ -146,7 +147,7 @@
 
             <!--  Downloads  -->
             <DataGrid
-                Background="{DynamicResource MaterialDesignCardBackground}"
+                Background="{DynamicResource MaterialCardBackgroundBrush}"
                 ColumnWidth="Auto"
                 HorizontalScrollBarVisibility="Disabled"
                 ItemsSource="{Binding Downloads}"
@@ -284,7 +285,7 @@
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
                                         Command="{Binding ShowFile}"
-                                        Theme="{DynamicResource FlatButton}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Show file"
                                         IsVisible="{Binding CanShowFile}">
                                         <materialIcon:MaterialIcon
@@ -298,7 +299,7 @@
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
                                         Command="{Binding OpenFile}"
-                                        Theme="{DynamicResource FlatButton}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Play"
                                         IsVisible="{Binding CanOpenFile}">
                                         <materialIcon:MaterialIcon
@@ -313,7 +314,7 @@
                                         VerticalAlignment="Center"
                                         s:View.ActionTarget="{Binding}"
                                         Command="{s:Action Cancel}"
-                                        Theme="{DynamicResource FlatButton}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Cancel download"
                                         IsVisible="{Binding CanCancel}">
                                         <materialIcon:MaterialIcon
@@ -328,7 +329,7 @@
                                         VerticalAlignment="Center"
                                         Command="{s:Action RestartDownload}"
                                         CommandParameter="{Binding}"
-                                        Theme="{DynamicResource FlatButton}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Restart download"
                                         IsVisible="{Binding IsCanceledOrFailed}">
                                         <materialIcon:MaterialIcon

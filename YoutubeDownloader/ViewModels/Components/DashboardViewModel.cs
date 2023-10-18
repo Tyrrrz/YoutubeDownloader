@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Metadata;
 using Gress;
 using Gress.Completable;
 using Stylet;
@@ -156,7 +157,9 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         Downloads.Insert(position, download);
     }
 
-    public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
+    [DependsOn(nameof(IsBusy))]
+    [DependsOn(nameof(Query))]
+    public bool CanProcessQuery(object _) => !IsBusy && !string.IsNullOrWhiteSpace(Query);
 
     public async Task ProcessQuery()
     {

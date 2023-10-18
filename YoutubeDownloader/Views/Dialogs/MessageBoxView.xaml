@@ -61,7 +61,7 @@
                 Command="{s:Action Close}"
                 Content="{Binding OkButtonText}"
                 IsDefault="True"
-                Theme="{StaticResource OutlineButton}"
+                Theme="{StaticResource MaterialOutlineButton}"
                 IsVisible="{Binding IsOkButtonVisible}">
                 <Button.CommandParameter>
                     <system:Boolean>True</system:Boolean>
@@ -75,7 +75,7 @@
                 Command="{s:Action Close}"
                 Content="{Binding CancelButtonText}"
                 IsCancel="True"
-                Theme="{StaticResource OutlineButton}"
+                Theme="{StaticResource MaterialOutlineButton}"
                 IsVisible="{Binding IsCancelButtonVisible}" />
         </UniformGrid>
     </Grid>

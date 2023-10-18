@@ -3,12 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-             xmlns:s="using:Stylet.Xaml"
              Width="300"
              mc:Ignorable="d"
-             Theme="{DynamicResource MaterialDesignRoot}"
              x:Class="YoutubeDownloader.Views.Dialogs.SettingsView"
              x:DataType="dialogs:SettingsViewModel">
+             <!-- Theme="{DynamicResource MaterialDesignRoot}" -->
     
     <Grid RowDefinitions="Auto,*,Auto">
         

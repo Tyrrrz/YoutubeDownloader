@@ -57,8 +57,8 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
 
             <Style Selector="^ materialDesign|Card">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignDarkBackground}" />
-                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignDarkForeground}" />
+                <Setter Property="Background" Value="{DynamicResource MaterialDarkBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDarkForegroundBrush}" />
                 <Setter Property="Width" Value="NaN"/>
             </Style>
 
@@ -97,7 +97,7 @@
     
         <!-- ControlThemes-->
         <ControlTheme x:Key="MaterialDesignRoot" TargetType="{x:Type Control}" BasedOn="{StaticResource MaterialUserControl}">
-            <Setter Property="TextElement.FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+            <Setter Property="TextElement.FontFamily" Value="{DynamicResource MaterialDesignFonts}" />
             <Setter Property="TextElement.FontSize" Value="13" />
             <Setter Property="TextElement.FontWeight" Value="Regular" />
             <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />

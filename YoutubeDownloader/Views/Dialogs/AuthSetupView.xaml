@@ -98,6 +98,6 @@
             Content="CLOSE"
             IsCancel="True"
             IsDefault="True"
-            Theme="{StaticResource OutlineButton}"  />
+            Theme="{StaticResource MaterialOutlineButton}"  />
     </Grid>
 </UserControl>
