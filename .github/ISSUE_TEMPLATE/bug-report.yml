@@ -16,7 +16,7 @@ body:
   - type: input
     attributes:
       label: Version
-      description: Which version of the application does this bug affect?
+      description: Which version of the application does this bug affect? Make sure you're not using an outdated version.
       placeholder: v1.0.0
     validations:
       required: true
@@ -24,7 +24,7 @@ body:
   - type: input
     attributes:
       label: Platform
-      description: What platform do you experience this bug on?
+      description: Which platform do you experience this bug on?
       placeholder: Windows 11
     validations:
       required: true
@@ -66,7 +66,7 @@ body:
       label: Checklist
       description: Quick list of checks to ensure that everything is in order.
       options:
-        - label: I have looked through existing open and closed issues to make sure that this bug has not been reported before
+        - label: I have looked through existing issues to make sure that this bug has not been reported before
           required: true
         - label: I have provided a descriptive title for this issue
           required: true
