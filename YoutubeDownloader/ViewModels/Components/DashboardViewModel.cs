@@ -40,7 +40,8 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
     public DashboardViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
-        SettingsService settingsService)
+        SettingsService settingsService
+    )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
@@ -58,23 +59,18 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
         );
 
-        Downloads.Bind(
-            o => o.Count,
-            (_, _) => NotifyOfPropertyChange(() => IsDownloadsAvailable)
-        );
+        Downloads.Bind(o => o.Count, (_, _) => NotifyOfPropertyChange(() => IsDownloadsAvailable));
     }
 
     public bool CanShowAuthSetup => !IsBusy;
 
-    public async void ShowAuthSetup() => await _dialogManager.ShowDialogAsync(
-        _viewModelFactory.CreateAuthSetupViewModel()
-    );
+    public async void ShowAuthSetup() =>
+        await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateAuthSetupViewModel());
 
     public bool CanShowSettings => !IsBusy;
 
-    public async void ShowSettings() => await _dialogManager.ShowDialogAsync(
-        _viewModelFactory.CreateSettingsViewModel()
-    );
+    public async void ShowSettings() =>
+        await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateSettingsViewModel());
 
     private void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
@@ -87,13 +83,15 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
                 var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
                 var tagInjector = new MediaTagInjector();
 
-                using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
+                using var access = await _downloadSemaphore.AcquireAsync(
+                    download.CancellationToken
+                );
 
                 download.Status = DownloadStatus.Started;
 
                 var downloadOption =
-                    download.DownloadOption ??
-                    await downloader.GetBestDownloadOptionAsync(
+                    download.DownloadOption
+                    ?? await downloader.GetBestDownloadOptionAsync(
                         download.Video!.Id,
                         download.DownloadPreference!,
                         download.CancellationToken
@@ -137,14 +135,13 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
                     // Ignore
                 }
 
-                download.Status = ex is OperationCanceledException
-                    ? DownloadStatus.Canceled
-                    : DownloadStatus.Failed;
+                download.Status =
+                    ex is OperationCanceledException
+                        ? DownloadStatus.Canceled
+                        : DownloadStatus.Failed;
 
                 // Short error message for YouTube-related errors, full for others
-                download.ErrorMessage = ex is YoutubeExplodeException
-                    ? ex.Message
-                    : ex.ToString();
+                download.ErrorMessage = ex is YoutubeExplodeException ? ex.Message : ex.ToString();
             }
             finally
             {
@@ -174,7 +171,10 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
 
             var result = await resolver.ResolveAsync(
-                Query.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+                Query.Split(
+                    "\n",
+                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+                ),
                 progress
             );
 
@@ -201,7 +201,9 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
                         result.Title,
                         result.Videos,
                         // Pre-select videos if they come from a single query and not from search
-                        result.Kind is not QueryResultKind.Search and not QueryResultKind.Aggregate
+                        result.Kind
+                            is not QueryResultKind.Search
+                                and not QueryResultKind.Aggregate
                     )
                 );
 
@@ -261,7 +263,12 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
     {
         foreach (var download in Downloads.ToArray())
         {
-            if (download.Status is DownloadStatus.Completed or DownloadStatus.Failed or DownloadStatus.Canceled)
+            if (
+                download.Status
+                is DownloadStatus.Completed
+                    or DownloadStatus.Failed
+                    or DownloadStatus.Canceled
+            )
                 RemoveDownload(download);
         }
     }

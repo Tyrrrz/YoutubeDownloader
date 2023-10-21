@@ -18,6 +18,10 @@ public class VideoQualityPreferenceToStringConverter : IValueConverter
         return default(string);
     }
 
-    public object ConvertBack(object? value, Type targetType, object parameter, CultureInfo culture) =>
-        throw new NotSupportedException();
+    public object ConvertBack(
+        object? value,
+        Type targetType,
+        object parameter,
+        CultureInfo culture
+    ) => throw new NotSupportedException();
 }

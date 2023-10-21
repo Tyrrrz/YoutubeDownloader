@@ -13,7 +13,7 @@ public partial class AuthSetupView
     private static readonly string LoginPageUrl =
         $"https://accounts.google.com/ServiceLogin?continue={WebUtility.UrlEncode(HomePageUrl)}";
 
-    private AuthSetupViewModel ViewModel => (AuthSetupViewModel) DataContext;
+    private AuthSetupViewModel ViewModel => (AuthSetupViewModel)DataContext;
 
     public AuthSetupView()
     {
@@ -32,7 +32,8 @@ public partial class AuthSetupView
 
     private void WebBrowser_OnCoreWebView2InitializationCompleted(
         object? sender,
-        CoreWebView2InitializationCompletedEventArgs args)
+        CoreWebView2InitializationCompletedEventArgs args
+    )
     {
         if (!args.IsSuccess)
             return;
@@ -45,14 +46,20 @@ public partial class AuthSetupView
         WebBrowser.CoreWebView2.Settings.IsSwipeNavigationEnabled = false;
     }
 
-    private void WebBrowser_OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs args)
+    private void WebBrowser_OnNavigationStarting(
+        object? sender,
+        CoreWebView2NavigationStartingEventArgs args
+    )
     {
         // Reset existing browser cookies if the user is attempting to log in (again)
         if (string.Equals(args.Uri, LoginPageUrl, StringComparison.OrdinalIgnoreCase))
             WebBrowser.CoreWebView2.CookieManager.DeleteAllCookies();
     }
 
-    private async void WebBrowser_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs args)
+    private async void WebBrowser_OnNavigationCompleted(
+        object? sender,
+        CoreWebView2NavigationCompletedEventArgs args
+    )
     {
         var url = WebBrowser.Source.AbsoluteUri.TrimEnd('/');
 

@@ -68,10 +68,7 @@ public class DialogManager : IDisposable
 
     public string? PromptDirectoryPath(string defaultDirPath = "")
     {
-        var dialog = new VistaFolderBrowserDialog
-        {
-            SelectedPath = defaultDirPath
-        };
+        var dialog = new VistaFolderBrowserDialog { SelectedPath = defaultDirPath };
 
         return dialog.ShowDialog() == true ? dialog.SelectedPath : null;
     }

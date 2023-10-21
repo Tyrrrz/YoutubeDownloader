@@ -50,6 +50,5 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
 
-    public SettingsViewModel(SettingsService settingsService) =>
-        _settingsService = settingsService;
+    public SettingsViewModel(SettingsService settingsService) => _settingsService = settingsService;
 }

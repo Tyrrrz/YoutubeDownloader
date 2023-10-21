@@ -19,12 +19,10 @@ public class AuthSetupViewModel : DialogScreen
     }
 
     public bool IsAuthenticated =>
-        Cookies?.Any() == true &&
+        Cookies?.Any() == true
+        &&
         // None of the cookies should be expired
-        Cookies.All(c =>
-            !c.Expired &&
-            (c.Expires == default || c.Expires > DateTimeOffset.Now)
-        );
+        Cookies.All(c => !c.Expired && (c.Expires == default || c.Expires > DateTimeOffset.Now));
 
     public AuthSetupViewModel(SettingsService settingsService)
     {
@@ -35,9 +33,6 @@ public class AuthSetupViewModel : DialogScreen
             (_, _) => NotifyOfPropertyChange(() => Cookies)
         );
 
-        this.BindAndInvoke(
-            o => o.Cookies,
-            (_, _) => NotifyOfPropertyChange(() => IsAuthenticated)
-        );
+        this.BindAndInvoke(o => o.Cookies, (_, _) => NotifyOfPropertyChange(() => IsAuthenticated));
     }
 }

@@ -92,8 +92,7 @@ internal partial class ResizableSemaphore
     {
         private readonly ResizableSemaphore _semaphore;
 
-        public AcquiredAccess(ResizableSemaphore semaphore) =>
-            _semaphore = semaphore;
+        public AcquiredAccess(ResizableSemaphore semaphore) => _semaphore = semaphore;
 
         public void Dispose() => _semaphore.Release();
     }

@@ -120,7 +120,8 @@ public static class DownloadViewModelExtensions
         this IViewModelFactory factory,
         IVideo video,
         VideoDownloadOption downloadOption,
-        string filePath)
+        string filePath
+    )
     {
         var viewModel = factory.CreateDownloadViewModel();
 
@@ -135,7 +136,8 @@ public static class DownloadViewModelExtensions
         this IViewModelFactory factory,
         IVideo video,
         VideoDownloadPreference downloadPreference,
-        string filePath)
+        string filePath
+    )
     {
         var viewModel = factory.CreateDownloadViewModel();
 

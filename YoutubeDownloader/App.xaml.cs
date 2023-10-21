@@ -23,17 +23,19 @@ public partial class App
 
 public partial class App
 {
-    private static Theme LightTheme { get; } = Theme.Create(
-        new MaterialDesignLightTheme(),
-        MediaColor.FromHex("#343838"),
-        MediaColor.FromHex("#F9A825")
-    );
+    private static Theme LightTheme { get; } =
+        Theme.Create(
+            new MaterialDesignLightTheme(),
+            MediaColor.FromHex("#343838"),
+            MediaColor.FromHex("#F9A825")
+        );
 
-    private static Theme DarkTheme { get; } = Theme.Create(
-        new MaterialDesignDarkTheme(),
-        MediaColor.FromHex("#E8E8E8"),
-        MediaColor.FromHex("#F9A825")
-    );
+    private static Theme DarkTheme { get; } =
+        Theme.Create(
+            new MaterialDesignDarkTheme(),
+            MediaColor.FromHex("#E8E8E8"),
+            MediaColor.FromHex("#F9A825")
+        );
 
     public static void SetLightTheme()
     {

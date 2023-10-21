@@ -11,7 +11,8 @@ namespace YoutubeDownloader.Core.Downloading;
 public partial record VideoDownloadOption(
     Container Container,
     bool IsAudioOnly,
-    IReadOnlyList<IStreamInfo> StreamInfos)
+    IReadOnlyList<IStreamInfo> StreamInfos
+)
 {
     [Lazy]
     public VideoQuality? VideoQuality =>

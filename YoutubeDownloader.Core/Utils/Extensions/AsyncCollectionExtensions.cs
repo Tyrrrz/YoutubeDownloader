@@ -7,7 +7,8 @@ namespace YoutubeDownloader.Core.Utils.Extensions;
 public static class AsyncCollectionExtensions
 {
     private static async ValueTask<IReadOnlyList<T>> CollectAsync<T>(
-        this IAsyncEnumerable<T> asyncEnumerable)
+        this IAsyncEnumerable<T> asyncEnumerable
+    )
     {
         var list = new List<T>();
 
@@ -18,6 +19,6 @@ public static class AsyncCollectionExtensions
     }
 
     public static ValueTaskAwaiter<IReadOnlyList<T>> GetAwaiter<T>(
-        this IAsyncEnumerable<T> asyncEnumerable) =>
-        asyncEnumerable.CollectAsync().GetAwaiter();
+        this IAsyncEnumerable<T> asyncEnumerable
+    ) => asyncEnumerable.CollectAsync().GetAwaiter();
 }
