@@ -25,25 +25,22 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
 
     public IReadOnlyList<IVideo>? SelectedVideos { get; set; }
 
-    public IReadOnlyList<Container> AvailableContainers { get; } = new[]
-    {
-        Container.Mp4,
-        Container.WebM,
-        Container.Mp3,
-        new Container("ogg")
-    };
+    public IReadOnlyList<Container> AvailableContainers { get; } =
+        new[] { Container.Mp4, Container.WebM, Container.Mp3, new Container("ogg") };
 
     public Container SelectedContainer { get; set; } = Container.Mp4;
 
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         Enum.GetValues<VideoQualityPreference>().Reverse().ToArray();
 
-    public VideoQualityPreference SelectedVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
+    public VideoQualityPreference SelectedVideoQualityPreference { get; set; } =
+        VideoQualityPreference.Highest;
 
     public DownloadMultipleSetupViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
-        SettingsService settingsService)
+        SettingsService settingsService
+    )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
@@ -112,15 +109,14 @@ public static class DownloadMultipleSetupViewModelExtensions
         this IViewModelFactory factory,
         string title,
         IReadOnlyList<IVideo> availableVideos,
-        bool preselectVideos = true)
+        bool preselectVideos = true
+    )
     {
         var viewModel = factory.CreateDownloadMultipleSetupViewModel();
 
         viewModel.Title = title;
         viewModel.AvailableVideos = availableVideos;
-        viewModel.SelectedVideos = preselectVideos
-            ? availableVideos
-            : Array.Empty<IVideo>();
+        viewModel.SelectedVideos = preselectVideos ? availableVideos : Array.Empty<IVideo>();
 
         return viewModel;
     }

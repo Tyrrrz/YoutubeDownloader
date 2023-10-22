@@ -18,8 +18,8 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
     {
         base.OnStart();
 
-        // Set default theme
-        // (preferred theme will be set later, once the settings are loaded)
+        // Set the default theme.
+        // Preferred theme will be set later, once the settings are loaded.
         App.SetLightTheme();
 
         // Increase maximum concurrent connections
@@ -35,12 +35,12 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
     }
 
 #if !DEBUG
-    protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
+    protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs args)
     {
-        base.OnUnhandledException(e);
+        base.OnUnhandledException(args);
 
         MessageBox.Show(
-            e.Exception.ToString(),
+            args.Exception.ToString(),
             "Error occured",
             MessageBoxButton.OK,
             MessageBoxImage.Error

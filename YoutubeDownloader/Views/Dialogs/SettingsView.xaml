@@ -2,6 +2,7 @@
     x:Class="YoutubeDownloader.Views.Dialogs.SettingsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,7 +20,7 @@
 
         <TextBlock
             Grid.Row="0"
-            Margin="16,16,16,8"
+            Margin="16"
             FontSize="19"
             FontWeight="Light"
             Text="Settings" />
@@ -67,10 +68,27 @@
                             x:Name="DarkModeToggleButton"
                             Margin="16,8"
                             VerticalAlignment="Center"
-                            Checked="DarkModeToggleButton_Checked"
+                            Checked="DarkModeToggleButton_OnChecked"
                             DockPanel.Dock="Right"
                             IsChecked="{Binding IsDarkModeEnabled}"
-                            Unchecked="DarkModeToggleButton_Unchecked" />
+                            Unchecked="DarkModeToggleButton_OnUnchecked" />
+                    </DockPanel>
+
+                    <!--  Persist authentication  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Save authentication cookies to a file so that they can be persisted between sessions">
+                        <TextBlock
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Text="Persist authentication" />
+                        <ToggleButton
+                            Margin="16,8"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding IsAuthPersisted}" />
                     </DockPanel>
 
                     <!--  Inject tags  -->
@@ -259,13 +277,13 @@
             </ScrollViewer>
         </Border>
 
-        <!--  Save button  -->
+        <!--  Close button  -->
         <Button
             Grid.Row="2"
             Margin="16"
             HorizontalAlignment="Stretch"
             Command="{s:Action Close}"
-            Content="SAVE"
+            Content="CLOSE"
             IsCancel="True"
             IsDefault="True"
             Style="{DynamicResource MaterialDesignOutlinedButton}" />

@@ -9,21 +9,23 @@ namespace YoutubeDownloader.Behaviors;
 
 public class MultiSelectionListBoxBehavior<T> : Behavior<ListBox>
 {
-    public static readonly DependencyProperty SelectedItemsProperty =
-        DependencyProperty.Register(
-            nameof(SelectedItems),
-            typeof(IList),
-            typeof(MultiSelectionListBoxBehavior<T>),
-            new FrameworkPropertyMetadata(
-                null,
-                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                OnSelectedItemsChanged
-            )
-        );
+    public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
+        nameof(SelectedItems),
+        typeof(IList),
+        typeof(MultiSelectionListBoxBehavior<T>),
+        new FrameworkPropertyMetadata(
+            null,
+            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+            OnSelectedItemsChanged
+        )
+    );
 
-    private static void OnSelectedItemsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+    private static void OnSelectedItemsChanged(
+        DependencyObject sender,
+        DependencyPropertyChangedEventArgs args
+    )
     {
-        var behavior = (MultiSelectionListBoxBehavior<T>) sender;
+        var behavior = (MultiSelectionListBoxBehavior<T>)sender;
         if (behavior._modelHandled)
             return;
 
@@ -40,11 +42,11 @@ public class MultiSelectionListBoxBehavior<T> : Behavior<ListBox>
 
     public IList? SelectedItems
     {
-        get => (IList?) GetValue(SelectedItemsProperty);
+        get => (IList?)GetValue(SelectedItemsProperty);
         set => SetValue(SelectedItemsProperty, value);
     }
 
-    // Propagate selected items from model to view
+    // Propagate selected items from the model to the view
     private void SelectItems()
     {
         _viewHandled = true;
@@ -59,20 +61,23 @@ public class MultiSelectionListBoxBehavior<T> : Behavior<ListBox>
         _viewHandled = false;
     }
 
-    // Propagate selected items from view to model
+    // Propagate selected items from the view to the model
     private void OnListBoxSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
-        if (_viewHandled) return;
-        if (AssociatedObject.Items.SourceCollection is null) return;
+        if (_viewHandled)
+            return;
+        if (AssociatedObject.Items.SourceCollection is null)
+            return;
 
         SelectedItems = AssociatedObject.SelectedItems.Cast<T>().ToArray();
     }
 
-    // Re-select items when the set of items changes
     private void OnListBoxItemsChanged(object? sender, NotifyCollectionChangedEventArgs args)
     {
-        if (_viewHandled) return;
-        if (AssociatedObject.Items.SourceCollection is null) return;
+        if (_viewHandled)
+            return;
+        if (AssociatedObject.Items.SourceCollection is null)
+            return;
         SelectItems();
     }
 
@@ -81,10 +86,10 @@ public class MultiSelectionListBoxBehavior<T> : Behavior<ListBox>
         base.OnAttached();
 
         AssociatedObject.SelectionChanged += OnListBoxSelectionChanged;
-        ((INotifyCollectionChanged) AssociatedObject.Items).CollectionChanged += OnListBoxItemsChanged;
+        ((INotifyCollectionChanged)AssociatedObject.Items).CollectionChanged +=
+            OnListBoxItemsChanged;
     }
 
-    /// <inheritdoc />
     protected override void OnDetaching()
     {
         base.OnDetaching();
@@ -92,7 +97,8 @@ public class MultiSelectionListBoxBehavior<T> : Behavior<ListBox>
         if (AssociatedObject is not null)
         {
             AssociatedObject.SelectionChanged -= OnListBoxSelectionChanged;
-            ((INotifyCollectionChanged) AssociatedObject.Items).CollectionChanged -= OnListBoxItemsChanged;
+            ((INotifyCollectionChanged)AssociatedObject.Items).CollectionChanged -=
+                OnListBoxItemsChanged;
         }
     }
 }

@@ -18,11 +18,14 @@ public partial class BoolToVisibilityConverter : IValueConverter
     }
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-        value is true
-            ? _trueVisibility
-            : _falseVisibility;
+        value is true ? _trueVisibility : _falseVisibility;
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+    public object ConvertBack(
+        object value,
+        Type targetType,
+        object parameter,
+        CultureInfo culture
+    ) =>
         value is Visibility visibility
             ? visibility == _trueVisibility
             : throw new NotSupportedException();
