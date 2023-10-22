@@ -20,6 +20,12 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.IsDarkModeEnabled = value;
     }
 
+    public bool IsAuthPersisted
+    {
+        get => _settingsService.IsAuthPersisted;
+        set => _settingsService.IsAuthPersisted = value;
+    }
+
     public bool ShouldInjectTags
     {
         get => _settingsService.ShouldInjectTags;
@@ -74,8 +80,5 @@ public class SettingsViewModel : DialogScreen
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
 
-    public SettingsViewModel(SettingsService settingsService)
-    {
-        _settingsService = settingsService;
-    }
+    public SettingsViewModel(SettingsService settingsService) => _settingsService = settingsService;
 }

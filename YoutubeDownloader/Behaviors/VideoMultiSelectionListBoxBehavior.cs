@@ -2,6 +2,4 @@
 
 namespace YoutubeDownloader.Behaviors;
 
-public class VideoMultiSelectionListBoxBehavior : MultiSelectionListBoxBehavior<IVideo>
-{
-}
+public class VideoMultiSelectionListBoxBehavior : MultiSelectionListBoxBehavior<IVideo> { }

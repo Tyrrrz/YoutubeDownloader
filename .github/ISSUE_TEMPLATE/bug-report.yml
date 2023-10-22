@@ -1,42 +1,83 @@
-name: 🐞 Bug report
+name: 🐛 Bug report
 description: Report broken functionality.
 labels: [bug]
 
 body:
-- type: markdown
-  attributes:
-    value: |
-      🧐 **Guidelines:**
+  - type: markdown
+    attributes:
+      value: |
+        - Avoid generic or vague titles such as "Something's not working" or "A couple of problems" — be as descriptive as possible.
+        - Keep your issue focused on one single problem. If you have multiple bug reports, please create a separate issue for each of them.
+        - Issues should represent **complete and actionable** work items. If you are unsure about something or have a question, please start a [discussion](https://github.com/Tyrrrz/YoutubeDownloader/discussions/new) instead.
+        - Remember that **YoutubeDownloader** is an open-source project funded by the community. If you find it useful, **please consider [donating](https://tyrrrz.me/donate) to support its development**.
 
-      - Search through [existing issues](https://github.com/Tyrrrz/YoutubeDownloader/issues?q=is%3Aissue) first to ensure that this bug has not been reported before.
-      - Write a descriptive title for your issue. Avoid generic or vague titles such as "Something's not working" or "A couple of problems".
-      - Keep your issue focused on one single problem. If you have multiple bug reports, please create separate issues for each of them.
-      - Provide as much context as possible in the details section. Include screenshots, screen recordings, links, references, or anything else you may consider relevant.
-      - If you want to ask a question instead of reporting a bug, please use [discussions](https://github.com/Tyrrrz/YoutubeDownloader/discussions/new) instead.
+        ___
 
-- type: input
-  attributes:
-    label: Version
-    description: Which version of YoutubeDownloader does this bug affect?
-    placeholder: ver X.Y.Z
-  validations:
-    required: true
+  - type: input
+    attributes:
+      label: Version
+      description: Which version of the application does this bug affect? Make sure you're not using an outdated version.
+      placeholder: v1.0.0
+    validations:
+      required: true
 
-- type: textarea
-  attributes:
-    label: Details
-    description: Clear and thorough explanation of the bug.
-    placeholder: I was doing X expecting Y to happen, but Z happened instead.
-  validations:
-    required: true
+  - type: input
+    attributes:
+      label: Platform
+      description: Which platform do you experience this bug on?
+      placeholder: Windows 11
+    validations:
+      required: true
 
-- type: textarea
-  attributes:
-    label: Steps to reproduce
-    description: Minimum steps required to reproduce the bug.
-    placeholder: |
-      - Step 1
-      - Step 2
-      - Step 3
-  validations:
-    required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: >
+        Minimum steps required to reproduce the bug, including prerequisites, application settings, video URL(s), or other relevant items.
+        The information provided in this field must be readily actionable, meaning that anyone should be able to reproduce the bug by following these steps.
+      placeholder: |
+        Video or playlist URL: ...
+
+        Download settings:
+        - ...
+
+        Application settings:
+        - ...
+
+        Steps:
+        - Step 1
+        - Step 2
+        - Step 3
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Details
+      description: Clear and thorough explanation of the bug, including any additional information you may find relevant.
+      placeholder: |
+        - Expected behavior: ...
+        - Actual behavior: ...
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      description: Quick list of checks to ensure that everything is in order.
+      options:
+        - label: I have looked through existing issues to make sure that this bug has not been reported before
+          required: true
+        - label: I have provided a descriptive title for this issue
+          required: true
+        - label: I have made sure that that this bug is reproducible on the latest version of the application
+          required: true
+        - label: I have provided all the information needed to reproduce this bug as efficiently as possible
+          required: true
+        - label: I have sponsored this project
+          required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        If you are struggling to provide actionable reproduction steps, or if something else is preventing you from creating a complete bug report, please start a [discussion](https://github.com/Tyrrrz/YoutubeDownloader/discussions/new) instead.

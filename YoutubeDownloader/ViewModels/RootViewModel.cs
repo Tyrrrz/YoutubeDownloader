@@ -25,7 +25,8 @@ public class RootViewModel : Screen
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
         SettingsService settingsService,
-        UpdateService updateService)
+        UpdateService updateService
+    )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
@@ -58,9 +59,7 @@ public class RootViewModel : Screen
         _settingsService.Save();
 
         if (await _dialogManager.ShowDialogAsync(dialog) == true)
-        {
             ProcessEx.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
-        }
     }
 
     private async Task CheckForUpdatesAsync()
@@ -76,7 +75,8 @@ public class RootViewModel : Screen
 
             Notifications.Enqueue(
                 "Update has been downloaded and will be installed when you exit",
-                "INSTALL NOW", () =>
+                "INSTALL NOW",
+                () =>
                 {
                     _updateService.FinalizeUpdate(true);
                     RequestClose();
@@ -102,7 +102,7 @@ public class RootViewModel : Screen
 
         _settingsService.Load();
 
-        // Sync theme with settings
+        // Sync the theme with settings
         if (_settingsService.IsDarkModeEnabled)
         {
             App.SetDarkTheme();
@@ -112,12 +112,16 @@ public class RootViewModel : Screen
             App.SetLightTheme();
         }
 
-        // App has just been updated, display changelog
-        if (_settingsService.LastAppVersion is not null && _settingsService.LastAppVersion != App.Version)
+        // App has just been updated, display the changelog
+        if (
+            _settingsService.LastAppVersion is not null
+            && _settingsService.LastAppVersion != App.Version
+        )
         {
             Notifications.Enqueue(
                 $"Successfully updated to {App.Name} v{App.VersionString}",
-                "CHANGELOG", () => ProcessEx.StartShellExecute(App.ChangelogUrl)
+                "CHANGELOG",
+                () => ProcessEx.StartShellExecute(App.ChangelogUrl)
             );
 
             _settingsService.LastAppVersion = App.Version;

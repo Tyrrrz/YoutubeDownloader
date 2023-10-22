@@ -11,32 +11,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cogwheel" Version="2.0.2" />
+    <PackageReference Include="Cogwheel" Version="2.0.3" />
+    <PackageReference Include="CSharpier.MsBuild" Version="0.25.0" PrivateAssets="all" />
     <PackageReference Include="Deorcify" Version="1.0.2" PrivateAssets="all" />
-    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.4.2" PrivateAssets="all" />
+    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.5.1" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.1.1" />
-    <PackageReference Include="MaterialDesignColors" Version="2.1.2" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.8.0" />
+    <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2088.41" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    <PackageReference Include="Onova" Version="2.6.7" />
+    <PackageReference Include="Onova" Version="2.6.10" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
-    <PackageReference Include="Stylet" Version="1.3.6" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
+    <PackageReference Include="Stylet" Version="1.3.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
   </ItemGroup>
 
-  <!-- This downloads FFmpeg and copies it to output directory-->
+  <!-- This downloads FFmpeg and copies it to the output directory-->
   <Target Name="Download FFmpeg before build" BeforeTargets="PreBuildEvent">
     <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot;" />
-    <Copy SourceFiles="$(ProjectDir)/ffmpeg.exe" DestinationFiles="$(OutDir)/ffmpeg.exe" />
+    <Copy SourceFiles="$(ProjectDir)/ffmpeg.exe" DestinationFiles="$(OutDir)/ffmpeg.exe" SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="Download FFmpeg before publish" BeforeTargets="PrepareForPublish">
     <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot;" />
-    <Copy SourceFiles="$(ProjectDir)/ffmpeg.exe" DestinationFiles="$(PublishDir)/ffmpeg.exe" />
+    <Copy SourceFiles="$(ProjectDir)/ffmpeg.exe" DestinationFiles="$(PublishDir)/ffmpeg.exe" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

@@ -27,7 +27,8 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
     public DownloadSingleSetupViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
-        SettingsService settingsService)
+        SettingsService settingsService
+    )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
@@ -36,8 +37,8 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 
     public void OnViewLoaded()
     {
-        SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(o =>
-            o.Container == _settingsService.LastContainer
+        SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(
+            o => o.Container == _settingsService.LastContainer
         );
     }
 
@@ -49,11 +50,7 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 
         var filePath = _dialogManager.PromptSaveFilePath(
             $"{container.Name} file|*.{container.Name}",
-            FileNameTemplate.Apply(
-                _settingsService.FileNameTemplate,
-                Video!,
-                container
-            )
+            FileNameTemplate.Apply(_settingsService.FileNameTemplate, Video!, container)
         );
 
         if (string.IsNullOrWhiteSpace(filePath))
@@ -65,9 +62,7 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
 
         _settingsService.LastContainer = container;
 
-        Close(
-            _viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath)
-        );
+        Close(_viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath));
     }
 }
 
@@ -76,7 +71,8 @@ public static class DownloadSingleSetupViewModelExtensions
     public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
         this IViewModelFactory factory,
         IVideo video,
-        IReadOnlyList<VideoDownloadOption> availableDownloadOptions)
+        IReadOnlyList<VideoDownloadOption> availableDownloadOptions
+    )
     {
         var viewModel = factory.CreateDownloadSingleSetupViewModel();
 

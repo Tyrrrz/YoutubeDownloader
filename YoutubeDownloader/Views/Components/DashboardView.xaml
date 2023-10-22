@@ -23,6 +23,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <!--  Query and process query button  -->
@@ -77,9 +78,27 @@
                 </Grid>
             </materialDesign:Card>
 
-            <!--  Settings button  -->
+            <!--  Auth button  -->
             <Button
                 Grid.Column="1"
+                Margin="6"
+                Padding="4"
+                Command="{s:Action ShowAuthSetup}"
+                Foreground="{DynamicResource MaterialDesignDarkForeground}"
+                Style="{DynamicResource MaterialDesignFlatButton}"
+                ToolTip="Authentication">
+                <Button.Resources>
+                    <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
+                </Button.Resources>
+                <materialDesign:PackIcon
+                    Width="24"
+                    Height="24"
+                    Kind="AccountKey" />
+            </Button>
+
+            <!--  Settings button  -->
+            <Button
+                Grid.Column="2"
                 Margin="6"
                 Padding="4"
                 Command="{s:Action ShowSettings}"
@@ -111,8 +130,8 @@
                 HorizontalAlignment="Center"
                 Visibility="{Binding IsDownloadsAvailable, Converter={x:Static converters:BoolToVisibilityConverter.CollapsedOrVisible}}">
                 <materialDesign:PackIcon
-                    Width="258"
-                    Height="258"
+                    Width="256"
+                    Height="256"
                     HorizontalAlignment="Center"
                     Foreground="{DynamicResource MaterialDesignDivider}"
                     Kind="Youtube" />
@@ -249,6 +268,8 @@
                                     <TextBlock
                                         Grid.Column="1"
                                         VerticalAlignment="Center"
+                                        s:View.ActionTarget="{Binding}"
+                                        MouseLeftButtonUp="{s:Action CopyErrorMessage}"
                                         TextTrimming="CharacterEllipsis">
                                         <TextBlock.Style>
                                             <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
@@ -280,7 +301,8 @@
                                                     <DataTrigger Binding="{Binding Status}" Value="{x:Static components:DownloadStatus.Failed}">
                                                         <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
                                                         <Setter Property="Text" Value="⚠ Failed" />
-                                                        <Setter Property="ToolTip" Value="{Binding ErrorMessage}" />
+                                                        <Setter Property="ToolTip" Value="Click to copy the error message" />
+                                                        <Setter Property="Cursor" Value="Hand" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>

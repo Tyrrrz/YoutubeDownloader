@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Windows;
 using Gress;
 using Stylet;
 using YoutubeDownloader.Core.Downloading;
@@ -45,7 +46,10 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
 
-        Progress.Bind(o => o.Current, (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate));
+        Progress.Bind(
+            o => o.Current,
+            (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
+        );
     }
 
     public bool CanCancel => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
@@ -97,6 +101,16 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         }
     }
 
+    public bool CanCopyErrorMessage => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+    public void CopyErrorMessage()
+    {
+        if (!CanCopyErrorMessage)
+            return;
+
+        Clipboard.SetText(ErrorMessage!);
+    }
+
     public void Dispose() => _cancellationTokenSource.Dispose();
 }
 
@@ -106,7 +120,8 @@ public static class DownloadViewModelExtensions
         this IViewModelFactory factory,
         IVideo video,
         VideoDownloadOption downloadOption,
-        string filePath)
+        string filePath
+    )
     {
         var viewModel = factory.CreateDownloadViewModel();
 
@@ -121,7 +136,8 @@ public static class DownloadViewModelExtensions
         this IViewModelFactory factory,
         IVideo video,
         VideoDownloadPreference downloadPreference,
-        string filePath)
+        string filePath
+    )
     {
         var viewModel = factory.CreateDownloadViewModel();
 

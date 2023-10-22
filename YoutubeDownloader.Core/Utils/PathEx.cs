@@ -4,9 +4,10 @@ using System.Text;
 
 namespace YoutubeDownloader.Core.Utils;
 
-internal static class PathEx
+public static class PathEx
 {
-    private static readonly HashSet<char> InvalidFileNameChars = new(Path.GetInvalidFileNameChars());
+    private static readonly HashSet<char> InvalidFileNameChars =
+        new(Path.GetInvalidFileNameChars());
 
     public static string EscapeFileName(string path)
     {

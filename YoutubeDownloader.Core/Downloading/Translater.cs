@@ -27,12 +27,18 @@ namespace YoutubeDownloader.Core.Downloading
         private const string BaiduEndpoint = "http://api.fanyi.baidu.com/api/trans/vip/translate?";
         private static readonly Random random = new Random();
 
-
-        public async Task AzureTranslateAsync(IVideo video, string path, string key, CancellationToken cancellationToken = default)
+        public async Task AzureTranslateAsync(
+            IVideo video,
+            string path,
+            string key,
+            CancellationToken cancellationToken = default
+        )
         {
             string tempPath = Path.ChangeExtension(path, "txt");
             // Input and output languages are defined as parameters.
-            var description = (await _youtube.Videos.GetAsync(video.Id, cancellationToken)).Description;
+            var description = (
+                await _youtube.Videos.GetAsync(video.Id, cancellationToken)
+            ).Description;
             object[] body = new object[] { new { Text = video.Title }, new { Text = description } };
             var requestBody = JsonSerializer.Serialize(body);
 
@@ -47,17 +53,23 @@ namespace YoutubeDownloader.Core.Downloading
                 request.Headers.Add("Ocp-Apim-Subscription-Region", AzureLocation);
 
                 // Send the request and get response.
-                HttpResponseMessage response = await Http.Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                HttpResponseMessage response = await Http.Client
+                    .SendAsync(request, cancellationToken)
+                    .ConfigureAwait(false);
                 // Read response as a string.
                 string json = await response.Content.ReadAsStringAsync();
                 JsonDocument jsonDocument = JsonDocument.Parse(json);
                 var texts = new List<string>();
                 foreach (var element in jsonDocument.RootElement.EnumerateArray())
                 {
-                    var text = element.GetProperty("translations")[0].GetProperty("text").ToString();
+                    var text = element.GetProperty("translations")[0]
+                        .GetProperty("text")
+                        .ToString();
                     texts.AddRange(text.Split('\n'));
                 }
-                await File.WriteAllLinesAsync(tempPath, texts, cancellationToken).ConfigureAwait(false);
+                texts.Add(video.Url);
+                await File.WriteAllLinesAsync(tempPath, texts, cancellationToken)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -78,13 +90,17 @@ namespace YoutubeDownloader.Core.Downloading
                 request.Headers.Add("Ocp-Apim-Subscription-Key", key);
                 request.Headers.Add("Ocp-Apim-Subscription-Region", AzureLocation);
 
-                HttpResponseMessage response = await Http.Client.SendAsync(request).ConfigureAwait(false);
+                HttpResponseMessage response = await Http.Client
+                    .SendAsync(request)
+                    .ConfigureAwait(false);
                 string json = await response.Content.ReadAsStringAsync();
                 JsonDocument jsonDocument = JsonDocument.Parse(json);
                 var result = new List<string>();
                 foreach (var element in jsonDocument.RootElement.EnumerateArray())
                 {
-                    result.Add(element.GetProperty("translations")[0].GetProperty("text").ToString());
+                    result.Add(
+                        element.GetProperty("translations")[0].GetProperty("text").ToString()
+                    );
                 }
                 var dict = new Dictionary<string, string>();
                 for (int i = 0; i < texts.Count; i++)
@@ -105,21 +121,37 @@ namespace YoutubeDownloader.Core.Downloading
             }
         }
 
-        public async Task BaiduTranslateContentAsync(IVideo video, string path, string key, string appId, CancellationToken cancellationToken = default)
+        public async Task BaiduTranslateContentAsync(
+            IVideo video,
+            string path,
+            string key,
+            string appId,
+            CancellationToken cancellationToken = default
+        )
         {
             string tempPath = Path.ChangeExtension(path, "txt");
-            var description = (await _youtube.Videos.GetAsync(video.Id, cancellationToken)).Description;
+            var description = (
+                await _youtube.Videos.GetAsync(video.Id, cancellationToken)
+            ).Description;
             var content = $"{video.Title}\n{description}";
 
             var dict = await BaiduTranslateAsync(content, key, appId, cancellationToken);
-            await File.WriteAllLinesAsync(tempPath, dict.Values, cancellationToken).ConfigureAwait(false);
+            dict.Add("url", video.Url);
+            await File.WriteAllLinesAsync(tempPath, dict.Values, cancellationToken)
+                .ConfigureAwait(false);
         }
 
-        private async Task<Dictionary<string, string>> BaiduTranslateAsync(string content, string key, string appId, CancellationToken cancellationToken = default)
+        private async Task<Dictionary<string, string>> BaiduTranslateAsync(
+            string content,
+            string key,
+            string appId,
+            CancellationToken cancellationToken = default
+        )
         {
             var salt = random.Next(10000).ToString();
             var sign = EncryptString(appId + content + salt + key);
-            var queryUrl = $"{BaiduEndpoint}q={HttpUtility.UrlEncode(content)}&from=auto&to=zh&appid={appId}&salt={salt}&sign={sign}";
+            var queryUrl =
+                $"{BaiduEndpoint}q={HttpUtility.UrlEncode(content)}&from=auto&to=zh&appid={appId}&salt={salt}&sign={sign}";
             using (var request = new HttpRequestMessage())
             {
                 request.Method = HttpMethod.Post;
@@ -136,7 +168,10 @@ namespace YoutubeDownloader.Core.Downloading
                 var dict = new Dictionary<string, string>();
                 foreach (var item in transResult.EnumerateArray())
                 {
-                    dict.Add(item.GetProperty("src").GetString()!, item.GetProperty("dst").GetString()!);
+                    dict.Add(
+                        item.GetProperty("src").GetString()!,
+                        item.GetProperty("dst").GetString()!
+                    );
                 }
                 return dict;
             }
