@@ -20,12 +20,10 @@
 
 通过出于任何目的以任何形式或形式使用本项目或其源代码，您同意**默示同意**以下所有声明：
 
-- 你**谴责俄罗斯及其对乌克兰的军事侵略**
-- 你**承认俄罗斯是非法入侵主权国家的占领者**
-- 你**支持乌克兰的领土完整，包括它对暂时占领的克里米亚和顿巴斯领土的主张**
-- 你**拒绝俄罗斯国家宣传延续的虚假叙述**
+This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 
-要了解有关这场战争的更多信息以及您可以如何提供帮助，[单击此处](https://tyrrrz.me/ukraine)。 Glory to Ukraine! 🇺🇦
+> 📝 Want to learn more about how YouTube works under the hood?
+> See [Reverse-Engineering YouTube: Revisited](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited).
 
 ## 下载
 
