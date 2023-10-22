@@ -11,20 +11,31 @@ namespace YoutubeDownloader.Core.Downloading
 {
     public class ThumbnailDownloader
     {
-        public async Task DownloadThumbnailAsync(string path, IVideo video, CancellationToken cancellationToken = default)
+        public async Task DownloadThumbnailAsync(
+            string path,
+            IVideo video,
+            CancellationToken cancellationToken = default
+        )
         {
-            var tempPath = Path.ChangeExtension(path,"jpg");
-            var thumbnailUrl = video.Thumbnails
-                .Where(t => string.Equals(
-                    t.TryGetImageFormat(),
-                    "jpg",
-                    StringComparison.OrdinalIgnoreCase
-                ))
-                .OrderByDescending(t => t.Resolution.Area)
-                .Select(t => t.Url)
-                .FirstOrDefault() ?? $"https://i.ytimg.com/vi/{video.Id}/maxresdefault.jpg";
-            await File.WriteAllBytesAsync(tempPath,
-                await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken), cancellationToken);
+            var tempPath = Path.ChangeExtension(path, "jpg");
+            var thumbnailUrl =
+                video.Thumbnails
+                    .Where(
+                        t =>
+                            string.Equals(
+                                t.TryGetImageFormat(),
+                                "jpg",
+                                StringComparison.OrdinalIgnoreCase
+                            )
+                    )
+                    .OrderByDescending(t => t.Resolution.Area)
+                    .Select(t => t.Url)
+                    .FirstOrDefault() ?? $"https://i.ytimg.com/vi/{video.Id}/maxresdefault.jpg";
+            await File.WriteAllBytesAsync(
+                tempPath,
+                await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken),
+                cancellationToken
+            );
         }
     }
 }

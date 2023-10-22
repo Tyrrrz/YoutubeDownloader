@@ -130,33 +130,67 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
                 if (_settingsService.ShouldDownloadThumbnail)
                 {
-                    await _thumbnailDownloader.DownloadThumbnailAsync(download.FilePath!, download.Video!, download.CancellationToken);
+                    await _thumbnailDownloader.DownloadThumbnailAsync(
+                        download.FilePath!,
+                        download.Video!,
+                        download.CancellationToken
+                    );
                 }
 
                 if (_settingsService.ShouldDownloadClosedCaptions)
                 {
-                    var tuple = await _closedCaptionsDownloader.DownloadCCAsync(download.FilePath!, download.Video!, download.CancellationToken);
-                    if (!StringUtil.IsChineseTitle(download.Video!.Title) && !tuple.Item1 && !string.IsNullOrWhiteSpace(_settingsService.TranslateKey) && !string.IsNullOrWhiteSpace(tuple.Item2))
+                    var tuple = await _closedCaptionsDownloader.DownloadCCAsync(
+                        download.FilePath!,
+                        download.Video!,
+                        download.CancellationToken
+                    );
+                    if (
+                        !StringUtil.IsChineseTitle(download.Video!.Title)
+                        && !tuple.Item1
+                        && !string.IsNullOrWhiteSpace(_settingsService.TranslateKey)
+                        && !string.IsNullOrWhiteSpace(tuple.Item2)
+                    )
                     {
                         if (!string.IsNullOrWhiteSpace(_settingsService.BaiduAppId))
                         {
-                            await _translater.BaiduTranslateSrtAsync(tuple.Item2, _settingsService.TranslateKey, _settingsService.BaiduAppId);
+                            await _translater.BaiduTranslateSrtAsync(
+                                tuple.Item2,
+                                _settingsService.TranslateKey,
+                                _settingsService.BaiduAppId
+                            );
                         }
                         else
                         {
-                            await _translater.AzureTranslateSrtAsync(tuple.Item2, _settingsService.TranslateKey);
+                            await _translater.AzureTranslateSrtAsync(
+                                tuple.Item2,
+                                _settingsService.TranslateKey
+                            );
                         }
                     }
                 }
-                if (!StringUtil.IsChineseTitle(download.Video!.Title) && !string.IsNullOrWhiteSpace(_settingsService.TranslateKey))
+                if (
+                    !StringUtil.IsChineseTitle(download.Video!.Title)
+                    && !string.IsNullOrWhiteSpace(_settingsService.TranslateKey)
+                )
                 {
                     if (!string.IsNullOrWhiteSpace(_settingsService.BaiduAppId))
                     {
-                        await _translater.BaiduTranslateContentAsync(download.Video!, download.FilePath!, _settingsService.TranslateKey, _settingsService.BaiduAppId, download.CancellationToken);
+                        await _translater.BaiduTranslateContentAsync(
+                            download.Video!,
+                            download.FilePath!,
+                            _settingsService.TranslateKey,
+                            _settingsService.BaiduAppId,
+                            download.CancellationToken
+                        );
                     }
                     else
                     {
-                        await _translater.AzureTranslateAsync(download.Video!, download.FilePath!, _settingsService.TranslateKey, download.CancellationToken);
+                        await _translater.AzureTranslateAsync(
+                            download.Video!,
+                            download.FilePath!,
+                            _settingsService.TranslateKey,
+                            download.CancellationToken
+                        );
                     }
                 }
 
