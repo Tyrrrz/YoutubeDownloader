@@ -23,7 +23,7 @@ jobs:
         with:
           dotnet-version: 7.0.x
 
-      - name: Publish
+      - name: Publish app
         run: >
           dotnet publish YoutubeDownloader
           --output YoutubeDownloader/bin/publish
@@ -48,15 +48,10 @@ jobs:
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
           name: YoutubeDownloader
-          path: YoutubeDownloader
+          path: YoutubeDownloader/
 
       - name: Create package
-        shell: pwsh
-        run: >
-          Compress-Archive
-          -Path YoutubeDownloader/*
-          -DestinationPath YoutubeDownloader.zip
-          -Force
+        run: zip -r YoutubeDownloader.zip YoutubeDownloader/
 
       - name: Create release
         env:
