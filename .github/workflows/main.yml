@@ -51,7 +51,9 @@ jobs:
           path: YoutubeDownloader/
 
       - name: Create package
-        run: zip -r YoutubeDownloader.zip YoutubeDownloader/
+        # Change into the artifacts directory to avoid including the directory itself in the zip archive
+        working-directory: YoutubeDownloader/
+        run: zip -r ../YoutubeDownloader.zip .
 
       - name: Create release
         env:
