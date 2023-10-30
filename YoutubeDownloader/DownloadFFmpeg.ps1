@@ -21,7 +21,7 @@ try {
 try {
     Import-Module "$PSHOME/Modules/Microsoft.PowerShell.Utility" -Function Get-FileHash
     $hashResult = Get-FileHash "$ffmpegFilePath.zip" -Algorithm SHA256
-    if ($hashResult.Hash -ne "01cb055038df8a1b8b0c729dd016a1f490c426eff381b1ac986c2744b145cff2") {
+    if ($hashResult.Hash -ne "29289b1008a8fadbb012e7dc0e325fea9eebbe87ac2019a4fa7df7fc15af02d0") {
         throw "Failed to verify the hash of the FFmpeg archive."
     }
 
