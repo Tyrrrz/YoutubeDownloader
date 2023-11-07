@@ -15,6 +15,7 @@ public class FileNameTemplate
         PathEx.EscapeFileName(
             template
                 .Replace("$num", number is not null ? $"[{number}]" : "")
+                .Replace("$numc", number ?? "")
                 .Replace("$id", video.Id)
                 .Replace("$title", video.Title)
                 .Replace("$author", video.Author.ChannelTitle)
