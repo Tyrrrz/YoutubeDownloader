@@ -60,15 +60,17 @@ public class VideoDownloader
         if (!string.IsNullOrWhiteSpace(dirPath))
             Directory.CreateDirectory(dirPath);
 
-        await _youtube.Videos.DownloadAsync(
-            downloadOption.StreamInfos,
-            trackInfos,
-            new ConversionRequestBuilder(filePath)
-                .SetContainer(downloadOption.Container)
-                .SetPreset(ConversionPreset.Medium)
-                .Build(),
-            progress?.ToDoubleBased(),
-            cancellationToken
-        );
+        await _youtube
+            .Videos
+            .DownloadAsync(
+                downloadOption.StreamInfos,
+                trackInfos,
+                new ConversionRequestBuilder(filePath)
+                    .SetContainer(downloadOption.Container)
+                    .SetPreset(ConversionPreset.Medium)
+                    .Build(),
+                progress?.ToDoubleBased(),
+                cancellationToken
+            );
     }
 }

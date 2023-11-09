@@ -56,10 +56,10 @@ public class QueryResolver
         // Channel (by handle)
         if (isUrl && ChannelHandle.TryParse(query) is { } channelHandle)
         {
-            var channel = await _youtube.Channels.GetByHandleAsync(
-                channelHandle,
-                cancellationToken
-            );
+            var channel = await _youtube
+                .Channels
+                .GetByHandleAsync(channelHandle, cancellationToken);
+
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
@@ -82,9 +82,11 @@ public class QueryResolver
 
         // Search
         {
-            var videos = await _youtube.Search
+            var videos = await _youtube
+                .Search
                 .GetVideosAsync(query, cancellationToken)
                 .CollectAsync(20);
+
             return new QueryResult(QueryResultKind.Search, $"Search: {query}", videos);
         }
     }

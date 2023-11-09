@@ -65,7 +65,8 @@ public partial class SettingsService
     {
         try
         {
-            return Registry.CurrentUser
+            return Registry
+                .CurrentUser
                 .OpenSubKey(
                     "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
                     false
