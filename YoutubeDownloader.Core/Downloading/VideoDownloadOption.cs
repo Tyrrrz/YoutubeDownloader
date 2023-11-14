@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lazy;
-using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeExplode.Videos.Streams;
 
@@ -117,8 +116,8 @@ public partial record VideoDownloadOption
         }
 
         // Deduplicate download options by video quality and container
-        var comparer = new DelegateEqualityComparer<VideoDownloadOption>(
-            (x, y) => x.VideoQuality == y.VideoQuality && x.Container == y.Container,
+        var comparer = EqualityComparer<VideoDownloadOption>.Create(
+            (x, y) => x?.VideoQuality == y?.VideoQuality && x?.Container == y?.Container,
             x => HashCode.Combine(x.VideoQuality, x.Container)
         );
 
