@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MaterialDesignThemes.Wpf;
-using Ookii.Dialogs.Wpf;
+using Microsoft.Win32;
 using Stylet;
 
 namespace YoutubeDownloader.ViewModels.Framework;
@@ -55,7 +55,7 @@ public class DialogManager : IDisposable
 
     public string? PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
     {
-        var dialog = new VistaSaveFileDialog
+        var dialog = new SaveFileDialog
         {
             Filter = filter,
             AddExtension = true,
@@ -68,9 +68,8 @@ public class DialogManager : IDisposable
 
     public string? PromptDirectoryPath(string defaultDirPath = "")
     {
-        var dialog = new VistaFolderBrowserDialog { SelectedPath = defaultDirPath };
-
-        return dialog.ShowDialog() == true ? dialog.SelectedPath : null;
+        var dialog = new OpenFolderDialog { InitialDirectory = defaultDirPath };
+        return dialog.ShowDialog() == true ? dialog.FolderName : null;
     }
 
     public void Dispose()
