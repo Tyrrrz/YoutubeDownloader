@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.10.6 (16-Nov-2023)
+
+- Switched from .NET 7.0 to .NET 8.0. The application should update the required prerequisites automatically.
+
 ## v1.10.5 (09-Nov-2023)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.3.7.
