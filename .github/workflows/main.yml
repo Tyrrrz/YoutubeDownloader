@@ -1,6 +1,7 @@
 name: main
 
 on:
+  workflow_dispatch:
   push:
   pull_request:
 
@@ -39,7 +40,7 @@ jobs:
           if-no-files-found: error
 
   deploy:
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    if: ${{ github.ref_type == 'tag' }}
     needs: pack
     runs-on: ubuntu-latest
     permissions:
