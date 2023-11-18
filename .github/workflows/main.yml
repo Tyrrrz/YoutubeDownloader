@@ -26,7 +26,10 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Verify formatting
-        run: dotnet build -t:CSharpierFormat
+        run: >
+          dotnet build
+          -t:CSharpierFormat
+          --configuration Release
 
   pack:
     runs-on: windows-latest
