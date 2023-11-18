@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="CSharpier.MsBuild" Version="0.26.1" PrivateAssets="all" />
+    <PackageReference Include="CSharpier.MsBuild" Version="0.26.2" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.1.1" />
     <PackageReference Include="JsonExtensions" Version="1.2.0" />
     <PackageReference Include="Lazy.Fody" Version="1.11.0" PrivateAssets="all" />
