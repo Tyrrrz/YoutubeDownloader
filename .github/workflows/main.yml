@@ -11,6 +11,23 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
+  format:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # 4.1.0
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # 3.2.0
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Verify formatting
+        run: dotnet build -t:CSharpierFormat
+
   pack:
     runs-on: windows-latest
     permissions:
@@ -29,6 +46,7 @@ jobs:
       - name: Publish app
         run: >
           dotnet publish YoutubeDownloader
+          -p:CSharpier_Bypass=true
           --output YoutubeDownloader/bin/publish
           --configuration Release
 
@@ -41,7 +59,11 @@ jobs:
 
   deploy:
     if: ${{ github.ref_type == 'tag' }}
-    needs: pack
+
+    needs:
+      - format
+      - pack
+
     runs-on: ubuntu-latest
     permissions:
       actions: read
