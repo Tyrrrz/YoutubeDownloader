@@ -7,7 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubeDownloader", "Youtub
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{131C2561-E5A1-43E8-BF38-40E2E23DB0A4}"
 	ProjectSection(SolutionItems) = preProject
-		Changelog.md = Changelog.md
 		License.txt = License.txt
 		Readme.md = Readme.md
 		Directory.Build.props = Directory.Build.props

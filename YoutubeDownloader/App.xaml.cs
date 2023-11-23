@@ -18,7 +18,7 @@ public partial class App
 
     public static string ProjectUrl { get; } = "https://github.com/Tyrrrz/YoutubeDownloader";
 
-    public static string ChangelogUrl { get; } = ProjectUrl + "/blob/master/Changelog.md";
+    public static string LatestReleaseUrl { get; } = ProjectUrl + "/releases/latest";
 }
 
 public partial class App
