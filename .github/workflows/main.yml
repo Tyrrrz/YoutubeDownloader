@@ -3,7 +3,11 @@ name: main
 on:
   workflow_dispatch:
   push:
+    branches:
+      - master
   pull_request:
+    branches:
+      - master
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
