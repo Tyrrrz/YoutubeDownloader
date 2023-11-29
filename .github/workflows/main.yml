@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "*"
   pull_request:
     branches:
       - master
@@ -125,6 +127,6 @@ jobs:
           body: |
             {
               "avatar_url": "https://raw.githubusercontent.com/${{ github.event.repository.full_name }}/${{ github.ref_name }}/favicon.png",
-              "content": "**${{ github.event.repository.name }}** v${{ github.ref_name }} has been released!\n[Download](<${{ github.event.repository.html_url }}/releases/tag/${{ github.ref_name }}>)"
+              "content": "[**${{ github.event.repository.name }}**](<${{ github.event.repository.html_url }}>) v${{ github.ref_name }} has been released!\n[Download](<${{ github.event.repository.html_url }}/releases/tag/${{ github.ref_name }}>)"
             }
           retry-count: 5
