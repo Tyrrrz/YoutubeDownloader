@@ -13,12 +13,10 @@ using YoutubeExplode.Videos.ClosedCaptions;
 
 namespace YoutubeDownloader.Core.Downloading;
 
-public class VideoDownloader
+public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null)
 {
-    private readonly YoutubeClient _youtube;
-
-    public VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null) =>
-        _youtube = new YoutubeClient(Http.Client, initialCookies ?? Array.Empty<Cookie>());
+    private readonly YoutubeClient _youtube =
+        new(Http.Client, initialCookies ?? Array.Empty<Cookie>());
 
     public async Task<IReadOnlyList<VideoDownloadOption>> GetDownloadOptionsAsync(
         VideoId videoId,

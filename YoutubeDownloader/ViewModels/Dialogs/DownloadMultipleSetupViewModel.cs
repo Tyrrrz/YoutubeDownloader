@@ -13,12 +13,12 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
+public class DownloadMultipleSetupViewModel(
+    IViewModelFactory viewModelFactory,
+    DialogManager dialogManager,
+    SettingsService settingsService
+) : DialogScreen<IReadOnlyList<DownloadViewModel>>
 {
-    private readonly IViewModelFactory _viewModelFactory;
-    private readonly DialogManager _dialogManager;
-    private readonly SettingsService _settingsService;
-
     public string? Title { get; set; }
 
     public IReadOnlyList<IVideo>? AvailableVideos { get; set; }
@@ -36,21 +36,10 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
     public VideoQualityPreference SelectedVideoQualityPreference { get; set; } =
         VideoQualityPreference.Highest;
 
-    public DownloadMultipleSetupViewModel(
-        IViewModelFactory viewModelFactory,
-        DialogManager dialogManager,
-        SettingsService settingsService
-    )
-    {
-        _viewModelFactory = viewModelFactory;
-        _dialogManager = dialogManager;
-        _settingsService = settingsService;
-    }
-
     public void OnViewLoaded()
     {
-        SelectedContainer = _settingsService.LastContainer;
-        SelectedVideoQualityPreference = _settingsService.LastVideoQualityPreference;
+        SelectedContainer = settingsService.LastContainer;
+        SelectedVideoQualityPreference = settingsService.LastVideoQualityPreference;
     }
 
     public void CopyTitle() => Clipboard.SetText(Title!);
@@ -59,7 +48,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
 
     public void Confirm()
     {
-        var dirPath = _dialogManager.PromptDirectoryPath();
+        var dirPath = dialogManager.PromptDirectoryPath();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 
@@ -71,14 +60,14 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             var baseFilePath = Path.Combine(
                 dirPath,
                 FileNameTemplate.Apply(
-                    _settingsService.FileNameTemplate,
+                    settingsService.FileNameTemplate,
                     video,
                     SelectedContainer,
                     (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
                 )
             );
 
-            if (_settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
+            if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
                 continue;
 
             var filePath = PathEx.EnsureUniquePath(baseFilePath);
@@ -88,7 +77,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             File.WriteAllBytes(filePath, Array.Empty<byte>());
 
             downloads.Add(
-                _viewModelFactory.CreateDownloadViewModel(
+                viewModelFactory.CreateDownloadViewModel(
                     video,
                     new VideoDownloadPreference(SelectedContainer, SelectedVideoQualityPreference),
                     filePath
@@ -96,8 +85,8 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             );
         }
 
-        _settingsService.LastContainer = SelectedContainer;
-        _settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
+        settingsService.LastContainer = SelectedContainer;
+        settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
 
         Close(downloads);
     }

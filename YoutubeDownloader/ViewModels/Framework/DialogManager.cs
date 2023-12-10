@@ -8,19 +8,13 @@ using Stylet;
 
 namespace YoutubeDownloader.ViewModels.Framework;
 
-public class DialogManager : IDisposable
+public class DialogManager(IViewManager viewManager) : IDisposable
 {
-    private readonly IViewManager _viewManager;
     private readonly SemaphoreSlim _dialogLock = new(1, 1);
-
-    public DialogManager(IViewManager viewManager)
-    {
-        _viewManager = viewManager;
-    }
 
     public async ValueTask<T?> ShowDialogAsync<T>(DialogScreen<T> dialogScreen)
     {
-        var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
+        var view = viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
 
         void OnDialogOpened(object? openSender, DialogOpenedEventArgs openArgs)
         {

@@ -14,7 +14,9 @@ using Container = YoutubeExplode.Videos.Streams.Container;
 namespace YoutubeDownloader.Services;
 
 [AddINotifyPropertyChangedInterface]
-public partial class SettingsService : SettingsBase, INotifyPropertyChanged
+public partial class SettingsService()
+    : SettingsBase(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat")),
+        INotifyPropertyChanged
 {
     public bool IsUkraineSupportMessageEnabled { get; set; } = true;
 
@@ -42,9 +44,6 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public VideoQualityPreference LastVideoQualityPreference { get; set; } =
         VideoQualityPreference.Highest;
-
-    public SettingsService()
-        : base(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat")) { }
 
     public override void Save()
     {

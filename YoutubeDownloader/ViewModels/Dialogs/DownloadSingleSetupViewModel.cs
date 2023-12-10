@@ -12,33 +12,22 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
+public class DownloadSingleSetupViewModel(
+    IViewModelFactory viewModelFactory,
+    DialogManager dialogManager,
+    SettingsService settingsService
+) : DialogScreen<DownloadViewModel>
 {
-    private readonly IViewModelFactory _viewModelFactory;
-    private readonly DialogManager _dialogManager;
-    private readonly SettingsService _settingsService;
-
     public IVideo? Video { get; set; }
 
     public IReadOnlyList<VideoDownloadOption>? AvailableDownloadOptions { get; set; }
 
     public VideoDownloadOption? SelectedDownloadOption { get; set; }
 
-    public DownloadSingleSetupViewModel(
-        IViewModelFactory viewModelFactory,
-        DialogManager dialogManager,
-        SettingsService settingsService
-    )
-    {
-        _viewModelFactory = viewModelFactory;
-        _dialogManager = dialogManager;
-        _settingsService = settingsService;
-    }
-
     public void OnViewLoaded()
     {
         SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(
-            o => o.Container == _settingsService.LastContainer
+            o => o.Container == settingsService.LastContainer
         );
     }
 
@@ -48,9 +37,9 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
     {
         var container = SelectedDownloadOption!.Container;
 
-        var filePath = _dialogManager.PromptSaveFilePath(
+        var filePath = dialogManager.PromptSaveFilePath(
             $"{container.Name} file|*.{container.Name}",
-            FileNameTemplate.Apply(_settingsService.FileNameTemplate, Video!, container)
+            FileNameTemplate.Apply(settingsService.FileNameTemplate, Video!, container)
         );
 
         if (string.IsNullOrWhiteSpace(filePath))
@@ -60,9 +49,9 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
         DirectoryEx.CreateDirectoryForFile(filePath);
         File.WriteAllBytes(filePath, Array.Empty<byte>());
 
-        _settingsService.LastContainer = container;
+        settingsService.LastContainer = container;
 
-        Close(_viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath));
+        Close(viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath));
     }
 }
 

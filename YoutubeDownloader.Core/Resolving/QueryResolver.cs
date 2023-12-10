@@ -14,12 +14,10 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Core.Resolving;
 
-public class QueryResolver
+public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 {
-    private readonly YoutubeClient _youtube;
-
-    public QueryResolver(IReadOnlyList<Cookie>? initialCookies = null) =>
-        _youtube = new YoutubeClient(Http.Client, initialCookies ?? Array.Empty<Cookie>());
+    private readonly YoutubeClient _youtube =
+        new(Http.Client, initialCookies ?? Array.Empty<Cookie>());
 
     public async Task<QueryResult> ResolveAsync(
         string query,

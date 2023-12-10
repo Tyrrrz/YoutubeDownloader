@@ -6,28 +6,22 @@ using System.Windows.Data;
 namespace YoutubeDownloader.Converters;
 
 [ValueConversion(typeof(bool), typeof(Visibility))]
-public partial class BoolToVisibilityConverter : IValueConverter
+public partial class BoolToVisibilityConverter(
+    Visibility trueVisibility,
+    Visibility falseVisibility
+) : IValueConverter
 {
-    private readonly Visibility _trueVisibility;
-    private readonly Visibility _falseVisibility;
-
-    public BoolToVisibilityConverter(Visibility trueVisibility, Visibility falseVisibility)
-    {
-        _trueVisibility = trueVisibility;
-        _falseVisibility = falseVisibility;
-    }
-
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-        value is true ? _trueVisibility : _falseVisibility;
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        value is true ? trueVisibility : falseVisibility;
 
     public object ConvertBack(
-        object value,
+        object? value,
         Type targetType,
-        object parameter,
+        object? parameter,
         CultureInfo culture
     ) =>
         value is Visibility visibility
-            ? visibility == _trueVisibility
+            ? visibility == trueVisibility
             : throw new NotSupportedException();
 }
 
