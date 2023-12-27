@@ -10,6 +10,3 @@ obj/
 
 # Test results
 TestResults/
-
-# FFmpeg binary
-ffmpeg.exe
