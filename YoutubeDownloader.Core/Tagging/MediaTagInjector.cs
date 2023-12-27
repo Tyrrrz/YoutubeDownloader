@@ -44,10 +44,10 @@ public class MediaTagInjector
                 video.Title.Contains(r.Title, StringComparison.OrdinalIgnoreCase)
                 && (
                     video.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
-                    || video
-                        .Author
-                        .ChannelTitle
-                        .Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
+                    || video.Author.ChannelTitle.Contains(
+                        r.Artist,
+                        StringComparison.OrdinalIgnoreCase
+                    )
                 )
         );
 
@@ -72,8 +72,7 @@ public class MediaTagInjector
     {
         var thumbnailUrl =
             video
-                .Thumbnails
-                .Where(
+                .Thumbnails.Where(
                     t =>
                         string.Equals(
                             t.TryGetImageFormat(),

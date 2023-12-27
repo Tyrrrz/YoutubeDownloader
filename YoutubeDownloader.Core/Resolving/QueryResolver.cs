@@ -54,9 +54,10 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
         // Channel (by handle)
         if (isUrl && ChannelHandle.TryParse(query) is { } channelHandle)
         {
-            var channel = await _youtube
-                .Channels
-                .GetByHandleAsync(channelHandle, cancellationToken);
+            var channel = await _youtube.Channels.GetByHandleAsync(
+                channelHandle,
+                cancellationToken
+            );
 
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
@@ -81,8 +82,7 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
         // Search
         {
             var videos = await _youtube
-                .Search
-                .GetVideosAsync(query, cancellationToken)
+                .Search.GetVideosAsync(query, cancellationToken)
                 .CollectAsync(20);
 
             return new QueryResult(QueryResultKind.Search, $"Search: {query}", videos);

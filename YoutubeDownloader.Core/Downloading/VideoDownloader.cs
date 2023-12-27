@@ -49,31 +49,30 @@ public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null)
     )
     {
         // Include subtitles in the output container
-        var trackInfos =
-            includeSubtitles && !downloadOption.Container.IsAudioOnly
-                ? (
-                    await _youtube
-                        .Videos
-                        .ClosedCaptions
-                        .GetManifestAsync(video.Id, cancellationToken)
-                ).Tracks
-                : Array.Empty<ClosedCaptionTrackInfo>();
+        var trackInfos = new List<ClosedCaptionTrackInfo>();
+        if (includeSubtitles && !downloadOption.Container.IsAudioOnly)
+        {
+            var manifest = await _youtube.Videos.ClosedCaptions.GetManifestAsync(
+                video.Id,
+                cancellationToken
+            );
+
+            trackInfos.AddRange(manifest.Tracks);
+        }
 
         var dirPath = Path.GetDirectoryName(filePath);
         if (!string.IsNullOrWhiteSpace(dirPath))
             Directory.CreateDirectory(dirPath);
 
-        await _youtube
-            .Videos
-            .DownloadAsync(
-                downloadOption.StreamInfos,
-                trackInfos,
-                new ConversionRequestBuilder(filePath)
-                    .SetContainer(downloadOption.Container)
-                    .SetPreset(ConversionPreset.Medium)
-                    .Build(),
-                progress?.ToDoubleBased(),
-                cancellationToken
-            );
+        await _youtube.Videos.DownloadAsync(
+            downloadOption.StreamInfos,
+            trackInfos,
+            new ConversionRequestBuilder(filePath)
+                .SetContainer(downloadOption.Container)
+                .SetPreset(ConversionPreset.Medium)
+                .Build(),
+            progress?.ToDoubleBased(),
+            cancellationToken
+        );
     }
 }
