@@ -91,6 +91,21 @@
                             IsChecked="{Binding IsAuthPersisted}" />
                     </DockPanel>
 
+                    <!--  Inject subtitles  -->
+                    <DockPanel
+                        Background="Transparent"
+                        LastChildFill="False"
+                        ToolTip="Inject subtitles into downloaded files">
+                        <TextBlock
+                            Margin="16,8"
+                            DockPanel.Dock="Left"
+                            Text="Inject subtitles" />
+                        <ToggleButton
+                            Margin="16,8"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ShouldInjectSubtitles}" />
+                    </DockPanel>
+
                     <!--  Inject tags  -->
                     <DockPanel
                         Background="Transparent"

@@ -24,6 +24,12 @@ public class SettingsViewModel(SettingsService settingsService) : DialogScreen
         set => settingsService.IsAuthPersisted = value;
     }
 
+    public bool ShouldInjectSubtitles
+    {
+        get => settingsService.ShouldInjectSubtitles;
+        set => settingsService.ShouldInjectSubtitles = value;
+    }
+
     public bool ShouldInjectTags
     {
         get => settingsService.ShouldInjectTags;

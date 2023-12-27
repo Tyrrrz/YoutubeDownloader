@@ -101,6 +101,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
                     download.FilePath!,
                     download.Video!,
                     downloadOption,
+                    _settingsService.ShouldInjectSubtitles,
                     download.Progress.Merge(progress),
                     download.CancellationToken
                 );

@@ -43,16 +43,21 @@ public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null)
         string filePath,
         IVideo video,
         VideoDownloadOption downloadOption,
+        bool includeSubtitles = true,
         IProgress<Percentage>? progress = null,
         CancellationToken cancellationToken = default
     )
     {
-        // If the target container supports subtitles, embed them in the video too
-        var trackInfos = !downloadOption.Container.IsAudioOnly
-            ? (
-                await _youtube.Videos.ClosedCaptions.GetManifestAsync(video.Id, cancellationToken)
-            ).Tracks
-            : Array.Empty<ClosedCaptionTrackInfo>();
+        // Include subtitles in the output container
+        var trackInfos =
+            includeSubtitles && !downloadOption.Container.IsAudioOnly
+                ? (
+                    await _youtube
+                        .Videos
+                        .ClosedCaptions
+                        .GetManifestAsync(video.Id, cancellationToken)
+                ).Tracks
+                : Array.Empty<ClosedCaptionTrackInfo>();
 
         var dirPath = Path.GetDirectoryName(filePath);
         if (!string.IsNullOrWhiteSpace(dirPath))

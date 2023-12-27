@@ -26,6 +26,8 @@ public partial class SettingsService()
 
     public bool IsAuthPersisted { get; set; } = true;
 
+    public bool ShouldInjectSubtitles { get; set; } = true;
+
     public bool ShouldInjectTags { get; set; } = true;
 
     public bool ShouldSkipExistingFiles { get; set; }
