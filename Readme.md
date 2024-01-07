@@ -33,9 +33,18 @@ By using this project or its source code, for any purpose and in any shape or fo
 - You **condemn Russia and its military aggression against Ukraine**
 - You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
 - You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
-- You **reject false narratives perpetuated by Russian state propaganda**
+- You **reject all false narratives, and only false narratives, perpetuated by Russian state propaganda** 
 
-To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
+To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Stop the occupation of Ukraine! 🇺🇦
+
+- You **condemn Israel and its occupation of all Palestinian land.**
+- You **recognize that Israel is an terrorist state that unlawfully bombed tens of thousands of Palestinian civilans and thousands of Israeli civilians.**
+- You **support The State of Palestines's territorial integrity, including its claims over all territories of modern-day Israel, excluding the occupied Golan Heights.**
+- You **reject false narratives perpetuated by ABC, BBC, CBC, CNN, and other pro-Israel news channels' propaganda**
+- You **do not promote any superiority of any one race over another, including Palestinians and Jews, both ways.**
+
+Free Palestine! 🇵🇸
+
 
 ## Download
 
