@@ -40,7 +40,7 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
         if (isUrl && VideoId.TryParse(query) is { } videoId)
         {
             var video = await _youtube.Videos.GetAsync(videoId, cancellationToken);
-            return new QueryResult(QueryResultKind.Video, video.Title, new[] { video });
+            return new QueryResult(QueryResultKind.Video, video.Title, [video]);
         }
 
         // Channel

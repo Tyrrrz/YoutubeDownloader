@@ -72,7 +72,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         try
         {
             // Navigate to the file in Windows Explorer
-            ProcessEx.Start("explorer", new[] { "/select,", FilePath! });
+            ProcessEx.Start("explorer", ["/select,", FilePath!]);
         }
         catch (Exception ex)
         {

@@ -5,7 +5,7 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core.Downloading;
 
-public class FileNameTemplate
+public static class FileNameTemplate
 {
     public static string Apply(
         string template,

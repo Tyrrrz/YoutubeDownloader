@@ -33,7 +33,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
     public string? Query { get; set; }
 
-    public BindableCollection<DownloadViewModel> Downloads { get; } = new();
+    public BindableCollection<DownloadViewModel> Downloads { get; } = [];
 
     public bool IsDownloadsAvailable => Downloads.Any();
 

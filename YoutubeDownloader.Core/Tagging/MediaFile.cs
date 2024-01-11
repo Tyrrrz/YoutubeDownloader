@@ -7,11 +7,11 @@ namespace YoutubeDownloader.Core.Tagging;
 internal partial class MediaFile(TagFile file) : IDisposable
 {
     public void SetThumbnail(byte[] thumbnailData) =>
-        file.Tag.Pictures = new IPicture[] { new Picture(thumbnailData) };
+        file.Tag.Pictures = [new Picture(thumbnailData)];
 
-    public void SetArtist(string artist) => file.Tag.Performers = new[] { artist };
+    public void SetArtist(string artist) => file.Tag.Performers = [artist];
 
-    public void SetArtistSort(string artistSort) => file.Tag.PerformersSort = new[] { artistSort };
+    public void SetArtistSort(string artistSort) => file.Tag.PerformersSort = [artistSort];
 
     public void SetTitle(string title) => file.Tag.Title = title;
 

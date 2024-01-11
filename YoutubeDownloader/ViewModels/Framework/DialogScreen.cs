@@ -16,4 +16,4 @@ public abstract class DialogScreen<T> : PropertyChangedBase
     }
 }
 
-public abstract class DialogScreen : DialogScreen<bool?> { }
+public abstract class DialogScreen : DialogScreen<bool?>;
