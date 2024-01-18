@@ -37,18 +37,14 @@ public class MediaTagInjector
     {
         var recordings = await _musicBrainz.SearchRecordingsAsync(video.Title, cancellationToken);
 
-        var recording = recordings.FirstOrDefault(
-            r =>
-                // Recording title must be a part of the video title.
-                // Recording artist must be a part of the video title or channel title.
-                video.Title.Contains(r.Title, StringComparison.OrdinalIgnoreCase)
-                && (
-                    video.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
-                    || video.Author.ChannelTitle.Contains(
-                        r.Artist,
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                )
+        var recording = recordings.FirstOrDefault(r =>
+            // Recording title must be a part of the video title.
+            // Recording artist must be a part of the video title or channel title.
+            video.Title.Contains(r.Title, StringComparison.OrdinalIgnoreCase)
+            && (
+                video.Title.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
+                || video.Author.ChannelTitle.Contains(r.Artist, StringComparison.OrdinalIgnoreCase)
+            )
         );
 
         if (recording is null)
@@ -72,13 +68,8 @@ public class MediaTagInjector
     {
         var thumbnailUrl =
             video
-                .Thumbnails.Where(
-                    t =>
-                        string.Equals(
-                            t.TryGetImageFormat(),
-                            "jpg",
-                            StringComparison.OrdinalIgnoreCase
-                        )
+                .Thumbnails.Where(t =>
+                    string.Equals(t.TryGetImageFormat(), "jpg", StringComparison.OrdinalIgnoreCase)
                 )
                 .OrderByDescending(t => t.Resolution.Area)
                 .Select(t => t.Url)

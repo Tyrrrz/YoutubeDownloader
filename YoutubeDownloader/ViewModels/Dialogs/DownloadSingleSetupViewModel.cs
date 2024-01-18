@@ -26,8 +26,8 @@ public class DownloadSingleSetupViewModel(
 
     public void OnViewLoaded()
     {
-        SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(
-            o => o.Container == settingsService.LastContainer
+        SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(o =>
+            o.Container == settingsService.LastContainer
         );
     }
 
