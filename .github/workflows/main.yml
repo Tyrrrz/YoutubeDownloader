@@ -65,7 +65,7 @@ jobs:
           --configuration Release
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # 3.1.3
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
           name: YoutubeDownloader
           path: YoutubeDownloader/bin/publish
@@ -87,7 +87,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
         with:
           name: YoutubeDownloader
           path: YoutubeDownloader/
