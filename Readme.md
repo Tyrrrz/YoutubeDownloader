@@ -18,6 +18,20 @@
     <img src="favicon.png" alt="Icon" />
 </p>
 
+## Table of Contents
+- [About YoutubeDownloader](#about-youtubedownloader)
+- [Terms of Use](#terms-of-use)
+- [Download](#download)
+- [Features](#features)
+- [Setting Up](#setting-up)
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
+## About YoutubeDownloader
+
 **YoutubeDownloader** is an application that lets you download videos from YouTube.
 You can copy-paste URL of any video, playlist or channel and download it directly to a format of your choice.
 It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
@@ -26,7 +40,7 @@ It also supports searching by keywords, which is helpful if you want to quickly 
 > This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 > You can [read this article](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited) to learn more about how it works.
 
-## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
+## Terms of Use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
 
 By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
 
@@ -52,8 +66,44 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 - Automatically inject media tags
 - Log in with a YouTube account to access private content
 
+## Setting Up
+
+Download the Provided zip file and run the YoutubeDowloader executable file inside.
+
+    YoutubeDowloader.exe
+
+Ensure you don't delete the downloaded zip as the executable relies on it and does not auto-generate any necessary files.
+
+## Usage
+
+### Settings
+
+Use **Settings** to adjust the desired qualities of the video from the feature list provided above. </br>
+Use The **User Profile** to sign in with your YouTube account to allow downloading of private content.
+
+![list](.assets/list.png) </br>
+Input the desired Video URL to the Search Bar and await download of the video.
+
+![single](.assets/single.png)</br>
+Some video Formatting (Quality) is only available after the video has been downloaded.
+
+![multiple](.assets/multiple.png)
+
 ## Screenshots
 
-![list](.assets/list.png)
-![single](.assets/single.png)
-![multiple](.assets/multiple.png)
+- List
+- Single
+- Multiple
+
+## Contributing
+
+Include guidelines for contributing to the project, such as how to submit bug reports, feature requests, and code contributions.
+
+## License
+
+Include information about the project's license, such as the type of license and any relevant copyright information.
+
+## Acknowledgements
+
+Acknowledge any individuals or organizations that have contributed to the project or provided support.
+
