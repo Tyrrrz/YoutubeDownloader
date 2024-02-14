@@ -26,8 +26,7 @@
             </Grid.ColumnDefinitions>
 
             <!--  Query and process query button  -->
-            <materialDesign:Card Grid.Column="0" Margin="12,12,0,12" Height="44" Padding="8,0,8,0"
-                                 Background="{DynamicResource MaterialCardBackgroundBrush}">
+            <materialDesign:Card Grid.Column="0" Margin="12,12,0,12" Height="44" Padding="8,0,8,0">
                 <TextBox
                    x:Name="QueryTextBox"
                    Margin="0,6,6,8"
