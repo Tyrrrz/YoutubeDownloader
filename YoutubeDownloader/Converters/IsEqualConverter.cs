@@ -17,7 +17,12 @@ public class IsEqualConverter : IValueConverter
         return EqualityComparer<object>.Default.Equals(value, parameter) != Inverted;
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object? ConvertBack(
+        object? value,
+        Type targetType,
+        object? parameter,
+        CultureInfo culture
+    )
     {
         throw new NotSupportedException();
     }

@@ -6,7 +6,7 @@ namespace YoutubeDownloader.Core.Utils;
 
 public static class PathEx
 {
-    private static readonly HashSet<char> InvalidFileNameChars = new(Path.GetInvalidFileNameChars());
+    private static readonly HashSet<char> InvalidFileNameChars = [..Path.GetInvalidFileNameChars()];
 
     public static string EscapeFileName(string path)
     {

@@ -14,16 +14,15 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Core.Resolving;
 
-public class QueryResolver
+public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 {
-    private readonly YoutubeClient _youtube;
-
-    public QueryResolver(IReadOnlyList<Cookie>? initialCookies = null) =>
-        _youtube = new YoutubeClient(Http.Client, initialCookies ?? Array.Empty<Cookie>());
+    private readonly YoutubeClient _youtube =
+        new(Http.Client, initialCookies ?? Array.Empty<Cookie>());
 
     public async Task<QueryResult> ResolveAsync(
         string query,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         // Only consider URLs for parsing IDs.
         // All other queries should be treated as search keywords.
@@ -41,7 +40,7 @@ public class QueryResolver
         if (isUrl && VideoId.TryParse(query) is { } videoId)
         {
             var video = await _youtube.Videos.GetAsync(videoId, cancellationToken);
-            return new QueryResult(QueryResultKind.Video, video.Title, new[] {video});
+            return new QueryResult(QueryResultKind.Video, video.Title, [video]);
         }
 
         // Channel
@@ -55,7 +54,11 @@ public class QueryResolver
         // Channel (by handle)
         if (isUrl && ChannelHandle.TryParse(query) is { } channelHandle)
         {
-            var channel = await _youtube.Channels.GetByHandleAsync(channelHandle, cancellationToken);
+            var channel = await _youtube.Channels.GetByHandleAsync(
+                channelHandle,
+                cancellationToken
+            );
+
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
@@ -78,7 +81,10 @@ public class QueryResolver
 
         // Search
         {
-            var videos = await _youtube.Search.GetVideosAsync(query, cancellationToken).CollectAsync(20);
+            var videos = await _youtube
+                .Search.GetVideosAsync(query, cancellationToken)
+                .CollectAsync(20);
+
             return new QueryResult(QueryResultKind.Search, $"Search: {query}", videos);
         }
     }
@@ -86,7 +92,8 @@ public class QueryResolver
     public async Task<QueryResult> ResolveAsync(
         IReadOnlyList<string> queries,
         IProgress<Percentage>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         if (queries.Count == 1)
             return await ResolveAsync(queries.Single(), cancellationToken);
@@ -105,9 +112,7 @@ public class QueryResolver
                     videos.Add(video);
             }
 
-            progress?.Report(
-                Percentage.FromFraction(1.0 * ++completed / queries.Count)
-            );
+            progress?.Report(Percentage.FromFraction(1.0 * ++completed / queries.Count));
         }
 
         return new QueryResult(QueryResultKind.Aggregate, $"{queries.Count} queries", videos);

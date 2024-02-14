@@ -4,52 +4,53 @@ using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class SettingsViewModel : DialogScreen
+public class SettingsViewModel(SettingsService settingsService) : DialogScreen
 {
-    private readonly SettingsService _settingsService;
-
     public bool IsAutoUpdateEnabled
     {
-        get => _settingsService.IsAutoUpdateEnabled;
-        set => _settingsService.IsAutoUpdateEnabled = value;
+        get => settingsService.IsAutoUpdateEnabled;
+        set => settingsService.IsAutoUpdateEnabled = value;
     }
 
     public bool IsDarkModeEnabled
     {
-        get => _settingsService.IsDarkModeEnabled;
-        set => _settingsService.IsDarkModeEnabled = value;
+        get => settingsService.IsDarkModeEnabled;
+        set => settingsService.IsDarkModeEnabled = value;
     }
 
     public bool IsAuthPersisted
     {
-        get => _settingsService.IsAuthPersisted;
-        set => _settingsService.IsAuthPersisted = value;
+        get => settingsService.IsAuthPersisted;
+        set => settingsService.IsAuthPersisted = value;
+    }
+
+    public bool ShouldInjectSubtitles
+    {
+        get => settingsService.ShouldInjectSubtitles;
+        set => settingsService.ShouldInjectSubtitles = value;
     }
 
     public bool ShouldInjectTags
     {
-        get => _settingsService.ShouldInjectTags;
-        set => _settingsService.ShouldInjectTags = value;
+        get => settingsService.ShouldInjectTags;
+        set => settingsService.ShouldInjectTags = value;
     }
 
     public bool ShouldSkipExistingFiles
     {
-        get => _settingsService.ShouldSkipExistingFiles;
-        set => _settingsService.ShouldSkipExistingFiles = value;
+        get => settingsService.ShouldSkipExistingFiles;
+        set => settingsService.ShouldSkipExistingFiles = value;
     }
 
     public string FileNameTemplate
     {
-        get => _settingsService.FileNameTemplate;
-        set => _settingsService.FileNameTemplate = value;
+        get => settingsService.FileNameTemplate;
+        set => settingsService.FileNameTemplate = value;
     }
 
     public int ParallelLimit
     {
-        get => _settingsService.ParallelLimit;
-        set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
+        get => settingsService.ParallelLimit;
+        set => settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
-
-    public SettingsViewModel(SettingsService settingsService) =>
-        _settingsService = settingsService;
 }

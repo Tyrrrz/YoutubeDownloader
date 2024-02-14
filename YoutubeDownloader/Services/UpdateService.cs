@@ -6,27 +6,20 @@ using Onova.Services;
 
 namespace YoutubeDownloader.Services;
 
-public class UpdateService : IDisposable
+public class UpdateService(SettingsService settingsService) : IDisposable
 {
     private readonly IUpdateManager _updateManager = new UpdateManager(
         new GithubPackageResolver("Tyrrrz", "YoutubeDownloader", "YoutubeDownloader.zip"),
         new ZipPackageExtractor()
     );
 
-    private readonly SettingsService _settingsService;
-
     private Version? _updateVersion;
     private bool _updatePrepared;
     private bool _updaterLaunched;
 
-    public UpdateService(SettingsService settingsService)
-    {
-        _settingsService = settingsService;
-    }
-
     public async Task<Version?> CheckForUpdatesAsync()
     {
-        if (!_settingsService.IsAutoUpdateEnabled)
+        if (!settingsService.IsAutoUpdateEnabled)
             return null;
 
         var check = await _updateManager.CheckForUpdatesAsync();
@@ -35,7 +28,7 @@ public class UpdateService : IDisposable
 
     public async Task PrepareUpdateAsync(Version version)
     {
-        if (!_settingsService.IsAutoUpdateEnabled)
+        if (!settingsService.IsAutoUpdateEnabled)
             return;
 
         try
@@ -55,7 +48,7 @@ public class UpdateService : IDisposable
 
     public void FinalizeUpdate(bool needRestart)
     {
-        if (!_settingsService.IsAutoUpdateEnabled)
+        if (!settingsService.IsAutoUpdateEnabled)
             return;
 
         if (_updateVersion is null || !_updatePrepared || _updaterLaunched)

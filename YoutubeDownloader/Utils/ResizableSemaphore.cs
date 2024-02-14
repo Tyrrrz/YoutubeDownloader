@@ -88,13 +88,8 @@ internal partial class ResizableSemaphore : IDisposable
 
 internal partial class ResizableSemaphore
 {
-    private class AcquiredAccess : IDisposable
+    private class AcquiredAccess(ResizableSemaphore semaphore) : IDisposable
     {
-        private readonly ResizableSemaphore _semaphore;
-
-        public AcquiredAccess(ResizableSemaphore semaphore) =>
-            _semaphore = semaphore;
-
-        public void Dispose() => _semaphore.Release();
+        public void Dispose() => semaphore.Release();
     }
 }

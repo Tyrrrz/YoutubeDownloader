@@ -27,40 +27,39 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
 
     public IReadOnlyList<IVideo>? AvailableVideos { get; set; }
 
-    public ObservableCollection<IVideo> SelectedVideos { get; set; } = new ObservableCollection<IVideo>();
+    public ObservableCollection<IVideo> SelectedVideos { get; set; } =
+        new ObservableCollection<IVideo>();
 
-    public IReadOnlyList<Container> AvailableContainers { get; } = new[]
-    {
-        Container.Mp4,
-        Container.WebM,
-        Container.Mp3,
-        new Container("ogg")
-    };
+    public IReadOnlyList<Container> AvailableContainers { get; } =
+        new[] { Container.Mp4, Container.WebM, Container.Mp3, new Container("ogg") };
 
     public Container SelectedContainer { get; set; } = Container.Mp4;
 
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         Enum.GetValues<VideoQualityPreference>().Reverse().ToArray();
 
-    public VideoQualityPreference SelectedVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
+    public VideoQualityPreference SelectedVideoQualityPreference { get; set; } =
+        VideoQualityPreference.Highest;
 
     public DownloadMultipleSetupViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
         SettingsService settingsService,
-        IClipboard clipboard)
+        IClipboard clipboard
+    )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _settingsService = settingsService;
         _clipboard = clipboard;
-        SelectedVideos.CollectionChanged += (sender, args) => NotifyOfPropertyChange(nameof(CanConfirm));
     }
 
     public void OnViewLoaded()
     {
         SelectedContainer = _settingsService.LastContainer;
         SelectedVideoQualityPreference = _settingsService.LastVideoQualityPreference;
+        SelectedVideos.CollectionChanged += (sender, args) =>
+            NotifyOfPropertyChange(nameof(CanConfirm));
     }
 
     public async Task CopyTitle() => await _clipboard.SetTextAsync(Title!);
@@ -119,17 +118,16 @@ public static class DownloadMultipleSetupViewModelExtensions
         this IViewModelFactory factory,
         string title,
         IReadOnlyList<IVideo> availableVideos,
-        bool preselectVideos = true)
+        bool preselectVideos = true
+    )
     {
         var viewModel = factory.CreateDownloadMultipleSetupViewModel();
 
         viewModel.Title = title;
         viewModel.AvailableVideos = availableVideos;
-
-        if (preselectVideos)
-        {
-            viewModel.SelectedVideos = new ObservableCollection<IVideo>(availableVideos);
-        }
+        viewModel.SelectedVideos = preselectVideos
+            ? new ObservableCollection<IVideo>(availableVideos)
+            : [];
 
         return viewModel;
     }

@@ -14,7 +14,9 @@ using Container = YoutubeExplode.Videos.Streams.Container;
 namespace YoutubeDownloader.Services;
 
 [AddINotifyPropertyChangedInterface]
-public partial class SettingsService : SettingsBase, INotifyPropertyChanged
+public partial class SettingsService()
+    : SettingsBase(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat")),
+        INotifyPropertyChanged
 {
     public bool IsUkraineSupportMessageEnabled { get; set; } = true;
 
@@ -23,6 +25,8 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
     public bool IsDarkModeEnabled { get; set; } = IsDarkModeEnabledByDefault();
 
     public bool IsAuthPersisted { get; set; } = true;
+
+    public bool ShouldInjectSubtitles { get; set; } = true;
 
     public bool ShouldInjectTags { get; set; } = true;
 
@@ -40,12 +44,8 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
     [JsonConverter(typeof(ContainerJsonConverter))]
     public Container LastContainer { get; set; } = Container.Mp4;
 
-    public VideoQualityPreference LastVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
-
-    public SettingsService()
-        : base(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat"))
-    {
-    }
+    public VideoQualityPreference LastVideoQualityPreference { get; set; } =
+        VideoQualityPreference.Highest;
 
     public override void Save()
     {
@@ -72,7 +72,11 @@ public partial class SettingsService
 {
     private class ContainerJsonConverter : JsonConverter<Container>
     {
-        public override Container Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Container Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             Container? result = null;
 
@@ -80,10 +84,12 @@ public partial class SettingsService
             {
                 while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
                 {
-                    if (reader.TokenType == JsonTokenType.PropertyName &&
-                        reader.GetString() == "Name" &&
-                        reader.Read() &&
-                        reader.TokenType == JsonTokenType.String)
+                    if (
+                        reader.TokenType == JsonTokenType.PropertyName
+                        && reader.GetString() == "Name"
+                        && reader.Read()
+                        && reader.TokenType == JsonTokenType.String
+                    )
                     {
                         var name = reader.GetString();
                         if (!string.IsNullOrWhiteSpace(name))
@@ -92,10 +98,17 @@ public partial class SettingsService
                 }
             }
 
-            return result ?? throw new InvalidOperationException($"Invalid JSON for type '{typeToConvert.FullName}'.");
+            return result
+                ?? throw new InvalidOperationException(
+                    $"Invalid JSON for type '{typeToConvert.FullName}'."
+                );
         }
 
-        public override void Write(Utf8JsonWriter writer, Container value, JsonSerializerOptions options)
+        public override void Write(
+            Utf8JsonWriter writer,
+            Container value,
+            JsonSerializerOptions options
+        )
         {
             writer.WriteStartObject();
             writer.WriteString("Name", value.Name);

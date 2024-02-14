@@ -19,23 +19,31 @@ public class SnackbarService
     /// </summary>
     public void PostDefault(string message, TimeSpan? duration = null)
     {
-        SnackbarHost.Post(new SnackbarModel(message, duration ?? _defaultDuration), null, DispatcherPriority.Normal);
+        SnackbarHost.Post(
+            new SnackbarModel(message, duration ?? _defaultDuration),
+            null,
+            DispatcherPriority.Normal
+        );
     }
 
     /// <summary>
     /// Posts to the default SnackBarHost
     /// </summary>
-    public void PostDefault(string message, string actionText, Action actionHandler, TimeSpan? duration = null)
+    public void PostDefault(
+        string message,
+        string actionText,
+        Action actionHandler,
+        TimeSpan? duration = null
+    )
     {
-        SnackbarHost.Post(new SnackbarModel(
+        SnackbarHost.Post(
+            new SnackbarModel(
                 message,
                 duration ?? _defaultDuration,
-                new SnackbarButtonModel
-                {
-                    Text = actionText,
-                    Action = actionHandler
-                }),
-                null,
-                DispatcherPriority.Normal);
+                new SnackbarButtonModel { Text = actionText, Action = actionHandler }
+            ),
+            null,
+            DispatcherPriority.Normal
+        );
     }
 }

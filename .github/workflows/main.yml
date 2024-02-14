@@ -1,6 +1,15 @@
 name: main
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - master
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -8,76 +17,108 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
+  format:
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Verify formatting
+        run: >
+          dotnet build
+          -t:CSharpierFormat
+          --configuration Release
+
   pack:
     runs-on: windows-latest
+    timeout-minutes: 10
+
     permissions:
       actions: write
       contents: read
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Install .NET
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
         with:
-          dotnet-version: 7.0.x
+          dotnet-version: 8.0.x
 
-      - name: Publish
+      - name: Publish app
         run: >
           dotnet publish YoutubeDownloader
+          -p:Version=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
+          -p:CSharpier_Bypass=true
           --output YoutubeDownloader/bin/publish
           --configuration Release
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
           name: YoutubeDownloader
           path: YoutubeDownloader/bin/publish
+          if-no-files-found: error
 
   deploy:
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-    needs: pack
+    if: ${{ github.ref_type == 'tag' }}
+
+    needs:
+      - format
+      - pack
+
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     permissions:
       actions: read
       contents: write
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
         with:
           name: YoutubeDownloader
-          path: YoutubeDownloader
+          path: YoutubeDownloader/
 
       - name: Create package
-        shell: pwsh
-        run: >
-          Compress-Archive
-          -Path YoutubeDownloader/*
-          -DestinationPath YoutubeDownloader.zip
-          -Force
+        # Change into the artifacts directory to avoid including the directory itself in the zip archive
+        working-directory: YoutubeDownloader/
+        run: zip -r ../YoutubeDownloader.zip .
 
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
-          gh release create "${{ github.ref_name }}"
-          "YoutubeDownloader.zip"
-          --repo "${{ github.event.repository.full_name }}"
-          --title "${{ github.ref_name }}"
-          --notes "[Changelog](${{ github.event.repository.html_url }}/blob/${{ github.ref_name }}/Changelog.md)"
+          gh release create ${{ github.ref_name }}
+          YoutubeDownloader.zip
+          --repo ${{ github.event.repository.full_name }}
+          --title ${{ github.ref_name }}
+          --generate-notes
           --verify-tag
 
   notify:
     needs: deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     permissions:
       contents: read
 
     steps:
       - name: Notify Discord
-        uses: tyrrrz/action-http-request@v1
+        uses: tyrrrz/action-http-request@64c70c67f5ebc54d4c7ea09cbe3553322778afd5 # 1.1.2
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: POST
@@ -86,5 +127,6 @@ jobs:
           body: |
             {
               "avatar_url": "https://raw.githubusercontent.com/${{ github.event.repository.full_name }}/${{ github.ref_name }}/favicon.png",
-              "content": "**${{ github.event.repository.name }}** new version released!\nVersion: `${{ github.ref_name }}`\nChangelog: <${{ github.event.repository.html_url }}/blob/${{ github.ref_name }}/Changelog.md>"
+              "content": "[**${{ github.event.repository.name }}**](<${{ github.event.repository.html_url }}>) v${{ github.ref_name }} has been released!"
             }
+          retry-count: 5

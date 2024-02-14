@@ -22,7 +22,7 @@ public partial class App
 {
     private static Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
 
-    public new static string Name { get; } = Assembly.GetName().Name!;
+    public static new string Name { get; } = Assembly.GetName().Name!;
 
     public static Version Version { get; } = Assembly.GetName().Version!;
 
@@ -30,23 +30,17 @@ public partial class App
 
     public static string ProjectUrl { get; } = "https://github.com/Tyrrrz/YoutubeDownloader";
 
-    public static string ChangelogUrl { get; } = ProjectUrl + "/blob/master/Changelog.md";
+    public static string LatestReleaseUrl { get; } = ProjectUrl + "/releases/latest";
 }
 
 [DoNotNotify]
 public partial class App : StyletApplication<RootViewModel>
 {
-    private static Theme LightTheme { get; } = Theme.Create(
-        Theme.Light,
-        Color.Parse("#343838"),
-        Color.Parse("#F9A825")
-    );
+    private static Theme LightTheme { get; } =
+        Theme.Create(Theme.Light, Color.Parse("#343838"), Color.Parse("#F9A825"));
 
-    private static Theme DarkTheme { get; } = Theme.Create(
-        Theme.Dark,
-        Color.Parse("#E8E8E8"),
-        Color.Parse("#F9A825")
-    );
+    private static Theme DarkTheme { get; } =
+        Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
 
     public static void SetLightTheme()
     {
@@ -106,13 +100,22 @@ public partial class App : StyletApplication<RootViewModel>
 
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
         builder.Bind<IViewModelFactory>().ToAbstractFactory();
-        builder.Bind<IClipboard>().ToFactory(ctx => (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.Clipboard);
+        builder
+            .Bind<IClipboard>()
+            .ToFactory(ctx =>
+                (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!
+                    .MainWindow!
+                    .Clipboard
+            );
     }
 
     protected override void OnLaunch()
     {
         base.OnLaunch();
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classicDesktopStyleApplicationLifetime)
+        if (
+            ApplicationLifetime
+            is IClassicDesktopStyleApplicationLifetime classicDesktopStyleApplicationLifetime
+        )
         {
             classicDesktopStyleApplicationLifetime.MainWindow = GetActiveWindow();
         }

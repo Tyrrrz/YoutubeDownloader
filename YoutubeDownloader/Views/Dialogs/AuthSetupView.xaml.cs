@@ -24,7 +24,6 @@ public partial class AuthSetupView : UserControlBase
 
     private AvaloniaCefBrowser browser;
 
-
     private AuthSetupViewModel ViewModel => (AuthSetupViewModel)DataContext!;
 
     public AuthSetupView()
@@ -58,16 +57,16 @@ public partial class AuthSetupView : UserControlBase
                 {
                     ViewModel.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
                     var cl = ViewModel.Cookies.Select(c => new { c.Expires, c.Name }).ToArray();
-                    string s = JsonSerializer.Serialize(ViewModel.Cookies, new JsonSerializerOptions() { WriteIndented = true });
+                    string s = JsonSerializer.Serialize(
+                        ViewModel.Cookies,
+                        new JsonSerializerOptions() { WriteIndented = true }
+                    );
                 });
             }
         }
     }
 
-    private void OnCefGlueBrowserTitleChanged(object sender, string title)
-    {
-
-    }
+    private void OnCefGlueBrowserTitleChanged(object sender, string title) { }
 
     private void OnCefGlueBrowserLoadStart(object sender, LoadStartEventArgs e)
     {
@@ -79,7 +78,6 @@ public partial class AuthSetupView : UserControlBase
                 topLevel!.Width++;
                 topLevel!.Width--;
             }
-
         });
         //NavigateToLoginPage();
     }
@@ -182,7 +180,9 @@ public static class CefExtensions
     {
         return new Cookie(cefCookie.Name, cefCookie.Value, cefCookie.Path, cefCookie.Domain)
         {
-            Expires = cefCookie.Expires.HasValue ? _cefTimeBegin.AddMicroseconds(cefCookie.Expires.Value.Ticks) : default,
+            Expires = cefCookie.Expires.HasValue
+                ? _cefTimeBegin.AddMicroseconds(cefCookie.Expires.Value.Ticks)
+                : default,
             HttpOnly = cefCookie.HttpOnly,
             Secure = cefCookie.Secure
         };

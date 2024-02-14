@@ -70,7 +70,7 @@ body:
           required: true
         - label: I have provided a descriptive title for this issue
           required: true
-        - label: I have made sure that that this bug is reproducible on the latest version of the application
+        - label: I have made sure that this bug is reproducible on the latest version of the application
           required: true
         - label: I have provided all the information needed to reproduce this bug as efficiently as possible
           required: true

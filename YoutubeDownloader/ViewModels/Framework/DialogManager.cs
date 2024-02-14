@@ -12,19 +12,13 @@ using Stylet;
 
 namespace YoutubeDownloader.ViewModels.Framework;
 
-public class DialogManager : IDisposable
+public class DialogManager(IViewManager viewManager) : IDisposable
 {
-    private readonly IViewManager _viewManager;
     private readonly SemaphoreSlim _dialogLock = new(1, 1);
-
-    public DialogManager(IViewManager viewManager)
-    {
-        _viewManager = viewManager;
-    }
 
     public async ValueTask<T?> ShowDialogAsync<T>(DialogScreen<T> dialogScreen)
     {
-        var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
+        var view = viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
 
         void OnDialogOpened(object? openSender, DialogOpenedEventArgs openArgs)
         {
@@ -57,9 +51,14 @@ public class DialogManager : IDisposable
         }
     }
 
-    public async Task<string?> PromptSaveFilePath(IReadOnlyList<FilePickerFileType>? fileTypes = null, string defaultFilePath = "")
+    public async Task<string?> PromptSaveFilePath(
+        IReadOnlyList<FilePickerFileType>? fileTypes = null,
+        string defaultFilePath = ""
+    )
     {
-        var topLevel = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        var topLevel = (
+            Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime
+        )?.MainWindow;
 
         var storageProvider = topLevel?.StorageProvider;
         if (storageProvider is null)
@@ -67,12 +66,14 @@ public class DialogManager : IDisposable
             return null;
         }
 
-        var filePickResult = await storageProvider.SaveFilePickerAsync(new()
-        {
-            FileTypeChoices = fileTypes,
-            SuggestedFileName = defaultFilePath,
-            DefaultExtension = Path.GetExtension(defaultFilePath).TrimStart('.')
-        });
+        var filePickResult = await storageProvider.SaveFilePickerAsync(
+            new()
+            {
+                FileTypeChoices = fileTypes,
+                SuggestedFileName = defaultFilePath,
+                DefaultExtension = Path.GetExtension(defaultFilePath).TrimStart('.')
+            }
+        );
 
         if (filePickResult?.Path is Uri path)
         {
@@ -84,7 +85,9 @@ public class DialogManager : IDisposable
 
     public async Task<string?> PromptDirectoryPath(string defaultDirPath = "")
     {
-        var topLevel = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        var topLevel = (
+            Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime
+        )?.MainWindow;
 
         var storageProvider = topLevel?.StorageProvider;
         if (storageProvider is null)
@@ -93,12 +96,9 @@ public class DialogManager : IDisposable
         }
 
         var startLocation = await GetStorageFolder(storageProvider, defaultDirPath);
-        var folderPickResult = await storageProvider.OpenFolderPickerAsync(new()
-        {
-            AllowMultiple = false,
-            SuggestedStartLocation = startLocation
-        });
-
+        var folderPickResult = await storageProvider.OpenFolderPickerAsync(
+            new() { AllowMultiple = false, SuggestedStartLocation = startLocation }
+        );
 
         if (folderPickResult.FirstOrDefault()?.Path is Uri path)
         {
@@ -113,7 +113,10 @@ public class DialogManager : IDisposable
         _dialogLock.Dispose();
     }
 
-    private static async Task<IStorageFolder?> GetStorageFolder(IStorageProvider storageProvider, string path)
+    private static async Task<IStorageFolder?> GetStorageFolder(
+        IStorageProvider storageProvider,
+        string path
+    )
     {
         if (string.IsNullOrEmpty(path))
         {

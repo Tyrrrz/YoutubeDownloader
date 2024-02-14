@@ -8,16 +8,20 @@ public partial class DashboardView : UserControlBase
     public DashboardView()
     {
         InitializeComponent();
-        QueryTextBox.AddHandler(InputElement.KeyDownEvent, (sender, args) =>
-        {
-            // Disable new lines when pressing enter without shift
-            if (args.Key == Key.Enter && args.KeyModifiers != KeyModifiers.Shift)
+        QueryTextBox.AddHandler(
+            InputElement.KeyDownEvent,
+            (sender, args) =>
             {
-                args.Handled = true;
+                // Disable new lines when pressing enter without shift
+                if (args.Key == Key.Enter && args.KeyModifiers != KeyModifiers.Shift)
+                {
+                    args.Handled = true;
 
-                // We handle the event here so we have to directly "press" the default button
-                ProcessQueryButton.Command?.Execute(ProcessQueryButton.CommandParameter);
-            }
-        }, RoutingStrategies.Tunnel);
+                    // We handle the event here so we have to directly "press" the default button
+                    ProcessQueryButton.Command?.Execute(ProcessQueryButton.CommandParameter);
+                }
+            },
+            RoutingStrategies.Tunnel
+        );
     }
 }

@@ -11,7 +11,7 @@ public partial class SettingsView : UserControlBase
     }
 
     private void DarkModeToggleButton_OnChecked(object sender, RoutedEventArgs args) =>
-    App.SetDarkTheme();
+        App.SetDarkTheme();
 
     private void DarkModeToggleButton_OnUnchecked(object sender, RoutedEventArgs args) =>
         App.SetLightTheme();

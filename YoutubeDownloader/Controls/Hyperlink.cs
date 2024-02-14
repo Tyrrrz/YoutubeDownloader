@@ -19,8 +19,10 @@ public class Hyperlink : InlineUIContainer
     /// <summary>
     /// Defines the <see cref="Click"/> event.
     /// </summary>
-    public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
-        RoutedEvent.Register<Button, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
+    public static readonly RoutedEvent<RoutedEventArgs> ClickEvent = RoutedEvent.Register<
+        Button,
+        RoutedEventArgs
+    >(nameof(Click), RoutingStrategies.Bubble);
     private Button _button;
 
     /// <summary>
@@ -36,14 +38,7 @@ public class Hyperlink : InlineUIContainer
     {
         _underline = new Underline();
 
-        var textBlock = new TextBlock
-        {
-            Inlines = new InlineCollection
-            {
-                _underline
-            }
-        };
-
+        var textBlock = new TextBlock { Inlines = new InlineCollection { _underline } };
 
         _button = new Button
         {

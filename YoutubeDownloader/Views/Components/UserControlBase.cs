@@ -4,6 +4,4 @@ using PropertyChanged;
 namespace YoutubeDownloader.Views.Components;
 
 [DoNotNotify]
-public class UserControlBase : UserControl
-{
-}
+public class UserControlBase : UserControl { }

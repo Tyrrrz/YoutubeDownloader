@@ -46,7 +46,11 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public string? ErrorMessage { get; set; }
 
-    public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager, IClipboard clipboard)
+    public DownloadViewModel(
+        IViewModelFactory viewModelFactory,
+        DialogManager dialogManager,
+        IClipboard clipboard
+    )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
@@ -78,7 +82,7 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         try
         {
             // Navigate to the file in Windows Explorer
-            ProcessEx.Start("explorer", new[] { "/select,", FilePath! });
+            ProcessEx.Start("explorer", ["/select,", FilePath!]);
         }
         catch (Exception ex)
         {
@@ -126,7 +130,8 @@ public static class DownloadViewModelExtensions
         this IViewModelFactory factory,
         IVideo video,
         VideoDownloadOption downloadOption,
-        string filePath)
+        string filePath
+    )
     {
         var viewModel = factory.CreateDownloadViewModel();
 
@@ -141,7 +146,8 @@ public static class DownloadViewModelExtensions
         this IViewModelFactory factory,
         IVideo video,
         VideoDownloadPreference downloadPreference,
-        string filePath)
+        string filePath
+    )
     {
         var viewModel = factory.CreateDownloadViewModel();
 
