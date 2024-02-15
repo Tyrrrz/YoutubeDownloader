@@ -91,7 +91,7 @@ public partial class App : StyletApplication<RootViewModel>
     {
         base.RegisterServices();
 
-        AvaloniaWebViewBuilder.Initialize(default);
+        AvaloniaWebViewBuilder.Initialize(config => config.IsInPrivateModeEnabled = true);
     }
 
     protected override void ConfigureIoC(IStyletIoCBuilder builder)

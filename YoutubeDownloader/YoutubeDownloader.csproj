@@ -26,7 +26,6 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Include="Avalonia.Diagnostics" Version="11.0.9" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.0.6" />
-    <PackageReference Include="CefGlue.Avalonia" Version="117.5938.2-avalonia11" />
     <PackageReference Include="Cogwheel" Version="2.0.4" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
       <PackageReference Include="CSharpier.MsBuild" Version="0.27.0" PrivateAssets="all" />
@@ -43,7 +42,6 @@
     <PackageReference Include="Stylet.Avalonia" Version="0.2.0" />
     <PackageReference Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageReference Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
-    <PackageReference Include="WebViewControl-Avalonia" Version="2.117.5-avalonia11" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,6 +13,10 @@
     Theme="{DynamicResource MaterialDesignRoot}"
     x:DataType="dialogs:AuthSetupViewModel"
     mc:Ignorable="d">
+    <Design.DataContext>
+        <dialogs:AuthSetupViewModel/>
+    </Design.DataContext>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -69,23 +73,15 @@
                 <!--  Browser  -->
                 <Panel x:Name="WebPanel"
                        IsVisible="{Binding !IsAuthenticated}"/>
-                <!--<WebView 
+                <WebView 
                     x:Name="WebBrowser"
                     Loaded="WebBrowser_OnLoaded"
                     WebViewCreated="WebBrowser_OnWebViewCreated"
-                    />-->
-                <!--<wpf:WebView2
-                    x:Name="WebBrowser"
-                    CoreWebView2InitializationCompleted="WebBrowser_OnCoreWebView2InitializationCompleted"
-                    Loaded="WebBrowser_OnLoaded"
-                    NavigationCompleted="WebBrowser_OnNavigationCompleted"
                     NavigationStarting="WebBrowser_OnNavigationStarting"
+                    NavigationCompleted="WebBrowser_OnNavigationCompleted"
                     Unloaded="WebBrowser_OnUnloaded"
-                    IsVisible="{Binding !IsAuthenticated}">
-                    <wpf:WebView2.CreationProperties>
-                        <wpf:CoreWebView2CreationProperties IsInPrivateModeEnabled="True" />
-                    </wpf:WebView2.CreationProperties>
-                </wpf:WebView2>-->
+                    IsVisible="{Binding !IsAuthenticated}"
+                    />
             </Grid>
         </Border>
 
@@ -96,7 +92,7 @@
             HorizontalAlignment="Stretch"
             Command="{s:Action Close}"
             Content="CLOSE"
-            IsCancel="True"
+            IsCancel="True" 
             IsDefault="True"
             Theme="{StaticResource MaterialOutlineButton}"  />
     </Grid>
