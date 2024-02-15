@@ -120,19 +120,4 @@ public partial class App : StyletApplication<RootViewModel>
             classicDesktopStyleApplicationLifetime.MainWindow = GetActiveWindow();
         }
     }
-
-    // tODO
-#if !DEBUG
-    protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs args)
-    {
-        base.OnUnhandledException(args);
-
-        MessageBox.Show(
-            args.Exception.ToString(),
-            "Error occured",
-            MessageBoxButton.OK,
-            MessageBoxImage.Error
-        );
-    }
-#endif
 }
