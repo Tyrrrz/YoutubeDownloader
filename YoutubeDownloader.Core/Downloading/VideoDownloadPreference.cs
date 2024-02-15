@@ -38,6 +38,11 @@ public record VideoDownloadPreference(
                     .Where(o => o.VideoQuality?.MaxHeight <= 480)
                     .LastOrDefault(o => o.Container == PreferredContainer),
 
+            VideoQualityPreference.UpTo360p
+                => orderedOptions
+                    .Where(o => o.VideoQuality?.MaxHeight <= 360)
+                    .LastOrDefault(o => o.Container == PreferredContainer),
+
             VideoQualityPreference.Lowest
                 => orderedOptions.LastOrDefault(o => o.Container == PreferredContainer),
 
