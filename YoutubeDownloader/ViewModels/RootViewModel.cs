@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Stylet;
+using Avalonia.Controls.ApplicationLifetimes;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Components;
@@ -9,12 +9,15 @@ using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader.ViewModels;
 
-public class RootViewModel : Screen
+public class RootViewModel : ViewModelBase
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
     private readonly UpdateService _updateService;
+    private readonly IControlledApplicationLifetime _applicationLifetime;
+
+    public string DisplayName { get; set; }
 
     public SnackbarService SnackbarService { get; set; } = new(TimeSpan.FromSeconds(5));
 
@@ -24,13 +27,15 @@ public class RootViewModel : Screen
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
         SettingsService settingsService,
-        UpdateService updateService
+        UpdateService updateService,
+        IControlledApplicationLifetime applicationLifetime
     )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _settingsService = settingsService;
         _updateService = updateService;
+        _applicationLifetime = applicationLifetime;
 
         Dashboard = _viewModelFactory.CreateDashboardViewModel();
 
@@ -78,7 +83,7 @@ public class RootViewModel : Screen
                 () =>
                 {
                     _updateService.FinalizeUpdate(true);
-                    RequestClose();
+                    _applicationLifetime.Shutdown();
                 }
             );
         }
@@ -97,8 +102,6 @@ public class RootViewModel : Screen
 
     protected override void OnViewLoaded()
     {
-        base.OnViewLoaded();
-
         _settingsService.Load();
 
         // Sync the theme with settings
@@ -126,6 +129,8 @@ public class RootViewModel : Screen
             _settingsService.LastAppVersion = App.Version;
             _settingsService.Save();
         }
+
+        _ = OnViewFullyLoaded();
     }
 
     protected override void OnClose()

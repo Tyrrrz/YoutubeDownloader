@@ -1,9 +1,10 @@
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Components;
 
-public partial class DashboardView : UserControlBase
+public partial class DashboardView : ViewModelAwareUserControl
 {
     public DashboardView()
     {

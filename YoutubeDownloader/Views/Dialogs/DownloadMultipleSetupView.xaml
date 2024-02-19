@@ -6,10 +6,8 @@
              xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
              xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-             xmlns:s="using:Stylet.Xaml"
              Width="500"
              mc:Ignorable="d"
-             Loaded="{s:Action OnViewLoaded}"
              x:DataType="dialogs:DownloadMultipleSetupViewModel"
              x:Class="YoutubeDownloader.Views.Dialogs.DownloadMultipleSetupView">
     <Grid RowDefinitions="Auto,*,Auto,Auto">
@@ -23,7 +21,7 @@
             TextTrimming="CharacterEllipsis">
             <TextBlock.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{s:Action CopyTitle}" Header="Copy" />
+                    <MenuItem Command="{Binding CopyTitle}" Header="Copy" />
                 </ContextMenu>
             </TextBlock.ContextMenu>
         </TextBlock>
@@ -164,7 +162,7 @@
             Orientation="Horizontal">
             <!--  Download  -->
             <Button
-                Command="{s:Action Confirm}"
+                Command="{Binding Confirm}"
                 IsDefault="True"
                 Theme="{DynamicResource MaterialOutlineButton}">
                 <Button.Content>
@@ -178,7 +176,7 @@
             <!--  Cancel  -->
             <Button
                 Margin="8,0,0,0"
-                Command="{s:Action Close}"
+                Command="{Binding Close}"
                 Content="CANCEL"
                 IsCancel="True"
                 Theme="{DynamicResource MaterialOutlineButton}" />

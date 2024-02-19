@@ -1,8 +1,8 @@
-using YoutubeDownloader.Views.Components;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class MessageBoxView : UserControlBase
+public partial class MessageBoxView : ViewModelAwareUserControl
 {
     public MessageBoxView()
     {

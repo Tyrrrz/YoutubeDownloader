@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
         xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-        xmlns:s="using:Stylet.Xaml"
         xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
         Width="600"
         Height="580"
@@ -16,11 +15,10 @@
     
     <dialogHost:DialogHost
         x:Name="DialogHost"
-        Loaded="{s:Action OnViewFullyLoaded}"
         CloseOnClickAway="True">
         <materialDesign:SnackbarHost HostName="Root">
             <Grid>
-                <ContentControl s:View.Model="{Binding Dashboard}"/>
+                <ContentControl Content="{Binding Dashboard}"/>
             </Grid>
         </materialDesign:SnackbarHost>
     </dialogHost:DialogHost>

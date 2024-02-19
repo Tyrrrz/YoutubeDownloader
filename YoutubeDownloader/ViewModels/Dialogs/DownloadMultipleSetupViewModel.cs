@@ -54,12 +54,11 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
         _clipboard = clipboard;
     }
 
-    public void OnViewLoaded()
+    protected override void OnViewLoaded()
     {
         SelectedContainer = _settingsService.LastContainer;
         SelectedVideoQualityPreference = _settingsService.LastVideoQualityPreference;
-        SelectedVideos.CollectionChanged += (sender, args) =>
-            NotifyOfPropertyChange(nameof(CanConfirm));
+        SelectedVideos.CollectionChanged += (sender, args) => OnPropertyChanged(nameof(CanConfirm));
     }
 
     public async Task CopyTitle() => await _clipboard.SetTextAsync(Title!);

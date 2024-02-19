@@ -1,5 +1,6 @@
 ﻿using System;
 using Avalonia;
+using Avalonia.ReactiveUI;
 using Avalonia.WebView.Desktop;
 
 namespace YoutubeDownloader;
@@ -21,5 +22,6 @@ internal class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace()
+            .UseReactiveUI()
             .UseDesktopWebView();
 }

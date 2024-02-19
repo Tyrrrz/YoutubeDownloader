@@ -11,10 +11,10 @@
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:iac="clr-namespace:Avalonia.Xaml.Interactions.Custom;assembly=Avalonia.Xaml.Interactions.Custom"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-             xmlns:s="using:Stylet.Xaml"
              mc:Ignorable="d"
              x:DataType="components:DashboardViewModel"
-             x:Class="YoutubeDownloader.Views.Components.DashboardView">
+             x:Class="YoutubeDownloader.Views.Components.DashboardView"
+             x:Name="root">
     <Grid RowDefinitions="Auto, Auto, *">
 
         <!--  Toolbar  -->
@@ -154,12 +154,12 @@
                 IsVisible="{Binding IsDownloadsAvailable}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{s:Action RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
-                        <MenuItem Command="{s:Action RemoveInactiveDownloads}" Header="Remove inactive downloads" />
+                        <MenuItem Command="{Binding RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
+                        <MenuItem Command="{Binding RemoveInactiveDownloads}" Header="Remove inactive downloads" />
                         <Separator />
-                        <MenuItem Command="{s:Action RestartFailedDownloads}" Header="Restart failed downloads" />
+                        <MenuItem Command="{Binding RestartFailedDownloads}" Header="Restart failed downloads" />
                         <Separator />
-                        <MenuItem Command="{s:Action CancelAllDownloads}" Header="Cancel all downloads" />
+                        <MenuItem Command="{Binding CancelAllDownloads}" Header="Cancel all downloads" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Styles>
@@ -231,7 +231,6 @@
                                     <TextBlock
                                         Grid.Column="1"
                                         VerticalAlignment="Center"
-                                        s:View.ActionTarget="{Binding}"
                                         TextTrimming="CharacterEllipsis"
                                         Classes.enqueued="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
                                         Classes.started="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
@@ -311,8 +310,7 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        s:View.ActionTarget="{Binding}"
-                                        Command="{s:Action Cancel}"
+                                        Command="{Binding Cancel}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Cancel download"
                                         IsVisible="{Binding CanCancel}">
@@ -326,7 +324,7 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        Command="{s:Action RestartDownload}"
+                                        Command="{Binding #root.DataContext.RestartDownload}"
                                         CommandParameter="{Binding}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Restart download"

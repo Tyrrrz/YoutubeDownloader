@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Input.Platform;
 using Gress;
 using PropertyChanged;
-using Stylet;
+using ReactiveUI;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -14,7 +14,7 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
-public class DownloadViewModel : PropertyChangedBase, IDisposable
+public class DownloadViewModel : ViewModelBase, IDisposable
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
@@ -56,10 +56,9 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
         _dialogManager = dialogManager;
         _clipboard = clipboard;
 
-        Progress.Bind(
-            o => o.Current,
-            (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
-        );
+        Progress
+            .WhenAnyValue(o => o.Current)
+            .Subscribe(_ => OnPropertyChanged(nameof(IsProgressIndeterminate)));
     }
 
     public bool CanCancel => Status is DownloadStatus.Enqueued or DownloadStatus.Started;

@@ -27,7 +27,7 @@ public class DownloadSingleSetupViewModel(
 
     public VideoDownloadOption? SelectedDownloadOption { get; set; }
 
-    public void OnViewLoaded()
+    protected override void OnViewLoaded()
     {
         SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(o =>
             o.Container == settingsService.LastContainer

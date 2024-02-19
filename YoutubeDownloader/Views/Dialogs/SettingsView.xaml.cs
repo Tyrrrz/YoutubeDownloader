@@ -1,9 +1,10 @@
 using Avalonia.Interactivity;
 using YoutubeDownloader.Views.Components;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class SettingsView : UserControlBase
+public partial class SettingsView : ViewModelAwareUserControl
 {
     public SettingsView()
     {

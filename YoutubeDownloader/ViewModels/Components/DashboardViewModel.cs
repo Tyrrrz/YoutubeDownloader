@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Metadata;
 using Gress;
 using Gress.Completable;
-using Stylet;
+using ReactiveUI;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
@@ -17,7 +18,7 @@ using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
-public class DashboardViewModel : PropertyChangedBase, IDisposable
+public class DashboardViewModel : ViewModelBase, IDisposable
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
@@ -34,7 +35,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
     public string? Query { get; set; }
 
-    public BindableCollection<DownloadViewModel> Downloads { get; } = [];
+    public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
     public bool IsDownloadsAvailable => Downloads.Any();
 
@@ -50,17 +51,15 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
 
-        _settingsService.BindAndInvoke(
-            o => o.ParallelLimit,
-            (_, e) => _downloadSemaphore.MaxCount = e.NewValue
-        );
-
-        Progress.Bind(
-            o => o.Current,
-            (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
-        );
-
-        Downloads.Bind(o => o.Count, (_, _) => NotifyOfPropertyChange(() => IsDownloadsAvailable));
+        _settingsService
+            .WhenAnyValue(o => o.ParallelLimit)
+            .Subscribe(v => _downloadSemaphore.MaxCount = v);
+        Progress
+            .WhenAnyValue(o => o.Current)
+            .Subscribe(_ => OnPropertyChanged(nameof(IsProgressIndeterminate)));
+        Downloads
+            .WhenAnyValue(o => o.Count)
+            .Subscribe(_ => OnPropertyChanged(nameof(IsDownloadsAvailable)));
     }
 
     public bool CanShowAuthSetup => !IsBusy;
@@ -277,8 +276,9 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         }
     }
 
-    public void RestartDownload(DownloadViewModel download)
+    public void RestartDownload(object parameter)
     {
+        var download = (DownloadViewModel)parameter;
         var position = Math.Max(0, Downloads.IndexOf(download));
         RemoveDownload(download);
 

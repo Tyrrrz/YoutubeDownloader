@@ -5,9 +5,14 @@
              xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:framework="using:YoutubeDownloader.Views.Framework"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
+    <Application.DataTemplates>
+        <framework:ViewLocator/>
+    </Application.DataTemplates>
+             
+             
     <Application.Styles>
         <themes:MaterialTheme BaseTheme="Light" />
         <dialogHostAvalonia:DialogHostStyles />

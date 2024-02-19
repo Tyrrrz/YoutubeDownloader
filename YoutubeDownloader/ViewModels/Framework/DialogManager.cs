@@ -8,7 +8,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using DialogHostAvalonia;
-using Stylet;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.ViewModels.Framework;
 
@@ -42,7 +42,7 @@ public class DialogManager(IViewManager viewManager) : IDisposable
         await _dialogLock.WaitAsync();
         try
         {
-            await DialogHost.Show(view, OnDialogOpened);
+            await DialogHost.Show(view!, OnDialogOpened);
             return dialogScreen.DialogResult;
         }
         finally

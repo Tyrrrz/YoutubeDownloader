@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:s="using:Stylet.Xaml"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     x:DataType="dialogs:MessageBoxViewModel"
     Theme="{DynamicResource MaterialDesignRoot}"
@@ -58,7 +57,7 @@
             Columns="{Binding ButtonsCount}">
             <!--  OK  -->
             <Button
-                Command="{s:Action Close}"
+                Command="{Binding Close}"
                 Content="{Binding OkButtonText}"
                 IsDefault="True"
                 Theme="{StaticResource MaterialOutlineButton}"
@@ -72,7 +71,7 @@
             <Button
                 Margin="8,0,0,0"
                 HorizontalAlignment="Stretch"
-                Command="{s:Action Close}"
+                Command="{Binding Close}"
                 Content="{Binding CancelButtonText}"
                 IsCancel="True"
                 Theme="{StaticResource MaterialOutlineButton}"

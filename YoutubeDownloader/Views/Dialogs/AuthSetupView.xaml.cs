@@ -5,11 +5,11 @@ using Avalonia.Interactivity;
 using Microsoft.Web.WebView2.Core;
 using WebViewCore.Events;
 using YoutubeDownloader.ViewModels.Dialogs;
-using YoutubeDownloader.Views.Components;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class AuthSetupView : UserControlBase
+public partial class AuthSetupView : ViewModelAwareUserControl
 {
     private const string HomePageUrl = "https://www.youtube.com";
     private static readonly string LoginPageUrl =

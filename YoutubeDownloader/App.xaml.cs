@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Reflection;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using Avalonia.Markup.Xaml;
@@ -8,13 +9,14 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using AvaloniaWebView;
 using Material.Styles.Themes;
+using Microsoft.Extensions.DependencyInjection;
 using PropertyChanged;
-using Stylet;
-using StyletIoC;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Framework;
+using YoutubeDownloader.Views;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader;
 
@@ -34,13 +36,20 @@ public partial class App
 }
 
 [DoNotNotify]
-public partial class App : StyletApplication<RootViewModel>
+public partial class App : Application
 {
+    private readonly IServiceProvider? _serviceProvider;
+
     private static Theme LightTheme { get; } =
         Theme.Create(Theme.Light, Color.Parse("#343838"), Color.Parse("#F9A825"));
 
     private static Theme DarkTheme { get; } =
         Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
+    
+    public App()
+    {
+        _serviceProvider = ConfigureServices();
+    }
 
     public static void SetLightTheme()
     {
@@ -64,27 +73,42 @@ public partial class App : StyletApplication<RootViewModel>
         Current!.Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
     }
 
-    protected override void OnStart()
-    {
-        base.OnStart();
-
-        // Set the default theme.
-        // Preferred theme will be set later, once the settings are loaded.
-        //App.SetLightTheme();
-
-        // Increase maximum concurrent connections
-        ServicePointManager.DefaultConnectionLimit = 20;
-    }
-
     public override void Initialize()
     {
+        // Increase maximum concurrent connections
+        ServicePointManager.DefaultConnectionLimit = 20;
+
         AvaloniaXamlLoader.Load(this);
-        base.Initialize();
     }
 
     public override void OnFrameworkInitializationCompleted()
     {
+        if (_serviceProvider is null)
+        {
+            return; // fix for Designer
+        }
+
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var rootViewModel = ActivatorUtilities.CreateInstance<RootViewModel>(_serviceProvider);
+
+            desktop.MainWindow = new RootView { DataContext = rootViewModel, };
+        }
+
         base.OnFrameworkInitializationCompleted();
+
+        // var settinsService = _serviceProvider.GetService<SettingsService>();
+        //
+        // settinsService?.Load();
+        //
+        // if (settinsService?.IsDarkModeEnabled ?? false)
+        // {
+        //     SetDarkTheme();
+        // }
+        // else
+        // {
+        //     SetLightTheme();
+        // }
     }
 
     public override void RegisterServices()
@@ -94,32 +118,25 @@ public partial class App : StyletApplication<RootViewModel>
         AvaloniaWebViewBuilder.Initialize(config => config.IsInPrivateModeEnabled = true);
     }
 
-    protected override void ConfigureIoC(IStyletIoCBuilder builder)
+    protected ServiceProvider ConfigureServices()
     {
-        base.ConfigureIoC(builder);
+        var services = new ServiceCollection();
 
-        var set = new SettingsService();
+        services.AddSingleton<SettingsService>();
+        services.AddSingleton<UpdateService>();
+        services.AddSingleton<IViewManager, ViewManager>();
+        services.AddSingleton<DialogManager>();
+        services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+        services.AddTransient<IClipboard>(sp =>
+            sp.GetRequiredService<IViewManager>().GetTopLevel()!.Clipboard!
+        );
+        services.AddTransient<IApplicationLifetime>(sp => App.Current!.ApplicationLifetime!);
+        services.AddTransient<IControlledApplicationLifetime>(sp =>
+            (App.Current!.ApplicationLifetime! as IControlledApplicationLifetime)!
+        );
 
-        builder.Bind<SettingsService>().ToSelf().InSingletonScope();
-        builder.Bind<IViewModelFactory>().ToAbstractFactory();
-        builder
-            .Bind<IClipboard>()
-            .ToFactory(ctx =>
-                (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!
-                    .MainWindow!
-                    .Clipboard
-            );
-    }
+        services.AddSingleton(sp => App.Current!.PlatformSettings!);
 
-    protected override void OnLaunch()
-    {
-        base.OnLaunch();
-        if (
-            ApplicationLifetime
-            is IClassicDesktopStyleApplicationLifetime classicDesktopStyleApplicationLifetime
-        )
-        {
-            classicDesktopStyleApplicationLifetime.MainWindow = GetActiveWindow();
-        }
+        return services.BuildServiceProvider(true);
     }
 }
