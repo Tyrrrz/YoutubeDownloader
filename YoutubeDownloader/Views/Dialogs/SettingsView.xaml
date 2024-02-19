@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-             Width="300"
+             Width="380"
              mc:Ignorable="d"
              x:Class="YoutubeDownloader.Views.Dialogs.SettingsView"
              x:DataType="dialogs:SettingsViewModel">
@@ -65,10 +65,9 @@
                             x:Name="DarkModeToggleButton"
                             Margin="16,8"
                             VerticalAlignment="Center"
-                            Checked="DarkModeToggleButton_OnChecked"
+                            IsCheckedChanged="DarkModeToggleButton_OnIsCheckedChanged"
                             DockPanel.Dock="Right"
-                            IsChecked="{Binding IsDarkModeEnabled}"
-                            Unchecked="DarkModeToggleButton_OnUnchecked" />
+                            IsChecked="{Binding IsDarkModeEnabled}"/>
                     </DockPanel>
 
                     <!--  Persist authentication  -->
@@ -165,8 +164,9 @@
                         <TextBox
                             Width="150"
                             VerticalAlignment="Center"
+                            FontSize="14"
                             DockPanel.Dock="Right"
-                            Text="$name {Binding FileNameTemplate}" />
+                            Text="{Binding FileNameTemplate}" />
                     </DockPanel>
 
                     <!--  Parallel limit  -->

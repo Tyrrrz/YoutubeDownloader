@@ -14,7 +14,7 @@ public partial class AuthSetupView : UserControlBase
     private const string HomePageUrl = "https://www.youtube.com";
     private static readonly string LoginPageUrl =
         $"https://accounts.google.com/ServiceLogin?continue={WebUtility.UrlEncode(HomePageUrl)}";
-    
+
     private AuthSetupViewModel ViewModel => (AuthSetupViewModel)DataContext!;
 
     private CoreWebView2? _coreWebView2;
@@ -23,7 +23,7 @@ public partial class AuthSetupView : UserControlBase
     {
         InitializeComponent();
     }
-    
+
     private void NavigateToLoginPage()
     {
         WebBrowser.Url = new Uri(LoginPageUrl);

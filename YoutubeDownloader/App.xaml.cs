@@ -98,6 +98,8 @@ public partial class App : StyletApplication<RootViewModel>
     {
         base.ConfigureIoC(builder);
 
+        var set = new SettingsService();
+
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
         builder.Bind<IViewModelFactory>().ToAbstractFactory();
         builder
