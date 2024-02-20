@@ -45,7 +45,7 @@ public partial class App : Application
 
     private static Theme DarkTheme { get; } =
         Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
-    
+
     public App()
     {
         _serviceProvider = ConfigureServices();
