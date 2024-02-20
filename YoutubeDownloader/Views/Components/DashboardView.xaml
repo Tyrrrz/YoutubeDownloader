@@ -37,7 +37,8 @@
                    FontSize="16"
                    MaxLines="4"
                    Theme="{DynamicResource SoloTextBox}"
-                   Text="{Binding Query}">
+                   Text="{Binding Query}"
+                   ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                     <TextBox.InnerLeftContent>
                         <!--  Search icon  -->
                         <materialIcon:MaterialIcon
