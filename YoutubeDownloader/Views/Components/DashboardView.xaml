@@ -53,7 +53,7 @@
                         <!--  Process query button  -->
                         <Button
                             x:Name="ProcessQueryButton"
-                            Margin="0,6,6,6"
+                            Margin="0,0,6,0"
                             Padding="4"
                             Command="{Binding ProcessQuery}"
                             IsDefault="True"
