@@ -166,6 +166,7 @@
                             VerticalAlignment="Center"
                             FontSize="14"
                             DockPanel.Dock="Right"
+                            Height="20"
                             Text="{Binding FileNameTemplate}" />
                     </DockPanel>
 

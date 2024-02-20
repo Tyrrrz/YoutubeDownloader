@@ -82,10 +82,10 @@
 
         <Style Selector="TextBox">
             <Style Selector="^ /template/ Panel#PART_TextFieldPanel">
-                <Setter Property="MinHeight" Value="20" />
+                <Setter Property="MinHeight" Value="0" />
             </Style>
             <Style Selector="^ /template/ Panel#PART_TextContainer">
-                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Margin" Value="0,1,4,1"/>
             </Style>
         </Style>
 
