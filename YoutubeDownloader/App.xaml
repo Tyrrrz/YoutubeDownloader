@@ -14,7 +14,8 @@
              
              
     <Application.Styles>
-        <themes:MaterialTheme BaseTheme="Light" />
+        <!-- Color values set here only for Designer -->
+        <themes:MaterialTheme BaseTheme="Light" PrimaryColor="BlueGrey" SecondaryColor="Orange" />
         <dialogHostAvalonia:DialogHostStyles />
         <materialIcons:MaterialIconStyles />
 

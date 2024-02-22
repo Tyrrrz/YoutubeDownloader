@@ -16,6 +16,7 @@
             Title="Message Title"
             Message="This is a message"
             OkButtonText="OK"
+            IsOkButtonVisible="True"
             CancelButtonText="CANCEL"
             IsCancelButtonVisible="True"/>
     </Design.DataContext>
@@ -60,7 +61,7 @@
                 Command="{Binding Close}"
                 Content="{Binding OkButtonText}"
                 IsDefault="True"
-                Theme="{StaticResource MaterialOutlineButton}"
+                Theme="{DynamicResource MaterialOutlineButton}"
                 IsVisible="{Binding IsOkButtonVisible}">
                 <Button.CommandParameter>
                     <system:Boolean>True</system:Boolean>

@@ -1,5 +1,4 @@
 using Avalonia.Interactivity;
-using YoutubeDownloader.Views.Components;
 using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Dialogs;

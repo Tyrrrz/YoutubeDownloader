@@ -1,4 +1,3 @@
-using Avalonia.Controls;
 using PropertyChanged;
 using YoutubeDownloader.Views.Framework;
 

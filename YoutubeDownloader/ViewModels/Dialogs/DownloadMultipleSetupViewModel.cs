@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
-using PropertyChanged;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -16,13 +15,13 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
+public class DownloadMultipleSetupViewModel(
+    IViewModelFactory viewModelFactory,
+    DialogManager dialogManager,
+    SettingsService settingsService,
+    IClipboard clipboard
+) : DialogScreen<IReadOnlyList<DownloadViewModel>>
 {
-    private readonly IViewModelFactory _viewModelFactory;
-    private readonly DialogManager _dialogManager;
-    private readonly SettingsService _settingsService;
-    private readonly IClipboard _clipboard;
-
     public string? Title { get; set; }
 
     public IReadOnlyList<IVideo>? AvailableVideos { get; set; }
@@ -41,33 +40,20 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
     public VideoQualityPreference SelectedVideoQualityPreference { get; set; } =
         VideoQualityPreference.Highest;
 
-    public DownloadMultipleSetupViewModel(
-        IViewModelFactory viewModelFactory,
-        DialogManager dialogManager,
-        SettingsService settingsService,
-        IClipboard clipboard
-    )
-    {
-        _viewModelFactory = viewModelFactory;
-        _dialogManager = dialogManager;
-        _settingsService = settingsService;
-        _clipboard = clipboard;
-    }
-
     protected override void OnViewLoaded()
     {
-        SelectedContainer = _settingsService.LastContainer;
-        SelectedVideoQualityPreference = _settingsService.LastVideoQualityPreference;
+        SelectedContainer = settingsService.LastContainer;
+        SelectedVideoQualityPreference = settingsService.LastVideoQualityPreference;
         SelectedVideos.CollectionChanged += (sender, args) => OnPropertyChanged(nameof(CanConfirm));
     }
 
-    public async Task CopyTitle() => await _clipboard.SetTextAsync(Title!);
+    public async Task CopyTitle() => await clipboard.SetTextAsync(Title!);
 
     public bool CanConfirm => SelectedVideos!.Any();
 
     public async Task Confirm()
     {
-        var dirPath = await _dialogManager.PromptDirectoryPath();
+        var dirPath = await dialogManager.PromptDirectoryPath();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 
@@ -79,14 +65,14 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             var baseFilePath = Path.Combine(
                 dirPath,
                 FileNameTemplate.Apply(
-                    _settingsService.FileNameTemplate,
+                    settingsService.FileNameTemplate,
                     video,
                     SelectedContainer,
                     (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
                 )
             );
 
-            if (_settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
+            if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
                 continue;
 
             var filePath = PathEx.EnsureUniquePath(baseFilePath);
@@ -96,7 +82,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             File.WriteAllBytes(filePath, Array.Empty<byte>());
 
             downloads.Add(
-                _viewModelFactory.CreateDownloadViewModel(
+                viewModelFactory.CreateDownloadViewModel(
                     video,
                     new VideoDownloadPreference(SelectedContainer, SelectedVideoQualityPreference),
                     filePath
@@ -104,8 +90,8 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             );
         }
 
-        _settingsService.LastContainer = SelectedContainer;
-        _settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
+        settingsService.LastContainer = SelectedContainer;
+        settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
 
         Close(downloads);
     }

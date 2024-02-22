@@ -8,6 +8,11 @@ using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
+public class AuthSetupViewDesignTimeViewModel() : AuthSetupViewModel(new SettingsService())
+{
+    public new bool IsAuthenticated { get; set; }
+}
+
 public class AuthSetupViewModel : DialogScreen
 {
     private readonly SettingsService _settingsService;

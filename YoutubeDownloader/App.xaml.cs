@@ -12,7 +12,6 @@ using Material.Styles.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using PropertyChanged;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Framework;
 using YoutubeDownloader.Views;
@@ -38,7 +37,7 @@ public partial class App
 [DoNotNotify]
 public partial class App : Application
 {
-    private readonly IServiceProvider? _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
 
     private static Theme LightTheme { get; } =
         Theme.Create(Theme.Light, Color.Parse("#343838"), Color.Parse("#F9A825"));
@@ -53,24 +52,24 @@ public partial class App : Application
 
     public static void SetLightTheme()
     {
-        App.Current!.RequestedThemeVariant = ThemeVariant.Light;
-        var theme = App.Current!.LocateMaterialTheme<MaterialThemeBase>();
+        Current!.RequestedThemeVariant = ThemeVariant.Light;
+        var theme = Current.LocateMaterialTheme<MaterialThemeBase>();
         theme.CurrentTheme = LightTheme;
 
-        Current!.Resources["SuccessBrush"] = new SolidColorBrush(Colors.DarkGreen);
-        Current!.Resources["CanceledBrush"] = new SolidColorBrush(Colors.DarkOrange);
-        Current!.Resources["FailedBrush"] = new SolidColorBrush(Colors.DarkRed);
+        Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.DarkGreen);
+        Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.DarkOrange);
+        Current.Resources["FailedBrush"] = new SolidColorBrush(Colors.DarkRed);
     }
 
     public static void SetDarkTheme()
     {
-        App.Current!.RequestedThemeVariant = ThemeVariant.Dark;
-        var theme = App.Current!.LocateMaterialTheme<MaterialThemeBase>();
+        Current!.RequestedThemeVariant = ThemeVariant.Dark;
+        var theme = Current.LocateMaterialTheme<MaterialThemeBase>();
         theme.CurrentTheme = DarkTheme;
 
-        Current!.Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
-        Current!.Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
-        Current!.Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
+        Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
+        Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
+        Current.Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
     }
 
     public override void Initialize()
@@ -83,11 +82,6 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (_serviceProvider is null)
-        {
-            return; // fix for Designer
-        }
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var rootViewModel = ActivatorUtilities.CreateInstance<RootViewModel>(_serviceProvider);
@@ -96,19 +90,6 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
-
-        // var settinsService = _serviceProvider.GetService<SettingsService>();
-        //
-        // settinsService?.Load();
-        //
-        // if (settinsService?.IsDarkModeEnabled ?? false)
-        // {
-        //     SetDarkTheme();
-        // }
-        // else
-        // {
-        //     SetLightTheme();
-        // }
     }
 
     public override void RegisterServices()
@@ -118,7 +99,7 @@ public partial class App : Application
         AvaloniaWebViewBuilder.Initialize(config => config.IsInPrivateModeEnabled = true);
     }
 
-    protected ServiceProvider ConfigureServices()
+    private ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
 
@@ -130,12 +111,12 @@ public partial class App : Application
         services.AddTransient<IClipboard>(sp =>
             sp.GetRequiredService<IViewManager>().GetTopLevel()!.Clipboard!
         );
-        services.AddTransient<IApplicationLifetime>(sp => App.Current!.ApplicationLifetime!);
-        services.AddTransient<IControlledApplicationLifetime>(sp =>
-            (App.Current!.ApplicationLifetime! as IControlledApplicationLifetime)!
+        services.AddTransient<IApplicationLifetime>(sp => Current!.ApplicationLifetime!);
+        services.AddTransient<IControlledApplicationLifetime>(_ =>
+            (Current!.ApplicationLifetime! as IControlledApplicationLifetime)!
         );
 
-        services.AddSingleton(sp => App.Current!.PlatformSettings!);
+        services.AddSingleton(_ => Current!.PlatformSettings!);
 
         return services.BuildServiceProvider(true);
     }

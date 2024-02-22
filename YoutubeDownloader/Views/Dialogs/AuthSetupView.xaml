@@ -6,14 +6,14 @@
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:YoutubeDownloader.Controls"
+    xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
     Width="450"
     Height="450"
     Theme="{DynamicResource MaterialDesignRoot}"
     x:DataType="dialogs:AuthSetupViewModel"
     mc:Ignorable="d">
     <Design.DataContext>
-        <dialogs:AuthSetupViewModel/>
+        <dialogs:AuthSetupViewDesignTimeViewModel IsAuthenticated="True"/>
     </Design.DataContext>
     
     <Grid>
@@ -57,7 +57,23 @@
                         TextWrapping="Wrap">
                         <Run FontWeight="Light" Text="You are currently authenticated" />
                     </TextBlock>
-                    <Button Content="Log out" Click="LogoutHyperlink_OnClick"/>
+
+                    <Button Theme="{StaticResource MaterialFlatButton}"
+                            assists:ButtonAssist.HoverColor="Transparent"
+                            assists:ButtonAssist.ClickFeedbackColor="Transparent"
+                            Click="LogoutHyperlink_OnClick"
+                            HorizontalAlignment="Center"
+                            Cursor="Hand"
+                            Padding="0">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource SecondaryHueMidBrush}"/>
+                            </Style>
+                        </Button.Styles>
+                        <TextBlock Text="Log out" FontSize="18"
+                                   IsHitTestVisible="True" TextDecorations="Underline">
+                        </TextBlock>
+                    </Button>
                 </StackPanel>
 
                 <!--  Placeholder  -->

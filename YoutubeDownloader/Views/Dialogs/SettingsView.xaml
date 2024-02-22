@@ -6,11 +6,11 @@
              Width="380"
              mc:Ignorable="d"
              x:Class="YoutubeDownloader.Views.Dialogs.SettingsView"
+             Theme="{DynamicResource MaterialDesignRoot}"
              x:DataType="dialogs:SettingsViewModel">
-             <!-- Theme="{DynamicResource MaterialDesignRoot}" -->
     
     <Design.DataContext>
-        <dialogs:SettingsViewModel/>
+        <dialogs:SettingsDesignTimeViewModel/>
     </Design.DataContext>
              
     <Grid RowDefinitions="Auto,*,Auto">
@@ -164,7 +164,7 @@
                         <TextBox
                             Width="150"
                             VerticalAlignment="Center"
-                            FontSize="14"
+                            FontSize="13"
                             DockPanel.Dock="Right"
                             Height="20"
                             Text="{Binding FileNameTemplate}" />

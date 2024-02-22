@@ -1,7 +1,6 @@
 using System;
 using Avalonia.Controls;
 using PropertyChanged;
-using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader.Views.Framework;
