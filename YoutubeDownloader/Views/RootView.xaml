@@ -17,7 +17,7 @@
         x:Name="DialogHost"
         CloseOnClickAway="False">
         <materialDesign:SnackbarHost HostName="Root">
-            <Grid>
+            <Grid IsEnabled="{Binding !#DialogHost.IsOpen}">
                 <ContentControl Content="{Binding Dashboard}"/>
             </Grid>
         </materialDesign:SnackbarHost>
