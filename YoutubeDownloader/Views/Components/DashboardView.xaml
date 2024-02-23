@@ -325,7 +325,7 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        Command="{Binding #root.DataContext.RestartDownload}"
+                                        Command="{Binding #root.((components:DashboardViewModel)DataContext).RestartDownload}"
                                         CommandParameter="{Binding}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Restart download"
