@@ -1,5 +1,7 @@
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Components;
@@ -24,5 +26,16 @@ public partial class DashboardView : ViewModelAwareUserControl
             },
             RoutingStrategies.Tunnel
         );
+    }
+
+    public async void OnStatusPointerReleased(object sender, PointerReleasedEventArgs args)
+    {
+        if (
+            args.Pointer.IsPrimary
+            && sender is TextBlock { DataContext: DownloadViewModel downloadViewModel }
+        )
+        {
+            await downloadViewModel.CopyErrorMessage();
+        }
     }
 }

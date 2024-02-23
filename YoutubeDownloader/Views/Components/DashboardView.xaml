@@ -233,12 +233,12 @@
                                         Grid.Column="1"
                                         VerticalAlignment="Center"
                                         TextTrimming="CharacterEllipsis"
+                                        PointerReleased="OnStatusPointerReleased"
                                         Classes.enqueued="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
                                         Classes.started="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
                                         Classes.completed="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Completed}}"
                                         Classes.canceled="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
                                         Classes.failed="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Failed}}">
-                                        <!--MouseLeftButtonUp="{s:Action CopyErrorMessage}"--> <!-- TODO -->
                                         <TextBlock.Styles>
                                             <Style Selector="TextBlock">
                                                 <Style Selector="^.enqueued">
@@ -260,7 +260,7 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
                                                     <Setter Property="Text" Value="⚠ Failed" />
                                                     <Setter Property="ToolTip.Tip" Value="Click to copy the error message" />
-                                                    <!--<Setter Property="Cursor" Value="Hand" />-->
+                                                    <Setter Property="Cursor" Value="Hand" />
                                                 </Style>
                                             </Style>
                                         
