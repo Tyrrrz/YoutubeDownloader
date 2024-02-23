@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Avalonia.Styling;
+using Avalonia.Platform;
 using Cogwheel;
 using PropertyChanged;
 using YoutubeDownloader.Core.Downloading;
@@ -64,7 +64,9 @@ public partial class SettingsService
 {
     private static bool IsDarkModeEnabledByDefault()
     {
-        return App.Current?.ActualThemeVariant == ThemeVariant.Dark;
+        var platformColors = App.Current?.PlatformSettings?.GetColorValues();
+        var isDark = platformColors?.ThemeVariant == PlatformThemeVariant.Dark;
+        return isDark;
     }
 }
 
