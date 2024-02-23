@@ -82,7 +82,6 @@
                     VerticalAlignment="Center"
                     ItemsSource="{Binding AvailableDownloadOptions}"
                     SelectedItem="{Binding SelectedDownloadOption}">
-                    <!--materialDesign:ComboBoxAssist.ShowSelectedItem="True"-->
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
