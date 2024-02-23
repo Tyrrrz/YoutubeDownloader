@@ -68,7 +68,7 @@
                 <Setter Property="Width" Value="NaN"/>
             </Style>
 
-            <Style Selector="^ Button">
+            <Style Selector="^ /template/ ItemsControl#PART_SnackbarHostItemsContainer Button">
                 <Setter Property="Foreground" Value="{DynamicResource SecondaryHueMidBrush}" />
             </Style>
 
