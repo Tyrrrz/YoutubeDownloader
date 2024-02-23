@@ -86,8 +86,6 @@
                     IsVisible="{Binding !IsAuthenticated}" />
 
                 <!--  Browser  -->
-                <Panel x:Name="WebPanel"
-                       IsVisible="{Binding !IsAuthenticated}"/>
                 <WebView 
                     x:Name="WebBrowser"
                     Loaded="WebBrowser_OnLoaded"
@@ -95,8 +93,7 @@
                     NavigationStarting="WebBrowser_OnNavigationStarting"
                     NavigationCompleted="WebBrowser_OnNavigationCompleted"
                     Unloaded="WebBrowser_OnUnloaded"
-                    IsVisible="{Binding !IsAuthenticated}"
-                    />
+                    IsVisible="{Binding !IsAuthenticated}" />
             </Grid>
         </Border>
 
@@ -109,6 +106,6 @@
             Content="CLOSE"
             IsCancel="True" 
             IsDefault="True"
-            Theme="{StaticResource MaterialOutlineButton}"  />
+            Theme="{StaticResource MaterialOutlineButton}" />
     </Grid>
 </UserControl>
