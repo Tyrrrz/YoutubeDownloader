@@ -203,6 +203,16 @@
             </ScrollViewer>
         </Border>
 
+        <!--  Close button  -->
+        <Button
+            Grid.Row="2"
+            Margin="16"
+            HorizontalAlignment="Stretch"
+            Command="{Binding Close}"
+            Content="CLOSE"
+            IsCancel="True"
+            IsDefault="True"
+            Theme="{StaticResource MaterialOutlineButton}" />
     </Grid>
 
 </UserControl>
