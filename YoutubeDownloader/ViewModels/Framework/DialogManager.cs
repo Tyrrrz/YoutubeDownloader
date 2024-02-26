@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using DialogHostAvalonia;
 using YoutubeDownloader.Views.Framework;
@@ -56,9 +54,7 @@ public class DialogManager(IViewManager viewManager) : IDisposable
         string defaultFilePath = ""
     )
     {
-        var topLevel = (
-            Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime
-        )?.MainWindow;
+        var topLevel = viewManager.GetTopLevel();
 
         var storageProvider = topLevel?.StorageProvider;
         if (storageProvider is null)
@@ -85,9 +81,7 @@ public class DialogManager(IViewManager viewManager) : IDisposable
 
     public async Task<string?> PromptDirectoryPath(string defaultDirPath = "")
     {
-        var topLevel = (
-            Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime
-        )?.MainWindow;
+        var topLevel = viewManager.GetTopLevel();
 
         var storageProvider = topLevel?.StorageProvider;
         if (storageProvider is null)

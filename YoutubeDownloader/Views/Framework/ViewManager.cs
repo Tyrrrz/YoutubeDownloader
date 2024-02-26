@@ -10,15 +10,9 @@ public interface IViewManager
     public TopLevel? GetTopLevel();
 }
 
-public class ViewManager : IViewManager
+public class ViewManager(IApplicationLifetime applicationLifetime) : IViewManager
 {
-    private readonly IApplicationLifetime _applicationLifetime;
     private readonly ViewLocator _viewLocator = new();
-
-    public ViewManager(IApplicationLifetime applicationLifetime)
-    {
-        _applicationLifetime = applicationLifetime;
-    }
 
     public Control? CreateAndBindViewForModelIfNecessary(object? model)
     {
@@ -35,7 +29,7 @@ public class ViewManager : IViewManager
     public TopLevel? GetTopLevel()
     {
         if (
-            _applicationLifetime is IClassicDesktopStyleApplicationLifetime
+            applicationLifetime is IClassicDesktopStyleApplicationLifetime
             {
                 MainWindow: { } window
             }
@@ -44,7 +38,7 @@ public class ViewManager : IViewManager
             return window;
         }
 
-        if (_applicationLifetime is ISingleViewApplicationLifetime { MainView: { } mainView })
+        if (applicationLifetime is ISingleViewApplicationLifetime { MainView: { } mainView })
         {
             var visualRoot = mainView.GetVisualRoot();
             if (visualRoot is TopLevel topLevel)
