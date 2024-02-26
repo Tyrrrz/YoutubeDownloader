@@ -14,6 +14,12 @@ public abstract class DialogScreen<T> : ViewModelBase
         Closed?.Invoke(this, EventArgs.Empty);
     }
 
+    // object paramter required for Avalonia binding
+    public void Close(object? dialogResult)
+    {
+        Close((T?)dialogResult);
+    }
+
     public void Close()
     {
         // ReSharper disable once IntroduceOptionalParameters.Global
