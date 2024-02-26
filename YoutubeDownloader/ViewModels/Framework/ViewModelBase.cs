@@ -34,8 +34,8 @@ public partial class ViewModelBase : ObservableObject, IViewAware
     {
         if (_view != null)
         {
-            _view.Loaded += OnViewLoaded;
-            _view.Unloaded += OnViewUnloaded;
+            _view.Loaded -= OnViewLoaded;
+            _view.Unloaded -= OnViewUnloaded;
         }
 
         OnClose();
