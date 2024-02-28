@@ -65,15 +65,10 @@
             <Style Selector="^ /template/ ItemsControl#PART_SnackbarHostItemsContainer materialDesign|Card">
                 <Setter Property="Background" Value="{DynamicResource MaterialDarkBackgroundBrush}" />
                 <Setter Property="Foreground" Value="{DynamicResource MaterialDarkForegroundBrush}" />
-                <Setter Property="Width" Value="NaN"/>
             </Style>
 
             <Style Selector="^ /template/ ItemsControl#PART_SnackbarHostItemsContainer Button">
                 <Setter Property="Foreground" Value="{DynamicResource SecondaryHueMidBrush}" />
-            </Style>
-
-            <Style Selector="^/template/ TextBlock#PART_SnackbarSupportingText">
-                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
         </Style>
 

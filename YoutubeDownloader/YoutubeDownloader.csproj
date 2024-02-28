@@ -33,7 +33,7 @@
     <PackageReference Include="DialogHost.Avalonia" Version="0.7.7" />
     <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.5.2" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.1.1" />
-    <PackageReference Include="Material.Avalonia" Version="3.4.1" />
+    <PackageReference Include="Material.Avalonia" Version="3.4.2" />
     <PackageReference Include="Material.Avalonia.DataGrid" Version="3.4.1" />
     <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
