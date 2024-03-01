@@ -72,18 +72,6 @@ public partial class AuthSetupView : ViewModelAwareUserControl<AuthSetupViewMode
         }
     }
 
-    private async void WebBrowser_OnNavigationCompleted(object? sender, WebViewUrlLoadedEventArg e)
-    {
-        var url = WebBrowser.Url?.AbsoluteUri.TrimEnd('/');
-        // Navigated to the home page (presumably after a successful login)
-        if (string.Equals(url, HomePageUrl, StringComparison.OrdinalIgnoreCase))
-        {
-            // Extract the cookies that the browser received after logging in
-            var cookies = await _coreWebView2!.CookieManager.GetCookiesAsync(url!);
-            ViewModel.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
-        }
-    }
-
     private void WebBrowser_OnUnloaded(object? sender, RoutedEventArgs e)
     {
         // This will most likely not work because WebView2 would still be running at this point,

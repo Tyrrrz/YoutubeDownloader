@@ -91,7 +91,6 @@
                     Loaded="WebBrowser_OnLoaded"
                     WebViewCreated="WebBrowser_OnWebViewCreated"
                     NavigationStarting="WebBrowser_OnNavigationStarting"
-                    NavigationCompleted="WebBrowser_OnNavigationCompleted"
                     Unloaded="WebBrowser_OnUnloaded"
                     IsVisible="{Binding !IsAuthenticated}" />
             </Grid>
