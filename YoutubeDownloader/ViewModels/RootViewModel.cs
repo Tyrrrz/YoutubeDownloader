@@ -74,10 +74,10 @@ public class RootViewModel : ViewModelBase
             if (updateVersion is null)
                 return;
 
-            SnackbarService.PostDefault($"Downloading update to {App.Name} v{updateVersion}...");
+            SnackbarService.Post($"Downloading update to {App.Name} v{updateVersion}...");
             await _updateService.PrepareUpdateAsync(updateVersion);
 
-            SnackbarService.PostDefault(
+            SnackbarService.Post(
                 "Update has been downloaded and will be installed when you exit",
                 "INSTALL NOW",
                 () =>
@@ -90,7 +90,7 @@ public class RootViewModel : ViewModelBase
         catch
         {
             // Failure to update shouldn't crash the application
-            SnackbarService.PostDefault("Failed to perform application update");
+            SnackbarService.Post("Failed to perform application update");
         }
     }
 
@@ -120,7 +120,7 @@ public class RootViewModel : ViewModelBase
             && _settingsService.LastAppVersion != App.Version
         )
         {
-            SnackbarService.PostDefault(
+            SnackbarService.Post(
                 $"Successfully updated to {App.Name} v{App.VersionString}",
                 "WHAT'S NEW",
                 () => ProcessEx.StartShellExecute(App.LatestReleaseUrl)

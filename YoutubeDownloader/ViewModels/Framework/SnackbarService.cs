@@ -17,7 +17,7 @@ public class SnackbarService
     /// <summary>
     /// Posts to the default SnackBarHost
     /// </summary>
-    public void PostDefault(string message, TimeSpan? duration = null)
+    public void Post(string message, TimeSpan? duration = null)
     {
         SnackbarHost.Post(
             new SnackbarModel(message, duration ?? _defaultDuration),
@@ -29,7 +29,7 @@ public class SnackbarService
     /// <summary>
     /// Posts to the default SnackBarHost
     /// </summary>
-    public void PostDefault(
+    public void Post(
         string message,
         string actionText,
         Action actionHandler,
