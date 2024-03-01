@@ -6,9 +6,12 @@ using YoutubeDownloader.ViewModels.Framework;
 namespace YoutubeDownloader.Views.Framework;
 
 [DoNotNotify]
-public class ViewModelAwareUserControl : UserControl
+public class ViewModelAwareUserControl<TViewModel> : UserControl
+    where TViewModel : ViewModelBase
 {
-    public ViewModelAwareUserControl()
+    protected TViewModel ViewModel => (TViewModel)DataContext!;
+
+    protected ViewModelAwareUserControl()
     {
         DataContextChanged += OnDataContextChanged;
     }

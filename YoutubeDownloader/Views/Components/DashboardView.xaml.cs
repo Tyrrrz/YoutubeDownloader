@@ -6,7 +6,7 @@ using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Components;
 
-public partial class DashboardView : ViewModelAwareUserControl
+public partial class DashboardView : ViewModelAwareUserControl<DashboardViewModel>
 {
     public DashboardView()
     {

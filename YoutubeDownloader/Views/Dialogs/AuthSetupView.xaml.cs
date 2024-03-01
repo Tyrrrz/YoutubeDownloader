@@ -9,13 +9,11 @@ using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class AuthSetupView : ViewModelAwareUserControl
+public partial class AuthSetupView : ViewModelAwareUserControl<AuthSetupViewModel>
 {
     private const string HomePageUrl = "https://www.youtube.com";
     private static readonly string LoginPageUrl =
         $"https://accounts.google.com/ServiceLogin?continue={WebUtility.UrlEncode(HomePageUrl)}";
-
-    private AuthSetupViewModel ViewModel => (AuthSetupViewModel)DataContext!;
 
     private CoreWebView2? _coreWebView2;
 
