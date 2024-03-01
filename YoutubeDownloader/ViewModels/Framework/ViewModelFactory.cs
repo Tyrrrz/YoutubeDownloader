@@ -23,5 +23,6 @@ public class ViewModelFactory(IServiceProvider serviceProvider) : IViewModelFact
 
     public SettingsViewModel CreateSettingsViewModel() => GetViewModel<SettingsViewModel>();
 
-    private T GetViewModel<T>() => ActivatorUtilities.CreateInstance<T>(serviceProvider);
+    private T GetViewModel<T>() =>
+        ActivatorUtilities.GetServiceOrCreateInstance<T>(serviceProvider);
 }
