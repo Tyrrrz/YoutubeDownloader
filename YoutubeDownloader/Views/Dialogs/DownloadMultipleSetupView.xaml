@@ -162,7 +162,7 @@
             Orientation="Horizontal">
             <!--  Download  -->
             <Button
-                Command="{Binding Confirm}"
+                Command="{Binding ConfirmCommand}"
                 IsDefault="True"
                 Theme="{DynamicResource MaterialOutlineButton}">
                 <Button.Content>
@@ -176,7 +176,7 @@
             <!--  Cancel  -->
             <Button
                 Margin="8,0,0,0"
-                Command="{Binding Close}"
+                Command="{Binding CloseCommand}"
                 Content="CANCEL"
                 IsCancel="True"
                 Theme="{DynamicResource MaterialOutlineButton}" />

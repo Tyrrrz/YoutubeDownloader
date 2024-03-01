@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Metadata;
+using CommunityToolkit.Mvvm.Input;
 using Gress;
 using Gress.Completable;
 using ReactiveUI;
@@ -18,7 +19,7 @@ using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
-public class DashboardViewModel : ViewModelBase, IDisposable
+public partial class DashboardViewModel : ViewModelBase, IDisposable
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
@@ -276,9 +277,9 @@ public class DashboardViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public void RestartDownload(object parameter)
+    [RelayCommand]
+    public void RestartDownload(DownloadViewModel download)
     {
-        var download = (DownloadViewModel)parameter;
         var position = Math.Max(0, Downloads.IndexOf(download));
         RemoveDownload(download);
 

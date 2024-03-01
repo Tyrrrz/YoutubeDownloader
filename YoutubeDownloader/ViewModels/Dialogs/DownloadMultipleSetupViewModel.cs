@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
+using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -15,7 +16,7 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadMultipleSetupViewModel(
+public partial class DownloadMultipleSetupViewModel(
     IViewModelFactory viewModelFactory,
     DialogManager dialogManager,
     SettingsService settingsService,
@@ -44,13 +45,14 @@ public class DownloadMultipleSetupViewModel(
     {
         SelectedContainer = settingsService.LastContainer;
         SelectedVideoQualityPreference = settingsService.LastVideoQualityPreference;
-        SelectedVideos.CollectionChanged += (sender, args) => OnPropertyChanged(nameof(CanConfirm));
+        SelectedVideos.CollectionChanged += (_, _) => ConfirmCommand.NotifyCanExecuteChanged();
     }
 
     public async Task CopyTitle() => await clipboard.SetTextAsync(Title!);
 
-    public bool CanConfirm => SelectedVideos!.Any();
+    public bool CanConfirm => SelectedVideos.Any();
 
+    [RelayCommand(CanExecute = nameof(CanConfirm))]
     public async Task Confirm()
     {
         var dirPath = await dialogManager.PromptDirectoryPath();

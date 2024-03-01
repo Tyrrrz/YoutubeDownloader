@@ -121,7 +121,7 @@
                 <!--  Cancel  -->
                 <Button
                     Margin="8,0,0,0"
-                    Command="{Binding Close}"
+                    Command="{Binding CloseCommand}"
                     Content="CANCEL"
                     IsCancel="True"
                     Theme="{DynamicResource MaterialOutlineButton}" />

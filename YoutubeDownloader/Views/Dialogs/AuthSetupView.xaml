@@ -102,7 +102,7 @@
             Grid.Row="2"
             Margin="16"
             HorizontalAlignment="Stretch"
-            Command="{Binding Close}"
+            Command="{Binding CloseCommand}"
             Content="CLOSE"
             IsCancel="True" 
             IsDefault="True"

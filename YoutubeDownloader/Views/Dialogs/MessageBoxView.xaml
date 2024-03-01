@@ -57,7 +57,7 @@
             Columns="{Binding ButtonsCount}">
             <!--  OK  -->
             <Button
-                Command="{Binding Close}"
+                Command="{Binding CloseCommand}"
                 Content="{Binding OkButtonText}"
                 IsDefault="True"
                 Theme="{DynamicResource MaterialOutlineButton}"
@@ -71,7 +71,7 @@
             <Button
                 Margin="8,0,0,0"
                 HorizontalAlignment="Stretch"
-                Command="{Binding Close}"
+                Command="{Binding CloseCommand}"
                 Content="{Binding CancelButtonText}"
                 IsCancel="True"
                 Theme="{StaticResource MaterialOutlineButton}"
