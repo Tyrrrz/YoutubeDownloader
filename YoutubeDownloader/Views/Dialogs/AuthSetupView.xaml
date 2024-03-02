@@ -59,21 +59,11 @@
                     </TextBlock>
 
                     <Button Theme="{StaticResource MaterialFlatButton}"
-                            assists:ButtonAssist.HoverColor="Transparent"
-                            assists:ButtonAssist.ClickFeedbackColor="Transparent"
                             Click="LogoutHyperlink_OnClick"
                             HorizontalAlignment="Center"
-                            Cursor="Hand"
-                            Padding="0">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover TextBlock">
-                                <Setter Property="Foreground" Value="{DynamicResource SecondaryHueMidBrush}"/>
-                            </Style>
-                        </Button.Styles>
-                        <TextBlock Text="Log out" FontSize="18"
-                                   IsHitTestVisible="True" TextDecorations="Underline">
-                        </TextBlock>
-                    </Button>
+                            Classes="accent"
+                            Content="Log out"
+                            FontSize="18" />
                 </StackPanel>
 
                 <!--  Placeholder  -->
