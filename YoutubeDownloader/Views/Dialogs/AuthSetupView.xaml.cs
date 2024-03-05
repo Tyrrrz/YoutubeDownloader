@@ -71,12 +71,4 @@ public partial class AuthSetupView : ViewModelAwareUserControl<AuthSetupViewMode
             ViewModel.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
         }
     }
-
-    private void WebBrowser_OnUnloaded(object? sender, RoutedEventArgs e)
-    {
-        // This will most likely not work because WebView2 would still be running at this point,
-        // and there doesn't seem to be any way to shut it down using the .NET API.
-        // if (_coreWebView2?.Profile is not null)
-        //     await _coreWebView2.Profile.ClearBrowsingDataAsync();
-    }
 }
