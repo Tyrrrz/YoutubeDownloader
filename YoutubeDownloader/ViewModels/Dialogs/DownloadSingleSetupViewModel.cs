@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -14,7 +15,7 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadSingleSetupViewModel(
+public partial class DownloadSingleSetupViewModel(
     IViewModelFactory viewModelFactory,
     DialogManager dialogManager,
     SettingsService settingsService,
@@ -34,9 +35,11 @@ public class DownloadSingleSetupViewModel(
         );
     }
 
-    public async Task CopyTitle() => await clipboard.SetTextAsync(Video!.Title);
+    [RelayCommand]
+    public async Task CopyTitleAsync() => await clipboard.SetTextAsync(Video!.Title);
 
-    public async Task Confirm()
+    [RelayCommand]
+    public async Task ConfirmAsync()
     {
         var container = SelectedDownloadOption!.Container;
 
@@ -45,7 +48,7 @@ public class DownloadSingleSetupViewModel(
             Patterns = new[] { $"*.{container.Name}" },
         };
 
-        var filePath = await dialogManager.PromptSaveFilePath(
+        var filePath = await dialogManager.PromptSaveFilePathAsync(
             new[] { fileType },
             FileNameTemplate.Apply(settingsService.FileNameTemplate, Video!, container)
         );

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
+using CommunityToolkit.Mvvm.Input;
 using Gress;
 using PropertyChanged;
 using ReactiveUI;
@@ -14,7 +16,7 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
-public class DownloadViewModel : ViewModelBase, IDisposable
+public partial class DownloadViewModel : ViewModelBase, IDisposable
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
@@ -59,10 +61,23 @@ public class DownloadViewModel : ViewModelBase, IDisposable
         Progress
             .WhenAnyValue(o => o.Current)
             .Subscribe(_ => OnPropertyChanged(nameof(IsProgressIndeterminate)));
+        this.WhenAnyValue(o => o.Status)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ =>
+            {
+                OnPropertyChanged(nameof(IsRunning));
+                CancelCommand.NotifyCanExecuteChanged();
+                ShowFileCommand.NotifyCanExecuteChanged();
+                OpenFileCommand.NotifyCanExecuteChanged();
+            });
+        this.WhenAnyValue(o => o.ErrorMessage)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => CopyErrorMessageCommand.NotifyCanExecuteChanged());
     }
 
     public bool CanCancel => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
 
+    [RelayCommand(CanExecute = nameof(CanCancel))]
     public void Cancel()
     {
         if (!CanCancel)
@@ -73,7 +88,8 @@ public class DownloadViewModel : ViewModelBase, IDisposable
 
     public bool CanShowFile => Status == DownloadStatus.Completed;
 
-    public async Task ShowFile()
+    [RelayCommand(CanExecute = nameof(CanShowFile))]
+    public async Task ShowFileAsync()
     {
         if (!CanShowFile)
             return;
@@ -93,7 +109,8 @@ public class DownloadViewModel : ViewModelBase, IDisposable
 
     public bool CanOpenFile => Status == DownloadStatus.Completed;
 
-    public async Task OpenFile()
+    [RelayCommand(CanExecute = nameof(CanOpenFile))]
+    public async Task OpenFileAsync()
     {
         if (!CanOpenFile)
             return;
@@ -112,7 +129,8 @@ public class DownloadViewModel : ViewModelBase, IDisposable
 
     public bool CanCopyErrorMessage => !string.IsNullOrWhiteSpace(ErrorMessage);
 
-    public async Task CopyErrorMessage()
+    [RelayCommand(CanExecute = nameof(CanCopyErrorMessage))]
+    public async Task CopyErrorMessageAsync()
     {
         if (!CanCopyErrorMessage)
             return;

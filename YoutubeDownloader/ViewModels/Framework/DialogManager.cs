@@ -49,7 +49,7 @@ public class DialogManager(IViewManager viewManager) : IDisposable
         }
     }
 
-    public async Task<string?> PromptSaveFilePath(
+    public async Task<string?> PromptSaveFilePathAsync(
         IReadOnlyList<FilePickerFileType>? fileTypes = null,
         string defaultFilePath = ""
     )
@@ -79,7 +79,7 @@ public class DialogManager(IViewManager viewManager) : IDisposable
         return null;
     }
 
-    public async Task<string?> PromptDirectoryPath(string defaultDirPath = "")
+    public async Task<string?> PromptDirectoryPathAsync(string defaultDirPath = "")
     {
         var topLevel = viewManager.GetTopLevel();
 
@@ -89,7 +89,7 @@ public class DialogManager(IViewManager viewManager) : IDisposable
             return null;
         }
 
-        var startLocation = await GetStorageFolder(storageProvider, defaultDirPath);
+        var startLocation = await GetStorageFolderAsync(storageProvider, defaultDirPath);
         var folderPickResult = await storageProvider.OpenFolderPickerAsync(
             new() { AllowMultiple = false, SuggestedStartLocation = startLocation }
         );
@@ -107,7 +107,7 @@ public class DialogManager(IViewManager viewManager) : IDisposable
         _dialogLock.Dispose();
     }
 
-    private static async Task<IStorageFolder?> GetStorageFolder(
+    private static async Task<IStorageFolder?> GetStorageFolderAsync(
         IStorageProvider storageProvider,
         string path
     )

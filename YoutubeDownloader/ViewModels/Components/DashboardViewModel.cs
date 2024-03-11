@@ -2,8 +2,10 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
 using Gress.Completable;
@@ -61,16 +63,29 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         Downloads
             .WhenAnyValue(o => o.Count)
             .Subscribe(_ => OnPropertyChanged(nameof(IsDownloadsAvailable)));
+        this.WhenAnyValue(o => o.Query)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => ProcessQueryCommand.NotifyCanExecuteChanged());
+        this.WhenAnyValue(o => o.IsBusy)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ =>
+            {
+                ProcessQueryCommand.NotifyCanExecuteChanged();
+                ShowAuthSetupCommand.NotifyCanExecuteChanged();
+                ShowSettingsCommand.NotifyCanExecuteChanged();
+            });
     }
 
     public bool CanShowAuthSetup => !IsBusy;
 
-    public async Task ShowAuthSetup() =>
+    [RelayCommand(CanExecute = nameof(CanShowAuthSetup))]
+    public async Task ShowAuthSetupAsync() =>
         await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateAuthSetupViewModel());
 
     public bool CanShowSettings => !IsBusy;
 
-    public async Task ShowSettings() =>
+    [RelayCommand(CanExecute = nameof(CanShowSettings))]
+    public async Task ShowSettingsAsync() =>
         await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateSettingsViewModel());
 
     private void EnqueueDownload(DownloadViewModel download, int position = 0)
@@ -157,10 +172,13 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
 
     [DependsOn(nameof(IsBusy))]
     [DependsOn(nameof(Query))]
-    public bool CanProcessQuery(object _) => !IsBusy && !string.IsNullOrWhiteSpace(Query);
+    public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
 
-    public async Task ProcessQuery()
+    [RelayCommand(CanExecute = nameof(CanProcessQuery))]
+    public async Task ProcessQueryAsync()
     {
+        Dispatcher.UIThread.CheckAccess();
+
         if (string.IsNullOrWhiteSpace(Query))
             return;
 

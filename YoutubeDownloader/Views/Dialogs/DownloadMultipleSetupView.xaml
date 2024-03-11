@@ -21,7 +21,7 @@
             TextTrimming="CharacterEllipsis">
             <TextBlock.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding CopyTitle}" Header="Copy" />
+                    <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
                 </ContextMenu>
             </TextBlock.ContextMenu>
         </TextBlock>

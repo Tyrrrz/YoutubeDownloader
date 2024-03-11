@@ -48,14 +48,15 @@ public partial class DownloadMultipleSetupViewModel(
         SelectedVideos.CollectionChanged += (_, _) => ConfirmCommand.NotifyCanExecuteChanged();
     }
 
-    public async Task CopyTitle() => await clipboard.SetTextAsync(Title!);
+    [RelayCommand]
+    public async Task CopyTitleAsync() => await clipboard.SetTextAsync(Title!);
 
     public bool CanConfirm => SelectedVideos.Any();
 
     [RelayCommand(CanExecute = nameof(CanConfirm))]
-    public async Task Confirm()
+    public async Task ConfirmAsync()
     {
-        var dirPath = await dialogManager.PromptDirectoryPath();
+        var dirPath = await dialogManager.PromptDirectoryPathAsync();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 

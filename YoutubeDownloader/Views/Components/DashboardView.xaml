@@ -51,7 +51,7 @@
                             x:Name="ProcessQueryButton"
                             Margin="0,0,6,0"
                             Padding="4"
-                            Command="{Binding ProcessQuery}"
+                            Command="{Binding ProcessQueryCommand}"
                             IsDefault="True"
                             Theme="{StaticResource MaterialFlatButton}"
                             ToolTip.Tip="Process query (Enter)">
@@ -70,7 +70,7 @@
                 Grid.Column="1"
                 Margin="6"
                 Padding="4"
-                Command="{Binding ShowAuthSetup}"
+                Command="{Binding ShowAuthSetupCommand}"
                 Foreground="{DynamicResource MaterialDarkForegroundBrush}"
                 Theme="{StaticResource MaterialFlatButton}"
                 ToolTip.Tip="Authentication">
@@ -88,7 +88,7 @@
                 Grid.Column="2"
                 Margin="6"
                 Padding="4"
-                Command="{Binding ShowSettings}"
+                Command="{Binding ShowSettingsCommand}"
                 Foreground="{DynamicResource MaterialDarkForegroundBrush}"
                 Theme="{StaticResource MaterialFlatButton}"
                 ToolTip.Tip="Settings">
@@ -279,7 +279,7 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        Command="{Binding ShowFile}"
+                                        Command="{Binding ShowFileCommand}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Show file"
                                         IsVisible="{Binding CanShowFile}">
@@ -293,7 +293,7 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        Command="{Binding OpenFile}"
+                                        Command="{Binding OpenFileCommand}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Play"
                                         IsVisible="{Binding CanOpenFile}">
@@ -307,7 +307,7 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        Command="{Binding Cancel}"
+                                        Command="{Binding CancelCommand}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Cancel download"
                                         IsVisible="{Binding CanCancel}">

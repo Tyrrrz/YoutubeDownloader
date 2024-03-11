@@ -94,7 +94,7 @@ public class RootViewModel : ViewModelBase
         }
     }
 
-    public async Task OnViewFullyLoaded()
+    public async Task OnViewFullyLoadedAsync()
     {
         await ShowUkraineSupportMessageAsync();
         await CheckForUpdatesAsync();
@@ -130,7 +130,7 @@ public class RootViewModel : ViewModelBase
             _settingsService.Save();
         }
 
-        _ = OnViewFullyLoaded();
+        _ = OnViewFullyLoadedAsync();
     }
 
     protected override void OnClose()

@@ -33,9 +33,10 @@ public partial class DashboardView : ViewModelAwareUserControl<DashboardViewMode
         if (
             args.Pointer.IsPrimary
             && sender is TextBlock { DataContext: DownloadViewModel downloadViewModel }
+            && downloadViewModel.CanCopyErrorMessage
         )
         {
-            await downloadViewModel.CopyErrorMessage();
+            await downloadViewModel.CopyErrorMessageAsync();
         }
     }
 }

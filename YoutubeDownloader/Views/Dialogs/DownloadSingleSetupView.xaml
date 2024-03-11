@@ -23,7 +23,7 @@
                 ToolTip.Tip="{Binding Video.Title}">
                 <TextBlock.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{Binding CopyTitle}" Header="Copy" />
+                        <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
                     </ContextMenu>
                 </TextBlock.ContextMenu>
             </TextBlock>
@@ -113,7 +113,7 @@
                 Orientation="Horizontal">
                 <!--  Download  -->
                 <Button
-                    Command="{Binding Confirm}"
+                    Command="{Binding ConfirmCommand}"
                     Content="DOWNLOAD"
                     IsDefault="True"
                     Theme="{DynamicResource MaterialOutlineButton}" />
