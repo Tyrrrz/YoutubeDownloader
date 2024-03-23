@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
+using Avalonia.Input.Platform;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -12,10 +15,11 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadSingleSetupViewModel(
+public partial class DownloadSingleSetupViewModel(
     IViewModelFactory viewModelFactory,
     DialogManager dialogManager,
-    SettingsService settingsService
+    SettingsService settingsService,
+    IClipboard clipboard
 ) : DialogScreen<DownloadViewModel>
 {
     public IVideo? Video { get; set; }
@@ -24,21 +28,28 @@ public class DownloadSingleSetupViewModel(
 
     public VideoDownloadOption? SelectedDownloadOption { get; set; }
 
-    public void OnViewLoaded()
+    protected override void OnViewLoaded()
     {
         SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(o =>
             o.Container == settingsService.LastContainer
         );
     }
 
-    public void CopyTitle() => Clipboard.SetText(Video!.Title);
+    [RelayCommand]
+    public async Task CopyTitleAsync() => await clipboard.SetTextAsync(Video!.Title);
 
-    public void Confirm()
+    [RelayCommand]
+    public async Task ConfirmAsync()
     {
         var container = SelectedDownloadOption!.Container;
 
-        var filePath = dialogManager.PromptSaveFilePath(
-            $"{container.Name} file|*.{container.Name}",
+        var fileType = new FilePickerFileType($"{container.Name} file")
+        {
+            Patterns = new[] { $"*.{container.Name}" },
+        };
+
+        var filePath = await dialogManager.PromptSaveFilePathAsync(
+            new[] { fileType },
             FileNameTemplate.Apply(settingsService.FileNameTemplate, Video!, container)
         );
 

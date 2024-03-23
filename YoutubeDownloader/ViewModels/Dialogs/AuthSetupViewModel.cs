@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Stylet;
+using ReactiveUI;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
+
+public class AuthSetupViewDesignTimeViewModel() : AuthSetupViewModel(new SettingsService())
+{
+    public new bool IsAuthenticated { get; set; }
+}
 
 public class AuthSetupViewModel : DialogScreen
 {
@@ -28,11 +33,11 @@ public class AuthSetupViewModel : DialogScreen
     {
         _settingsService = settingsService;
 
-        _settingsService.BindAndInvoke(
-            o => o.LastAuthCookies,
-            (_, _) => NotifyOfPropertyChange(() => Cookies)
-        );
+        _settingsService
+            .WhenAnyValue(o => o.LastAuthCookies)
+            .Subscribe(_ => OnPropertyChanged(nameof(Cookies)));
 
-        this.BindAndInvoke(o => o.Cookies, (_, _) => NotifyOfPropertyChange(() => IsAuthenticated));
+        this.WhenAnyValue(o => o.Cookies)
+            .Subscribe(_ => OnPropertyChanged(nameof(IsAuthenticated)));
     }
 }

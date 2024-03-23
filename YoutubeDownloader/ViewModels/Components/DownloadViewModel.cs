@@ -1,9 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Reactive.Linq;
 using System.Threading;
-using System.Windows;
+using System.Threading.Tasks;
+using Avalonia.Input.Platform;
+using CommunityToolkit.Mvvm.Input;
 using Gress;
-using Stylet;
+using PropertyChanged;
+using ReactiveUI;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -12,11 +16,11 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
-public class DownloadViewModel : PropertyChangedBase, IDisposable
+public partial class DownloadViewModel : ViewModelBase, IDisposable
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
-
+    private readonly IClipboard _clipboard;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     public IVideo? Video { get; set; }
@@ -35,25 +39,45 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
+    [AlsoNotifyFor(nameof(IsRunning))]
     public DownloadStatus Status { get; set; } = DownloadStatus.Enqueued;
+
+    public bool IsRunning => Status is DownloadStatus.Started;
 
     public bool IsCanceledOrFailed => Status is DownloadStatus.Canceled or DownloadStatus.Failed;
 
     public string? ErrorMessage { get; set; }
 
-    public DownloadViewModel(IViewModelFactory viewModelFactory, DialogManager dialogManager)
+    public DownloadViewModel(
+        IViewModelFactory viewModelFactory,
+        DialogManager dialogManager,
+        IClipboard clipboard
+    )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
+        _clipboard = clipboard;
 
-        Progress.Bind(
-            o => o.Current,
-            (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
-        );
+        Progress
+            .WhenAnyValue(o => o.Current)
+            .Subscribe(_ => OnPropertyChanged(nameof(IsProgressIndeterminate)));
+        this.WhenAnyValue(o => o.Status)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ =>
+            {
+                OnPropertyChanged(nameof(IsRunning));
+                CancelCommand.NotifyCanExecuteChanged();
+                ShowFileCommand.NotifyCanExecuteChanged();
+                OpenFileCommand.NotifyCanExecuteChanged();
+            });
+        this.WhenAnyValue(o => o.ErrorMessage)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => CopyErrorMessageCommand.NotifyCanExecuteChanged());
     }
 
     public bool CanCancel => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
 
+    [RelayCommand(CanExecute = nameof(CanCancel))]
     public void Cancel()
     {
         if (!CanCancel)
@@ -64,7 +88,8 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public bool CanShowFile => Status == DownloadStatus.Completed;
 
-    public async void ShowFile()
+    [RelayCommand(CanExecute = nameof(CanShowFile))]
+    public async Task ShowFileAsync()
     {
         if (!CanShowFile)
             return;
@@ -84,7 +109,8 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public bool CanOpenFile => Status == DownloadStatus.Completed;
 
-    public async void OpenFile()
+    [RelayCommand(CanExecute = nameof(CanOpenFile))]
+    public async Task OpenFileAsync()
     {
         if (!CanOpenFile)
             return;
@@ -103,12 +129,13 @@ public class DownloadViewModel : PropertyChangedBase, IDisposable
 
     public bool CanCopyErrorMessage => !string.IsNullOrWhiteSpace(ErrorMessage);
 
-    public void CopyErrorMessage()
+    [RelayCommand(CanExecute = nameof(CanCopyErrorMessage))]
+    public async Task CopyErrorMessageAsync()
     {
         if (!CanCopyErrorMessage)
             return;
 
-        Clipboard.SetText(ErrorMessage!);
+        await _clipboard.SetTextAsync(ErrorMessage!);
     }
 
     public void Dispose() => _cancellationTokenSource.Dispose();

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Data;
+using Avalonia.Data.Converters;
 using YoutubeExplode.Common;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Converters;
 
-[ValueConversion(typeof(IVideo), typeof(string))]
 public class VideoToHighestQualityThumbnailUrlConverter : IValueConverter
 {
     public static VideoToHighestQualityThumbnailUrlConverter Instance { get; } = new();

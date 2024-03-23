@@ -1,14 +1,15 @@
 ﻿using System;
-using Stylet;
+using CommunityToolkit.Mvvm.Input;
 
 namespace YoutubeDownloader.ViewModels.Framework;
 
-public abstract class DialogScreen<T> : PropertyChangedBase
+public abstract partial class DialogScreen<T> : ViewModelBase
 {
     public T? DialogResult { get; private set; }
 
     public event EventHandler? Closed;
 
+    [RelayCommand]
     public void Close(T? dialogResult = default)
     {
         DialogResult = dialogResult;

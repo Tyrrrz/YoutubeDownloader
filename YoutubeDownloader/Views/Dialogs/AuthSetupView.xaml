@@ -1,18 +1,21 @@
 ﻿<UserControl
     x:Class="YoutubeDownloader.Views.Dialogs.AuthSetupView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:s="https://github.com/canton7/Stylet"
-    xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+    xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
     Width="450"
     Height="450"
-    d:DataContext="{d:DesignInstance Type=dialogs:AuthSetupViewModel}"
-    Style="{DynamicResource MaterialDesignRoot}"
+    Theme="{DynamicResource MaterialDesignRoot}"
+    x:DataType="dialogs:AuthSetupViewModel"
     mc:Ignorable="d">
+    <Design.DataContext>
+        <dialogs:AuthSetupViewDesignTimeViewModel IsAuthenticated="True"/>
+    </Design.DataContext>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -39,8 +42,8 @@
                     Margin="16"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Visibility="{Binding IsAuthenticated, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                    <materialDesign:PackIcon
+                    IsVisible="{Binding IsAuthenticated}">
+                    <materialIcon:MaterialIcon
                         Width="196"
                         Height="196"
                         HorizontalAlignment="Center"
@@ -53,11 +56,14 @@
                         TextAlignment="Center"
                         TextWrapping="Wrap">
                         <Run FontWeight="Light" Text="You are currently authenticated" />
-                        <LineBreak />
-                        <Hyperlink x:Name="LogoutHyperlink" Click="LogoutHyperlink_OnClick">
-                            Log out
-                        </Hyperlink>
                     </TextBlock>
+
+                    <Button Theme="{StaticResource MaterialFlatButton}"
+                            Click="LogoutHyperlink_OnClick"
+                            HorizontalAlignment="Center"
+                            Classes="accent"
+                            Content="Log out"
+                            FontSize="18" />
                 </StackPanel>
 
                 <!--  Placeholder  -->
@@ -67,21 +73,15 @@
                     VerticalAlignment="Center"
                     FontSize="18"
                     Text="Loading..."
-                    Visibility="{Binding IsAuthenticated, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}" />
+                    IsVisible="{Binding !IsAuthenticated}" />
 
                 <!--  Browser  -->
-                <wpf:WebView2
+                <WebView 
                     x:Name="WebBrowser"
-                    CoreWebView2InitializationCompleted="WebBrowser_OnCoreWebView2InitializationCompleted"
                     Loaded="WebBrowser_OnLoaded"
-                    NavigationCompleted="WebBrowser_OnNavigationCompleted"
+                    WebViewCreated="WebBrowser_OnWebViewCreated"
                     NavigationStarting="WebBrowser_OnNavigationStarting"
-                    Unloaded="WebBrowser_OnUnloaded"
-                    Visibility="{Binding IsAuthenticated, Converter={x:Static s:BoolToVisibilityConverter.InverseInstance}}">
-                    <wpf:WebView2.CreationProperties>
-                        <wpf:CoreWebView2CreationProperties IsInPrivateModeEnabled="True" />
-                    </wpf:WebView2.CreationProperties>
-                </wpf:WebView2>
+                    IsVisible="{Binding !IsAuthenticated}" />
             </Grid>
         </Border>
 
@@ -90,10 +90,10 @@
             Grid.Row="2"
             Margin="16"
             HorizontalAlignment="Stretch"
-            Command="{s:Action Close}"
+            Command="{Binding CloseCommand}"
             Content="CLOSE"
-            IsCancel="True"
+            IsCancel="True" 
             IsDefault="True"
-            Style="{DynamicResource MaterialDesignOutlinedButton}" />
+            Theme="{StaticResource MaterialOutlineButton}" />
     </Grid>
 </UserControl>

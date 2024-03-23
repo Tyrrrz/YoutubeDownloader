@@ -1,6 +1,10 @@
-﻿namespace YoutubeDownloader.Views;
+using PropertyChanged;
+using YoutubeDownloader.Views.Framework;
 
-public partial class RootView
+namespace YoutubeDownloader.Views;
+
+[DoNotNotify]
+public partial class RootView : ViewModelAwareWindow
 {
     public RootView()
     {
