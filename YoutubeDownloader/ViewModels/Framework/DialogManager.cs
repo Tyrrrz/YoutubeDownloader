@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MaterialDesignThemes.Wpf;
-using Microsoft.Win32;
-using Stylet;
+using Avalonia.Platform.Storage;
+using DialogHostAvalonia;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.ViewModels.Framework;
 
@@ -38,7 +40,7 @@ public class DialogManager(IViewManager viewManager) : IDisposable
         await _dialogLock.WaitAsync();
         try
         {
-            await DialogHost.Show(view, OnDialogOpened);
+            await DialogHost.Show(view!, OnDialogOpened);
             return dialogScreen.DialogResult;
         }
         finally
@@ -47,27 +49,76 @@ public class DialogManager(IViewManager viewManager) : IDisposable
         }
     }
 
-    public string? PromptSaveFilePath(string filter = "All files|*.*", string defaultFilePath = "")
+    public async Task<string?> PromptSaveFilePathAsync(
+        IReadOnlyList<FilePickerFileType>? fileTypes = null,
+        string defaultFilePath = ""
+    )
     {
-        var dialog = new SaveFileDialog
-        {
-            Filter = filter,
-            AddExtension = true,
-            FileName = defaultFilePath,
-            DefaultExt = Path.GetExtension(defaultFilePath)
-        };
+        var topLevel = viewManager.GetTopLevel();
 
-        return dialog.ShowDialog() == true ? dialog.FileName : null;
+        var storageProvider = topLevel?.StorageProvider;
+        if (storageProvider is null)
+        {
+            return null;
+        }
+
+        var filePickResult = await storageProvider.SaveFilePickerAsync(
+            new()
+            {
+                FileTypeChoices = fileTypes,
+                SuggestedFileName = defaultFilePath,
+                DefaultExtension = Path.GetExtension(defaultFilePath).TrimStart('.')
+            }
+        );
+
+        if (filePickResult?.Path is Uri path)
+        {
+            return path.LocalPath;
+        }
+
+        return null;
     }
 
-    public string? PromptDirectoryPath(string defaultDirPath = "")
+    public async Task<string?> PromptDirectoryPathAsync(string defaultDirPath = "")
     {
-        var dialog = new OpenFolderDialog { InitialDirectory = defaultDirPath };
-        return dialog.ShowDialog() == true ? dialog.FolderName : null;
+        var topLevel = viewManager.GetTopLevel();
+
+        var storageProvider = topLevel?.StorageProvider;
+        if (storageProvider is null)
+        {
+            return null;
+        }
+
+        var startLocation = await GetStorageFolderAsync(storageProvider, defaultDirPath);
+        var folderPickResult = await storageProvider.OpenFolderPickerAsync(
+            new() { AllowMultiple = false, SuggestedStartLocation = startLocation }
+        );
+
+        if (folderPickResult.FirstOrDefault()?.Path is Uri path)
+        {
+            return path.LocalPath;
+        }
+
+        return null;
     }
 
     public void Dispose()
     {
         _dialogLock.Dispose();
+    }
+
+    private static async Task<IStorageFolder?> GetStorageFolderAsync(
+        IStorageProvider storageProvider,
+        string path
+    )
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return null;
+        }
+
+        var storageFolder = await storageProvider.TryGetFolderFromPathAsync(path);
+
+        return storageFolder;
     }
 }

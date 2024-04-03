@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Data;
+using Avalonia.Data.Converters;
 using YoutubeDownloader.Core.Downloading;
 
 namespace YoutubeDownloader.Converters;
 
-[ValueConversion(typeof(VideoQualityPreference), typeof(string))]
 public class VideoQualityPreferenceToStringConverter : IValueConverter
 {
     public static VideoQualityPreferenceToStringConverter Instance { get; } = new();

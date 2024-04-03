@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Avalonia.Metadata;
+using Avalonia.Threading;
+using CommunityToolkit.Mvvm.Input;
 using Gress;
 using Gress.Completable;
-using Stylet;
+using ReactiveUI;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
@@ -16,7 +21,7 @@ using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
-public class DashboardViewModel : PropertyChangedBase, IDisposable
+public partial class DashboardViewModel : ViewModelBase, IDisposable
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
@@ -33,7 +38,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
     public string? Query { get; set; }
 
-    public BindableCollection<DownloadViewModel> Downloads { get; } = [];
+    public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
     public bool IsDownloadsAvailable => Downloads.Any();
 
@@ -49,27 +54,38 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
 
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
 
-        _settingsService.BindAndInvoke(
-            o => o.ParallelLimit,
-            (_, e) => _downloadSemaphore.MaxCount = e.NewValue
-        );
-
-        Progress.Bind(
-            o => o.Current,
-            (_, _) => NotifyOfPropertyChange(() => IsProgressIndeterminate)
-        );
-
-        Downloads.Bind(o => o.Count, (_, _) => NotifyOfPropertyChange(() => IsDownloadsAvailable));
+        _settingsService
+            .WhenAnyValue(o => o.ParallelLimit)
+            .Subscribe(v => _downloadSemaphore.MaxCount = v);
+        Progress
+            .WhenAnyValue(o => o.Current)
+            .Subscribe(_ => OnPropertyChanged(nameof(IsProgressIndeterminate)));
+        Downloads
+            .WhenAnyValue(o => o.Count)
+            .Subscribe(_ => OnPropertyChanged(nameof(IsDownloadsAvailable)));
+        this.WhenAnyValue(o => o.Query)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => ProcessQueryCommand.NotifyCanExecuteChanged());
+        this.WhenAnyValue(o => o.IsBusy)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ =>
+            {
+                ProcessQueryCommand.NotifyCanExecuteChanged();
+                ShowAuthSetupCommand.NotifyCanExecuteChanged();
+                ShowSettingsCommand.NotifyCanExecuteChanged();
+            });
     }
 
     public bool CanShowAuthSetup => !IsBusy;
 
-    public async void ShowAuthSetup() =>
+    [RelayCommand(CanExecute = nameof(CanShowAuthSetup))]
+    public async Task ShowAuthSetupAsync() =>
         await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateAuthSetupViewModel());
 
     public bool CanShowSettings => !IsBusy;
 
-    public async void ShowSettings() =>
+    [RelayCommand(CanExecute = nameof(CanShowSettings))]
+    public async Task ShowSettingsAsync() =>
         await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateSettingsViewModel());
 
     private void EnqueueDownload(DownloadViewModel download, int position = 0)
@@ -154,10 +170,15 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         Downloads.Insert(position, download);
     }
 
+    [DependsOn(nameof(IsBusy))]
+    [DependsOn(nameof(Query))]
     public bool CanProcessQuery => !IsBusy && !string.IsNullOrWhiteSpace(Query);
 
-    public async void ProcessQuery()
+    [RelayCommand(CanExecute = nameof(CanProcessQuery))]
+    public async Task ProcessQueryAsync()
     {
+        Dispatcher.UIThread.CheckAccess();
+
         if (string.IsNullOrWhiteSpace(Query))
             return;
 
@@ -274,6 +295,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         }
     }
 
+    [RelayCommand]
     public void RestartDownload(DownloadViewModel download)
     {
         var position = Math.Max(0, Downloads.IndexOf(download));

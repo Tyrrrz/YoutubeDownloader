@@ -1,8 +1,21 @@
-﻿using System;
+using System;
+using System.Net;
 using System.Reflection;
-using System.Windows.Media;
-using MaterialDesignThemes.Wpf;
-using YoutubeDownloader.Utils;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input.Platform;
+using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.Styling;
+using AvaloniaWebView;
+using Material.Styles.Themes;
+using Microsoft.Extensions.DependencyInjection;
+using PropertyChanged;
+using YoutubeDownloader.Services;
+using YoutubeDownloader.ViewModels;
+using YoutubeDownloader.ViewModels.Framework;
+using YoutubeDownloader.Views;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader;
 
@@ -10,7 +23,7 @@ public partial class App
 {
     private static Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
 
-    public static string Name { get; } = Assembly.GetName().Name!;
+    public static new string Name { get; } = Assembly.GetName().Name!;
 
     public static Version Version { get; } = Assembly.GetName().Version!;
 
@@ -21,26 +34,27 @@ public partial class App
     public static string LatestReleaseUrl { get; } = ProjectUrl + "/releases/latest";
 }
 
-public partial class App
+[DoNotNotify]
+public partial class App : Application
 {
+    private readonly IServiceProvider _serviceProvider;
+
     private static Theme LightTheme { get; } =
-        Theme.Create(
-            new MaterialDesignLightTheme(),
-            MediaColor.FromHex("#343838"),
-            MediaColor.FromHex("#F9A825")
-        );
+        Theme.Create(Theme.Light, Color.Parse("#343838"), Color.Parse("#F9A825"));
 
     private static Theme DarkTheme { get; } =
-        Theme.Create(
-            new MaterialDesignDarkTheme(),
-            MediaColor.FromHex("#E8E8E8"),
-            MediaColor.FromHex("#F9A825")
-        );
+        Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
+
+    public App()
+    {
+        _serviceProvider = ConfigureServices();
+    }
 
     public static void SetLightTheme()
     {
-        var paletteHelper = new PaletteHelper();
-        paletteHelper.SetTheme(LightTheme);
+        Current!.RequestedThemeVariant = ThemeVariant.Light;
+        var theme = Current.LocateMaterialTheme<MaterialThemeBase>();
+        theme.CurrentTheme = LightTheme;
 
         Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.DarkGreen);
         Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.DarkOrange);
@@ -49,11 +63,61 @@ public partial class App
 
     public static void SetDarkTheme()
     {
-        var paletteHelper = new PaletteHelper();
-        paletteHelper.SetTheme(DarkTheme);
+        Current!.RequestedThemeVariant = ThemeVariant.Dark;
+        var theme = Current.LocateMaterialTheme<MaterialThemeBase>();
+        theme.CurrentTheme = DarkTheme;
 
         Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
         Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
         Current.Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
+    }
+
+    public override void Initialize()
+    {
+        // Increase maximum concurrent connections
+        ServicePointManager.DefaultConnectionLimit = 20;
+
+        AvaloniaXamlLoader.Load(this);
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var rootViewModel = ActivatorUtilities.CreateInstance<RootViewModel>(_serviceProvider);
+
+            desktop.MainWindow = new RootView { DataContext = rootViewModel, };
+        }
+
+        base.OnFrameworkInitializationCompleted();
+    }
+
+    public override void RegisterServices()
+    {
+        base.RegisterServices();
+
+        AvaloniaWebViewBuilder.Initialize(config => config.IsInPrivateModeEnabled = true);
+    }
+
+    private ServiceProvider ConfigureServices()
+    {
+        var services = new ServiceCollection();
+
+        services.AddSingleton<SettingsService>();
+        services.AddSingleton<UpdateService>();
+        services.AddSingleton<IViewManager, ViewManager>();
+        services.AddSingleton<DialogManager>();
+        services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+        services.AddTransient<IClipboard>(sp =>
+            sp.GetRequiredService<IViewManager>().GetTopLevel()!.Clipboard!
+        );
+        services.AddTransient<IApplicationLifetime>(sp => Current!.ApplicationLifetime!);
+        services.AddTransient<IControlledApplicationLifetime>(_ =>
+            (Current!.ApplicationLifetime! as IControlledApplicationLifetime)!
+        );
+
+        services.AddSingleton(_ => Current!.PlatformSettings!);
+
+        return services.BuildServiceProvider(true);
     }
 }

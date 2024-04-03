@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MaterialDesignThemes.Wpf;
-using Stylet;
+using Avalonia.Controls.ApplicationLifetimes;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Components;
@@ -10,14 +9,17 @@ using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader.ViewModels;
 
-public class RootViewModel : Screen
+public class RootViewModel : ViewModelBase
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
     private readonly UpdateService _updateService;
+    private readonly IControlledApplicationLifetime _applicationLifetime;
 
-    public SnackbarMessageQueue Notifications { get; } = new(TimeSpan.FromSeconds(5));
+    public string DisplayName { get; set; }
+
+    public SnackbarService SnackbarService { get; set; } = new(TimeSpan.FromSeconds(5));
 
     public DashboardViewModel Dashboard { get; }
 
@@ -25,13 +27,15 @@ public class RootViewModel : Screen
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
         SettingsService settingsService,
-        UpdateService updateService
+        UpdateService updateService,
+        IControlledApplicationLifetime applicationLifetime
     )
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _settingsService = settingsService;
         _updateService = updateService;
+        _applicationLifetime = applicationLifetime;
 
         Dashboard = _viewModelFactory.CreateDashboardViewModel();
 
@@ -70,27 +74,27 @@ public class RootViewModel : Screen
             if (updateVersion is null)
                 return;
 
-            Notifications.Enqueue($"Downloading update to {App.Name} v{updateVersion}...");
+            SnackbarService.Post($"Downloading update to {App.Name} v{updateVersion}...");
             await _updateService.PrepareUpdateAsync(updateVersion);
 
-            Notifications.Enqueue(
+            SnackbarService.Post(
                 "Update has been downloaded and will be installed when you exit",
                 "INSTALL NOW",
                 () =>
                 {
                     _updateService.FinalizeUpdate(true);
-                    RequestClose();
+                    _applicationLifetime.Shutdown();
                 }
             );
         }
         catch
         {
             // Failure to update shouldn't crash the application
-            Notifications.Enqueue("Failed to perform application update");
+            SnackbarService.Post("Failed to perform application update");
         }
     }
 
-    public async void OnViewFullyLoaded()
+    public async Task OnViewFullyLoadedAsync()
     {
         await ShowUkraineSupportMessageAsync();
         await CheckForUpdatesAsync();
@@ -98,8 +102,6 @@ public class RootViewModel : Screen
 
     protected override void OnViewLoaded()
     {
-        base.OnViewLoaded();
-
         _settingsService.Load();
 
         // Sync the theme with settings
@@ -118,7 +120,7 @@ public class RootViewModel : Screen
             && _settingsService.LastAppVersion != App.Version
         )
         {
-            Notifications.Enqueue(
+            SnackbarService.Post(
                 $"Successfully updated to {App.Name} v{App.VersionString}",
                 "WHAT'S NEW",
                 () => ProcessEx.StartShellExecute(App.LatestReleaseUrl)
@@ -127,6 +129,8 @@ public class RootViewModel : Screen
             _settingsService.LastAppVersion = App.Version;
             _settingsService.Save();
         }
+
+        _ = OnViewFullyLoadedAsync();
     }
 
     protected override void OnClose()

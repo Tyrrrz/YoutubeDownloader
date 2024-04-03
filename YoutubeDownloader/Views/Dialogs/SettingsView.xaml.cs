@@ -1,17 +1,25 @@
-﻿using System.Windows;
+using Avalonia.Interactivity;
+using YoutubeDownloader.ViewModels.Dialogs;
+using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class SettingsView
+public partial class SettingsView : ViewModelAwareUserControl<SettingsViewModel>
 {
     public SettingsView()
     {
         InitializeComponent();
     }
 
-    private void DarkModeToggleButton_OnChecked(object sender, RoutedEventArgs args) =>
-        App.SetDarkTheme();
-
-    private void DarkModeToggleButton_OnUnchecked(object sender, RoutedEventArgs args) =>
-        App.SetLightTheme();
+    private void DarkModeToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs args)
+    {
+        if (DarkModeToggleButton.IsChecked is true)
+        {
+            App.SetDarkTheme();
+        }
+        else
+        {
+            App.SetLightTheme();
+        }
+    }
 }

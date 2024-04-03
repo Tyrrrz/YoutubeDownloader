@@ -4,6 +4,8 @@ using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
+public class SettingsDesignTimeViewModel() : SettingsViewModel(new SettingsService()) { }
+
 public class SettingsViewModel(SettingsService settingsService) : DialogScreen
 {
     public bool IsAutoUpdateEnabled
