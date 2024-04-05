@@ -82,7 +82,7 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
         // Search
         {
             var videos = await _youtube
-                .Search.GetVideosAsync(query, cancellationToken)
+                .Search.GetVideosAsync(System.Net.WebUtility.UrlEncode(query), cancellationToken)
                 .CollectAsync(20);
 
             return new QueryResult(QueryResultKind.Search, $"Search: {query}", videos);
