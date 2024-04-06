@@ -1,23 +1,20 @@
-<Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="YoutubeDownloader.App"
-             xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
-             xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
-             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:framework="using:YoutubeDownloader.Views.Framework"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+<Application
+    x:Class="YoutubeDownloader.App"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+    xmlns:framework="clr-namespace:YoutubeDownloader.Framework"
+    xmlns:materialControls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:materialStyles="clr-namespace:Material.Styles.Themes;assembly=Material.Styles">
     <Application.DataTemplates>
-        <framework:ViewLocator/>
+        <framework:ViewManager />
     </Application.DataTemplates>
-             
-             
+
     <Application.Styles>
-        <!-- Color values set here only for Designer -->
-        <themes:MaterialTheme BaseTheme="Light" PrimaryColor="BlueGrey" SecondaryColor="Orange" />
-        <dialogHostAvalonia:DialogHostStyles />
+        <materialStyles:MaterialTheme />
         <materialIcons:MaterialIconStyles />
+        <dialogHostAvalonia:DialogHostStyles />
 
         <Style Selector="ProgressBar">
             <Setter Property="BorderThickness" Value="0" />
@@ -31,7 +28,7 @@
         </Style>
 
         <Style Selector="DataGrid">
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderThickness" Value="0" />
             <Setter Property="AutoGenerateColumns" Value="False" />
             <Setter Property="CanUserReorderColumns" Value="True" />
             <Setter Property="CanUserResizeColumns" Value="True" />
@@ -39,14 +36,14 @@
             <Setter Property="IsReadOnly" Value="True" />
             <Setter Property="SelectionMode" Value="Single" />
         </Style>
-        
+
         <Style Selector="DataGridRow">
             <Setter Property="FocusAdorner" Value="{x:Null}" />
             <Style Selector="^:selected /template/ Rectangle#BackgroundRectangle">
-                <Setter Property="IsVisible" Value="False"/>
+                <Setter Property="IsVisible" Value="False" />
             </Style>
             <Style Selector="^:pointerover /template/ Rectangle#BackgroundRectangle">
-                <Setter Property="IsVisible" Value="False"/>
+                <Setter Property="IsVisible" Value="False" />
             </Style>
         </Style>
 
@@ -58,11 +55,11 @@
             </Style>
         </Style>
 
-        <Style Selector="materialDesign|SnackbarHost">
-            <Setter Property="SnackbarHorizontalAlignment" Value="Stretch"/>
+        <Style Selector="materialControls|SnackbarHost">
+            <Setter Property="SnackbarHorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
 
-            <Style Selector="^ /template/ ItemsControl#PART_SnackbarHostItemsContainer materialDesign|Card">
+            <Style Selector="^ /template/ ItemsControl#PART_SnackbarHostItemsContainer materialControls|Card">
                 <Setter Property="Background" Value="{DynamicResource MaterialDarkBackgroundBrush}" />
                 <Setter Property="Foreground" Value="{DynamicResource MaterialDarkForegroundBrush}" />
             </Style>
@@ -73,7 +70,7 @@
         </Style>
 
         <Style Selector="ComboBox /template/ Panel#PART_RootPanel">
-            <Setter Property="Height" Value="20"/>
+            <Setter Property="Height" Value="20" />
         </Style>
 
         <Style Selector="TextBox">
@@ -81,7 +78,7 @@
                 <Setter Property="MinHeight" Value="0" />
             </Style>
             <Style Selector="^ /template/ Panel#PART_TextContainer">
-                <Setter Property="Margin" Value="0,1,4,1"/>
+                <Setter Property="Margin" Value="0,1,4,1" />
             </Style>
         </Style>
 
@@ -95,15 +92,18 @@
         <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource SuccessColor}" />
         <SolidColorBrush x:Key="CanceledBrush" Color="{DynamicResource CanceledColor}" />
         <SolidColorBrush x:Key="FailedBrush" Color="{DynamicResource FailedColor}" />
-    
-        <!-- ControlThemes-->
-        <ControlTheme x:Key="MaterialDesignRoot" TargetType="{x:Type Control}" BasedOn="{StaticResource MaterialUserControl}">
+
+        <!--  ControlThemes  -->
+        <ControlTheme
+            x:Key="MaterialDesignRoot"
+            BasedOn="{StaticResource MaterialUserControl}"
+            TargetType="{x:Type Control}">
             <Setter Property="TextElement.FontFamily" Value="{DynamicResource MaterialDesignFonts}" />
             <Setter Property="TextElement.FontSize" Value="13" />
             <Setter Property="TextElement.FontWeight" Value="Regular" />
             <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
             <Setter Property="UseLayoutRounding" Value="True" />
         </ControlTheme>
-        
+
     </Application.Resources>
 </Application>

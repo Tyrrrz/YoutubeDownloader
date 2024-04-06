@@ -17,10 +17,7 @@ public partial class AuthSetupView : ViewModelAwareUserControl<AuthSetupViewMode
 
     private CoreWebView2? _coreWebView2;
 
-    public AuthSetupView()
-    {
-        InitializeComponent();
-    }
+    public AuthSetupView() => InitializeComponent();
 
     private void NavigateToLoginPage()
     {

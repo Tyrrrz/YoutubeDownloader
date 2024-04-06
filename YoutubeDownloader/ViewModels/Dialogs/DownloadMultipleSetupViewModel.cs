@@ -27,8 +27,7 @@ public partial class DownloadMultipleSetupViewModel(
 
     public IReadOnlyList<IVideo>? AvailableVideos { get; set; }
 
-    public ObservableCollection<IVideo> SelectedVideos { get; set; } =
-        new ObservableCollection<IVideo>();
+    public ObservableCollection<IVideo> SelectedVideos { get; set; } = [];
 
     public IReadOnlyList<Container> AvailableContainers { get; } =
         new[] { Container.Mp4, Container.WebM, Container.Mp3, new Container("ogg") };
@@ -97,26 +96,5 @@ public partial class DownloadMultipleSetupViewModel(
         settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
 
         Close(downloads);
-    }
-}
-
-public static class DownloadMultipleSetupViewModelExtensions
-{
-    public static DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel(
-        this IViewModelFactory factory,
-        string title,
-        IReadOnlyList<IVideo> availableVideos,
-        bool preselectVideos = true
-    )
-    {
-        var viewModel = factory.CreateDownloadMultipleSetupViewModel();
-
-        viewModel.Title = title;
-        viewModel.AvailableVideos = availableVideos;
-        viewModel.SelectedVideos = preselectVideos
-            ? new ObservableCollection<IVideo>(availableVideos)
-            : [];
-
-        return viewModel;
     }
 }

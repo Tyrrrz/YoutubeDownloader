@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Avalonia;
 using Avalonia.Platform;
 using Cogwheel;
-using PropertyChanged;
 using YoutubeDownloader.Core.Downloading;
 using Container = YoutubeExplode.Videos.Streams.Container;
 
 namespace YoutubeDownloader.Services;
 
-[AddINotifyPropertyChangedInterface]
 public partial class SettingsService()
-    : SettingsBase(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat")),
-        INotifyPropertyChanged
+    : SettingsBase(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat"))
 {
     public bool IsUkraineSupportMessageEnabled { get; set; } = true;
 
@@ -62,12 +59,9 @@ public partial class SettingsService()
 
 public partial class SettingsService
 {
-    private static bool IsDarkModeEnabledByDefault()
-    {
-        var platformColors = App.Current?.PlatformSettings?.GetColorValues();
-        var isDark = platformColors?.ThemeVariant == PlatformThemeVariant.Dark;
-        return isDark;
-    }
+    private static bool IsDarkModeEnabledByDefault() =>
+        Application.Current?.PlatformSettings?.GetColorValues().ThemeVariant
+        == PlatformThemeVariant.Dark;
 }
 
 public partial class SettingsService

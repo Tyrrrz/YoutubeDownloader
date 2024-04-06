@@ -6,10 +6,7 @@ namespace YoutubeDownloader.Views.Dialogs;
 
 public partial class SettingsView : ViewModelAwareUserControl<SettingsViewModel>
 {
-    public SettingsView()
-    {
-        InitializeComponent();
-    }
+    public SettingsView() => InitializeComponent();
 
     private void DarkModeToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs args)
     {

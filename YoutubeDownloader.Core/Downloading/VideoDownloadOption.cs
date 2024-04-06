@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Lazy;
 using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeExplode.Videos.Streams;
 
@@ -13,9 +12,10 @@ public partial record VideoDownloadOption(
     IReadOnlyList<IStreamInfo> StreamInfos
 )
 {
-    [Lazy]
-    public VideoQuality? VideoQuality =>
-        StreamInfos.OfType<IVideoStreamInfo>().MaxBy(s => s.VideoQuality)?.VideoQuality;
+    private readonly Lazy<VideoQuality?> _videoQualityLazy =
+        new(() => StreamInfos.OfType<IVideoStreamInfo>().MaxBy(s => s.VideoQuality)?.VideoQuality);
+
+    public VideoQuality? VideoQuality => _videoQualityLazy.Value;
 }
 
 public partial record VideoDownloadOption

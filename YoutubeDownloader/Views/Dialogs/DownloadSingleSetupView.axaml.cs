@@ -6,8 +6,5 @@ namespace YoutubeDownloader.Views.Dialogs;
 public partial class DownloadSingleSetupView
     : ViewModelAwareUserControl<DownloadSingleSetupViewModel>
 {
-    public DownloadSingleSetupView()
-    {
-        InitializeComponent();
-    }
+    public DownloadSingleSetupView() => InitializeComponent();
 }

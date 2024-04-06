@@ -65,20 +65,3 @@ public partial class DownloadSingleSetupViewModel(
         Close(viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath));
     }
 }
-
-public static class DownloadSingleSetupViewModelExtensions
-{
-    public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
-        this IViewModelFactory factory,
-        IVideo video,
-        IReadOnlyList<VideoDownloadOption> availableDownloadOptions
-    )
-    {
-        var viewModel = factory.CreateDownloadSingleSetupViewModel();
-
-        viewModel.Video = video;
-        viewModel.AvailableDownloadOptions = availableDownloadOptions;
-
-        return viewModel;
-    }
-}

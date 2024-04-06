@@ -3,21 +3,13 @@ using Avalonia.Threading;
 using Material.Styles.Controls;
 using Material.Styles.Models;
 
-namespace YoutubeDownloader.ViewModels.Framework;
+namespace YoutubeDownloader.Framework;
 
-public class SnackbarService
+public class SnackbarManager
 {
-    private readonly TimeSpan _defaultDuration;
+    private readonly TimeSpan _defaultDuration = TimeSpan.FromSeconds(5);
 
-    public SnackbarService(TimeSpan defaultDuration)
-    {
-        _defaultDuration = defaultDuration;
-    }
-
-    /// <summary>
-    /// Posts to the default SnackBarHost
-    /// </summary>
-    public void Post(string message, TimeSpan? duration = null)
+    public void Notify(string message, TimeSpan? duration = null)
     {
         SnackbarHost.Post(
             new SnackbarModel(message, duration ?? _defaultDuration),
@@ -26,10 +18,7 @@ public class SnackbarService
         );
     }
 
-    /// <summary>
-    /// Posts to the default SnackBarHost
-    /// </summary>
-    public void Post(
+    public void Notify(
         string message,
         string actionText,
         Action actionHandler,

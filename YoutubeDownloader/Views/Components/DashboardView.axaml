@@ -1,16 +1,17 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
-             xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
-             xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-             xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-             mc:Ignorable="d"
-             x:DataType="components:DashboardViewModel"
-             x:Class="YoutubeDownloader.Views.Components.DashboardView"
-             x:Name="root">
+<UserControl
+    x:Class="YoutubeDownloader.Views.Components.DashboardView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+    xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="root"
+    x:DataType="components:DashboardViewModel"
+    mc:Ignorable="d">
     <Grid RowDefinitions="Auto, Auto, *">
 
         <!--  Toolbar  -->
@@ -22,19 +23,23 @@
             </Grid.ColumnDefinitions>
 
             <!--  Query and process query button  -->
-            <materialDesign:Card Grid.Column="0" Margin="12,12,0,12" Height="44" Padding="8,0,8,0">
+            <materialDesign:Card
+                Grid.Column="0"
+                Height="44"
+                Margin="12,12,0,12"
+                Padding="8,0,8,0">
                 <TextBox
-                   x:Name="QueryTextBox"
-                   Margin="0,6,6,8"
-                   VerticalAlignment="Bottom"
-                   Watermark="URL or search query"
-                   AcceptsReturn="True"
-                   BorderThickness="0"
-                   FontSize="16"
-                   MaxLines="4"
-                   Theme="{DynamicResource SoloTextBox}"
-                   Text="{Binding Query}"
-                   ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                    x:Name="QueryTextBox"
+                    Margin="0,6,6,8"
+                    VerticalAlignment="Bottom"
+                    AcceptsReturn="True"
+                    BorderThickness="0"
+                    FontSize="16"
+                    MaxLines="4"
+                    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                    Text="{Binding Query}"
+                    Theme="{DynamicResource SoloTextBox}"
+                    Watermark="URL or search query">
                     <TextBox.InnerLeftContent>
                         <!--  Search icon  -->
                         <materialIcon:MaterialIcon
@@ -146,9 +151,9 @@
                 Background="{DynamicResource MaterialCardBackgroundBrush}"
                 ColumnWidth="Auto"
                 HorizontalScrollBarVisibility="Disabled"
+                IsVisible="{Binding IsDownloadsAvailable}"
                 ItemsSource="{Binding Downloads}"
-                VerticalScrollBarVisibility="Auto"
-                IsVisible="{Binding IsDownloadsAvailable}">
+                VerticalScrollBarVisibility="Auto">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{Binding RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
@@ -216,25 +221,25 @@
                                     <ProgressBar
                                         Grid.Column="0"
                                         Margin="0,0,6,0"
-                                        Foreground="{DynamicResource SecondaryHueMidBrush}"
                                         Classes="circular"
+                                        Foreground="{DynamicResource SecondaryHueMidBrush}"
                                         IsIndeterminate="{Binding IsProgressIndeterminate}"
+                                        IsVisible="{Binding IsRunning}"
                                         Maximum="1"
                                         Minimum="0"
-                                        Value="{Binding Progress.Current.Fraction, Mode=OneWay}"
-                                        IsVisible="{Binding IsRunning}"/>
+                                        Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
 
                                     <!--  Status  -->
                                     <TextBlock
                                         Grid.Column="1"
                                         VerticalAlignment="Center"
-                                        TextTrimming="CharacterEllipsis"
+                                        Classes.canceled="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
+                                        Classes.completed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Completed}}"
+                                        Classes.enqueued="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
+                                        Classes.failed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Failed}}"
+                                        Classes.started="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
                                         PointerReleased="OnStatusPointerReleased"
-                                        Classes.enqueued="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
-                                        Classes.started="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
-                                        Classes.completed="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Completed}}"
-                                        Classes.canceled="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
-                                        Classes.failed="{Binding Status, Converter={x:Static converters:IsEqualConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Failed}}">
+                                        TextTrimming="CharacterEllipsis">
                                         <TextBlock.Styles>
                                             <Style Selector="TextBlock">
                                                 <Style Selector="^.enqueued">
@@ -259,7 +264,7 @@
                                                     <Setter Property="Cursor" Value="Hand" />
                                                 </Style>
                                             </Style>
-                                        
+
                                         </TextBlock.Styles>
                                     </TextBlock>
                                 </Grid>
@@ -280,9 +285,9 @@
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
                                         Command="{Binding ShowFileCommand}"
+                                        IsVisible="{Binding CanShowFile}"
                                         Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="Show file"
-                                        IsVisible="{Binding CanShowFile}">
+                                        ToolTip.Tip="Show file">
                                         <materialIcon:MaterialIcon
                                             Width="24"
                                             Height="24"
@@ -294,9 +299,9 @@
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
                                         Command="{Binding OpenFileCommand}"
+                                        IsVisible="{Binding CanOpenFile}"
                                         Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="Play"
-                                        IsVisible="{Binding CanOpenFile}">
+                                        ToolTip.Tip="Play">
                                         <materialIcon:MaterialIcon
                                             Width="24"
                                             Height="24"
@@ -308,9 +313,9 @@
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
                                         Command="{Binding CancelCommand}"
+                                        IsVisible="{Binding CanCancel}"
                                         Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="Cancel download"
-                                        IsVisible="{Binding CanCancel}">
+                                        ToolTip.Tip="Cancel download">
                                         <materialIcon:MaterialIcon
                                             Width="24"
                                             Height="24"
@@ -323,9 +328,9 @@
                                         VerticalAlignment="Center"
                                         Command="{Binding #root.((components:DashboardViewModel)DataContext).RestartDownloadCommand}"
                                         CommandParameter="{Binding}"
+                                        IsVisible="{Binding IsCanceledOrFailed}"
                                         Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="Restart download"
-                                        IsVisible="{Binding IsCanceledOrFailed}">
+                                        ToolTip.Tip="Restart download">
                                         <materialIcon:MaterialIcon
                                             Width="24"
                                             Height="24"
@@ -335,19 +340,19 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    
+
                 </DataGrid.Columns>
 
 
 
 
             </DataGrid>
-            
-            
+
+
         </Grid>
 
-        
-        
+
+
     </Grid>
 
 </UserControl>

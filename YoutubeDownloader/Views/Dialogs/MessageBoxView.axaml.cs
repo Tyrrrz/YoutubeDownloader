@@ -5,8 +5,5 @@ namespace YoutubeDownloader.Views.Dialogs;
 
 public partial class MessageBoxView : ViewModelAwareUserControl<MessageBoxViewModel>
 {
-    public MessageBoxView()
-    {
-        InitializeComponent();
-    }
+    public MessageBoxView() => InitializeComponent();
 }
