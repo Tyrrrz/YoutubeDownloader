@@ -18,7 +18,7 @@ env:
 
 jobs:
   format:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
 
     permissions:
@@ -63,6 +63,7 @@ jobs:
           -p:CSharpier_Bypass=true
           --output YoutubeDownloader/bin/publish
           --configuration Release
+          --use-current-runtime
 
       - name: Upload artifacts
         uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
