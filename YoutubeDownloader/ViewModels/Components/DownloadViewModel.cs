@@ -1,99 +1,86 @@
 ﻿using System;
 using System.IO;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
-using PropertyChanged;
-using ReactiveUI;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Framework;
 using YoutubeDownloader.Utils;
-using YoutubeDownloader.ViewModels.Dialogs;
-using YoutubeDownloader.ViewModels.Framework;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Components;
 
-public partial class DownloadViewModel : ViewModelBase, IDisposable
+public partial class DownloadViewModel : ViewModelBase
 {
-    private readonly IViewModelFactory _viewModelFactory;
+    private readonly ViewModelManager _viewModelManager;
     private readonly DialogManager _dialogManager;
     private readonly IClipboard _clipboard;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
+    
+    [ObservableProperty]
+    private IVideo? _video;
+    
+    [ObservableProperty]
+    private VideoDownloadOption? _downloadOption;
+    
+    [ObservableProperty]
+    private VideoDownloadPreference? _downloadPreference;
+    
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FileName))]
+    private string? _filePath;
 
-    public IVideo? Video { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsRunning))]
+    [NotifyPropertyChangedFor(nameof(IsCanceledOrFailed))]
+    [NotifyCanExecuteChangedFor(nameof(CancelCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowFileCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenFileCommand))]
+    private DownloadStatus _status = DownloadStatus.Enqueued;
 
-    public VideoDownloadOption? DownloadOption { get; set; }
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CopyErrorMessageCommand))]
+    private string? _errorMessage;
+    
+    public DownloadViewModel(
+        ViewModelManager viewModelManager,
+        DialogManager dialogManager,
+        IClipboard clipboard
+    )
+    {
+        _viewModelManager = viewModelManager;
+        _dialogManager = dialogManager;
+        _clipboard = clipboard;
+        
+        Progress.WatchProperty(o => o.Current, ()   => OnPropertyChanged(nameof(IsProgressIndeterminate)));
+    }
 
-    public VideoDownloadPreference? DownloadPreference { get; set; }
-
-    public string? FilePath { get; set; }
-
+    public CancellationToken CancellationToken => _cancellationTokenSource.Token;
+    
     public string? FileName => Path.GetFileName(FilePath);
 
     public ProgressContainer<Percentage> Progress { get; } = new();
 
     public bool IsProgressIndeterminate => Progress.Current.Fraction is <= 0 or >= 1;
-
-    public CancellationToken CancellationToken => _cancellationTokenSource.Token;
-
-    [AlsoNotifyFor(nameof(IsRunning))]
-    public DownloadStatus Status { get; set; } = DownloadStatus.Enqueued;
-
+    
     public bool IsRunning => Status is DownloadStatus.Started;
 
     public bool IsCanceledOrFailed => Status is DownloadStatus.Canceled or DownloadStatus.Failed;
-
-    public string? ErrorMessage { get; set; }
-
-    public DownloadViewModel(
-        IViewModelFactory viewModelFactory,
-        DialogManager dialogManager,
-        IClipboard clipboard
-    )
-    {
-        _viewModelFactory = viewModelFactory;
-        _dialogManager = dialogManager;
-        _clipboard = clipboard;
-
-        Progress
-            .WhenAnyValue(o => o.Current)
-            .Subscribe(_ => OnPropertyChanged(nameof(IsProgressIndeterminate)));
-        this.WhenAnyValue(o => o.Status)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ =>
-            {
-                OnPropertyChanged(nameof(IsRunning));
-                CancelCommand.NotifyCanExecuteChanged();
-                ShowFileCommand.NotifyCanExecuteChanged();
-                OpenFileCommand.NotifyCanExecuteChanged();
-            });
-        this.WhenAnyValue(o => o.ErrorMessage)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ => CopyErrorMessageCommand.NotifyCanExecuteChanged());
-    }
-
-    public bool CanCancel => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
+    
+    private bool CanCancel() => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
 
     [RelayCommand(CanExecute = nameof(CanCancel))]
-    public void Cancel()
-    {
-        if (!CanCancel)
-            return;
+    private void Cancel() => _cancellationTokenSource.Cancel();
 
-        _cancellationTokenSource.Cancel();
-    }
-
-    public bool CanShowFile => Status == DownloadStatus.Completed;
+    private bool CanShowFile() => Status == DownloadStatus.Completed;
 
     [RelayCommand(CanExecute = nameof(CanShowFile))]
-    public async Task ShowFileAsync()
+    private async Task ShowFileAsync()
     {
-        if (!CanShowFile)
-            return;
-
         try
         {
             // Navigate to the file in Windows Explorer
@@ -102,19 +89,16 @@ public partial class DownloadViewModel : ViewModelBase, IDisposable
         catch (Exception ex)
         {
             await _dialogManager.ShowDialogAsync(
-                _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message)
+                _viewModelManager.CreateMessageBoxViewModel("Error", ex.Message)
             );
         }
     }
 
-    public bool CanOpenFile => Status == DownloadStatus.Completed;
+    private bool CanOpenFile() => Status == DownloadStatus.Completed;
 
     [RelayCommand(CanExecute = nameof(CanOpenFile))]
-    public async Task OpenFileAsync()
+    private async Task OpenFileAsync()
     {
-        if (!CanOpenFile)
-            return;
-
         try
         {
             ProcessEx.StartShellExecute(FilePath!);
@@ -122,56 +106,29 @@ public partial class DownloadViewModel : ViewModelBase, IDisposable
         catch (Exception ex)
         {
             await _dialogManager.ShowDialogAsync(
-                _viewModelFactory.CreateMessageBoxViewModel("Error", ex.Message)
+                _viewModelManager.CreateMessageBoxViewModel("Error", ex.Message)
             );
         }
     }
 
-    public bool CanCopyErrorMessage => !string.IsNullOrWhiteSpace(ErrorMessage);
+    private bool CanCopyErrorMessage() => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     [RelayCommand(CanExecute = nameof(CanCopyErrorMessage))]
-    public async Task CopyErrorMessageAsync()
+    private async Task CopyErrorMessageAsync()
     {
-        if (!CanCopyErrorMessage)
+        if (!string.IsNullOrWhiteSpace(ErrorMessage))
             return;
 
-        await _clipboard.SetTextAsync(ErrorMessage!);
+        await _clipboard.SetTextAsync(ErrorMessage);
     }
 
-    public void Dispose() => _cancellationTokenSource.Dispose();
-}
-
-public static class DownloadViewModelExtensions
-{
-    public static DownloadViewModel CreateDownloadViewModel(
-        this IViewModelFactory factory,
-        IVideo video,
-        VideoDownloadOption downloadOption,
-        string filePath
-    )
+    protected override void Dispose(bool disposing)
     {
-        var viewModel = factory.CreateDownloadViewModel();
-
-        viewModel.Video = video;
-        viewModel.DownloadOption = downloadOption;
-        viewModel.FilePath = filePath;
-
-        return viewModel;
-    }
-
-    public static DownloadViewModel CreateDownloadViewModel(
-        this IViewModelFactory factory,
-        IVideo video,
-        VideoDownloadPreference downloadPreference,
-        string filePath
-    )
-    {
-        var viewModel = factory.CreateDownloadViewModel();
-
-        viewModel.Video = video;
-        viewModel.DownloadPreference = downloadPreference;
-        viewModel.FilePath = filePath;
-
-        return viewModel;
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+        
+        base.Dispose(disposing);
     }
 }

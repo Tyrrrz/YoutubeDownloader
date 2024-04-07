@@ -1,16 +1,19 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
-             xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-             xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-             Width="500"
-             mc:Ignorable="d"
-             Theme="{DynamicResource MaterialDesignRoot}"
-             x:DataType="dialogs:DownloadSingleSetupViewModel"
-             x:Class="YoutubeDownloader.Views.Dialogs.DownloadSingleSetupView">
+<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.DownloadSingleSetupView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="UserControl"
+    Width="500"
+    x:DataType="dialogs:DownloadSingleSetupViewModel"
+    Loaded="UserControl_OnLoaded"
+    Theme="{DynamicResource MaterialDesignRoot}"
+    mc:Ignorable="d">
     <Grid RowDefinitions="Auto,*,Auto">
 
         <!--  Info  -->
@@ -71,7 +74,10 @@
             <Image asyncImageLoader:ImageLoader.Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlConverter.Instance}}" />
         </Border>
 
-        <Grid Grid.Row="2" Margin="16" ColumnDefinitions="*,Auto">
+        <Grid
+            Grid.Row="2"
+            Margin="16"
+            ColumnDefinitions="*,Auto">
 
             <!--  Download option  -->
             <StackPanel Grid.Column="0" Orientation="Horizontal">
@@ -86,8 +92,7 @@
                         <DataTemplate>
                             <TextBlock>
                                 <!--  Video quality  -->
-                                <Run FontWeight="SemiBold"
-                                    Classes.audioOnly="{Binding IsAudioOnly}">
+                                <Run Classes.audioOnly="{Binding IsAudioOnly}" FontWeight="SemiBold">
                                     <Run.Styles>
                                         <Style Selector="Run">
                                             <Setter Property="Text" Value="{Binding VideoQuality, Mode=OneWay}" />

@@ -20,6 +20,36 @@ public class ViewModelManager(IServiceProvider services)
     public AuthSetupViewModel CreateAuthSetupViewModel() =>
         services.GetRequiredService<AuthSetupViewModel>();
 
+    public DownloadViewModel CreateDownloadViewModel(
+        IVideo video,
+        VideoDownloadOption downloadOption,
+        string filePath
+    )
+    {
+        var viewModel = services.GetRequiredService<DownloadViewModel>();
+
+        viewModel.Video = video;
+        viewModel.DownloadOption = downloadOption;
+        viewModel.FilePath = filePath;
+
+        return viewModel;
+    }
+
+    public DownloadViewModel CreateDownloadViewModel(
+        IVideo video,
+        VideoDownloadPreference downloadPreference,
+        string filePath
+    )
+    {
+        var viewModel = services.GetRequiredService<DownloadViewModel>();
+
+        viewModel.Video = video;
+        viewModel.DownloadPreference = downloadPreference;
+        viewModel.FilePath = filePath;
+
+        return viewModel;
+    }
+    
     public DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel(
         string title,
         IReadOnlyList<IVideo> availableVideos,
@@ -66,6 +96,11 @@ public class ViewModelManager(IServiceProvider services)
 
         return viewModel;
     }
+    
+    public MessageBoxViewModel CreateMessageBoxViewModel(
+        string title,
+        string message
+    ) => CreateMessageBoxViewModel(title, message, "CLOSE", null);
 
     public SettingsViewModel CreateSettingsViewModel() =>
         services.GetRequiredService<SettingsViewModel>();

@@ -5,42 +5,47 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.ViewModels.Components;
-using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public partial class DownloadMultipleSetupViewModel(
-    IViewModelFactory viewModelFactory,
+    ViewModelManager viewModelManager,
     DialogManager dialogManager,
     SettingsService settingsService,
     IClipboard clipboard
-) : DialogScreen<IReadOnlyList<DownloadViewModel>>
+) : DialogViewModelBase<IReadOnlyList<DownloadViewModel>>
 {
-    public string? Title { get; set; }
-
-    public IReadOnlyList<IVideo>? AvailableVideos { get; set; }
-
-    public ObservableCollection<IVideo> SelectedVideos { get; set; } = [];
+    [ObservableProperty]
+    private string? _title;
+    
+    [ObservableProperty]
+    private IReadOnlyList<IVideo>? _availableVideos;
+    
+    [ObservableProperty]
+    private Container _selectedContainer = Container.Mp4;
+    
+    [ObservableProperty]
+    private VideoQualityPreference _selectedVideoQualityPreference = VideoQualityPreference.Highest;
+    
+    public ObservableCollection<IVideo> SelectedVideos { get; } = [];
 
     public IReadOnlyList<Container> AvailableContainers { get; } =
         new[] { Container.Mp4, Container.WebM, Container.Mp3, new Container("ogg") };
 
-    public Container SelectedContainer { get; set; } = Container.Mp4;
-
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         Enum.GetValues<VideoQualityPreference>().Reverse().ToArray();
 
-    public VideoQualityPreference SelectedVideoQualityPreference { get; set; } =
-        VideoQualityPreference.Highest;
-
-    protected override void OnViewLoaded()
+    [RelayCommand]
+    private void Initialize()
     {
         SelectedContainer = settingsService.LastContainer;
         SelectedVideoQualityPreference = settingsService.LastVideoQualityPreference;
@@ -48,19 +53,19 @@ public partial class DownloadMultipleSetupViewModel(
     }
 
     [RelayCommand]
-    public async Task CopyTitleAsync() => await clipboard.SetTextAsync(Title!);
+    private async Task CopyTitleAsync() => await clipboard.SetTextAsync(Title!);
 
-    public bool CanConfirm => SelectedVideos.Any();
+    private bool CanConfirm() => SelectedVideos.Any();
 
     [RelayCommand(CanExecute = nameof(CanConfirm))]
-    public async Task ConfirmAsync()
+    private async Task ConfirmAsync()
     {
         var dirPath = await dialogManager.PromptDirectoryPathAsync();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 
         var downloads = new List<DownloadViewModel>();
-        for (var i = 0; i < SelectedVideos!.Count; i++)
+        for (var i = 0; i < SelectedVideos.Count; i++)
         {
             var video = SelectedVideos[i];
 
@@ -81,10 +86,10 @@ public partial class DownloadMultipleSetupViewModel(
 
             // Download does not start immediately, so lock in the file path to avoid conflicts
             DirectoryEx.CreateDirectoryForFile(filePath);
-            File.WriteAllBytes(filePath, Array.Empty<byte>());
+            await File.WriteAllBytesAsync(filePath, []);
 
             downloads.Add(
-                viewModelFactory.CreateDownloadViewModel(
+                viewModelManager.CreateDownloadViewModel(
                     video,
                     new VideoDownloadPreference(SelectedContainer, SelectedVideoQualityPreference),
                     filePath

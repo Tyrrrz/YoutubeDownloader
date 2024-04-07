@@ -1,15 +1,18 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
-             xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-             xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-             Width="500"
-             mc:Ignorable="d"
-             x:DataType="dialogs:DownloadMultipleSetupViewModel"
-             x:Class="YoutubeDownloader.Views.Dialogs.DownloadMultipleSetupView">
+<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.DownloadMultipleSetupView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="UserControl"
+    Width="500"
+    x:DataType="dialogs:DownloadMultipleSetupViewModel"
+    Loaded="UserControl_OnLoaded"
+    mc:Ignorable="d">
     <Grid RowDefinitions="Auto,*,Auto,Auto">
 
         <!--  Title  -->
@@ -34,8 +37,8 @@
             <ListBox
                 Padding="8"
                 ItemsSource="{Binding AvailableVideos}"
-                SelectedItems="{Binding SelectedVideos}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectedItems="{Binding SelectedVideos}"
                 SelectionMode="Multiple">
                 <ListBox.Styles>
                     <Style Selector="ListBoxItem">
@@ -108,8 +111,8 @@
                                 Height="24"
                                 Margin="8,0,0,0"
                                 VerticalAlignment="Center"
-                                Kind="Check"
-                                IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Mode=OneWay}" />
+                                IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Mode=OneWay}"
+                                Kind="Check" />
                         </Grid>
 
                     </DataTemplate>

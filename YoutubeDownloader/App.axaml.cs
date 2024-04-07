@@ -65,13 +65,17 @@ public partial class App : Application, IDisposable
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
 
-        // Set custom theme colors
-        SetDefaultTheme();
-
-        // Load settings
-        _services.GetRequiredService<SettingsService>().Load();
-
         base.OnFrameworkInitializationCompleted();
+        
+        // Load settings
+        var settings = _services.GetRequiredService<SettingsService>();
+        settings.Load();
+
+        // Set theme
+        if (settings.IsDarkModeEnabled)
+            SetDarkTheme();
+        else
+            SetLightTheme();
     }
 
     public override void RegisterServices()
@@ -81,7 +85,16 @@ public partial class App : Application, IDisposable
         AvaloniaWebViewBuilder.Initialize(config => config.IsInPrivateModeEnabled = true);
     }
 
-    public void Dispose() => _services.Dispose();
+    public void Dispose()
+    {
+        // Save settings
+        _services.GetRequiredService<SettingsService>().Save();
+        
+        // Finalize pending updates
+        _services.GetRequiredService<UpdateService>().FinalizeUpdate(false);
+        
+        _services.Dispose();
+    }
 }
 
 public partial class App
@@ -118,16 +131,5 @@ public partial class App
         Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
         Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
         Current.Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
-    }
-
-    public static void SetDefaultTheme()
-    {
-        if (Current is null)
-            return;
-
-        if (Current.RequestedThemeVariant == ThemeVariant.Light)
-            SetLightTheme();
-        else
-            SetDarkTheme();
     }
 }

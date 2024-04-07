@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using ReactiveUI;
+using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.ViewModels.Framework;
+using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class AuthSetupViewDesignTimeViewModel() : AuthSetupViewModel(new SettingsService())
-{
-    public new bool IsAuthenticated { get; set; }
-}
-
-public class AuthSetupViewModel : DialogScreen
+public class AuthSetupViewModel : DialogViewModelBase
 {
     private readonly SettingsService _settingsService;
 
@@ -33,11 +28,10 @@ public class AuthSetupViewModel : DialogScreen
     {
         _settingsService = settingsService;
 
-        _settingsService
-            .WhenAnyValue(o => o.LastAuthCookies)
-            .Subscribe(_ => OnPropertyChanged(nameof(Cookies)));
-
-        this.WhenAnyValue(o => o.Cookies)
-            .Subscribe(_ => OnPropertyChanged(nameof(IsAuthenticated)));
+        _settingsService.WatchProperty(o => o.LastAuthCookies, () =>
+        {
+            OnPropertyChanged(nameof(Cookies));
+            OnPropertyChanged(nameof(IsAuthenticated));
+        });
     }
 }

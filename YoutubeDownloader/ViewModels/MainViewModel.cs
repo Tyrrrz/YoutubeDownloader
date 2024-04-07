@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Avalonia;
+using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -8,7 +9,7 @@ using YoutubeDownloader.ViewModels.Components;
 
 namespace YoutubeDownloader.ViewModels;
 
-public class MainViewModel(
+public partial class MainViewModel(
     ViewModelManager viewModelManager,
     DialogManager dialogManager,
     SnackbarManager snackbarManager,
@@ -16,6 +17,8 @@ public class MainViewModel(
     UpdateService updateService
 ) : ViewModelBase
 {
+    public string Title { get; } = $"{Program.Name} v{Program.VersionString}";
+
     public DashboardViewModel Dashboard { get; } = viewModelManager.CreateDashboardViewModel();
 
     private async Task ShowUkraineSupportMessageAsync()
@@ -70,25 +73,11 @@ public class MainViewModel(
         }
     }
 
-    public async Task OnViewFullyLoadedAsync()
+    [RelayCommand]
+    private async Task InitializeAsync()
     {
         await ShowUkraineSupportMessageAsync();
         await CheckForUpdatesAsync();
-    }
-
-    protected override void OnViewLoaded()
-    {
-        settingsService.Load();
-
-        // Sync the theme with settings
-        if (settingsService.IsDarkModeEnabled)
-        {
-            App.SetDarkTheme();
-        }
-        else
-        {
-            App.SetLightTheme();
-        }
 
         // App has just been updated, display the changelog
         if (
@@ -105,20 +94,5 @@ public class MainViewModel(
             settingsService.LastAppVersion = Program.Version;
             settingsService.Save();
         }
-
-        _ = OnViewFullyLoadedAsync();
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            Dashboard.CancelAllDownloads();
-
-            settingsService.Save();
-            updateService.FinalizeUpdate(false);
-        }
-        
-        base.Dispose(disposing);
     }
 }

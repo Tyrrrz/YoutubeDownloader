@@ -2,23 +2,24 @@
     x:Class="YoutubeDownloader.Views.MainView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
     xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
-    Title="{Binding DisplayName}"
+    Title="{Binding Title}"
     Width="600"
     Height="580"
-    x:DataType="viewModels:MainViewModel"
     Icon="/favicon.ico"
-    mc:Ignorable="d">
+    WindowStartupLocation="CenterScreen">
+    <Design.DataContext>
+        <viewModels:MainViewModel />
+    </Design.DataContext>
 
-    <dialogHost:DialogHost x:Name="DialogHost" CloseOnClickAway="False">
-        <materialDesign:SnackbarHost HostName="Root">
-            <Grid IsEnabled="{Binding !#DialogHost.IsOpen}">
-                <ContentControl Content="{Binding Dashboard}" />
-            </Grid>
+    <dialogHost:DialogHost
+        x:Name="DialogHost"
+        CloseOnClickAway="False"
+        Loaded="DialogHost_OnLoaded">
+        <materialDesign:SnackbarHost>
+            <ContentControl Content="{Binding Dashboard}" />
         </materialDesign:SnackbarHost>
     </dialogHost:DialogHost>
 </Window>

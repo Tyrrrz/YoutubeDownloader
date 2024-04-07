@@ -1,10 +1,14 @@
+using Avalonia.Interactivity;
+using YoutubeDownloader.Framework;
 using YoutubeDownloader.ViewModels.Dialogs;
-using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
 public partial class DownloadMultipleSetupView
-    : ViewModelAwareUserControl<DownloadMultipleSetupViewModel>
+    : UserControl<DownloadMultipleSetupViewModel>
 {
     public DownloadMultipleSetupView() => InitializeComponent();
+
+    private void UserControl_OnLoaded(object? sender, RoutedEventArgs args) =>
+        DataContext.InitializeCommand.Execute(null);
 }

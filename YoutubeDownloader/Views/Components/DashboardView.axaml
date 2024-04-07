@@ -156,12 +156,12 @@
                 VerticalScrollBarVisibility="Auto">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{Binding RemoveSuccessfulDownloads}" Header="Remove successful downloads" />
-                        <MenuItem Command="{Binding RemoveInactiveDownloads}" Header="Remove inactive downloads" />
+                        <MenuItem Command="{Binding RemoveSuccessfulDownloadsCommand}" Header="Remove successful downloads" />
+                        <MenuItem Command="{Binding RemoveInactiveDownloadsCommand}" Header="Remove inactive downloads" />
                         <Separator />
-                        <MenuItem Command="{Binding RestartFailedDownloads}" Header="Restart failed downloads" />
+                        <MenuItem Command="{Binding RestartFailedDownloadsCommand}" Header="Restart failed downloads" />
                         <Separator />
-                        <MenuItem Command="{Binding CancelAllDownloads}" Header="Cancel all downloads" />
+                        <MenuItem Command="{Binding CancelAllDownloadsCommand}" Header="Cancel all downloads" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Styles>
