@@ -76,6 +76,15 @@ public partial class MainViewModel(
     [RelayCommand]
     private async Task InitializeAsync()
     {
+        // Load settings
+        settingsService.Load();
+        
+        // Set the correct theme
+        if (settingsService.IsDarkModeEnabled)
+            App.SetDarkTheme();
+        else
+            App.SetLightTheme();
+        
         await ShowUkraineSupportMessageAsync();
         await CheckForUpdatesAsync();
 
@@ -94,5 +103,19 @@ public partial class MainViewModel(
             settingsService.LastAppVersion = Program.Version;
             settingsService.Save();
         }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            // Save settings
+            settingsService.Save();
+            
+            // Finalize pending updates
+            updateService.FinalizeUpdate(false);
+        }
+        
+        base.Dispose(disposing);
     }
 }
