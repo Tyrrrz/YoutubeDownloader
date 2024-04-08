@@ -26,14 +26,15 @@ public partial class App : Application, IDisposable
     {
         var services = new ServiceCollection();
 
+        // Framework
+        services.AddSingleton<DialogManager>();
+        services.AddSingleton<SnackbarManager>();
+        services.AddSingleton<ViewManager>();
+        services.AddSingleton<ViewModelManager>();
+        
         // Services
         services.AddSingleton<SettingsService>();
         services.AddSingleton<UpdateService>();
-
-        // View model framework
-        services.AddSingleton<DialogManager>();
-        services.AddSingleton<SnackbarManager>();
-        services.AddSingleton<ViewModelManager>();
 
         // View models
         services.AddTransient<MainViewModel>();
@@ -44,9 +45,6 @@ public partial class App : Application, IDisposable
         services.AddTransient<DownloadSingleSetupViewModel>();
         services.AddTransient<MessageBoxViewModel>();
         services.AddTransient<SettingsViewModel>();
-
-        // View framework
-        services.AddSingleton<ViewManager>();
 
         _services = services.BuildServiceProvider(true);
         _mainViewModel = _services.GetRequiredService<ViewModelManager>().CreateMainViewModel();
