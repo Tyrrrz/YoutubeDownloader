@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -60,9 +60,9 @@ public class ViewModelManager(IServiceProvider services)
 
         viewModel.Title = title;
         viewModel.AvailableVideos = availableVideos;
-        viewModel.SelectedVideos = preselectVideos
-            ? new ObservableCollection<IVideo>(availableVideos)
-            : [];
+
+        if (preselectVideos)
+            viewModel.SelectedVideos.AddRange(availableVideos);
 
         return viewModel;
     }
