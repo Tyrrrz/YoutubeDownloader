@@ -5,8 +5,7 @@
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Width="450"
-    Height="450"
-    Theme="{DynamicResource MaterialDesignRoot}">
+    Height="450">
     <Design.DataContext>
         <dialogs:AuthSetupViewModel />
     </Design.DataContext>

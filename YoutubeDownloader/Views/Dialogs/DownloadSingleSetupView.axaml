@@ -4,16 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="UserControl"
     Width="500"
     x:DataType="dialogs:DownloadSingleSetupViewModel"
-    Loaded="UserControl_OnLoaded"
-    Theme="{DynamicResource MaterialDesignRoot}"
-    mc:Ignorable="d">
+    Loaded="UserControl_OnLoaded">
     <Grid RowDefinitions="Auto,*,Auto">
 
         <!--  Info  -->

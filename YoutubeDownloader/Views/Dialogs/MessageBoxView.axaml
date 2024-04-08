@@ -5,8 +5,7 @@
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     Width="500"
-    x:DataType="dialogs:MessageBoxViewModel"
-    Theme="{DynamicResource MaterialDesignRoot}">
+    x:DataType="dialogs:MessageBoxViewModel">
     <Design.DataContext>
         <dialogs:MessageBoxViewModel />
     </Design.DataContext>

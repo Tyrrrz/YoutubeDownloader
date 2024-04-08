@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
     xmlns:framework="clr-namespace:YoutubeDownloader.Framework"
+    xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
     xmlns:materialControls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:materialStyles="clr-namespace:Material.Styles.Themes;assembly=Material.Styles">
@@ -82,28 +83,9 @@
             </Style>
         </Style>
 
+        <!--  Toggle switch  -->
+        <Style Selector="ToggleSwitch">
+            <Setter Property="materialAssists:ToggleSwitchAssist.SwitchThumbOffBackground" Value="{DynamicResource MaterialBackgroundBrush}" />
+        </Style>
     </Application.Styles>
-
-    <Application.Resources>
-        <Color x:Key="SuccessColor">#006400</Color>
-        <Color x:Key="CanceledColor">#FF8C00</Color>
-        <Color x:Key="FailedColor">#8B0000</Color>
-
-        <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource SuccessColor}" />
-        <SolidColorBrush x:Key="CanceledBrush" Color="{DynamicResource CanceledColor}" />
-        <SolidColorBrush x:Key="FailedBrush" Color="{DynamicResource FailedColor}" />
-
-        <!--  ControlThemes  -->
-        <ControlTheme
-            x:Key="MaterialDesignRoot"
-            BasedOn="{StaticResource MaterialUserControl}"
-            TargetType="{x:Type Control}">
-            <Setter Property="TextElement.FontFamily" Value="{DynamicResource MaterialDesignFonts}" />
-            <Setter Property="TextElement.FontSize" Value="13" />
-            <Setter Property="TextElement.FontWeight" Value="Regular" />
-            <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
-            <Setter Property="UseLayoutRounding" Value="True" />
-        </ControlTheme>
-
-    </Application.Resources>
 </Application>
