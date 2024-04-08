@@ -66,7 +66,7 @@ public partial class App : Application, IDisposable
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
 
         base.OnFrameworkInitializationCompleted();
-        
+
         // Set custom theme colors
         SetDefaultTheme();
     }
@@ -121,7 +121,7 @@ public partial class App
     {
         if (Current is null)
             return;
-        
+
         if (Current.RequestedThemeVariant == ThemeVariant.Dark)
             SetDarkTheme();
         else

@@ -28,10 +28,13 @@ public class AuthSetupViewModel : DialogViewModelBase
     {
         _settingsService = settingsService;
 
-        _settingsService.WatchProperty(o => o.LastAuthCookies, () =>
-        {
-            OnPropertyChanged(nameof(Cookies));
-            OnPropertyChanged(nameof(IsAuthenticated));
-        });
+        _settingsService.WatchProperty(
+            o => o.LastAuthCookies,
+            () =>
+            {
+                OnPropertyChanged(nameof(Cookies));
+                OnPropertyChanged(nameof(IsAuthenticated));
+            }
+        );
     }
 }

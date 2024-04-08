@@ -26,16 +26,16 @@ public partial class DownloadMultipleSetupViewModel(
 {
     [ObservableProperty]
     private string? _title;
-    
+
     [ObservableProperty]
     private IReadOnlyList<IVideo>? _availableVideos;
-    
+
     [ObservableProperty]
     private Container _selectedContainer = Container.Mp4;
-    
+
     [ObservableProperty]
     private VideoQualityPreference _selectedVideoQualityPreference = VideoQualityPreference.Highest;
-    
+
     public ObservableCollection<IVideo> SelectedVideos { get; } = [];
 
     public IReadOnlyList<Container> AvailableContainers { get; } =

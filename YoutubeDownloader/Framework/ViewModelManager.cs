@@ -49,7 +49,7 @@ public class ViewModelManager(IServiceProvider services)
 
         return viewModel;
     }
-    
+
     public DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel(
         string title,
         IReadOnlyList<IVideo> availableVideos,
@@ -96,11 +96,9 @@ public class ViewModelManager(IServiceProvider services)
 
         return viewModel;
     }
-    
-    public MessageBoxViewModel CreateMessageBoxViewModel(
-        string title,
-        string message
-    ) => CreateMessageBoxViewModel(title, message, "CLOSE", null);
+
+    public MessageBoxViewModel CreateMessageBoxViewModel(string title, string message) =>
+        CreateMessageBoxViewModel(title, message, "CLOSE", null);
 
     public SettingsViewModel CreateSettingsViewModel() =>
         services.GetRequiredService<SettingsViewModel>();

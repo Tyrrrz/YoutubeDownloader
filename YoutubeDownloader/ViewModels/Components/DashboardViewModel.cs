@@ -34,11 +34,11 @@ public partial class DashboardViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(ShowAuthSetupCommand))]
     [NotifyCanExecuteChangedFor(nameof(ShowSettingsCommand))]
     private bool _isBusy;
-    
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
     private string? _query;
-    
+
     public DashboardViewModel(
         ViewModelManager viewModelManager,
         DialogManager dialogManager,
@@ -66,11 +66,11 @@ public partial class DashboardViewModel : ViewModelBase
             () => OnPropertyChanged(nameof(IsDownloadsAvailable))
         );
     }
-    
+
     public ProgressContainer<Percentage> Progress { get; } = new();
-    
+
     public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
-    
+
     public bool IsProgressIndeterminate => IsBusy && Progress.Current.Fraction is <= 0 or >= 1;
 
     public bool IsDownloadsAvailable => Downloads.Any();
@@ -337,10 +337,10 @@ public partial class DashboardViewModel : ViewModelBase
         if (disposing)
         {
             CancelAllDownloads();
-            
+
             _downloadSemaphore.Dispose();
         }
-        
+
         base.Dispose(disposing);
     }
 }

@@ -78,13 +78,13 @@ public partial class MainViewModel(
     {
         // Load settings
         settingsService.Load();
-        
+
         // Set the correct theme
         if (settingsService.IsDarkModeEnabled)
             App.SetDarkTheme();
         else
             App.SetLightTheme();
-        
+
         await ShowUkraineSupportMessageAsync();
         await CheckForUpdatesAsync();
 
@@ -111,11 +111,11 @@ public partial class MainViewModel(
         {
             // Save settings
             settingsService.Save();
-            
+
             // Finalize pending updates
             updateService.FinalizeUpdate(false);
         }
-        
+
         base.Dispose(disposing);
     }
 }

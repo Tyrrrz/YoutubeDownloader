@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="CSharpier.MsBuild" Version="0.27.0" PrivateAssets="all" />
+    <PackageReference Include="CSharpier.MsBuild" Version="0.28.0" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.1.1" />
     <PackageReference Include="JsonExtensions" Version="1.2.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="YoutubeExplode" Version="6.3.12" />
-    <PackageReference Include="YoutubeExplode.Converter" Version="6.3.12" />
+    <PackageReference Include="YoutubeExplode" Version="6.3.13" />
+    <PackageReference Include="YoutubeExplode.Converter" Version="6.3.13" />
   </ItemGroup>
 
 </Project>

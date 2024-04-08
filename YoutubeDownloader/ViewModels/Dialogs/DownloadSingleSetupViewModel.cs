@@ -25,10 +25,10 @@ public partial class DownloadSingleSetupViewModel(
 {
     [ObservableProperty]
     private IVideo? _video;
-    
+
     [ObservableProperty]
     private IReadOnlyList<VideoDownloadOption>? _availableDownloadOptions;
-    
+
     [ObservableProperty]
     private VideoDownloadOption? _selectedDownloadOption;
 
@@ -48,7 +48,7 @@ public partial class DownloadSingleSetupViewModel(
     {
         if (Video is null || SelectedDownloadOption is null)
             return;
-        
+
         var container = SelectedDownloadOption.Container;
 
         var filePath = await dialogManager.PromptSaveFilePathAsync(

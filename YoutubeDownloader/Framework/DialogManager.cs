@@ -46,14 +46,15 @@ public class DialogManager : IDisposable
             _dialogLock.Release();
         }
     }
-    
+
     public async Task<string?> PromptSaveFilePathAsync(
         IReadOnlyList<FilePickerFileType>? fileTypes = null,
         string defaultFilePath = ""
     )
     {
-        var topLevel = Application.Current?.ApplicationLifetime?.TryGetTopLevel() ??
-                       throw new ApplicationException("Could not find the top-level visual element.");
+        var topLevel =
+            Application.Current?.ApplicationLifetime?.TryGetTopLevel()
+            ?? throw new ApplicationException("Could not find the top-level visual element.");
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(
             new FilePickerSaveOptions
@@ -69,13 +70,20 @@ public class DialogManager : IDisposable
 
     public async Task<string?> PromptDirectoryPathAsync(string defaultDirPath = "")
     {
-        var topLevel = Application.Current?.ApplicationLifetime?.TryGetTopLevel() ??
-                       throw new ApplicationException("Could not find the top-level visual element.");
-        
-        var startLocation = await topLevel.StorageProvider.TryGetFolderFromPathAsync(defaultDirPath);
-        
+        var topLevel =
+            Application.Current?.ApplicationLifetime?.TryGetTopLevel()
+            ?? throw new ApplicationException("Could not find the top-level visual element.");
+
+        var startLocation = await topLevel.StorageProvider.TryGetFolderFromPathAsync(
+            defaultDirPath
+        );
+
         var folderPickResult = await topLevel.StorageProvider.OpenFolderPickerAsync(
-            new FolderPickerOpenOptions { AllowMultiple = false, SuggestedStartLocation = startLocation }
+            new FolderPickerOpenOptions
+            {
+                AllowMultiple = false,
+                SuggestedStartLocation = startLocation
+            }
         );
 
         return folderPickResult.FirstOrDefault()?.Path.LocalPath;

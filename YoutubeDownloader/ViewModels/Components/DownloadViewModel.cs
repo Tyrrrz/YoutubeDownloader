@@ -20,16 +20,16 @@ public partial class DownloadViewModel : ViewModelBase
     private readonly DialogManager _dialogManager;
     private readonly IClipboard _clipboard;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
-    
+
     [ObservableProperty]
     private IVideo? _video;
-    
+
     [ObservableProperty]
     private VideoDownloadOption? _downloadOption;
-    
+
     [ObservableProperty]
     private VideoDownloadPreference? _downloadPreference;
-    
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FileName))]
     private string? _filePath;
@@ -45,7 +45,7 @@ public partial class DownloadViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CopyErrorMessageCommand))]
     private string? _errorMessage;
-    
+
     public DownloadViewModel(
         ViewModelManager viewModelManager,
         DialogManager dialogManager,
@@ -55,22 +55,25 @@ public partial class DownloadViewModel : ViewModelBase
         _viewModelManager = viewModelManager;
         _dialogManager = dialogManager;
         _clipboard = clipboard;
-        
-        Progress.WatchProperty(o => o.Current, ()   => OnPropertyChanged(nameof(IsProgressIndeterminate)));
+
+        Progress.WatchProperty(
+            o => o.Current,
+            () => OnPropertyChanged(nameof(IsProgressIndeterminate))
+        );
     }
 
     public CancellationToken CancellationToken => _cancellationTokenSource.Token;
-    
+
     public string? FileName => Path.GetFileName(FilePath);
 
     public ProgressContainer<Percentage> Progress { get; } = new();
 
     public bool IsProgressIndeterminate => Progress.Current.Fraction is <= 0 or >= 1;
-    
+
     public bool IsRunning => Status is DownloadStatus.Started;
 
     public bool IsCanceledOrFailed => Status is DownloadStatus.Canceled or DownloadStatus.Failed;
-    
+
     private bool CanCancel() => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
 
     [RelayCommand(CanExecute = nameof(CanCancel))]
@@ -128,7 +131,7 @@ public partial class DownloadViewModel : ViewModelBase
         {
             _cancellationTokenSource.Dispose();
         }
-        
+
         base.Dispose(disposing);
     }
 }
