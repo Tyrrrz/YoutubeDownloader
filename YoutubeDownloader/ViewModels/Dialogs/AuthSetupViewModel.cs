@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
+using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
@@ -11,6 +12,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public class AuthSetupViewModel : DialogViewModelBase
 {
     private readonly SettingsService _settingsService;
+
+    private readonly DisposableCollector _eventRoot = new();
 
     public IReadOnlyList<Cookie>? Cookies
     {
@@ -28,13 +31,25 @@ public class AuthSetupViewModel : DialogViewModelBase
     {
         _settingsService = settingsService;
 
-        _settingsService.WatchProperty(
-            o => o.LastAuthCookies,
-            () =>
-            {
-                OnPropertyChanged(nameof(Cookies));
-                OnPropertyChanged(nameof(IsAuthenticated));
-            }
+        _eventRoot.Add(
+            _settingsService.WatchProperty(
+                o => o.LastAuthCookies,
+                () =>
+                {
+                    OnPropertyChanged(nameof(Cookies));
+                    OnPropertyChanged(nameof(IsAuthenticated));
+                }
+            )
         );
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _eventRoot.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

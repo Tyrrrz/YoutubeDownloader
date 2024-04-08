@@ -19,6 +19,8 @@ public partial class DownloadViewModel : ViewModelBase
     private readonly ViewModelManager _viewModelManager;
     private readonly DialogManager _dialogManager;
     private readonly IClipboard _clipboard;
+
+    private readonly DisposableCollector _eventRoot = new();
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     [ObservableProperty]
@@ -35,7 +37,9 @@ public partial class DownloadViewModel : ViewModelBase
     private string? _filePath;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsRunning))]
+    [NotifyPropertyChangedFor(nameof(CanCancel))]
+    [NotifyPropertyChangedFor(nameof(CanShowFile))]
+    [NotifyPropertyChangedFor(nameof(CanOpenFile))]
     [NotifyPropertyChangedFor(nameof(IsCanceledOrFailed))]
     [NotifyCanExecuteChangedFor(nameof(CancelCommand))]
     [NotifyCanExecuteChangedFor(nameof(ShowFileCommand))]
@@ -56,9 +60,11 @@ public partial class DownloadViewModel : ViewModelBase
         _dialogManager = dialogManager;
         _clipboard = clipboard;
 
-        Progress.WatchProperty(
-            o => o.Current,
-            () => OnPropertyChanged(nameof(IsProgressIndeterminate))
+        _eventRoot.Add(
+            Progress.WatchProperty(
+                o => o.Current,
+                () => OnPropertyChanged(nameof(IsProgressIndeterminate))
+            )
         );
     }
 
@@ -70,16 +76,14 @@ public partial class DownloadViewModel : ViewModelBase
 
     public bool IsProgressIndeterminate => Progress.Current.Fraction is <= 0 or >= 1;
 
-    public bool IsRunning => Status is DownloadStatus.Started;
-
     public bool IsCanceledOrFailed => Status is DownloadStatus.Canceled or DownloadStatus.Failed;
 
-    private bool CanCancel() => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
+    private bool CanCancel => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
 
     [RelayCommand(CanExecute = nameof(CanCancel))]
     private void Cancel() => _cancellationTokenSource.Cancel();
 
-    private bool CanShowFile() => Status == DownloadStatus.Completed;
+    private bool CanShowFile => Status == DownloadStatus.Completed;
 
     [RelayCommand(CanExecute = nameof(CanShowFile))]
     private async Task ShowFileAsync()
@@ -97,7 +101,7 @@ public partial class DownloadViewModel : ViewModelBase
         }
     }
 
-    private bool CanOpenFile() => Status == DownloadStatus.Completed;
+    private bool CanOpenFile => Status == DownloadStatus.Completed;
 
     [RelayCommand(CanExecute = nameof(CanOpenFile))]
     private async Task OpenFileAsync()
@@ -114,12 +118,10 @@ public partial class DownloadViewModel : ViewModelBase
         }
     }
 
-    private bool CanCopyErrorMessage() => !string.IsNullOrWhiteSpace(ErrorMessage);
-
-    [RelayCommand(CanExecute = nameof(CanCopyErrorMessage))]
+    [RelayCommand]
     private async Task CopyErrorMessageAsync()
     {
-        if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        if (string.IsNullOrWhiteSpace(ErrorMessage))
             return;
 
         await _clipboard.SetTextAsync(ErrorMessage);
@@ -129,6 +131,7 @@ public partial class DownloadViewModel : ViewModelBase
     {
         if (disposing)
         {
+            _eventRoot.Dispose();
             _cancellationTokenSource.Dispose();
         }
 

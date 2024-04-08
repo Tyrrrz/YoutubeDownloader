@@ -6,7 +6,7 @@
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="UserControl"
     Width="500"
@@ -72,7 +72,7 @@
                                 <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                                     <!--  Author  -->
                                     <StackPanel Orientation="Horizontal">
-                                        <materialIcon:MaterialIcon
+                                        <materialIcons:MaterialIcon
                                             Width="16"
                                             Height="16"
                                             VerticalAlignment="Center"
@@ -88,7 +88,7 @@
 
                                     <!--  Duration  -->
                                     <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
-                                        <materialIcon:MaterialIcon
+                                        <materialIcons:MaterialIcon
                                             Width="16"
                                             Height="16"
                                             VerticalAlignment="Center"
@@ -105,7 +105,7 @@
                             </StackPanel>
 
                             <!--  Checkbox  -->
-                            <materialIcon:MaterialIcon
+                            <materialIcons:MaterialIcon
                                 Grid.Column="2"
                                 Width="24"
                                 Height="24"

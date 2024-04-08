@@ -53,7 +53,7 @@ public partial class DownloadMultipleSetupViewModel(
     }
 
     [RelayCommand]
-    private async Task CopyTitleAsync() => await clipboard.SetTextAsync(Title!);
+    private async Task CopyTitleAsync() => await clipboard.SetTextAsync(Title);
 
     private bool CanConfirm() => SelectedVideos.Any();
 

@@ -1,20 +1,19 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-             Width="380"
-             mc:Ignorable="d"
-             x:Class="YoutubeDownloader.Views.Dialogs.SettingsView"
-             Theme="{DynamicResource MaterialDesignRoot}"
-             x:DataType="dialogs:SettingsViewModel">
-    
+<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.SettingsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="380"
+    x:DataType="dialogs:SettingsViewModel"
+    Theme="{DynamicResource MaterialDesignRoot}"
+    mc:Ignorable="d">
     <Design.DataContext>
-        <dialogs:SettingsDesignTimeViewModel/>
+        <dialogs:SettingsViewModel />
     </Design.DataContext>
-             
+
     <Grid RowDefinitions="Auto,*,Auto">
-        
         <TextBlock
             Grid.Row="0"
             Margin="16"
@@ -30,7 +29,11 @@
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!--  Auto-updates  -->
-                    <DockPanel Background="Transparent" LastChildFill="False" IsVisible="{OnPlatform False, Windows=True}">
+                    <DockPanel
+                        Background="Transparent"
+                        IsVisible="{OnPlatform False,
+                                               Windows=True}"
+                        LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock>
                                 <Run Text="Perform automatic updates on every launch" />
@@ -65,9 +68,9 @@
                             x:Name="DarkModeToggleButton"
                             Margin="16,8"
                             VerticalAlignment="Center"
-                            IsCheckedChanged="DarkModeToggleButton_OnIsCheckedChanged"
                             DockPanel.Dock="Right"
-                            IsChecked="{Binding IsDarkModeEnabled}"/>
+                            IsChecked="{Binding IsDarkModeEnabled}"
+                            IsCheckedChanged="DarkModeToggleButton_OnIsCheckedChanged" />
                     </DockPanel>
 
                     <!--  Persist authentication  -->
@@ -101,7 +104,7 @@
                             DockPanel.Dock="Right"
                             IsChecked="{Binding ShouldInjectSubtitles}" />
                     </DockPanel>
-                    
+
                     <!--  Inject tags  -->
                     <DockPanel
                         Background="Transparent"
@@ -163,10 +166,10 @@
                             Text="File name template" />
                         <TextBox
                             Width="150"
-                            VerticalAlignment="Center"
-                            FontSize="13"
-                            DockPanel.Dock="Right"
                             Height="20"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            FontSize="13"
                             Text="{Binding FileNameTemplate}" />
                     </DockPanel>
 
@@ -212,7 +215,6 @@
             Content="CLOSE"
             IsCancel="True"
             IsDefault="True"
-            Theme="{StaticResource MaterialOutlineButton}" />
+            Theme="{DynamicResource MaterialOutlineButton}" />
     </Grid>
-
 </UserControl>

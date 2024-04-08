@@ -2,8 +2,8 @@
     x:Class="YoutubeDownloader.Views.MainView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
-    xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+    xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
     Title="{Binding Title}"
     Width="600"
@@ -14,12 +14,12 @@
         <viewModels:MainViewModel />
     </Design.DataContext>
 
-    <dialogHost:DialogHost
+    <dialogHostAvalonia:DialogHost
         x:Name="DialogHost"
         CloseOnClickAway="False"
         Loaded="DialogHost_OnLoaded">
-        <materialDesign:SnackbarHost>
+        <materialStyles:SnackbarHost>
             <ContentControl Content="{Binding Dashboard}" />
-        </materialDesign:SnackbarHost>
-    </dialogHost:DialogHost>
+        </materialStyles:SnackbarHost>
+    </dialogHostAvalonia:DialogHost>
 </Window>

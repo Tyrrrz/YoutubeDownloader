@@ -5,25 +5,20 @@
     xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
     xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:materialDesign="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-    xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="root"
-    x:DataType="components:DashboardViewModel"
-    mc:Ignorable="d">
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles">
+    <Design.DataContext>
+        <components:DashboardViewModel />
+    </Design.DataContext>
+
     <Grid RowDefinitions="Auto, Auto, *">
-
         <!--  Toolbar  -->
-        <Grid Grid.Row="0" Background="{DynamicResource MaterialDarkBackgroundBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
+        <Grid
+            Grid.Row="0"
+            Background="{DynamicResource MaterialDarkBackgroundBrush}"
+            ColumnDefinitions="*,50,Auto">
             <!--  Query and process query button  -->
-            <materialDesign:Card
+            <materialStyles:Card
                 Grid.Column="0"
                 Height="44"
                 Margin="12,12,0,12"
@@ -35,6 +30,7 @@
                     AcceptsReturn="True"
                     BorderThickness="0"
                     FontSize="16"
+                    KeyDown="QueryTextBox_OnKeyDown"
                     MaxLines="4"
                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                     Text="{Binding Query}"
@@ -42,7 +38,7 @@
                     Watermark="URL or search query">
                     <TextBox.InnerLeftContent>
                         <!--  Search icon  -->
-                        <materialIcon:MaterialIcon
+                        <materialIcons:MaterialIcon
                             Width="24"
                             Height="24"
                             Margin="8"
@@ -58,9 +54,9 @@
                             Padding="4"
                             Command="{Binding ProcessQueryCommand}"
                             IsDefault="True"
-                            Theme="{StaticResource MaterialFlatButton}"
+                            Theme="{DynamicResource MaterialFlatButton}"
                             ToolTip.Tip="Process query (Enter)">
-                            <materialIcon:MaterialIcon
+                            <materialIcons:MaterialIcon
                                 Width="24"
                                 Height="24"
                                 Foreground="{DynamicResource PrimaryHueMidBrush}"
@@ -68,7 +64,7 @@
                         </Button>
                     </TextBox.InnerRightContent>
                 </TextBox>
-            </materialDesign:Card>
+            </materialStyles:Card>
 
             <!--  Auth button  -->
             <Button
@@ -77,12 +73,9 @@
                 Padding="4"
                 Command="{Binding ShowAuthSetupCommand}"
                 Foreground="{DynamicResource MaterialDarkForegroundBrush}"
-                Theme="{StaticResource MaterialFlatButton}"
+                Theme="{DynamicResource MaterialFlatButton}"
                 ToolTip.Tip="Authentication">
-                <Button.Resources>
-                    <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
-                </Button.Resources>
-                <materialIcon:MaterialIcon
+                <materialIcons:MaterialIcon
                     Width="24"
                     Height="24"
                     Kind="AccountKey" />
@@ -95,12 +88,9 @@
                 Padding="4"
                 Command="{Binding ShowSettingsCommand}"
                 Foreground="{DynamicResource MaterialDarkForegroundBrush}"
-                Theme="{StaticResource MaterialFlatButton}"
+                Theme="{DynamicResource MaterialFlatButton}"
                 ToolTip.Tip="Settings">
-                <Button.Resources>
-                    <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
-                </Button.Resources>
-                <materialIcon:MaterialIcon
+                <materialIcons:MaterialIcon
                     Width="24"
                     Height="24"
                     Kind="Settings" />
@@ -110,7 +100,8 @@
         <!--  Progress  -->
         <ProgressBar
             Grid.Row="1"
-            Background="{DynamicResource MaterialDarkBackgroundBrush}"
+            Height="2"
+            Background="Transparent"
             IsIndeterminate="{Binding IsProgressIndeterminate}"
             Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
 
@@ -121,7 +112,7 @@
                 Margin="8,32,8,8"
                 HorizontalAlignment="Center"
                 IsVisible="{Binding !IsDownloadsAvailable}">
-                <materialIcon:MaterialIcon
+                <materialIcons:MaterialIcon
                     Width="256"
                     Height="256"
                     HorizontalAlignment="Center"
@@ -216,7 +207,6 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <Grid ColumnDefinitions="Auto,Auto">
-
                                     <!--  Progress  -->
                                     <ProgressBar
                                         Grid.Column="0"
@@ -224,13 +214,14 @@
                                         Classes="circular"
                                         Foreground="{DynamicResource SecondaryHueMidBrush}"
                                         IsIndeterminate="{Binding IsProgressIndeterminate}"
-                                        IsVisible="{Binding IsRunning}"
+                                        IsVisible="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
                                         Maximum="1"
                                         Minimum="0"
                                         Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
 
                                     <!--  Status  -->
                                     <TextBlock
+                                        x:Name="StatusTextBlock"
                                         Grid.Column="1"
                                         VerticalAlignment="Center"
                                         Classes.canceled="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
@@ -238,7 +229,7 @@
                                         Classes.enqueued="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
                                         Classes.failed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Failed}}"
                                         Classes.started="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
-                                        PointerReleased="OnStatusPointerReleased"
+                                        PointerReleased="StatusTextBlock_OnPointerReleased"
                                         TextTrimming="CharacterEllipsis">
                                         <TextBlock.Styles>
                                             <Style Selector="TextBlock">
@@ -264,7 +255,6 @@
                                                     <Setter Property="Cursor" Value="Hand" />
                                                 </Style>
                                             </Style>
-
                                         </TextBlock.Styles>
                                     </TextBlock>
                                 </Grid>
@@ -288,7 +278,7 @@
                                         IsVisible="{Binding CanShowFile}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Show file">
-                                        <materialIcon:MaterialIcon
+                                        <materialIcons:MaterialIcon
                                             Width="24"
                                             Height="24"
                                             Kind="FileFindOutline" />
@@ -302,7 +292,7 @@
                                         IsVisible="{Binding CanOpenFile}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Play">
-                                        <materialIcon:MaterialIcon
+                                        <materialIcons:MaterialIcon
                                             Width="24"
                                             Height="24"
                                             Kind="PlayCircleOutline" />
@@ -316,7 +306,7 @@
                                         IsVisible="{Binding CanCancel}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Cancel download">
-                                        <materialIcon:MaterialIcon
+                                        <materialIcons:MaterialIcon
                                             Width="24"
                                             Height="24"
                                             Kind="CloseCircleOutline" />
@@ -326,12 +316,12 @@
                                     <Button
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
-                                        Command="{Binding #root.((components:DashboardViewModel)DataContext).RestartDownloadCommand}"
+                                        Command="{Binding $parent[UserControl].DataContext.RestartDownloadCommand}"
                                         CommandParameter="{Binding}"
                                         IsVisible="{Binding IsCanceledOrFailed}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Restart download">
-                                        <materialIcon:MaterialIcon
+                                        <materialIcons:MaterialIcon
                                             Width="24"
                                             Height="24"
                                             Kind="Restart" />
@@ -340,19 +330,8 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-
                 </DataGrid.Columns>
-
-
-
-
             </DataGrid>
-
-
         </Grid>
-
-
-
     </Grid>
-
 </UserControl>

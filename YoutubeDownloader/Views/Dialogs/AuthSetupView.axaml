@@ -2,27 +2,16 @@
     x:Class="YoutubeDownloader.Views.Dialogs.AuthSetupView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    xmlns:materialIcon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Width="450"
     Height="450"
-    Theme="{DynamicResource MaterialDesignRoot}"
-    x:DataType="dialogs:AuthSetupViewModel"
-    mc:Ignorable="d">
+    Theme="{DynamicResource MaterialDesignRoot}">
     <Design.DataContext>
-        <dialogs:AuthSetupViewDesignTimeViewModel IsAuthenticated="True"/>
+        <dialogs:AuthSetupViewModel />
     </Design.DataContext>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
 
+    <Grid RowDefinitions="Auto,*,Auto">
         <!--  Title  -->
         <TextBlock
             Grid.Row="0"
@@ -43,7 +32,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     IsVisible="{Binding IsAuthenticated}">
-                    <materialIcon:MaterialIcon
+                    <materialIcons:MaterialIcon
                         Width="196"
                         Height="196"
                         HorizontalAlignment="Center"
@@ -58,12 +47,13 @@
                         <Run FontWeight="Light" Text="You are currently authenticated" />
                     </TextBlock>
 
-                    <Button Theme="{StaticResource MaterialFlatButton}"
-                            Click="LogoutHyperlink_OnClick"
-                            HorizontalAlignment="Center"
-                            Classes="accent"
-                            Content="Log out"
-                            FontSize="18" />
+                    <Button
+                        HorizontalAlignment="Center"
+                        Classes="accent"
+                        Click="LogoutHyperlink_OnClick"
+                        Content="Log out"
+                        FontSize="18"
+                        Theme="{DynamicResource MaterialFlatButton}" />
                 </StackPanel>
 
                 <!--  Placeholder  -->
@@ -72,16 +62,16 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     FontSize="18"
-                    Text="Loading..."
-                    IsVisible="{Binding !IsAuthenticated}" />
+                    IsVisible="{Binding !IsAuthenticated}"
+                    Text="Loading..." />
 
                 <!--  Browser  -->
-                <WebView 
+                <WebView
                     x:Name="WebBrowser"
+                    IsVisible="{Binding !IsAuthenticated}"
                     Loaded="WebBrowser_OnLoaded"
-                    WebViewCreated="WebBrowser_OnWebViewCreated"
                     NavigationStarting="WebBrowser_OnNavigationStarting"
-                    IsVisible="{Binding !IsAuthenticated}" />
+                    WebViewCreated="WebBrowser_OnWebViewCreated" />
             </Grid>
         </Border>
 
@@ -92,8 +82,8 @@
             HorizontalAlignment="Stretch"
             Command="{Binding CloseCommand}"
             Content="CLOSE"
-            IsCancel="True" 
+            IsCancel="True"
             IsDefault="True"
-            Theme="{StaticResource MaterialOutlineButton}" />
+            Theme="{DynamicResource MaterialOutlineButton}" />
     </Grid>
 </UserControl>

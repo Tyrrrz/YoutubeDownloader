@@ -25,8 +25,9 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
-    private readonly AutoResetProgressMuxer _progressMuxer;
+    private readonly DisposableCollector _eventRoot = new();
     private readonly ResizableSemaphore _downloadSemaphore = new();
+    private readonly AutoResetProgressMuxer _progressMuxer;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsProgressIndeterminate))]
@@ -51,19 +52,25 @@ public partial class DashboardViewModel : ViewModelBase
 
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
 
-        _settingsService.WatchProperty(
-            o => o.ParallelLimit,
-            () => _downloadSemaphore.MaxCount = _settingsService.ParallelLimit
+        _eventRoot.Add(
+            _settingsService.WatchProperty(
+                o => o.ParallelLimit,
+                () => _downloadSemaphore.MaxCount = _settingsService.ParallelLimit
+            )
         );
 
-        Progress.WatchProperty(
-            o => o.Current,
-            () => OnPropertyChanged(nameof(IsProgressIndeterminate))
+        _eventRoot.Add(
+            Progress.WatchProperty(
+                o => o.Current,
+                () => OnPropertyChanged(nameof(IsProgressIndeterminate))
+            )
         );
 
-        Downloads.WatchProperty(
-            o => o.Count,
-            () => OnPropertyChanged(nameof(IsDownloadsAvailable))
+        _eventRoot.Add(
+            Downloads.WatchProperty(
+                o => o.Count,
+                () => OnPropertyChanged(nameof(IsDownloadsAvailable))
+            )
         );
     }
 
@@ -338,6 +345,7 @@ public partial class DashboardViewModel : ViewModelBase
         {
             CancelAllDownloads();
 
+            _eventRoot.Dispose();
             _downloadSemaphore.Dispose();
         }
 

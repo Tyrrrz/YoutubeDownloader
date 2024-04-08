@@ -2,30 +2,16 @@
     x:Class="YoutubeDownloader.Views.Dialogs.MessageBoxView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    x:DataType="dialogs:MessageBoxViewModel"
-    Theme="{DynamicResource MaterialDesignRoot}"
     Width="500"
-    mc:Ignorable="d">
+    x:DataType="dialogs:MessageBoxViewModel"
+    Theme="{DynamicResource MaterialDesignRoot}">
     <Design.DataContext>
-        <dialogs:MessageBoxViewModel
-            Title="Message Title"
-            Message="This is a message"
-            OkButtonText="OK"
-            IsOkButtonVisible="True"
-            CancelButtonText="CANCEL"
-            IsCancelButtonVisible="True"/>
+        <dialogs:MessageBoxViewModel />
     </Design.DataContext>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
 
+    <Grid RowDefinitions="Auto,*,Auto">
         <!--  Title  -->
         <TextBlock
             Grid.Row="0"
@@ -40,7 +26,7 @@
         <Border
             Grid.Row="1"
             Padding="0,8"
-            BorderBrush="{StaticResource MaterialDesignDivider}"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <TextBlock
@@ -58,10 +44,10 @@
             <!--  OK  -->
             <Button
                 Command="{Binding CloseCommand}"
-                Content="{Binding OkButtonText}"
+                Content="{Binding DefaultButtonText}"
                 IsDefault="True"
-                Theme="{DynamicResource MaterialOutlineButton}"
-                IsVisible="{Binding IsOkButtonVisible}">
+                IsVisible="{Binding IsDefaultButtonVisible}"
+                Theme="{DynamicResource MaterialOutlineButton}">
                 <Button.CommandParameter>
                     <system:Boolean>True</system:Boolean>
                 </Button.CommandParameter>
@@ -74,8 +60,8 @@
                 Command="{Binding CloseCommand}"
                 Content="{Binding CancelButtonText}"
                 IsCancel="True"
-                Theme="{StaticResource MaterialOutlineButton}"
-                IsVisible="{Binding IsCancelButtonVisible}" />
+                IsVisible="{Binding IsCancelButtonVisible}"
+                Theme="{DynamicResource MaterialOutlineButton}" />
         </UniformGrid>
     </Grid>
 </UserControl>

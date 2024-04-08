@@ -4,12 +4,12 @@ using System.Net;
 using Avalonia.Interactivity;
 using Microsoft.Web.WebView2.Core;
 using WebViewCore.Events;
+using YoutubeDownloader.Framework;
 using YoutubeDownloader.ViewModels.Dialogs;
-using YoutubeDownloader.Views.Framework;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class AuthSetupView : ViewModelAwareUserControl<AuthSetupViewModel>
+public partial class AuthSetupView : UserControl<AuthSetupViewModel>
 {
     private const string HomePageUrl = "https://www.youtube.com";
     private static readonly string LoginPageUrl =
@@ -26,7 +26,7 @@ public partial class AuthSetupView : ViewModelAwareUserControl<AuthSetupViewMode
 
     private void LogoutHyperlink_OnClick(object sender, RoutedEventArgs args)
     {
-        ViewModel.Cookies = null;
+        DataContext.Cookies = null;
         NavigateToLoginPage();
     }
 
@@ -65,7 +65,7 @@ public partial class AuthSetupView : ViewModelAwareUserControl<AuthSetupViewMode
             var cookies = await _coreWebView2!.CookieManager.GetCookiesAsync(
                 args.Url!.AbsoluteUri!
             );
-            ViewModel.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
+            DataContext.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
         }
     }
 }

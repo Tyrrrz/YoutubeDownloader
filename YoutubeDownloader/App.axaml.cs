@@ -31,7 +31,7 @@ public partial class App : Application, IDisposable
         services.AddSingleton<SnackbarManager>();
         services.AddSingleton<ViewManager>();
         services.AddSingleton<ViewModelManager>();
-        
+
         // Services
         services.AddSingleton<SettingsService>();
         services.AddSingleton<UpdateService>();
