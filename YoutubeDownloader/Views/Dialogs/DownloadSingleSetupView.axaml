@@ -8,10 +8,12 @@
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     x:Name="UserControl"
     Width="500"
-    x:DataType="dialogs:DownloadSingleSetupViewModel"
     Loaded="UserControl_OnLoaded">
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Design.DataContext>
+        <dialogs:DownloadSingleSetupViewModel />
+    </Design.DataContext>
 
+    <Grid RowDefinitions="Auto,*,Auto">
         <!--  Info  -->
         <StackPanel Grid.Row="0" Margin="16">
             <!--  Title  -->
@@ -74,7 +76,6 @@
             Grid.Row="2"
             Margin="16"
             ColumnDefinitions="*,Auto">
-
             <!--  Download option  -->
             <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Format:" />
@@ -99,8 +100,11 @@
                                     </Run.Styles>
                                 </Run>
 
+                                <!--  Separator  -->
+                                <Run Text="—" />
+
                                 <!--  Container  -->
-                                <Run Text="(" /><Run Text="{Binding Container, Mode=OneWay}" /><Run Text=")" />
+                                <Run Text="{Binding Container, Mode=OneWay}" />
                             </TextBlock>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>

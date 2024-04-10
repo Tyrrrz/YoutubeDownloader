@@ -32,10 +32,13 @@
                         LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock>
-                                <Run Text="Perform automatic updates on every launch" />
+                                <Run Text="Perform automatic updates on every launch." />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="Warning:" />
-                                <Run Text="it's recommended to leave this option enabled to ensure that the app is compatible with the latest version of YouTube" />
+                                <Run Text="it's recommended to leave this option enabled to ensure that the app" />
+                                <LineBreak />
+                                <Run Text=" " />
+                                <Run Text="is compatible with the latest version of YouTube." />
                             </TextBlock>
                         </ToolTip.Tip>
                         <TextBlock
@@ -120,7 +123,7 @@
                     <DockPanel
                         Background="Transparent"
                         LastChildFill="False"
-                        ToolTip.Tip="When selecting multiple videos to download, skip those that already have matching files in the output directory">
+                        ToolTip.Tip="When downloading multiple videos, skip those that already have matching files in the output directory">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
@@ -138,20 +141,24 @@
                         LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock>
-                                <Run Text="Template used for generating file names for downloaded videos" />
+                                <Run Text="Template used for generating file names for downloaded videos." />
                                 <LineBreak />
                                 <LineBreak />
                                 <Run Text="Available tokens:" />
                                 <LineBreak />
+                                <Run Text=" " />
                                 <Run FontWeight="SemiBold" Text="$num" />
                                 <Run Text="— video's position in the list (if applicable)" />
                                 <LineBreak />
+                                <Run Text=" " />
                                 <Run FontWeight="SemiBold" Text="$id" />
                                 <Run Text="— video ID" />
                                 <LineBreak />
+                                <Run Text=" " />
                                 <Run FontWeight="SemiBold" Text="$title" />
                                 <Run Text="— video title" />
                                 <LineBreak />
+                                <Run Text=" " />
                                 <Run FontWeight="SemiBold" Text="$author" />
                                 <Run Text="— video author" />
                             </TextBlock>

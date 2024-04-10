@@ -6,8 +6,8 @@
     xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
     Title="{Binding Title}"
-    Width="600"
-    Height="580"
+    Width="720"
+    Height="620"
     Icon="/favicon.ico"
     WindowStartupLocation="CenterScreen">
     <Design.DataContext>

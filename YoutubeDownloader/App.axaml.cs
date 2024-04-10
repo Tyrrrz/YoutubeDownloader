@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using AvaloniaWebView;
 using Material.Styles.Themes;
@@ -86,7 +87,6 @@ public partial class App
         if (Current is null)
             return;
 
-        Current.RequestedThemeVariant = ThemeVariant.Light;
         Current.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = Theme.Create(
             Theme.Light,
             Color.Parse("#343838"),
@@ -103,7 +103,6 @@ public partial class App
         if (Current is null)
             return;
 
-        Current.RequestedThemeVariant = ThemeVariant.Dark;
         Current.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = Theme.Create(
             Theme.Dark,
             Color.Parse("#E8E8E8"),
@@ -120,7 +119,11 @@ public partial class App
         if (Current is null)
             return;
 
-        if (Current.RequestedThemeVariant == ThemeVariant.Dark)
+        var isDark = Current.RequestedThemeVariant is not null
+            ? Current.RequestedThemeVariant == ThemeVariant.Dark
+            : Current.PlatformSettings?.GetColorValues().ThemeVariant == PlatformThemeVariant.Dark;
+
+        if (isDark)
             SetDarkTheme();
         else
             SetLightTheme();

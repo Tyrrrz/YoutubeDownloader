@@ -4,13 +4,14 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Input.Platform;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
@@ -20,8 +21,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public partial class DownloadMultipleSetupViewModel(
     ViewModelManager viewModelManager,
     DialogManager dialogManager,
-    SettingsService settingsService,
-    IClipboard clipboard
+    SettingsService settingsService
 ) : DialogViewModelBase<IReadOnlyList<DownloadViewModel>>
 {
     [ObservableProperty]
@@ -53,7 +53,11 @@ public partial class DownloadMultipleSetupViewModel(
     }
 
     [RelayCommand]
-    private async Task CopyTitleAsync() => await clipboard.SetTextAsync(Title);
+    private async Task CopyTitleAsync()
+    {
+        if (Application.Current?.ApplicationLifetime?.TryGetTopLevel()?.Clipboard is { } clipboard)
+            await clipboard.SetTextAsync(Title);
+    }
 
     private bool CanConfirm() => SelectedVideos.Any();
 

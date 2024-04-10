@@ -24,7 +24,7 @@
             Grid.Row="1"
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
-            <Grid>
+            <Panel>
                 <!--  Current auth status & logout link  -->
                 <StackPanel
                     Margin="16"
@@ -71,7 +71,7 @@
                     Loaded="WebBrowser_OnLoaded"
                     NavigationStarting="WebBrowser_OnNavigationStarting"
                     WebViewCreated="WebBrowser_OnWebViewCreated" />
-            </Grid>
+            </Panel>
         </Border>
 
         <!--  Close button  -->

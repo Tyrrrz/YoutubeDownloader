@@ -6,107 +6,97 @@
     xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-    xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles">
+    xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+    x:Name="UserControl"
+    Loaded="UserControl_OnLoaded">
     <Design.DataContext>
         <components:DashboardViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, Auto, *">
-        <!--  Toolbar  -->
-        <Grid
-            Grid.Row="0"
-            Background="{DynamicResource MaterialDarkBackgroundBrush}"
-            ColumnDefinitions="*,50,Auto">
-            <!--  Query and process query button  -->
-            <materialStyles:Card
-                Grid.Column="0"
-                Height="44"
-                Margin="12,12,0,12"
-                Padding="8,0,8,0">
-                <TextBox
-                    x:Name="QueryTextBox"
-                    Margin="0,6,6,8"
-                    VerticalAlignment="Bottom"
-                    AcceptsReturn="True"
-                    BorderThickness="0"
-                    FontSize="16"
-                    KeyDown="QueryTextBox_OnKeyDown"
-                    MaxLines="4"
-                    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                    Text="{Binding Query}"
-                    Theme="{DynamicResource SoloTextBox}"
-                    Watermark="URL or search query">
-                    <TextBox.InnerLeftContent>
-                        <!--  Search icon  -->
-                        <materialIcons:MaterialIcon
-                            Width="24"
-                            Height="24"
-                            Margin="8"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource PrimaryHueMidBrush}"
-                            Kind="Search" />
-                    </TextBox.InnerLeftContent>
-                    <TextBox.InnerRightContent>
-                        <!--  Process query button  -->
-                        <Button
-                            x:Name="ProcessQueryButton"
-                            Margin="0,0,6,0"
-                            Padding="4"
-                            Command="{Binding ProcessQueryCommand}"
-                            IsDefault="True"
-                            Theme="{DynamicResource MaterialFlatButton}"
-                            ToolTip.Tip="Process query (Enter)">
+    <DockPanel>
+        <!--  Header  -->
+        <StackPanel Background="{DynamicResource MaterialDarkBackgroundBrush}" DockPanel.Dock="Top">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <!--  Query  -->
+                <materialStyles:Card Grid.Column="0" Margin="12,12,4,12">
+                    <TextBox
+                        x:Name="QueryTextBox"
+                        MinHeight="36"
+                        AcceptsReturn="True"
+                        FontSize="16"
+                        MaxLines="4"
+                        ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                        Text="{Binding Query}"
+                        Theme="{DynamicResource SoloTextBox}"
+                        Watermark="URL or search query">
+                        <TextBox.InnerLeftContent>
                             <materialIcons:MaterialIcon
                                 Width="24"
                                 Height="24"
-                                Foreground="{DynamicResource PrimaryHueMidBrush}"
-                                Kind="ArrowRight" />
-                        </Button>
-                    </TextBox.InnerRightContent>
-                </TextBox>
-            </materialStyles:Card>
+                                Margin="4,0,8,0"
+                                Kind="Search" />
+                        </TextBox.InnerLeftContent>
+                        <TextBox.InnerRightContent>
+                            <Button
+                                x:Name="ProcessQueryButton"
+                                Margin="0,0,4,0"
+                                Padding="4"
+                                Command="{Binding ProcessQueryCommand}"
+                                IsDefault="True"
+                                Theme="{DynamicResource MaterialFlatButton}"
+                                ToolTip.Tip="Process query (Enter)">
+                                <materialIcons:MaterialIcon
+                                    Width="24"
+                                    Height="24"
+                                    Kind="ArrowRight" />
+                            </Button>
+                        </TextBox.InnerRightContent>
+                    </TextBox>
+                </materialStyles:Card>
 
-            <!--  Auth button  -->
-            <Button
-                Grid.Column="1"
-                Margin="6"
-                Padding="4"
-                Command="{Binding ShowAuthSetupCommand}"
-                Foreground="{DynamicResource MaterialDarkForegroundBrush}"
-                Theme="{DynamicResource MaterialFlatButton}"
-                ToolTip.Tip="Authentication">
-                <materialIcons:MaterialIcon
-                    Width="24"
-                    Height="24"
-                    Kind="AccountKey" />
-            </Button>
+                <!--  Auth button  -->
+                <Button
+                    Grid.Column="1"
+                    Margin="4,0"
+                    Padding="8"
+                    VerticalAlignment="Center"
+                    Command="{Binding ShowAuthSetupCommand}"
+                    Foreground="{DynamicResource MaterialPrimaryMidForegroundBrush}"
+                    Theme="{DynamicResource MaterialFlatButton}"
+                    ToolTip.Tip="Authentication">
+                    <materialIcons:MaterialIcon
+                        Width="24"
+                        Height="24"
+                        Kind="AccountKey" />
+                </Button>
 
-            <!--  Settings button  -->
-            <Button
-                Grid.Column="2"
-                Margin="6"
-                Padding="4"
-                Command="{Binding ShowSettingsCommand}"
-                Foreground="{DynamicResource MaterialDarkForegroundBrush}"
-                Theme="{DynamicResource MaterialFlatButton}"
-                ToolTip.Tip="Settings">
-                <materialIcons:MaterialIcon
-                    Width="24"
-                    Height="24"
-                    Kind="Settings" />
-            </Button>
-        </Grid>
+                <!--  Settings button  -->
+                <Button
+                    Grid.Column="2"
+                    Margin="4,0"
+                    Padding="8"
+                    VerticalAlignment="Center"
+                    Command="{Binding ShowSettingsCommand}"
+                    Foreground="{DynamicResource MaterialPrimaryMidForegroundBrush}"
+                    Theme="{DynamicResource MaterialFlatButton}"
+                    ToolTip.Tip="Settings">
+                    <materialIcons:MaterialIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Settings" />
+                </Button>
+            </Grid>
 
-        <!--  Progress  -->
-        <ProgressBar
-            Grid.Row="1"
-            Height="2"
-            Background="Transparent"
-            IsIndeterminate="{Binding IsProgressIndeterminate}"
-            Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
+            <!--  Progress  -->
+            <ProgressBar
+                Height="2"
+                Background="Transparent"
+                IsIndeterminate="{Binding IsProgressIndeterminate}"
+                Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
+        </StackPanel>
 
         <!--  Content  -->
-        <Grid Grid.Row="2" Background="{DynamicResource MaterialCardBackgroundBrush}">
+        <Panel Background="{DynamicResource MaterialCardBackgroundBrush}" DockPanel.Dock="Bottom">
             <!--  Placeholder  -->
             <StackPanel
                 Margin="8,32,8,8"
@@ -272,7 +262,7 @@
                                     Orientation="Horizontal">
                                     <!--  Show file  -->
                                     <Button
-                                        Padding="4,0,4,0"
+                                        Padding="4"
                                         VerticalAlignment="Center"
                                         Command="{Binding ShowFileCommand}"
                                         IsVisible="{Binding CanShowFile}"
@@ -286,7 +276,7 @@
 
                                     <!--  Open file  -->
                                     <Button
-                                        Padding="4,0,4,0"
+                                        Padding="4"
                                         VerticalAlignment="Center"
                                         Command="{Binding OpenFileCommand}"
                                         IsVisible="{Binding CanOpenFile}"
@@ -300,7 +290,7 @@
 
                                     <!--  Cancel download  -->
                                     <Button
-                                        Padding="4,0,4,0"
+                                        Padding="4"
                                         VerticalAlignment="Center"
                                         Command="{Binding CancelCommand}"
                                         IsVisible="{Binding CanCancel}"
@@ -314,7 +304,7 @@
 
                                     <!--  Restart download  -->
                                     <Button
-                                        Padding="4,0,4,0"
+                                        Padding="4"
                                         VerticalAlignment="Center"
                                         Command="{Binding $parent[UserControl].DataContext.RestartDownloadCommand}"
                                         CommandParameter="{Binding}"
@@ -332,6 +322,6 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-        </Grid>
-    </Grid>
+        </Panel>
+    </DockPanel>
 </UserControl>

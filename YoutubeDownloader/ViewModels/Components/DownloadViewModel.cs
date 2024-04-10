@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Input.Platform;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
@@ -18,10 +18,11 @@ public partial class DownloadViewModel : ViewModelBase
 {
     private readonly ViewModelManager _viewModelManager;
     private readonly DialogManager _dialogManager;
-    private readonly IClipboard _clipboard;
 
     private readonly DisposableCollector _eventRoot = new();
     private readonly CancellationTokenSource _cancellationTokenSource = new();
+
+    private bool _isDisposed;
 
     [ObservableProperty]
     private IVideo? _video;
@@ -50,15 +51,10 @@ public partial class DownloadViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(CopyErrorMessageCommand))]
     private string? _errorMessage;
 
-    public DownloadViewModel(
-        ViewModelManager viewModelManager,
-        DialogManager dialogManager,
-        IClipboard clipboard
-    )
+    public DownloadViewModel(ViewModelManager viewModelManager, DialogManager dialogManager)
     {
         _viewModelManager = viewModelManager;
         _dialogManager = dialogManager;
-        _clipboard = clipboard;
 
         _eventRoot.Add(
             Progress.WatchProperty(
@@ -81,17 +77,26 @@ public partial class DownloadViewModel : ViewModelBase
     private bool CanCancel => Status is DownloadStatus.Enqueued or DownloadStatus.Started;
 
     [RelayCommand(CanExecute = nameof(CanCancel))]
-    private void Cancel() => _cancellationTokenSource.Cancel();
+    private void Cancel()
+    {
+        if (_isDisposed)
+            return;
+
+        _cancellationTokenSource.Cancel();
+    }
 
     private bool CanShowFile => Status == DownloadStatus.Completed;
 
     [RelayCommand(CanExecute = nameof(CanShowFile))]
     private async Task ShowFileAsync()
     {
+        if (string.IsNullOrWhiteSpace(FilePath))
+            return;
+
         try
         {
             // Navigate to the file in Windows Explorer
-            ProcessEx.Start("explorer", ["/select,", FilePath!]);
+            ProcessEx.Start("explorer", ["/select,", FilePath]);
         }
         catch (Exception ex)
         {
@@ -106,9 +111,12 @@ public partial class DownloadViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanOpenFile))]
     private async Task OpenFileAsync()
     {
+        if (string.IsNullOrWhiteSpace(FilePath))
+            return;
+
         try
         {
-            ProcessEx.StartShellExecute(FilePath!);
+            ProcessEx.StartShellExecute(FilePath);
         }
         catch (Exception ex)
         {
@@ -124,7 +132,8 @@ public partial class DownloadViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(ErrorMessage))
             return;
 
-        await _clipboard.SetTextAsync(ErrorMessage);
+        if (Application.Current?.ApplicationLifetime?.TryGetTopLevel()?.Clipboard is { } clipboard)
+            await clipboard.SetTextAsync(ErrorMessage);
     }
 
     protected override void Dispose(bool disposing)
@@ -133,6 +142,8 @@ public partial class DownloadViewModel : ViewModelBase
         {
             _eventRoot.Dispose();
             _cancellationTokenSource.Dispose();
+
+            _isDisposed = true;
         }
 
         base.Dispose(disposing);

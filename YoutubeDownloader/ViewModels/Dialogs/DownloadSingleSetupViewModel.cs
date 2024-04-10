@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Input.Platform;
+using Avalonia;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,6 +10,7 @@ using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeExplode.Videos;
 
@@ -18,8 +19,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public partial class DownloadSingleSetupViewModel(
     ViewModelManager viewModelManager,
     DialogManager dialogManager,
-    SettingsService settingsService,
-    IClipboard clipboard
+    SettingsService settingsService
 ) : DialogViewModelBase<DownloadViewModel>
 {
     [ObservableProperty]
@@ -40,7 +40,11 @@ public partial class DownloadSingleSetupViewModel(
     }
 
     [RelayCommand]
-    private async Task CopyTitleAsync() => await clipboard.SetTextAsync(Video?.Title);
+    private async Task CopyTitleAsync()
+    {
+        if (Application.Current?.ApplicationLifetime?.TryGetTopLevel()?.Clipboard is { } clipboard)
+            await clipboard.SetTextAsync(Video?.Title);
+    }
 
     [RelayCommand]
     private async Task ConfirmAsync()

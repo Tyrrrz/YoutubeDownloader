@@ -8,10 +8,12 @@
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     x:Name="UserControl"
     Width="500"
-    x:DataType="dialogs:DownloadMultipleSetupViewModel"
     Loaded="UserControl_OnLoaded">
-    <Grid RowDefinitions="Auto,*,Auto,Auto">
+    <Design.DataContext>
+        <dialogs:DownloadMultipleSetupViewModel />
+    </Design.DataContext>
 
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
         <!--  Title  -->
         <TextBlock
             Grid.Row="0"
@@ -32,21 +34,18 @@
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
             <ListBox
-                Padding="8"
                 ItemsSource="{Binding AvailableVideos}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 SelectedItems="{Binding SelectedVideos}"
                 SelectionMode="Multiple">
-                <ListBox.Styles>
-                    <Style Selector="ListBoxItem">
-                        <Setter Property="FocusAdorner" Value="{x:Null}" />
-                        <Setter Property="Padding" Value="8,4,8,4" />
-                    </Style>
-                </ListBox.Styles>
+                <ListBox.ItemContainerTheme>
+                    <ControlTheme BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Padding" Value="8,4" />
+                    </ControlTheme>
+                </ListBox.ItemContainerTheme>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*,Auto">
-
                             <!--  Thumbnail  -->
                             <Image
                                 Grid.Column="0"
@@ -108,10 +107,9 @@
                                 Height="24"
                                 Margin="8,0,0,0"
                                 VerticalAlignment="Center"
-                                IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Mode=OneWay}"
+                                IsVisible="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
                                 Kind="Check" />
                         </Grid>
-
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -120,7 +118,7 @@
         <!--  Preferences  -->
         <DockPanel
             Grid.Row="2"
-            Margin="16"
+            Margin="16,16,16,8"
             LastChildFill="False">
             <!--  Container preference  -->
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
@@ -135,6 +133,7 @@
 
             <!--  Video quality preference  -->
             <StackPanel
+                Margin="8,0,0,0"
                 DockPanel.Dock="Right"
                 IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
                 Orientation="Horizontal">

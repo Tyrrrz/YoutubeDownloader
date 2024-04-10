@@ -17,25 +17,25 @@
         <materialIcons:MaterialIconStyles />
         <dialogHostAvalonia:DialogHostStyles />
 
-        <Style Selector="ProgressBar">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground" Value="{DynamicResource SecondaryHueMidBrush}" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Maximum" Value="1" />
-            <Setter Property="Minimum" Value="0" />
-            <Style Selector="^:not(.circular)">
-                <Setter Property="Height" Value="2" />
+        <!--  Combo box  -->
+        <Style Selector="ComboBox">
+            <Style Selector="^ /template/ Panel#PART_RootPanel">
+                <Setter Property="Height" Value="20" />
             </Style>
         </Style>
 
         <Style Selector="DataGrid">
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MaterialDividerBrush}" />
             <Setter Property="AutoGenerateColumns" Value="False" />
-            <Setter Property="CanUserReorderColumns" Value="True" />
-            <Setter Property="CanUserResizeColumns" Value="True" />
+            <Setter Property="CanUserReorderColumns" Value="False" />
+            <Setter Property="CanUserResizeColumns" Value="False" />
             <Setter Property="CanUserSortColumns" Value="True" />
             <Setter Property="IsReadOnly" Value="True" />
             <Setter Property="SelectionMode" Value="Single" />
+        </Style>
+
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="AreSeparatorsVisible" Value="False" />
         </Style>
 
         <Style Selector="DataGridRow">
@@ -56,6 +56,12 @@
             </Style>
         </Style>
 
+        <!--  Dialog host  -->
+        <Style Selector="dialogHostAvalonia|DialogHost">
+            <Setter Property="DialogMargin" Value="0" />
+        </Style>
+
+        <!--  Snack bar host  -->
         <Style Selector="materialControls|SnackbarHost">
             <Setter Property="SnackbarHorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -70,17 +76,74 @@
             </Style>
         </Style>
 
-        <Style Selector="ComboBox /template/ Panel#PART_RootPanel">
-            <Setter Property="Height" Value="20" />
+        <!--  Progress bar  -->
+        <Style Selector="ProgressBar">
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="Maximum" Value="1" />
+            <Setter Property="Foreground" Value="{DynamicResource MaterialSecondaryMidBrush}" />
+            <Setter Property="materialAssists:TransitionAssist.DisableTransitions" Value="True" />
+
+            <Style Selector="^:horizontal">
+                <Setter Property="MinHeight" Value="0" />
+            </Style>
         </Style>
 
+        <!--  Slider  -->
+        <Style Selector="Slider">
+            <Style Selector="^ /template/ ProgressBar#PART_ProgressLayer">
+                <Style Selector="^:horizontal">
+                    <Style Selector="^ Panel#PART_InnerPanel">
+                        <Setter Property="Height" Value="2" />
+
+                        <Style Selector="^ Border#PART_InactiveState">
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Height" Value="2" />
+                        </Style>
+
+                        <Style Selector="^ Border#PART_Indicator">
+                            <Setter Property="Margin" Value="0" />
+                        </Style>
+                    </Style>
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ Track#PART_Track">
+                <Style Selector="^:horizontal">
+                    <Setter Property="Margin" Value="4,0" />
+                </Style>
+
+                <Style Selector="^ Border#PART_HoverEffect">
+                    <Setter Property="Width" Value="24" />
+                    <Setter Property="Height" Value="24" />
+                </Style>
+
+                <Style Selector="^ Border#PART_ThumbGrip">
+                    <Setter Property="Width" Value="12" />
+                    <Setter Property="Height" Value="12" />
+                </Style>
+            </Style>
+        </Style>
+
+        <!--  Text box  -->
         <Style Selector="TextBox">
+            <Setter Property="Height" Value="20" />
+            <Setter Property="FontSize" Value="14" />
+
             <Style Selector="^ /template/ Panel#PART_TextFieldPanel">
                 <Setter Property="MinHeight" Value="0" />
             </Style>
+
             <Style Selector="^ /template/ Panel#PART_TextContainer">
-                <Setter Property="Margin" Value="0,1,4,1" />
+                <Setter Property="Margin" Value="0" />
             </Style>
+        </Style>
+
+        <!--  Tooltip  -->
+        <Style Selector="ToolTip">
+            <Setter Property="TextElement.FontSize" Value="14" />
+            <Setter Property="TextElement.FontWeight" Value="Normal" />
+            <Setter Property="TextElement.FontStyle" Value="Normal" />
+            <Setter Property="TextElement.FontStretch" Value="Normal" />
         </Style>
 
         <!--  Toggle switch  -->
