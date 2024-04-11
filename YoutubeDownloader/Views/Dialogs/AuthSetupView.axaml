@@ -30,7 +30,8 @@
                     Margin="16"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    IsVisible="{Binding IsAuthenticated}">
+                    IsVisible="{Binding IsAuthenticated}"
+                    Orientation="Vertical">
                     <materialIcons:MaterialIcon
                         Width="196"
                         Height="196"

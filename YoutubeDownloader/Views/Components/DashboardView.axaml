@@ -15,7 +15,10 @@
 
     <DockPanel>
         <!--  Header  -->
-        <StackPanel Background="{DynamicResource MaterialDarkBackgroundBrush}" DockPanel.Dock="Top">
+        <StackPanel
+            Background="{DynamicResource MaterialDarkBackgroundBrush}"
+            DockPanel.Dock="Top"
+            Orientation="Vertical">
             <Grid ColumnDefinitions="*,Auto,Auto">
                 <!--  Query  -->
                 <materialStyles:Card Grid.Column="0" Margin="12,12,4,12">
@@ -95,13 +98,14 @@
                 Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
         </StackPanel>
 
-        <!--  Content  -->
+        <!--  Body  -->
         <Panel Background="{DynamicResource MaterialCardBackgroundBrush}" DockPanel.Dock="Bottom">
             <!--  Placeholder  -->
             <StackPanel
                 Margin="8,32,8,8"
                 HorizontalAlignment="Center"
-                IsVisible="{Binding !IsDownloadsAvailable}">
+                IsVisible="{Binding !IsDownloadsAvailable}"
+                Orientation="Vertical">
                 <materialIcons:MaterialIcon
                     Width="256"
                     Height="256"
@@ -113,6 +117,7 @@
                     HorizontalAlignment="Center"
                     FontSize="18"
                     FontWeight="Light"
+                    LineSpacing="8"
                     TextAlignment="Center"
                     TextWrapping="Wrap">
                     <Run Text="Copy-paste a" />
@@ -129,7 +134,6 @@
 
             <!--  Downloads  -->
             <DataGrid
-                Background="{DynamicResource MaterialCardBackgroundBrush}"
                 ColumnWidth="Auto"
                 HorizontalScrollBarVisibility="Disabled"
                 IsVisible="{Binding IsDownloadsAvailable}"
@@ -145,18 +149,6 @@
                         <MenuItem Command="{Binding CancelAllDownloadsCommand}" Header="Cancel all downloads" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
-                <DataGrid.Styles>
-                    <Style Selector="DataGridRow:pointerover">
-                        <Setter Property="Background" Value="{x:Null}" />
-                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                    </Style>
-                    <Style Selector="DataGridRow:selected">
-                        <Setter Property="Background" Value="{x:Null}" />
-                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                    </Style>
-                </DataGrid.Styles>
-
-                <!--  Columns  -->
                 <DataGrid.Columns>
                     <!--  Thumbnail  -->
                     <DataGridTemplateColumn>
@@ -165,7 +157,6 @@
                                 <Image
                                     Width="48"
                                     Height="48"
-                                    VerticalAlignment="Center"
                                     asyncImageLoader:ImageLoader.Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -179,7 +170,6 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <TextBlock
-                                    VerticalAlignment="Center"
                                     FontSize="14"
                                     Foreground="{DynamicResource MaterialDesignBody}"
                                     Text="{Binding FileName}"
@@ -193,7 +183,7 @@
                     <DataGridTemplateColumn
                         MinWidth="100"
                         Header="Status"
-                        SortMemberPath="ProgressOperation.Progress">
+                        SortMemberPath="Progress.Current.Fraction">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
                                 <Grid ColumnDefinitions="Auto,Auto">
@@ -201,19 +191,15 @@
                                     <ProgressBar
                                         Grid.Column="0"
                                         Margin="0,0,6,0"
-                                        Classes="circular"
-                                        Foreground="{DynamicResource SecondaryHueMidBrush}"
                                         IsIndeterminate="{Binding IsProgressIndeterminate}"
                                         IsVisible="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
-                                        Maximum="1"
-                                        Minimum="0"
+                                        Theme="{DynamicResource MaterialCircularProgressBar}"
                                         Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
 
                                     <!--  Status  -->
                                     <TextBlock
                                         x:Name="StatusTextBlock"
                                         Grid.Column="1"
-                                        VerticalAlignment="Center"
                                         Classes.canceled="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
                                         Classes.completed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Completed}}"
                                         Classes.enqueued="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
@@ -232,16 +218,23 @@
                                                 </Style>
                                                 <Style Selector="^.completed">
                                                     <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
-                                                    <Setter Property="Text" Value="✓ Done" />
+                                                    <Setter Property="Text" Value="Done" />
                                                 </Style>
                                                 <Style Selector="^.canceled">
                                                     <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
-                                                    <Setter Property="Text" Value="✗ Canceled" />
+                                                    <Setter Property="Text" Value="Canceled" />
                                                 </Style>
                                                 <Style Selector="^.failed">
                                                     <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
-                                                    <Setter Property="Text" Value="⚠ Failed" />
-                                                    <Setter Property="ToolTip.Tip" Value="Click to copy the error message" />
+                                                    <Setter Property="Text" Value="Failed" />
+                                                    <Setter Property="ToolTip.Tip">
+                                                        <TextBlock>
+                                                            <Run FontWeight="SemiBold" Text="Note: Click to copy the error message" />
+                                                            <LineBreak />
+                                                            <LineBreak />
+                                                            <Run Text="{Binding ErrorMessage}" />
+                                                        </TextBlock>
+                                                    </Setter>
                                                     <Setter Property="Cursor" Value="Hand" />
                                                 </Style>
                                             </Style>
@@ -256,10 +249,7 @@
                     <DataGridTemplateColumn MinWidth="100">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type components:DownloadViewModel}">
-                                <StackPanel
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
+                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                     <!--  Show file  -->
                                     <Button
                                         Padding="4"

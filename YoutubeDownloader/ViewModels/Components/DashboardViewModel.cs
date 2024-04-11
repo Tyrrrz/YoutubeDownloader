@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
@@ -94,86 +93,79 @@ public partial class DashboardViewModel : ViewModelBase
     private async Task ShowSettingsAsync() =>
         await _dialogManager.ShowDialogAsync(_viewModelManager.CreateSettingsViewModel());
 
-    private void EnqueueDownload(DownloadViewModel download, int position = 0)
+    private async void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
+        Downloads.Insert(position, download);
         var progress = _progressMuxer.CreateInput();
 
-        Task.Run(async () =>
+        try
         {
-            try
-            {
-                var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
-                var tagInjector = new MediaTagInjector();
+            var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
+            var tagInjector = new MediaTagInjector();
 
-                using var access = await _downloadSemaphore.AcquireAsync(
+            using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
+
+            download.Status = DownloadStatus.Started;
+
+            var downloadOption =
+                download.DownloadOption
+                ?? await downloader.GetBestDownloadOptionAsync(
+                    download.Video!.Id,
+                    download.DownloadPreference!,
                     download.CancellationToken
                 );
 
-                download.Status = DownloadStatus.Started;
+            await downloader.DownloadVideoAsync(
+                download.FilePath!,
+                download.Video!,
+                downloadOption,
+                _settingsService.ShouldInjectSubtitles,
+                download.Progress.Merge(progress),
+                download.CancellationToken
+            );
 
-                var downloadOption =
-                    download.DownloadOption
-                    ?? await downloader.GetBestDownloadOptionAsync(
-                        download.Video!.Id,
-                        download.DownloadPreference!,
-                        download.CancellationToken
-                    );
-
-                await downloader.DownloadVideoAsync(
-                    download.FilePath!,
-                    download.Video!,
-                    downloadOption,
-                    _settingsService.ShouldInjectSubtitles,
-                    download.Progress.Merge(progress),
-                    download.CancellationToken
-                );
-
-                if (_settingsService.ShouldInjectTags)
-                {
-                    try
-                    {
-                        await tagInjector.InjectTagsAsync(
-                            download.FilePath!,
-                            download.Video!,
-                            download.CancellationToken
-                        );
-                    }
-                    catch
-                    {
-                        // Media tagging is not critical
-                    }
-                }
-
-                download.Status = DownloadStatus.Completed;
-            }
-            catch (Exception ex)
+            if (_settingsService.ShouldInjectTags)
             {
                 try
                 {
-                    // Delete the incompletely downloaded file
-                    File.Delete(download.FilePath!);
+                    await tagInjector.InjectTagsAsync(
+                        download.FilePath!,
+                        download.Video!,
+                        download.CancellationToken
+                    );
                 }
                 catch
                 {
-                    // Ignore
+                    // Media tagging is not critical
                 }
-
-                download.Status =
-                    ex is OperationCanceledException
-                        ? DownloadStatus.Canceled
-                        : DownloadStatus.Failed;
-
-                // Short error message for YouTube-related errors, full for others
-                download.ErrorMessage = ex is YoutubeExplodeException ? ex.Message : ex.ToString();
             }
-            finally
+
+            download.Status = DownloadStatus.Completed;
+        }
+        catch (Exception ex)
+        {
+            try
             {
-                progress.ReportCompletion();
-                download.Dispose();
+                // Delete the incompletely downloaded file
+                if (!string.IsNullOrWhiteSpace(download.FilePath))
+                    File.Delete(download.FilePath);
             }
-        });
+            catch
+            {
+                // Ignore
+            }
 
-        Downloads.Insert(position, download);
+            download.Status =
+                ex is OperationCanceledException ? DownloadStatus.Canceled : DownloadStatus.Failed;
+
+            // Short error message for YouTube-related errors, full for others
+            download.ErrorMessage = ex is YoutubeExplodeException ? ex.Message : ex.ToString();
+        }
+        finally
+        {
+            progress.ReportCompletion();
+            download.Dispose();
+        }
     }
 
     private bool CanProcessQuery() => !IsBusy && !string.IsNullOrWhiteSpace(Query);
@@ -181,8 +173,6 @@ public partial class DashboardViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanProcessQuery))]
     private async Task ProcessQueryAsync()
     {
-        Dispatcher.UIThread.CheckAccess();
-
         if (string.IsNullOrWhiteSpace(Query))
             return;
 

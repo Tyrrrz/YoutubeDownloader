@@ -15,7 +15,10 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Info  -->
-        <StackPanel Grid.Row="0" Margin="16">
+        <StackPanel
+            Grid.Row="0"
+            Margin="16"
+            Orientation="Vertical">
             <!--  Title  -->
             <TextBlock
                 FontSize="19"

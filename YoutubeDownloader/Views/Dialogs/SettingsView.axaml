@@ -23,7 +23,7 @@
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
+                <StackPanel Orientation="Vertical">
                     <!--  Auto-updates  -->
                     <DockPanel
                         Background="Transparent"

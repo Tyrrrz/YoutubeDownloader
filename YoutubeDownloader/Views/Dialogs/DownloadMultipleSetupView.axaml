@@ -57,7 +57,8 @@
                             <StackPanel
                                 Grid.Column="1"
                                 Margin="8,0,0,0"
-                                VerticalAlignment="Center">
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
                                 <!--  Title  -->
                                 <TextBlock
                                     FontSize="16"
