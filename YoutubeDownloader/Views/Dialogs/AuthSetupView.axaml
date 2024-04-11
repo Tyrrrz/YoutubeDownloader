@@ -49,10 +49,10 @@
 
                     <Button
                         HorizontalAlignment="Center"
-                        Classes="accent"
                         Click="LogoutHyperlink_OnClick"
                         Content="Log out"
                         FontSize="18"
+                        Foreground="{DynamicResource MaterialSecondaryMidBrush}"
                         Theme="{DynamicResource MaterialFlatButton}" />
                 </StackPanel>
 

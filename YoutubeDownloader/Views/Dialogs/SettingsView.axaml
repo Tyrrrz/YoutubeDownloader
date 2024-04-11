@@ -194,7 +194,6 @@
                             <TextBlock
                                 Margin="10,0"
                                 VerticalAlignment="Center"
-                                FontWeight="SemiBold"
                                 Text="{Binding ParallelLimit}" />
                             <Slider
                                 Width="150"

@@ -24,6 +24,13 @@
             </Style>
         </Style>
 
+        <!--  Context menu  -->
+        <Style Selector="ContextMenu">
+            <Setter Property="BorderBrush" Value="{DynamicResource MaterialDividerBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <!--  Data grid  -->
         <Style Selector="DataGrid">
             <Setter Property="BorderBrush" Value="{DynamicResource MaterialDividerBrush}" />
             <Setter Property="AutoGenerateColumns" Value="False" />
@@ -39,7 +46,6 @@
         </Style>
 
         <Style Selector="DataGridRow">
-            <Setter Property="FocusAdorner" Value="{x:Null}" />
             <Style Selector="^:selected /template/ Rectangle#BackgroundRectangle">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
@@ -48,17 +54,13 @@
             </Style>
         </Style>
 
-        <Style Selector="DataGridCell">
-            <Setter Property="FocusAdorner" Value="{x:Null}" />
-            <Style Selector="^:selected">
-                <Setter Property="Background" Value="{x:Null}" />
-                <Setter Property="BorderBrush" Value="{x:Null}" />
-            </Style>
-        </Style>
-
         <!--  Dialog host  -->
         <Style Selector="dialogHostAvalonia|DialogHost">
             <Setter Property="DialogMargin" Value="0" />
+        </Style>
+
+        <Style Selector="dialogHostAvalonia|DialogOverlayPopupHost">
+            <Setter Property="Margin" Value="48" />
         </Style>
 
         <!--  Snack bar host  -->

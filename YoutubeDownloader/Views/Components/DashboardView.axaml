@@ -228,12 +228,14 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
                                                     <Setter Property="Text" Value="Failed" />
                                                     <Setter Property="ToolTip.Tip">
-                                                        <TextBlock>
-                                                            <Run FontWeight="SemiBold" Text="Note: Click to copy the error message" />
-                                                            <LineBreak />
-                                                            <LineBreak />
-                                                            <Run Text="{Binding ErrorMessage}" />
-                                                        </TextBlock>
+                                                        <Template>
+                                                            <TextBlock>
+                                                                <Run FontWeight="SemiBold" Text="Note: Click to copy this error message" />
+                                                                <LineBreak />
+                                                                <LineBreak />
+                                                                <Run Text="{Binding ErrorMessage}" />
+                                                            </TextBlock>
+                                                        </Template>
                                                     </Setter>
                                                     <Setter Property="Cursor" Value="Hand" />
                                                 </Style>

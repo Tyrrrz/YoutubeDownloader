@@ -125,7 +125,7 @@
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Container:" />
                 <ComboBox
-                    Width="150"
+                    Width="125"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     ItemsSource="{Binding AvailableContainers}"
@@ -134,13 +134,12 @@
 
             <!--  Video quality preference  -->
             <StackPanel
-                Margin="8,0,0,0"
                 DockPanel.Dock="Right"
                 IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
                 Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Video quality:" />
                 <ComboBox
-                    Width="150"
+                    Width="125"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     ItemsSource="{Binding AvailableVideoQualityPreferences}"

@@ -92,7 +92,7 @@
                         <DataTemplate>
                             <TextBlock>
                                 <!--  Video quality  -->
-                                <Run Classes.audioOnly="{Binding IsAudioOnly}" FontWeight="SemiBold">
+                                <Run Classes.audioOnly="{Binding IsAudioOnly}">
                                     <Run.Styles>
                                         <Style Selector="Run">
                                             <Setter Property="Text" Value="{Binding VideoQuality, Mode=OneWay}" />
