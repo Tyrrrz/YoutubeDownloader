@@ -38,12 +38,10 @@
                     <materialIcons:MaterialIcon
                         Width="16"
                         Height="16"
-                        VerticalAlignment="Center"
                         BorderThickness="1"
                         Kind="UserOutline" />
                     <TextBlock
                         Margin="3,0,0,0"
-                        VerticalAlignment="Center"
                         FontWeight="Light"
                         Text="{Binding Video.Author.Title}"
                         TextTrimming="CharacterEllipsis" />
@@ -54,12 +52,10 @@
                     <materialIcons:MaterialIcon
                         Width="16"
                         Height="16"
-                        VerticalAlignment="Center"
                         BorderThickness="1"
                         Kind="ClockOutline" />
                     <TextBlock
                         Margin="3,0,0,0"
-                        VerticalAlignment="Center"
                         FontWeight="Light"
                         Text="{Binding Video.Duration, TargetNullValue=Live}"
                         TextTrimming="CharacterEllipsis" />
@@ -80,12 +76,14 @@
             Margin="16"
             ColumnDefinitions="*,Auto">
             <!--  Download option  -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Text="Format:" />
+            <StackPanel
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock Text="Format:" />
                 <ComboBox
                     Width="150"
                     Margin="8,0,0,0"
-                    VerticalAlignment="Center"
                     ItemsSource="{Binding AvailableDownloadOptions}"
                     SelectedItem="{Binding SelectedDownloadOption}">
                     <ComboBox.ItemTemplate>
@@ -128,7 +126,7 @@
 
                 <!--  Cancel  -->
                 <Button
-                    Margin="8,0,0,0"
+                    Margin="16,0,0,0"
                     Command="{Binding CloseCommand}"
                     Content="CANCEL"
                     IsCancel="True"

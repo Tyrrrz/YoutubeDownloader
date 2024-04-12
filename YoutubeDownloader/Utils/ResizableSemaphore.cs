@@ -44,7 +44,7 @@ internal partial class ResizableSemaphore : IDisposable
             {
                 // Don't increment the count if the waiter has already been
                 // completed before (most likely by getting canceled).
-                if (waiter.TrySetResult()) 
+                if (waiter.TrySetResult())
                     _count++;
             }
         }
@@ -90,7 +90,7 @@ internal partial class ResizableSemaphore : IDisposable
             _cts.Cancel();
             _cts.Dispose();
         }
-        
+
         _isDisposed = true;
     }
 }
@@ -100,7 +100,7 @@ internal partial class ResizableSemaphore
     private class AcquiredAccess(ResizableSemaphore semaphore) : IDisposable
     {
         private bool _isDisposed;
-        
+
         public void Dispose()
         {
             if (!_isDisposed)

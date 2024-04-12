@@ -19,8 +19,10 @@
 
         <!--  Combo box  -->
         <Style Selector="ComboBox">
+            <Setter Property="FontSize" Value="14" />
+
             <Style Selector="^ /template/ Panel#PART_RootPanel">
-                <Setter Property="Height" Value="20" />
+                <Setter Property="Height" Value="22" />
             </Style>
         </Style>
 
@@ -128,7 +130,7 @@
 
         <!--  Text box  -->
         <Style Selector="TextBox">
-            <Setter Property="Height" Value="20" />
+            <Setter Property="Height" Value="22" />
             <Setter Property="FontSize" Value="14" />
 
             <Style Selector="^ /template/ Panel#PART_TextFieldPanel">

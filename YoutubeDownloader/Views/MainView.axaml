@@ -14,9 +14,11 @@
         <viewModels:MainViewModel />
     </Design.DataContext>
 
+    <!--  Hack: dialog host animations mess up webview positioning, so need to disable them  -->
     <dialogHostAvalonia:DialogHost
         x:Name="DialogHost"
         CloseOnClickAway="False"
+        DisableOpeningAnimation="True"
         Loaded="DialogHost_OnLoaded">
         <materialStyles:SnackbarHost HostName="Root">
             <ContentControl Content="{Binding Dashboard}" />

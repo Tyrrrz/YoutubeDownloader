@@ -24,8 +24,10 @@ public class AuthSetupViewModel : DialogViewModelBase
     public bool IsAuthenticated =>
         Cookies?.Any() == true
         &&
-        // None of the cookies should be expired
-        Cookies.All(c => !c.Expired && (c.Expires == default || c.Expires > DateTimeOffset.Now));
+        // None of the '__SECURE' cookies should be expired
+        Cookies
+            .Where(c => c.Name.StartsWith("__SECURE", StringComparison.OrdinalIgnoreCase))
+            .All(c => !c.Expired && c.Expires.ToUniversalTime() > DateTime.UtcNow);
 
     public AuthSetupViewModel(SettingsService settingsService)
     {

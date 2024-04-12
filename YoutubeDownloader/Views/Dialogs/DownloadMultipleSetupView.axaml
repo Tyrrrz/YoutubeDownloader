@@ -57,7 +57,6 @@
                             <StackPanel
                                 Grid.Column="1"
                                 Margin="8,0,0,0"
-                                VerticalAlignment="Center"
                                 Orientation="Vertical">
                                 <!--  Title  -->
                                 <TextBlock
@@ -72,12 +71,10 @@
                                         <materialIcons:MaterialIcon
                                             Width="16"
                                             Height="16"
-                                            VerticalAlignment="Center"
                                             BorderThickness="1"
                                             Kind="UserOutline" />
                                         <TextBlock
                                             Margin="3,0,0,0"
-                                            VerticalAlignment="Center"
                                             FontWeight="Light"
                                             Text="{Binding Author.Title}"
                                             TextTrimming="CharacterEllipsis" />
@@ -88,12 +85,10 @@
                                         <materialIcons:MaterialIcon
                                             Width="16"
                                             Height="16"
-                                            VerticalAlignment="Center"
                                             BorderThickness="1"
                                             Kind="ClockOutline" />
                                         <TextBlock
                                             Margin="3,0,0,0"
-                                            VerticalAlignment="Center"
                                             FontWeight="Light"
                                             Text="{Binding Duration, TargetNullValue=Live}"
                                             TextTrimming="CharacterEllipsis" />
@@ -107,7 +102,6 @@
                                 Width="24"
                                 Height="24"
                                 Margin="8,0,0,0"
-                                VerticalAlignment="Center"
                                 IsVisible="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
                                 Kind="Check" />
                         </Grid>
@@ -127,7 +121,6 @@
                 <ComboBox
                     Width="125"
                     Margin="8,0,0,0"
-                    VerticalAlignment="Center"
                     ItemsSource="{Binding AvailableContainers}"
                     SelectedItem="{Binding SelectedContainer}" />
             </StackPanel>
@@ -141,7 +134,6 @@
                 <ComboBox
                     Width="125"
                     Margin="8,0,0,0"
-                    VerticalAlignment="Center"
                     ItemsSource="{Binding AvailableVideoQualityPreferences}"
                     SelectedItem="{Binding SelectedVideoQualityPreference}">
                     <ComboBox.ItemTemplate>
@@ -174,7 +166,7 @@
 
             <!--  Cancel  -->
             <Button
-                Margin="8,0,0,0"
+                Margin="16,0,0,0"
                 Command="{Binding CloseCommand}"
                 Content="CANCEL"
                 IsCancel="True"

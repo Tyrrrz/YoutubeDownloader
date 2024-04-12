@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using Avalonia.Interactivity;
+using Avalonia.WebView.Windows.Core;
 using Microsoft.Web.WebView2.Core;
 using WebViewCore.Events;
 using YoutubeDownloader.Framework;
@@ -19,12 +20,9 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
 
     public AuthSetupView() => InitializeComponent();
 
-    private void NavigateToLoginPage()
-    {
-        WebBrowser.Url = new Uri(LoginPageUrl);
-    }
+    private void NavigateToLoginPage() => WebBrowser.Url = new Uri(LoginPageUrl);
 
-    private void LogoutHyperlink_OnClick(object sender, RoutedEventArgs args)
+    private void LogOutButton_OnClick(object sender, RoutedEventArgs args)
     {
         DataContext.Cookies = null;
         NavigateToLoginPage();
@@ -37,17 +35,20 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
         if (!args.IsSucceed)
             return;
 
-        var platformWebView = (
-            (Avalonia.WebView.Windows.Core.WebView2Core)WebBrowser.PlatformWebView!
-        );
-        _coreWebView2 = platformWebView!.CoreWebView2!;
+        var platformWebView = WebBrowser.PlatformWebView as WebView2Core;
+        var coreWebView2 = platformWebView?.CoreWebView2;
 
-        _coreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-        _coreWebView2.Settings.AreDevToolsEnabled = false;
-        _coreWebView2.Settings.IsGeneralAutofillEnabled = false;
-        _coreWebView2.Settings.IsPasswordAutosaveEnabled = false;
-        _coreWebView2.Settings.IsStatusBarEnabled = false;
-        _coreWebView2.Settings.IsSwipeNavigationEnabled = false;
+        if (coreWebView2 is null)
+            return;
+
+        coreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+        coreWebView2.Settings.AreDevToolsEnabled = false;
+        coreWebView2.Settings.IsGeneralAutofillEnabled = false;
+        coreWebView2.Settings.IsPasswordAutosaveEnabled = false;
+        coreWebView2.Settings.IsStatusBarEnabled = false;
+        coreWebView2.Settings.IsSwipeNavigationEnabled = false;
+
+        _coreWebView2 = coreWebView2;
     }
 
     private async void WebBrowser_OnNavigationStarting(
@@ -55,16 +56,20 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
         WebViewUrlLoadingEventArg args
     )
     {
+        if (_coreWebView2 is null)
+            return;
+
         // Reset existing browser cookies if the user is attempting to log in (again)
         if (string.Equals(args.Url?.AbsoluteUri, LoginPageUrl, StringComparison.OrdinalIgnoreCase))
-            _coreWebView2!.CookieManager.DeleteAllCookies();
+            _coreWebView2.CookieManager.DeleteAllCookies();
 
-        if (args.Url!.AbsoluteUri.StartsWith(HomePageUrl, StringComparison.OrdinalIgnoreCase))
+        // Extract the cookies after being redirected to the home page (i.e. after logging in)
+        if (
+            args.Url?.AbsoluteUri.StartsWith(HomePageUrl, StringComparison.OrdinalIgnoreCase)
+            == true
+        )
         {
-            // Extract the cookies that the browser received after logging in
-            var cookies = await _coreWebView2!.CookieManager.GetCookiesAsync(
-                args.Url!.AbsoluteUri!
-            );
+            var cookies = await _coreWebView2!.CookieManager.GetCookiesAsync(args.Url.AbsoluteUri);
             DataContext.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
         }
     }

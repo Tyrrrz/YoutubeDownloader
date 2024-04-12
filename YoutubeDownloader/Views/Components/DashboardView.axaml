@@ -64,7 +64,7 @@
                     Padding="8"
                     VerticalAlignment="Center"
                     Command="{Binding ShowAuthSetupCommand}"
-                    Foreground="{DynamicResource MaterialPrimaryMidForegroundBrush}"
+                    Foreground="{DynamicResource MaterialDarkForegroundBrush}"
                     Theme="{DynamicResource MaterialFlatButton}"
                     ToolTip.Tip="Authentication">
                     <materialIcons:MaterialIcon
@@ -80,7 +80,7 @@
                     Padding="8"
                     VerticalAlignment="Center"
                     Command="{Binding ShowSettingsCommand}"
-                    Foreground="{DynamicResource MaterialPrimaryMidForegroundBrush}"
+                    Foreground="{DynamicResource MaterialDarkForegroundBrush}"
                     Theme="{DynamicResource MaterialFlatButton}"
                     ToolTip.Tip="Settings">
                     <materialIcons:MaterialIcon
@@ -153,7 +153,7 @@
                     <!--  Thumbnail  -->
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type components:DownloadViewModel}">
+                            <DataTemplate>
                                 <Image
                                     Width="48"
                                     Height="48"
@@ -168,7 +168,7 @@
                         Header="File"
                         SortMemberPath="FileName">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type components:DownloadViewModel}">
+                            <DataTemplate>
                                 <TextBlock
                                     FontSize="14"
                                     Foreground="{DynamicResource MaterialDesignBody}"
@@ -185,7 +185,7 @@
                         Header="Status"
                         SortMemberPath="Progress.Current.Fraction">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type components:DownloadViewModel}">
+                            <DataTemplate>
                                 <Grid ColumnDefinitions="Auto,Auto">
                                     <!--  Progress  -->
                                     <ProgressBar
@@ -250,12 +250,11 @@
                     <!--  Buttons  -->
                     <DataGridTemplateColumn MinWidth="100">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type components:DownloadViewModel}">
+                            <DataTemplate>
                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                     <!--  Show file  -->
                                     <Button
                                         Padding="4"
-                                        VerticalAlignment="Center"
                                         Command="{Binding ShowFileCommand}"
                                         IsVisible="{Binding CanShowFile}"
                                         Theme="{DynamicResource MaterialFlatButton}"
@@ -269,7 +268,6 @@
                                     <!--  Open file  -->
                                     <Button
                                         Padding="4"
-                                        VerticalAlignment="Center"
                                         Command="{Binding OpenFileCommand}"
                                         IsVisible="{Binding CanOpenFile}"
                                         Theme="{DynamicResource MaterialFlatButton}"
@@ -283,7 +281,6 @@
                                     <!--  Cancel download  -->
                                     <Button
                                         Padding="4"
-                                        VerticalAlignment="Center"
                                         Command="{Binding CancelCommand}"
                                         IsVisible="{Binding CanCancel}"
                                         Theme="{DynamicResource MaterialFlatButton}"
@@ -297,7 +294,6 @@
                                     <!--  Restart download  -->
                                     <Button
                                         Padding="4"
-                                        VerticalAlignment="Center"
                                         Command="{Binding $parent[UserControl].DataContext.RestartDownloadCommand}"
                                         CommandParameter="{Binding}"
                                         IsVisible="{Binding IsCanceledOrFailed}"
