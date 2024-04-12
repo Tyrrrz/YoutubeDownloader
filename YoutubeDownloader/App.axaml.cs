@@ -119,11 +119,10 @@ public partial class App
         if (Current is null)
             return;
 
-        var isDark = Current.RequestedThemeVariant is not null
-            ? Current.RequestedThemeVariant == ThemeVariant.Dark
-            : Current.PlatformSettings?.GetColorValues().ThemeVariant == PlatformThemeVariant.Dark;
+        var isDarkModeEnabledByDefault =
+            Current.PlatformSettings?.GetColorValues().ThemeVariant == PlatformThemeVariant.Dark;
 
-        if (isDark)
+        if (isDarkModeEnabledByDefault)
             SetDarkTheme();
         else
             SetLightTheme();

@@ -76,6 +76,9 @@ public partial class MainViewModel(
     [RelayCommand]
     private async Task InitializeAsync()
     {
+        // Reset settings (needed to resolve the default dark mode setting)
+        settingsService.Reset();
+
         // Load settings
         settingsService.Load();
 

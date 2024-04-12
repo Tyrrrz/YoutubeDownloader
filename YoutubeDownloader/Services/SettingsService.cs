@@ -24,9 +24,7 @@ public partial class SettingsService()
     private bool _isAutoUpdateEnabled = true;
 
     [ObservableProperty]
-    private bool _isDarkModeEnabled =
-        Application.Current?.PlatformSettings?.GetColorValues().ThemeVariant
-        == PlatformThemeVariant.Dark;
+    private bool _isDarkModeEnabled;
 
     [ObservableProperty]
     private bool _isAuthPersisted = true;
@@ -58,6 +56,17 @@ public partial class SettingsService()
 
     [ObservableProperty]
     private VideoQualityPreference _lastVideoQualityPreference = VideoQualityPreference.Highest;
+
+    public override void Reset()
+    {
+        base.Reset();
+
+        // Reset the dark mode setting separately because its default value is evaluated dynamically
+        // and cannot be set in the field initializer.
+        IsDarkModeEnabled =
+            Application.Current?.PlatformSettings?.GetColorValues().ThemeVariant
+            == PlatformThemeVariant.Dark;
+    }
 
     public override void Save()
     {
