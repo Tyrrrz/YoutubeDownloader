@@ -66,7 +66,7 @@
         <!--  Thumbnail  -->
         <Border
             Grid.Row="1"
-            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
             BorderThickness="0,1">
             <Image asyncImageLoader:ImageLoader.Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlConverter.Instance}}" />
         </Border>

@@ -3,8 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    Width="380"
-    x:DataType="dialogs:SettingsViewModel">
+    Width="380">
     <Design.DataContext>
         <dialogs:SettingsViewModel />
     </Design.DataContext>
@@ -20,16 +19,12 @@
         <Border
             Grid.Row="1"
             Padding="0,8"
-            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
             BorderThickness="0,1">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical">
                     <!--  Auto-updates  -->
-                    <DockPanel
-                        Background="Transparent"
-                        IsVisible="{OnPlatform False,
-                                               Windows=True}"
-                        LastChildFill="False">
+                    <DockPanel IsVisible="{OnPlatform False, Windows=True}" LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock>
                                 <Run Text="Perform automatic updates on every launch." />
@@ -54,10 +49,7 @@
                     </DockPanel>
 
                     <!--  Dark mode  -->
-                    <DockPanel
-                        Background="Transparent"
-                        LastChildFill="False"
-                        ToolTip.Tip="Use darker colors in the UI">
+                    <DockPanel LastChildFill="False" ToolTip.Tip="Use darker colors in the UI">
                         <TextBlock
                             Margin="16,8"
                             VerticalAlignment="Center"
@@ -73,10 +65,7 @@
                     </DockPanel>
 
                     <!--  Persist authentication  -->
-                    <DockPanel
-                        Background="Transparent"
-                        LastChildFill="False"
-                        ToolTip.Tip="Save authentication cookies to a file so that they can be persisted between sessions">
+                    <DockPanel LastChildFill="False" ToolTip.Tip="Save authentication cookies to a file so that they can be persisted between sessions">
                         <TextBlock
                             Margin="16,8"
                             VerticalAlignment="Center"
@@ -90,10 +79,7 @@
                     </DockPanel>
 
                     <!--  Inject subtitles  -->
-                    <DockPanel
-                        Background="Transparent"
-                        LastChildFill="False"
-                        ToolTip.Tip="Inject subtitles into downloaded files">
+                    <DockPanel LastChildFill="False" ToolTip.Tip="Inject subtitles into downloaded files">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
@@ -105,10 +91,7 @@
                     </DockPanel>
 
                     <!--  Inject tags  -->
-                    <DockPanel
-                        Background="Transparent"
-                        LastChildFill="False"
-                        ToolTip.Tip="Inject media tags into downloaded files">
+                    <DockPanel LastChildFill="False" ToolTip.Tip="Inject media tags into downloaded files">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
@@ -120,10 +103,7 @@
                     </DockPanel>
 
                     <!--  Skip existing files  -->
-                    <DockPanel
-                        Background="Transparent"
-                        LastChildFill="False"
-                        ToolTip.Tip="When downloading multiple videos, skip those that already have matching files in the output directory">
+                    <DockPanel LastChildFill="False" ToolTip.Tip="When downloading multiple videos, skip those that already have matching files in the output directory">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
@@ -135,10 +115,7 @@
                     </DockPanel>
 
                     <!--  File name template  -->
-                    <DockPanel
-                        Margin="16,8"
-                        Background="Transparent"
-                        LastChildFill="False">
+                    <DockPanel Margin="16,8" LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock>
                                 <Run Text="Template used for generating file names for downloaded videos." />
@@ -179,7 +156,6 @@
                     <!--  Parallel limit  -->
                     <DockPanel
                         Margin="16,8"
-                        Background="Transparent"
                         LastChildFill="False"
                         ToolTip.Tip="How many downloads can be active at the same time">
                         <TextBlock
@@ -200,7 +176,6 @@
                                 VerticalAlignment="Center"
                                 Maximum="10"
                                 Minimum="1"
-                                Theme="{DynamicResource MaterialDesignThinSlider}"
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
                     </DockPanel>

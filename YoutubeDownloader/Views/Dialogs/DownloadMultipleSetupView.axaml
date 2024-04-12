@@ -31,7 +31,7 @@
         <!--  Videos  -->
         <Border
             Grid.Row="1"
-            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
             BorderThickness="0,1">
             <ListBox
                 ItemsSource="{Binding AvailableVideos}"

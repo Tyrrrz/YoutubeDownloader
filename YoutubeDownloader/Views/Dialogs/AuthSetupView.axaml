@@ -22,7 +22,7 @@
         <!--  Content  -->
         <Border
             Grid.Row="1"
-            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
             BorderThickness="0,1">
             <Panel>
                 <!--  Current auth status  -->
@@ -36,7 +36,7 @@
                         Width="196"
                         Height="196"
                         HorizontalAlignment="Center"
-                        Foreground="{DynamicResource MaterialDesignDivider}"
+                        Foreground="{DynamicResource MaterialDividerBrush}"
                         Kind="AccountCheck" />
 
                     <TextBlock

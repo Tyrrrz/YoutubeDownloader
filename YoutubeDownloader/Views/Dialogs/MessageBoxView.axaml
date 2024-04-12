@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    Width="500"
-    x:DataType="dialogs:MessageBoxViewModel">
+    Width="500">
     <Design.DataContext>
         <dialogs:MessageBoxViewModel />
     </Design.DataContext>
@@ -25,7 +24,7 @@
         <Border
             Grid.Row="1"
             Padding="0,8"
-            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
             BorderThickness="0,1">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <TextBlock

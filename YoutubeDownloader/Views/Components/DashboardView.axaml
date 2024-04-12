@@ -110,7 +110,7 @@
                     Width="256"
                     Height="256"
                     HorizontalAlignment="Center"
-                    Foreground="{DynamicResource MaterialDesignDivider}"
+                    Foreground="{DynamicResource MaterialDividerBrush}"
                     Kind="Youtube" />
 
                 <TextBlock
@@ -171,7 +171,7 @@
                             <DataTemplate>
                                 <TextBlock
                                     FontSize="14"
-                                    Foreground="{DynamicResource MaterialDesignBody}"
+                                    Foreground="{DynamicResource MaterialBodyBrush}"
                                     Text="{Binding FileName}"
                                     TextTrimming="CharacterEllipsis"
                                     ToolTip.Tip="{Binding FileName}" />
