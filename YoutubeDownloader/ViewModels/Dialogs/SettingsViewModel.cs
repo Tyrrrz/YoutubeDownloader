@@ -1,12 +1,10 @@
 ﻿using System;
+using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.ViewModels.Framework;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class SettingsDesignTimeViewModel() : SettingsViewModel(new SettingsService()) { }
-
-public class SettingsViewModel(SettingsService settingsService) : DialogScreen
+public class SettingsViewModel(SettingsService settingsService) : DialogViewModelBase
 {
     public bool IsAutoUpdateEnabled
     {

@@ -1,0 +1,27 @@
+<Window
+    x:Class="YoutubeDownloader.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+    xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+    xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
+    Title="{Binding Title}"
+    Width="720"
+    Height="620"
+    Icon="/favicon.ico"
+    WindowStartupLocation="CenterScreen">
+    <Design.DataContext>
+        <viewModels:MainViewModel />
+    </Design.DataContext>
+
+    <!--  Hack: dialog host animations mess up webview positioning, so need to disable them  -->
+    <dialogHostAvalonia:DialogHost
+        x:Name="DialogHost"
+        CloseOnClickAway="False"
+        DisableOpeningAnimation="True"
+        Loaded="DialogHost_OnLoaded">
+        <materialStyles:SnackbarHost HostName="Root">
+            <ContentControl Content="{Binding Dashboard}" />
+        </materialStyles:SnackbarHost>
+    </dialogHostAvalonia:DialogHost>
+</Window>

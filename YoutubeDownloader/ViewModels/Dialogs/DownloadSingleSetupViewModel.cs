@@ -1,34 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Input.Platform;
+using Avalonia;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
-using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public partial class DownloadSingleSetupViewModel(
-    IViewModelFactory viewModelFactory,
+    ViewModelManager viewModelManager,
     DialogManager dialogManager,
-    SettingsService settingsService,
-    IClipboard clipboard
-) : DialogScreen<DownloadViewModel>
+    SettingsService settingsService
+) : DialogViewModelBase<DownloadViewModel>
 {
-    public IVideo? Video { get; set; }
+    [ObservableProperty]
+    private IVideo? _video;
 
-    public IReadOnlyList<VideoDownloadOption>? AvailableDownloadOptions { get; set; }
+    [ObservableProperty]
+    private IReadOnlyList<VideoDownloadOption>? _availableDownloadOptions;
 
-    public VideoDownloadOption? SelectedDownloadOption { get; set; }
+    [ObservableProperty]
+    private VideoDownloadOption? _selectedDownloadOption;
 
-    protected override void OnViewLoaded()
+    [RelayCommand]
+    private void Initialize()
     {
         SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(o =>
             o.Container == settingsService.LastContainer
@@ -36,21 +40,29 @@ public partial class DownloadSingleSetupViewModel(
     }
 
     [RelayCommand]
-    public async Task CopyTitleAsync() => await clipboard.SetTextAsync(Video!.Title);
+    private async Task CopyTitleAsync()
+    {
+        if (Application.Current?.ApplicationLifetime?.TryGetTopLevel()?.Clipboard is { } clipboard)
+            await clipboard.SetTextAsync(Video?.Title);
+    }
 
     [RelayCommand]
-    public async Task ConfirmAsync()
+    private async Task ConfirmAsync()
     {
-        var container = SelectedDownloadOption!.Container;
+        if (Video is null || SelectedDownloadOption is null)
+            return;
 
-        var fileType = new FilePickerFileType($"{container.Name} file")
-        {
-            Patterns = new[] { $"*.{container.Name}" },
-        };
+        var container = SelectedDownloadOption.Container;
 
         var filePath = await dialogManager.PromptSaveFilePathAsync(
-            new[] { fileType },
-            FileNameTemplate.Apply(settingsService.FileNameTemplate, Video!, container)
+            new[]
+            {
+                new FilePickerFileType($"{container.Name} file")
+                {
+                    Patterns = new[] { $"*.{container.Name}" }
+                }
+            },
+            FileNameTemplate.Apply(settingsService.FileNameTemplate, Video, container)
         );
 
         if (string.IsNullOrWhiteSpace(filePath))
@@ -58,27 +70,10 @@ public partial class DownloadSingleSetupViewModel(
 
         // Download does not start immediately, so lock in the file path to avoid conflicts
         DirectoryEx.CreateDirectoryForFile(filePath);
-        File.WriteAllBytes(filePath, Array.Empty<byte>());
+        await File.WriteAllBytesAsync(filePath, []);
 
         settingsService.LastContainer = container;
 
-        Close(viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath));
-    }
-}
-
-public static class DownloadSingleSetupViewModelExtensions
-{
-    public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
-        this IViewModelFactory factory,
-        IVideo video,
-        IReadOnlyList<VideoDownloadOption> availableDownloadOptions
-    )
-    {
-        var viewModel = factory.CreateDownloadSingleSetupViewModel();
-
-        viewModel.Video = video;
-        viewModel.AvailableDownloadOptions = availableDownloadOptions;
-
-        return viewModel;
+        Close(viewModelManager.CreateDownloadViewModel(Video, SelectedDownloadOption, filePath));
     }
 }

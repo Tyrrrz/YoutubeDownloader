@@ -1,0 +1,176 @@
+<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.DownloadMultipleSetupView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    x:Name="UserControl"
+    Width="500"
+    Loaded="UserControl_OnLoaded">
+    <Design.DataContext>
+        <dialogs:DownloadMultipleSetupViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="16"
+            FontSize="19"
+            Text="{Binding Title}"
+            TextTrimming="CharacterEllipsis">
+            <TextBlock.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
+                </ContextMenu>
+            </TextBlock.ContextMenu>
+        </TextBlock>
+
+        <!--  Videos  -->
+        <Border
+            Grid.Row="1"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderThickness="0,1">
+            <ListBox
+                ItemsSource="{Binding AvailableVideos}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectedItems="{Binding SelectedVideos}"
+                SelectionMode="Multiple">
+                <ListBox.ItemContainerTheme>
+                    <ControlTheme BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Padding" Value="8,4" />
+                    </ControlTheme>
+                </ListBox.ItemContainerTheme>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*,Auto">
+                            <!--  Thumbnail  -->
+                            <Image
+                                Grid.Column="0"
+                                Width="48"
+                                Height="48"
+                                asyncImageLoader:ImageLoader.Source="{Binding Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
+
+                            <!--  Info  -->
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                Orientation="Vertical">
+                                <!--  Title  -->
+                                <TextBlock
+                                    FontSize="16"
+                                    Text="{Binding Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip.Tip="{Binding Title}" />
+
+                                <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                                    <!--  Author  -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialIcons:MaterialIcon
+                                            Width="16"
+                                            Height="16"
+                                            BorderThickness="1"
+                                            Kind="UserOutline" />
+                                        <TextBlock
+                                            Margin="3,0,0,0"
+                                            FontWeight="Light"
+                                            Text="{Binding Author.Title}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+
+                                    <!--  Duration  -->
+                                    <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
+                                        <materialIcons:MaterialIcon
+                                            Width="16"
+                                            Height="16"
+                                            BorderThickness="1"
+                                            Kind="ClockOutline" />
+                                        <TextBlock
+                                            Margin="3,0,0,0"
+                                            FontWeight="Light"
+                                            Text="{Binding Duration, TargetNullValue=Live}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!--  Checkbox  -->
+                            <materialIcons:MaterialIcon
+                                Grid.Column="2"
+                                Width="24"
+                                Height="24"
+                                Margin="8,0,0,0"
+                                IsVisible="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
+                                Kind="Check" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!--  Preferences  -->
+        <DockPanel
+            Grid.Row="2"
+            Margin="16,16,16,8"
+            LastChildFill="False">
+            <!--  Container preference  -->
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Container:" />
+                <ComboBox
+                    Width="125"
+                    Margin="8,0,0,0"
+                    ItemsSource="{Binding AvailableContainers}"
+                    SelectedItem="{Binding SelectedContainer}" />
+            </StackPanel>
+
+            <!--  Video quality preference  -->
+            <StackPanel
+                DockPanel.Dock="Right"
+                IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
+                Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Video quality:" />
+                <ComboBox
+                    Width="125"
+                    Margin="8,0,0,0"
+                    ItemsSource="{Binding AvailableVideoQualityPreferences}"
+                    SelectedItem="{Binding SelectedVideoQualityPreference}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={x:Static converters:VideoQualityPreferenceToStringConverter.Instance}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+        </DockPanel>
+
+        <!--  Buttons  -->
+        <StackPanel
+            Grid.Row="3"
+            Margin="16"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <!--  Download  -->
+            <Button
+                Command="{Binding ConfirmCommand}"
+                IsDefault="True"
+                Theme="{DynamicResource MaterialOutlineButton}">
+                <Button.Content>
+                    <TextBlock>
+                        <Run Text="DOWNLOAD" />
+                        <Run Text="(" /><Run Text="{Binding SelectedVideos.Count, FallbackValue=0, Mode=OneWay}" /><Run Text=")" />
+                    </TextBlock>
+                </Button.Content>
+            </Button>
+
+            <!--  Cancel  -->
+            <Button
+                Margin="16,0,0,0"
+                Command="{Binding CloseCommand}"
+                Content="CANCEL"
+                IsCancel="True"
+                Theme="{DynamicResource MaterialOutlineButton}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

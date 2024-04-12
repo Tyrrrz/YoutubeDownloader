@@ -16,8 +16,7 @@ namespace YoutubeDownloader.Core.Resolving;
 
 public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 {
-    private readonly YoutubeClient _youtube =
-        new(Http.Client, initialCookies ?? Array.Empty<Cookie>());
+    private readonly YoutubeClient _youtube = new(Http.Client, initialCookies ?? []);
 
     public async Task<QueryResult> ResolveAsync(
         string query,

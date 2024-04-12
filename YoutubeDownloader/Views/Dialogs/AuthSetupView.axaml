@@ -1,0 +1,92 @@
+﻿<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.AuthSetupView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    Height="450"
+    MinWidth="450">
+    <Design.DataContext>
+        <dialogs:AuthSetupViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="16"
+            FontSize="19"
+            FontWeight="Light"
+            Text="Authentication" />
+
+        <!--  Content  -->
+        <Border
+            Grid.Row="1"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderThickness="0,1">
+            <Panel>
+                <!--  Current auth status  -->
+                <StackPanel
+                    Margin="16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsVisible="{Binding IsAuthenticated}"
+                    Orientation="Vertical">
+                    <materialIcons:MaterialIcon
+                        Width="196"
+                        Height="196"
+                        HorizontalAlignment="Center"
+                        Foreground="{DynamicResource MaterialDesignDivider}"
+                        Kind="AccountCheck" />
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="18"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap">
+                        <Run FontWeight="Light" Text="You are currently authenticated" />
+                    </TextBlock>
+
+                    <!--  Log out  -->
+                    <Button
+                        x:Name="LogOutButton"
+                        Margin="16"
+                        HorizontalAlignment="Center"
+                        Click="LogOutButton_OnClick"
+                        Content="Log out"
+                        FontSize="18"
+                        Foreground="{DynamicResource MaterialSecondaryMidBrush}"
+                        Theme="{DynamicResource MaterialFlatButton}" />
+                </StackPanel>
+
+                <!--  Placeholder  -->
+                <TextBlock
+                    Margin="16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="18"
+                    IsVisible="{Binding !IsAuthenticated}"
+                    Text="Loading..." />
+
+                <!--  Browser  -->
+                <WebView
+                    x:Name="WebBrowser"
+                    IsVisible="{Binding !IsAuthenticated}"
+                    Loaded="WebBrowser_OnLoaded"
+                    NavigationStarting="WebBrowser_OnNavigationStarting"
+                    WebViewCreated="WebBrowser_OnWebViewCreated" />
+            </Panel>
+        </Border>
+
+        <!--  Close button  -->
+        <Button
+            Grid.Row="2"
+            Margin="16"
+            HorizontalAlignment="Stretch"
+            Command="{Binding CloseCommand}"
+            Content="CLOSE"
+            IsCancel="True"
+            IsDefault="True"
+            Theme="{DynamicResource MaterialOutlineButton}" />
+    </Grid>
+</UserControl>

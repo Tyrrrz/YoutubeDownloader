@@ -1,0 +1,315 @@
+<UserControl
+    x:Class="YoutubeDownloader.Views.Components.DashboardView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+    x:Name="UserControl"
+    Loaded="UserControl_OnLoaded">
+    <Design.DataContext>
+        <components:DashboardViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <!--  Header  -->
+        <StackPanel
+            Background="{DynamicResource MaterialDarkBackgroundBrush}"
+            DockPanel.Dock="Top"
+            Orientation="Vertical">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <!--  Query  -->
+                <materialStyles:Card Grid.Column="0" Margin="12,12,4,12">
+                    <TextBox
+                        x:Name="QueryTextBox"
+                        MinHeight="36"
+                        AcceptsReturn="True"
+                        FontSize="16"
+                        MaxLines="4"
+                        ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                        Text="{Binding Query}"
+                        Theme="{DynamicResource SoloTextBox}"
+                        Watermark="URL or search query">
+                        <TextBox.InnerLeftContent>
+                            <materialIcons:MaterialIcon
+                                Width="24"
+                                Height="24"
+                                Margin="4,0,8,0"
+                                Kind="Search" />
+                        </TextBox.InnerLeftContent>
+                        <TextBox.InnerRightContent>
+                            <Button
+                                x:Name="ProcessQueryButton"
+                                Margin="0,0,4,0"
+                                Padding="4"
+                                Command="{Binding ProcessQueryCommand}"
+                                IsDefault="True"
+                                Theme="{DynamicResource MaterialFlatButton}"
+                                ToolTip.Tip="Process query (Enter)">
+                                <materialIcons:MaterialIcon
+                                    Width="24"
+                                    Height="24"
+                                    Kind="ArrowRight" />
+                            </Button>
+                        </TextBox.InnerRightContent>
+                    </TextBox>
+                </materialStyles:Card>
+
+                <!--  Auth button  -->
+                <Button
+                    Grid.Column="1"
+                    Margin="4,0"
+                    Padding="8"
+                    VerticalAlignment="Center"
+                    Command="{Binding ShowAuthSetupCommand}"
+                    Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                    Theme="{DynamicResource MaterialFlatButton}"
+                    ToolTip.Tip="Authentication">
+                    <materialIcons:MaterialIcon
+                        Width="24"
+                        Height="24"
+                        Kind="AccountKey" />
+                </Button>
+
+                <!--  Settings button  -->
+                <Button
+                    Grid.Column="2"
+                    Margin="4,0"
+                    Padding="8"
+                    VerticalAlignment="Center"
+                    Command="{Binding ShowSettingsCommand}"
+                    Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                    Theme="{DynamicResource MaterialFlatButton}"
+                    ToolTip.Tip="Settings">
+                    <materialIcons:MaterialIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Settings" />
+                </Button>
+            </Grid>
+
+            <!--  Progress  -->
+            <ProgressBar
+                Height="2"
+                Background="Transparent"
+                IsIndeterminate="{Binding IsProgressIndeterminate}"
+                Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
+        </StackPanel>
+
+        <!--  Body  -->
+        <Panel Background="{DynamicResource MaterialCardBackgroundBrush}" DockPanel.Dock="Bottom">
+            <!--  Placeholder  -->
+            <StackPanel
+                Margin="8,32,8,8"
+                HorizontalAlignment="Center"
+                IsVisible="{Binding !IsDownloadsAvailable}"
+                Orientation="Vertical">
+                <materialIcons:MaterialIcon
+                    Width="256"
+                    Height="256"
+                    HorizontalAlignment="Center"
+                    Foreground="{DynamicResource MaterialDesignDivider}"
+                    Kind="Youtube" />
+
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="18"
+                    FontWeight="Light"
+                    LineSpacing="8"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap">
+                    <Run Text="Copy-paste a" />
+                    <Run FontWeight="SemiBold" Text="URL" />
+                    <Run Text="or enter a" />
+                    <Run FontWeight="SemiBold" Text="search query" />
+                    <Run Text="to start downloading" />
+                    <LineBreak />
+                    <Run Text="Press" />
+                    <Run FontWeight="SemiBold" Text="Shift+Enter" />
+                    <Run Text="to add multiple items" />
+                </TextBlock>
+            </StackPanel>
+
+            <!--  Downloads  -->
+            <DataGrid
+                ColumnWidth="Auto"
+                HorizontalScrollBarVisibility="Disabled"
+                IsVisible="{Binding IsDownloadsAvailable}"
+                ItemsSource="{Binding Downloads}"
+                VerticalScrollBarVisibility="Auto">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding RemoveSuccessfulDownloadsCommand}" Header="Remove successful downloads" />
+                        <MenuItem Command="{Binding RemoveInactiveDownloadsCommand}" Header="Remove inactive downloads" />
+                        <Separator />
+                        <MenuItem Command="{Binding RestartFailedDownloadsCommand}" Header="Restart failed downloads" />
+                        <Separator />
+                        <MenuItem Command="{Binding CancelAllDownloadsCommand}" Header="Cancel all downloads" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+                <DataGrid.Columns>
+                    <!--  Thumbnail  -->
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image
+                                    Width="48"
+                                    Height="48"
+                                    asyncImageLoader:ImageLoader.Source="{Binding Video, Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--  File name  -->
+                    <DataGridTemplateColumn
+                        Width="*"
+                        Header="File"
+                        SortMemberPath="FileName">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    FontSize="14"
+                                    Foreground="{DynamicResource MaterialDesignBody}"
+                                    Text="{Binding FileName}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip.Tip="{Binding FileName}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--  Status  -->
+                    <DataGridTemplateColumn
+                        MinWidth="100"
+                        Header="Status"
+                        SortMemberPath="Progress.Current.Fraction">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="Auto,Auto">
+                                    <!--  Progress  -->
+                                    <ProgressBar
+                                        Grid.Column="0"
+                                        Margin="0,0,6,0"
+                                        IsIndeterminate="{Binding IsProgressIndeterminate}"
+                                        IsVisible="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
+                                        Theme="{DynamicResource MaterialCircularProgressBar}"
+                                        Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
+
+                                    <!--  Status  -->
+                                    <TextBlock
+                                        x:Name="StatusTextBlock"
+                                        Grid.Column="1"
+                                        Classes.canceled="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
+                                        Classes.completed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Completed}}"
+                                        Classes.enqueued="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
+                                        Classes.failed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Failed}}"
+                                        Classes.started="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
+                                        PointerReleased="StatusTextBlock_OnPointerReleased"
+                                        TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Styles>
+                                            <Style Selector="TextBlock">
+                                                <Style Selector="^.enqueued">
+                                                    <Setter Property="Opacity" Value="0.7" />
+                                                    <Setter Property="Text" Value="Pending..." />
+                                                </Style>
+                                                <Style Selector="^.started">
+                                                    <Setter Property="Text" Value="{Binding Progress.Current}" />
+                                                </Style>
+                                                <Style Selector="^.completed">
+                                                    <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                    <Setter Property="Text" Value="Done" />
+                                                </Style>
+                                                <Style Selector="^.canceled">
+                                                    <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
+                                                    <Setter Property="Text" Value="Canceled" />
+                                                </Style>
+                                                <Style Selector="^.failed">
+                                                    <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
+                                                    <Setter Property="Text" Value="Failed" />
+                                                    <Setter Property="ToolTip.Tip">
+                                                        <Template>
+                                                            <TextBlock>
+                                                                <Run FontWeight="SemiBold" Text="Note: Click to copy this error message" />
+                                                                <LineBreak />
+                                                                <LineBreak />
+                                                                <Run Text="{Binding ErrorMessage}" />
+                                                            </TextBlock>
+                                                        </Template>
+                                                    </Setter>
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                </Style>
+                                            </Style>
+                                        </TextBlock.Styles>
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--  Buttons  -->
+                    <DataGridTemplateColumn MinWidth="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                    <!--  Show file  -->
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding ShowFileCommand}"
+                                        IsVisible="{Binding CanShowFile}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="Show file">
+                                        <materialIcons:MaterialIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="FileFindOutline" />
+                                    </Button>
+
+                                    <!--  Open file  -->
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding OpenFileCommand}"
+                                        IsVisible="{Binding CanOpenFile}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="Play">
+                                        <materialIcons:MaterialIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="PlayCircleOutline" />
+                                    </Button>
+
+                                    <!--  Cancel download  -->
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding CancelCommand}"
+                                        IsVisible="{Binding CanCancel}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="Cancel download">
+                                        <materialIcons:MaterialIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="CloseCircleOutline" />
+                                    </Button>
+
+                                    <!--  Restart download  -->
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding $parent[UserControl].DataContext.RestartDownloadCommand}"
+                                        CommandParameter="{Binding}"
+                                        IsVisible="{Binding IsCanceledOrFailed}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="Restart download">
+                                        <materialIcons:MaterialIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="Restart" />
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Panel>
+    </DockPanel>
+</UserControl>

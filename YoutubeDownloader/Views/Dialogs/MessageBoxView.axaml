@@ -1,0 +1,66 @@
+﻿<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.MessageBoxView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    Width="500"
+    x:DataType="dialogs:MessageBoxViewModel">
+    <Design.DataContext>
+        <dialogs:MessageBoxViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="16"
+            FontSize="19"
+            FontWeight="Light"
+            Text="{Binding Title}"
+            TextTrimming="CharacterEllipsis"
+            ToolTip.Tip="{Binding Title}" />
+
+        <!--  Message  -->
+        <Border
+            Grid.Row="1"
+            Padding="0,8"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderThickness="0,1">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <TextBlock
+                    Margin="16,8"
+                    Text="{Binding Message}"
+                    TextWrapping="Wrap" />
+            </ScrollViewer>
+        </Border>
+
+        <UniformGrid
+            Grid.Row="2"
+            Margin="16"
+            HorizontalAlignment="Right"
+            Columns="{Binding ButtonsCount}">
+            <!--  OK  -->
+            <Button
+                Command="{Binding CloseCommand}"
+                Content="{Binding DefaultButtonText}"
+                IsDefault="True"
+                IsVisible="{Binding IsDefaultButtonVisible}"
+                Theme="{DynamicResource MaterialOutlineButton}">
+                <Button.CommandParameter>
+                    <system:Boolean>True</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+
+            <!--  Cancel  -->
+            <Button
+                Margin="16,0,0,0"
+                HorizontalAlignment="Stretch"
+                Command="{Binding CloseCommand}"
+                Content="{Binding CancelButtonText}"
+                IsCancel="True"
+                IsVisible="{Binding IsCancelButtonVisible}"
+                Theme="{DynamicResource MaterialOutlineButton}" />
+        </UniformGrid>
+    </Grid>
+</UserControl>

@@ -51,6 +51,10 @@ public class UpdateService(SettingsService settingsService) : IDisposable
         if (!settingsService.IsAutoUpdateEnabled)
             return;
 
+        // Onova only works on Windows currently
+        if (!OperatingSystem.IsWindows())
+            return;
+
         if (_updateVersion is null || !_updatePrepared || _updaterLaunched)
             return;
 

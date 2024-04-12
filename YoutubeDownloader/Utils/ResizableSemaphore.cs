@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace YoutubeDownloader.Utils;
 
+// Like a regular semaphore, but the max count can be changed at any point
 internal partial class ResizableSemaphore : IDisposable
 {
     private readonly object _lock = new();
@@ -38,9 +39,11 @@ internal partial class ResizableSemaphore : IDisposable
     {
         lock (_lock)
         {
+            // Provide access to pending waiters, as long as max count allows
             while (_count < MaxCount && _waiters.TryDequeue(out var waiter))
             {
-                // Don't increment if the waiter has been canceled
+                // Don't increment the count if the waiter has already been
+                // completed before (most likely by getting canceled).
                 if (waiter.TrySetResult())
                     _count++;
             }
@@ -57,12 +60,14 @@ internal partial class ResizableSemaphore : IDisposable
         await using (_cts.Token.Register(() => waiter.TrySetCanceled(_cts.Token)))
         await using (cancellationToken.Register(() => waiter.TrySetCanceled(cancellationToken)))
         {
+            // Add the waiter to the queue
             lock (_lock)
             {
                 _waiters.Enqueue(waiter);
                 Refresh();
             }
 
+            // Wait until this waiter has been given access
             await waiter.Task;
 
             return new AcquiredAccess(this);
@@ -80,9 +85,13 @@ internal partial class ResizableSemaphore : IDisposable
 
     public void Dispose()
     {
+        if (!_isDisposed)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+        }
+
         _isDisposed = true;
-        _cts.Cancel();
-        _cts.Dispose();
     }
 }
 
@@ -90,6 +99,16 @@ internal partial class ResizableSemaphore
 {
     private class AcquiredAccess(ResizableSemaphore semaphore) : IDisposable
     {
-        public void Dispose() => semaphore.Release();
+        private bool _isDisposed;
+
+        public void Dispose()
+        {
+            if (!_isDisposed)
+            {
+                semaphore.Release();
+            }
+
+            _isDisposed = true;
+        }
     }
 }
