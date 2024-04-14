@@ -8,15 +8,19 @@ public partial class SettingsView : UserControl<SettingsViewModel>
 {
     public SettingsView() => InitializeComponent();
 
-    private void DarkModeToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs args)
+    private void DarkModeToggleSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs args)
     {
-        if (DarkModeToggleButton.IsChecked is true)
+        if (DarkModeToggleSwitch.IsChecked is true)
         {
             App.SetDarkTheme();
         }
-        else
+        else if (DarkModeToggleSwitch.IsChecked is false)
         {
             App.SetLightTheme();
+        }
+        else
+        {
+            App.SetDefaultTheme();
         }
     }
 }

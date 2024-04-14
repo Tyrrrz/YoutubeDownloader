@@ -38,12 +38,10 @@
                         </ToolTip.Tip>
                         <TextBlock
                             Margin="16,8"
-                            VerticalAlignment="Center"
                             DockPanel.Dock="Left"
                             Text="Auto-update" />
                         <ToggleSwitch
                             Margin="16,8"
-                            VerticalAlignment="Center"
                             DockPanel.Dock="Right"
                             IsChecked="{Binding IsAutoUpdateEnabled}" />
                     </DockPanel>
@@ -52,28 +50,24 @@
                     <DockPanel LastChildFill="False" ToolTip.Tip="Use darker colors in the UI">
                         <TextBlock
                             Margin="16,8"
-                            VerticalAlignment="Center"
                             DockPanel.Dock="Left"
                             Text="Dark mode" />
                         <ToggleSwitch
-                            x:Name="DarkModeToggleButton"
+                            x:Name="DarkModeToggleSwitch"
                             Margin="16,8"
-                            VerticalAlignment="Center"
                             DockPanel.Dock="Right"
                             IsChecked="{Binding IsDarkModeEnabled}"
-                            IsCheckedChanged="DarkModeToggleButton_OnIsCheckedChanged" />
+                            IsCheckedChanged="DarkModeToggleSwitch_OnIsCheckedChanged" />
                     </DockPanel>
 
                     <!--  Persist authentication  -->
                     <DockPanel LastChildFill="False" ToolTip.Tip="Save authentication cookies to a file so that they can be persisted between sessions">
                         <TextBlock
                             Margin="16,8"
-                            VerticalAlignment="Center"
                             DockPanel.Dock="Left"
                             Text="Persist authentication" />
                         <ToggleSwitch
                             Margin="16,8"
-                            VerticalAlignment="Center"
                             DockPanel.Dock="Right"
                             IsChecked="{Binding IsAuthPersisted}" />
                     </DockPanel>
@@ -140,14 +134,10 @@
                                 <Run Text="— video author" />
                             </TextBlock>
                         </ToolTip.Tip>
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Left"
-                            Text="File name template" />
+                        <TextBlock DockPanel.Dock="Left" Text="File name template" />
                         <TextBox
                             Width="150"
                             Height="20"
-                            VerticalAlignment="Center"
                             DockPanel.Dock="Right"
                             FontSize="13"
                             Text="{Binding FileNameTemplate}" />
@@ -158,24 +148,15 @@
                         Margin="16,8"
                         LastChildFill="False"
                         ToolTip.Tip="How many downloads can be active at the same time">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Left"
-                            Text="Parallel limit"
-                            TextAlignment="Right" />
-                        <StackPanel
-                            VerticalAlignment="Center"
-                            DockPanel.Dock="Right"
-                            Orientation="Horizontal">
-                            <TextBlock
-                                Margin="10,0"
-                                VerticalAlignment="Center"
-                                Text="{Binding ParallelLimit}" />
+                        <TextBlock DockPanel.Dock="Left" Text="Parallel limit" />
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <TextBlock Margin="10,0" Text="{Binding ParallelLimit}" />
                             <Slider
                                 Width="150"
-                                VerticalAlignment="Center"
+                                IsSnapToTickEnabled="True"
                                 Maximum="10"
                                 Minimum="1"
+                                TickFrequency="1"
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
                     </DockPanel>
