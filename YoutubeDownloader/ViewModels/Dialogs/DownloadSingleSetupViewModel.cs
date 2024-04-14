@@ -55,13 +55,12 @@ public partial class DownloadSingleSetupViewModel(
         var container = SelectedDownloadOption.Container;
 
         var filePath = await dialogManager.PromptSaveFilePathAsync(
-            new[]
-            {
+            [
                 new FilePickerFileType($"{container.Name} file")
                 {
-                    Patterns = new[] { $"*.{container.Name}" }
+                    Patterns = [$"*.{container.Name}"]
                 }
-            },
+            ],
             FileNameTemplate.Apply(settingsService.FileNameTemplate, Video, container)
         );
 

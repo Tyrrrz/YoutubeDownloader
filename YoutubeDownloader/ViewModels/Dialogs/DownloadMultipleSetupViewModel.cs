@@ -39,7 +39,7 @@ public partial class DownloadMultipleSetupViewModel(
     public ObservableCollection<IVideo> SelectedVideos { get; } = [];
 
     public IReadOnlyList<Container> AvailableContainers { get; } =
-        new[] { Container.Mp4, Container.WebM, Container.Mp3, new Container("ogg") };
+        [Container.Mp4, Container.WebM, Container.Mp3, new Container("ogg")];
 
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         Enum.GetValues<VideoQualityPreference>().Reverse().ToArray();
