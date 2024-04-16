@@ -6,9 +6,9 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.Converters;
 
-public class VideoToLowestQualityThumbnailUrlConverter : IValueConverter
+public class VideoToLowestQualityThumbnailUrlStringConverter : IValueConverter
 {
-    public static VideoToLowestQualityThumbnailUrlConverter Instance { get; } = new();
+    public static VideoToLowestQualityThumbnailUrlStringConverter Instance { get; } = new();
 
     public object? Convert(
         object? value,

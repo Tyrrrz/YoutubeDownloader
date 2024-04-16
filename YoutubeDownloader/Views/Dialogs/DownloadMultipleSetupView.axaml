@@ -51,7 +51,7 @@
                                 Grid.Column="0"
                                 Width="48"
                                 Height="48"
-                                asyncImageLoader:ImageLoader.Source="{Binding Converter={x:Static converters:VideoToLowestQualityThumbnailUrlConverter.Instance}}" />
+                                asyncImageLoader:ImageLoader.Source="{Binding Converter={x:Static converters:VideoToLowestQualityThumbnailUrlStringConverter.Instance}}" />
 
                             <!--  Info  -->
                             <StackPanel
