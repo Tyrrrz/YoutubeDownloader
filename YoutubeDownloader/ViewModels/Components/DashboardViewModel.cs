@@ -68,7 +68,7 @@ public partial class DashboardViewModel : ViewModelBase
         _eventRoot.Add(
             Downloads.WatchProperty(
                 o => o.Count,
-                () => OnPropertyChanged(nameof(IsDownloadsAvailable))
+                () => OnPropertyChanged(nameof(AreDownloadsAvailable))
             )
         );
     }
@@ -79,7 +79,7 @@ public partial class DashboardViewModel : ViewModelBase
 
     public bool IsProgressIndeterminate => IsBusy && Progress.Current.Fraction is <= 0 or >= 1;
 
-    public bool IsDownloadsAvailable => Downloads.Any();
+    public bool AreDownloadsAvailable => Downloads.Any();
 
     private bool CanShowAuthSetup() => !IsBusy;
 

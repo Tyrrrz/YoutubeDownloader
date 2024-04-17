@@ -24,7 +24,11 @@
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical">
                     <!--  Auto-updates  -->
-                    <DockPanel IsVisible="{OnPlatform False, Windows=True}" LastChildFill="False">
+                    <DockPanel
+                        Margin="16,8"
+                        IsVisible="{OnPlatform False,
+                                               Windows=True}"
+                        LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock>
                                 <Run Text="Perform automatic updates on every launch." />
@@ -36,25 +40,18 @@
                                 <Run Text="is compatible with the latest version of YouTube." />
                             </TextBlock>
                         </ToolTip.Tip>
-                        <TextBlock
-                            Margin="16,8"
-                            DockPanel.Dock="Left"
-                            Text="Auto-update" />
-                        <ToggleSwitch
-                            Margin="16,8"
-                            DockPanel.Dock="Right"
-                            IsChecked="{Binding IsAutoUpdateEnabled}" />
+                        <TextBlock DockPanel.Dock="Left" Text="Auto-update" />
+                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding IsAutoUpdateEnabled}" />
                     </DockPanel>
 
                     <!--  Dark mode  -->
-                    <DockPanel LastChildFill="False" ToolTip.Tip="Use darker colors in the UI">
-                        <TextBlock
-                            Margin="16,8"
-                            DockPanel.Dock="Left"
-                            Text="Dark mode" />
+                    <DockPanel
+                        Margin="16,8"
+                        LastChildFill="False"
+                        ToolTip.Tip="Use darker colors in the UI">
+                        <TextBlock DockPanel.Dock="Left" Text="Dark mode" />
                         <ToggleSwitch
                             x:Name="DarkModeToggleSwitch"
-                            Margin="16,8"
                             DockPanel.Dock="Right"
                             IsChecked="{Binding IsDarkModeEnabled}"
                             IsCheckedChanged="DarkModeToggleSwitch_OnIsCheckedChanged" />
@@ -73,39 +70,30 @@
                     </DockPanel>
 
                     <!--  Inject subtitles  -->
-                    <DockPanel LastChildFill="False" ToolTip.Tip="Inject subtitles into downloaded files">
-                        <TextBlock
-                            Margin="16,8"
-                            DockPanel.Dock="Left"
-                            Text="Inject subtitles" />
-                        <ToggleSwitch
-                            Margin="16,8"
-                            DockPanel.Dock="Right"
-                            IsChecked="{Binding ShouldInjectSubtitles}" />
+                    <DockPanel
+                        Margin="16,8"
+                        LastChildFill="False"
+                        ToolTip.Tip="Inject subtitles into downloaded files">
+                        <TextBlock DockPanel.Dock="Left" Text="Inject subtitles" />
+                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectSubtitles}" />
                     </DockPanel>
 
                     <!--  Inject tags  -->
-                    <DockPanel LastChildFill="False" ToolTip.Tip="Inject media tags into downloaded files">
-                        <TextBlock
-                            Margin="16,8"
-                            DockPanel.Dock="Left"
-                            Text="Inject media tags" />
-                        <ToggleSwitch
-                            Margin="16,8"
-                            DockPanel.Dock="Right"
-                            IsChecked="{Binding ShouldInjectTags}" />
+                    <DockPanel
+                        Margin="16,8"
+                        LastChildFill="False"
+                        ToolTip.Tip="Inject media tags into downloaded files">
+                        <TextBlock DockPanel.Dock="Left" Text="Inject media tags" />
+                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectTags}" />
                     </DockPanel>
 
                     <!--  Skip existing files  -->
-                    <DockPanel LastChildFill="False" ToolTip.Tip="When downloading multiple videos, skip those that already have matching files in the output directory">
-                        <TextBlock
-                            Margin="16,8"
-                            DockPanel.Dock="Left"
-                            Text="Skip existing files" />
-                        <ToggleSwitch
-                            Margin="16,8"
-                            DockPanel.Dock="Right"
-                            IsChecked="{Binding ShouldSkipExistingFiles}" />
+                    <DockPanel
+                        Margin="16,8"
+                        LastChildFill="False"
+                        ToolTip.Tip="When downloading multiple videos, skip those that already have matching files in the output directory">
+                        <TextBlock DockPanel.Dock="Left" Text="Skip existing files" />
+                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldSkipExistingFiles}" />
                     </DockPanel>
 
                     <!--  File name template  -->

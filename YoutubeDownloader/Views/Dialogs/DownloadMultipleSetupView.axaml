@@ -37,12 +37,14 @@
                 ItemsSource="{Binding AvailableVideos}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 SelectedItems="{Binding SelectedVideos}"
-                SelectionMode="Multiple">
-                <ListBox.ItemContainerTheme>
-                    <ControlTheme BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Padding" Value="8,4" />
-                    </ControlTheme>
-                </ListBox.ItemContainerTheme>
+                SelectionMode="Multiple,Toggle">
+                <ListBox.Styles>
+                    <Style Selector="ListBox">
+                        <Style Selector="^ ListBoxItem">
+                            <Setter Property="Padding" Value="8" />
+                        </Style>
+                    </Style>
+                </ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*,Auto">

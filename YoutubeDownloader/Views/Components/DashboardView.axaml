@@ -42,7 +42,7 @@
                         <TextBox.InnerRightContent>
                             <Button
                                 x:Name="ProcessQueryButton"
-                                Margin="0,0,4,0"
+                                Margin="8,0,0,0"
                                 Padding="4"
                                 Command="{Binding ProcessQueryCommand}"
                                 IsDefault="True"
@@ -104,7 +104,7 @@
             <StackPanel
                 Margin="8,32,8,8"
                 HorizontalAlignment="Center"
-                IsVisible="{Binding !IsDownloadsAvailable}"
+                IsVisible="{Binding !AreDownloadsAvailable}"
                 Orientation="Vertical">
                 <materialIcons:MaterialIcon
                     Width="256"
@@ -136,7 +136,7 @@
             <DataGrid
                 ColumnWidth="Auto"
                 HorizontalScrollBarVisibility="Disabled"
-                IsVisible="{Binding IsDownloadsAvailable}"
+                IsVisible="{Binding AreDownloadsAvailable}"
                 ItemsSource="{Binding Downloads}"
                 VerticalScrollBarVisibility="Auto">
                 <DataGrid.ContextMenu>
