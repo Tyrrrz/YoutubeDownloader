@@ -19,9 +19,9 @@
             Background="{DynamicResource MaterialDarkBackgroundBrush}"
             DockPanel.Dock="Top"
             Orientation="Vertical">
-            <Grid ColumnDefinitions="*,Auto,Auto">
+            <Grid Margin="12,12,8,12" ColumnDefinitions="*,Auto,Auto">
                 <!--  Query  -->
-                <materialStyles:Card Grid.Column="0" Margin="12,12,4,12">
+                <materialStyles:Card Grid.Column="0">
                     <TextBox
                         x:Name="QueryTextBox"
                         MinHeight="36"
@@ -60,7 +60,7 @@
                 <!--  Auth button  -->
                 <Button
                     Grid.Column="1"
-                    Margin="4,0"
+                    Margin="8,0,0,0"
                     Padding="8"
                     VerticalAlignment="Center"
                     Command="{Binding ShowAuthSetupCommand}"
@@ -76,7 +76,7 @@
                 <!--  Settings button  -->
                 <Button
                     Grid.Column="2"
-                    Margin="4,0"
+                    Margin="8,0,0,0"
                     Padding="8"
                     VerticalAlignment="Center"
                     Command="{Binding ShowSettingsCommand}"
