@@ -255,8 +255,9 @@
                                     <!--  Show file  -->
                                     <Button
                                         Padding="4"
+                                        VerticalAlignment="Center"
                                         Command="{Binding ShowFileCommand}"
-                                        IsVisible="{Binding CanShowFile}"
+                                        IsVisible="{Binding $self.IsEffectivelyEnabled}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Show file">
                                         <materialIcons:MaterialIcon
@@ -268,8 +269,9 @@
                                     <!--  Open file  -->
                                     <Button
                                         Padding="4"
+                                        VerticalAlignment="Center"
                                         Command="{Binding OpenFileCommand}"
-                                        IsVisible="{Binding CanOpenFile}"
+                                        IsVisible="{Binding $self.IsEffectivelyEnabled}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Play">
                                         <materialIcons:MaterialIcon
@@ -281,8 +283,9 @@
                                     <!--  Cancel download  -->
                                     <Button
                                         Padding="4"
+                                        VerticalAlignment="Center"
                                         Command="{Binding CancelCommand}"
-                                        IsVisible="{Binding CanCancel}"
+                                        IsVisible="{Binding $self.IsEffectivelyEnabled}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Cancel download">
                                         <materialIcons:MaterialIcon
@@ -294,6 +297,7 @@
                                     <!--  Restart download  -->
                                     <Button
                                         Padding="4"
+                                        VerticalAlignment="Center"
                                         Command="{Binding $parent[UserControl].DataContext.RestartDownloadCommand}"
                                         CommandParameter="{Binding}"
                                         IsVisible="{Binding IsCanceledOrFailed}"
