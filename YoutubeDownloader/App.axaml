@@ -142,17 +142,17 @@
             </Style>
         </Style>
 
+        <!--  Toggle switch  -->
+        <Style Selector="ToggleSwitch">
+            <Setter Property="materialAssists:ToggleSwitchAssist.SwitchThumbOffBackground" Value="{DynamicResource MaterialBackgroundBrush}" />
+        </Style>
+
         <!--  Tooltip  -->
         <Style Selector="ToolTip">
             <Setter Property="TextElement.FontSize" Value="14" />
             <Setter Property="TextElement.FontWeight" Value="Normal" />
             <Setter Property="TextElement.FontStyle" Value="Normal" />
             <Setter Property="TextElement.FontStretch" Value="Normal" />
-        </Style>
-
-        <!--  Toggle switch  -->
-        <Style Selector="ToggleSwitch">
-            <Setter Property="materialAssists:ToggleSwitchAssist.SwitchThumbOffBackground" Value="{DynamicResource MaterialBackgroundBrush}" />
         </Style>
     </Application.Styles>
 </Application>
