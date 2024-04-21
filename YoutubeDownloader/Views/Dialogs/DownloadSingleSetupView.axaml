@@ -94,9 +94,10 @@
                                     <Run.Styles>
                                         <Style Selector="Run">
                                             <Setter Property="Text" Value="{Binding VideoQuality, Mode=OneWay}" />
-                                        </Style>
-                                        <Style Selector="Run.audioOnly">
-                                            <Setter Property="Text" Value="Audio" />
+
+                                            <Style Selector="^.audioOnly">
+                                                <Setter Property="Text" Value="Audio" />
+                                            </Style>
                                         </Style>
                                     </Run.Styles>
                                 </Run>
