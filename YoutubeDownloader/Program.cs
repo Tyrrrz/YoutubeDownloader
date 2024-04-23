@@ -10,13 +10,14 @@ public static class Program
 {
     private static Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
 
-    public static string Name { get; } = Assembly.GetName().Name ?? "YoutubeDownloader";
+    public static string Name { get; } = Assembly.GetName().Name ?? "YouTube Video Downloader";
 
     public static Version Version { get; } = Assembly.GetName().Version ?? new Version(0, 0, 0);
 
     public static string VersionString { get; } = Version.ToString(3);
 
-    public static string ProjectUrl { get; } = "https://github.com/Tyrrrz/YoutubeDownloader";
+    public static string ProjectUrl { get; } =
+        "https://github.com/zackmarzt/YouTubeDownloader-Copy";
 
     public static string LatestReleaseUrl { get; } = ProjectUrl + "/releases/latest";
 

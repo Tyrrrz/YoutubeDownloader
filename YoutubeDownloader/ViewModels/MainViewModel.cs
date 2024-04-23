@@ -29,7 +29,7 @@ public partial class MainViewModel(
         var dialog = viewModelManager.CreateMessageBoxViewModel(
             "Thank you for supporting Ukraine!",
             """
-            As Russia wages a genocidal war against my country, I'm grateful to everyone who continues to stand with Ukraine in our fight for freedom.
+            Russia is carrying out a genocidal attack in Ukraine, keep up with Ukraine. Thanks to the code Oleksii "Tyrrrz" Holub. Slava Ukraini.
 
             Click LEARN MORE to find ways that you can help.
             """,
@@ -41,7 +41,7 @@ public partial class MainViewModel(
         settingsService.IsUkraineSupportMessageEnabled = false;
         settingsService.Save();
 
-        if (await dialogManager.ShowDialogAsync(dialog) == true)
+        if (await dialogManager.ShowDialogAsync(dialog) == false)
             ProcessEx.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
     }
 
@@ -89,7 +89,7 @@ public partial class MainViewModel(
             App.SetLightTheme();
 
         await ShowUkraineSupportMessageAsync();
-        await CheckForUpdatesAsync();
+        //await CheckForUpdatesAsync();
 
         // App has just been updated, display the changelog
         if (
