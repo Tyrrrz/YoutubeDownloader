@@ -5,6 +5,7 @@
     xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     x:Name="UserControl"
     Width="500"
@@ -113,48 +114,43 @@
         </Border>
 
         <!--  Preferences  -->
-        <DockPanel
+        <UniformGrid
             Grid.Row="2"
-            Margin="16,16,16,8"
-            LastChildFill="False">
+            Margin="16"
+            Columns="2">
             <!--  Container preference  -->
-            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                <TextBlock Text="Container:" />
-                <ComboBox
-                    Width="125"
-                    Margin="8,0,0,0"
-                    ItemsSource="{Binding AvailableContainers}"
-                    SelectedItem="{Binding SelectedContainer}" />
-            </StackPanel>
+            <ComboBox
+                Margin="0,0,8,0"
+                materialAssists:ComboBoxAssist.Label="Container"
+                ItemsSource="{Binding AvailableContainers}"
+                SelectedItem="{Binding SelectedContainer}"
+                Theme="{DynamicResource MaterialFilledComboBox}" />
 
             <!--  Video quality preference  -->
-            <StackPanel
-                DockPanel.Dock="Right"
+            <ComboBox
+                Margin="8,0,0,0"
+                materialAssists:ComboBoxAssist.Label="Video quality"
                 IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
-                Orientation="Horizontal">
-                <TextBlock Text="Video quality:" />
-                <ComboBox
-                    Width="125"
-                    Margin="8,0,0,0"
-                    ItemsSource="{Binding AvailableVideoQualityPreferences}"
-                    SelectedItem="{Binding SelectedVideoQualityPreference}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={x:Static converters:VideoQualityPreferenceToStringConverter.Instance}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-        </DockPanel>
+                ItemsSource="{Binding AvailableVideoQualityPreferences}"
+                SelectedItem="{Binding SelectedVideoQualityPreference}"
+                Theme="{DynamicResource MaterialFilledComboBox}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={x:Static converters:VideoQualityPreferenceToStringConverter.Instance}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </UniformGrid>
 
         <!--  Buttons  -->
         <StackPanel
             Grid.Row="3"
-            Margin="16"
+            Margin="16,8,16,16"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
             <!--  Download  -->
             <Button
+                Margin="0,0,8,0"
                 Command="{Binding ConfirmCommand}"
                 IsDefault="True"
                 Theme="{DynamicResource MaterialOutlineButton}">
@@ -168,7 +164,7 @@
 
             <!--  Cancel  -->
             <Button
-                Margin="16,0,0,0"
+                Margin="8,0,0,0"
                 Command="{Binding CloseCommand}"
                 Content="CANCEL"
                 IsCancel="True"

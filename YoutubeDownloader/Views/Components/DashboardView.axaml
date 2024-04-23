@@ -24,7 +24,6 @@
                 <materialStyles:Card Grid.Column="0">
                     <TextBox
                         x:Name="QueryTextBox"
-                        MinHeight="36"
                         AcceptsReturn="True"
                         FontSize="16"
                         MaxLines="4"

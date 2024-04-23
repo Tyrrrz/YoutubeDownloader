@@ -128,7 +128,8 @@
                             Height="20"
                             DockPanel.Dock="Right"
                             FontSize="13"
-                            Text="{Binding FileNameTemplate}" />
+                            Text="{Binding FileNameTemplate}"
+                            Theme="{DynamicResource CompactTextBox}" />
                     </DockPanel>
 
                     <!--  Parallel limit  -->

@@ -21,8 +21,15 @@
         <Style Selector="ComboBox">
             <Setter Property="FontSize" Value="14" />
 
-            <Style Selector="^ /template/ Panel#PART_RootPanel">
-                <Setter Property="Height" Value="22" />
+            <Style Selector="^ /template/ ToggleButton">
+                <Style Selector="^:checked, ^:unchecked">
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="CornerRadius" Value="0" />
+
+                    <Style Selector="^ ContentPresenter#contentPresenter">
+                        <Setter Property="Margin" Value="12,8" />
+                    </Style>
+                </Style>
             </Style>
         </Style>
 
@@ -130,16 +137,7 @@
 
         <!--  Text box  -->
         <Style Selector="TextBox">
-            <Setter Property="Height" Value="22" />
             <Setter Property="FontSize" Value="14" />
-
-            <Style Selector="^ /template/ Panel#PART_TextFieldPanel">
-                <Setter Property="MinHeight" Value="0" />
-            </Style>
-
-            <Style Selector="^ /template/ Panel#PART_TextContainer">
-                <Setter Property="Margin" Value="0" />
-            </Style>
         </Style>
 
         <!--  Toggle switch  -->
@@ -155,4 +153,26 @@
             <Setter Property="TextElement.FontStretch" Value="Normal" />
         </Style>
     </Application.Styles>
+
+    <Application.Resources>
+        <!--  Text box  -->
+        <ControlTheme
+            x:Key="CompactTextBox"
+            BasedOn="{StaticResource {x:Type TextBox}}"
+            TargetType="{x:Type TextBox}">
+            <Styles>
+                <Style Selector="TextBox">
+                    <Setter Property="Height" Value="22" />
+
+                    <Style Selector="^ /template/ Panel#PART_TextFieldPanel">
+                        <Setter Property="MinHeight" Value="0" />
+                    </Style>
+
+                    <Style Selector="^ /template/ Panel#PART_TextContainer">
+                        <Setter Property="Margin" Value="0" />
+                    </Style>
+                </Style>
+            </Styles>
+        </ControlTheme>
+    </Application.Resources>
 </Application>

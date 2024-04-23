@@ -11,6 +11,7 @@
     MinWidth="600"
     MinHeight="400"
     Icon="/favicon.ico"
+    RenderOptions.BitmapInterpolationMode="HighQuality"
     WindowStartupLocation="CenterScreen">
     <Design.DataContext>
         <viewModels:MainViewModel />
