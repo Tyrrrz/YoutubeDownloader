@@ -37,7 +37,6 @@ public partial class MainViewModel(
             "CLOSE"
         );
 
-        // Disable this message in the future
         settingsService.IsUkraineSupportMessageEnabled = false;
         settingsService.Save();
 
@@ -45,7 +44,7 @@ public partial class MainViewModel(
             ProcessEx.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
     }
 
-    private async Task CheckForUpdatesAsync()
+    /*private async Task CheckForUpdatesAsync()
     {
         try
         {
@@ -71,7 +70,7 @@ public partial class MainViewModel(
             // Failure to update shouldn't crash the application
             snackbarManager.Notify("Failed to perform application update");
         }
-    }
+    }*/
 
     [RelayCommand]
     private async Task InitializeAsync()
