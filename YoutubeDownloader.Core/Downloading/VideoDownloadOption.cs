@@ -12,10 +12,8 @@ public partial record VideoDownloadOption(
     IReadOnlyList<IStreamInfo> StreamInfos
 )
 {
-    private readonly Lazy<VideoQuality?> _videoQualityLazy =
-        new(() => StreamInfos.OfType<IVideoStreamInfo>().MaxBy(s => s.VideoQuality)?.VideoQuality);
-
-    public VideoQuality? VideoQuality => _videoQualityLazy.Value;
+    public VideoQuality? VideoQuality { get; } =
+        StreamInfos.OfType<IVideoStreamInfo>().MaxBy(s => s.VideoQuality)?.VideoQuality;
 }
 
 public partial record VideoDownloadOption
