@@ -99,7 +99,7 @@
                                 </StackPanel>
                             </StackPanel>
 
-                            <!--  Checkbox  -->
+                            <!--  Checkmark  -->
                             <materialIcons:MaterialIcon
                                 Grid.Column="2"
                                 Width="24"

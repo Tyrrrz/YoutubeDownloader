@@ -65,7 +65,7 @@ public class DialogManager : IDisposable
             }
         );
 
-        return file?.Path?.LocalPath;
+        return file?.Path.LocalPath;
     }
 
     public async Task<string?> PromptDirectoryPathAsync(string defaultDirPath = "")
