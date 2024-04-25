@@ -76,6 +76,8 @@ body:
           required: true
         - label: I have sponsored this project
           required: false
+        - label: I have not read any of the above and just checked all the boxes to submit the issue
+          required: false
 
   - type: markdown
     attributes:
