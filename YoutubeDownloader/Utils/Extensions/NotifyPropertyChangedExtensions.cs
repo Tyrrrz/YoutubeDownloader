@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -42,21 +40,6 @@ internal static class NotifyPropertyChangedExtensions
             callback();
 
         return Disposable.Create(() => owner.PropertyChanged -= OnPropertyChanged);
-    }
-
-    public static IDisposable WatchProperties<TOwner>(
-        this TOwner owner,
-        IReadOnlyList<Expression<Func<TOwner, object?>>> propertyExpressions,
-        Action callback,
-        bool watchInitialValue = true
-    )
-        where TOwner : INotifyPropertyChanged
-    {
-        var watchers = propertyExpressions
-            .Select(x => WatchProperty(owner, x, callback, watchInitialValue))
-            .ToArray();
-
-        return Disposable.Create(() => watchers.DisposeAll());
     }
 
     public static IDisposable WatchAllProperties<TOwner>(

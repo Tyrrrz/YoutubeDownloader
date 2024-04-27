@@ -62,7 +62,7 @@ public partial class SettingsService()
         base.Reset();
 
         // Reset the dark mode setting separately because its default value is evaluated dynamically
-        // and cannot be set in the field initializer.
+        // and cannot be set by the field initializer.
         IsDarkModeEnabled =
             Application.Current?.PlatformSettings?.GetColorValues().ThemeVariant
             == PlatformThemeVariant.Dark;

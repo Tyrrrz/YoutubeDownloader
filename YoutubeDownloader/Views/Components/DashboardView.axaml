@@ -103,7 +103,7 @@
             <StackPanel
                 Margin="8,32,8,8"
                 HorizontalAlignment="Center"
-                IsVisible="{Binding !AreDownloadsAvailable}"
+                IsVisible="{Binding !Downloads.Count}"
                 Orientation="Vertical">
                 <materialIcons:MaterialIcon
                     Width="256"
@@ -135,7 +135,7 @@
             <DataGrid
                 ColumnWidth="Auto"
                 HorizontalScrollBarVisibility="Disabled"
-                IsVisible="{Binding AreDownloadsAvailable}"
+                IsVisible="{Binding !!Downloads.Count}"
                 ItemsSource="{Binding Downloads}"
                 VerticalScrollBarVisibility="Auto">
                 <DataGrid.ContextMenu>

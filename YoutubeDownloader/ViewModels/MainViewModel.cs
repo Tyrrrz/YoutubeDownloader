@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Framework;
@@ -62,7 +63,9 @@ public partial class MainViewModel(
                 () =>
                 {
                     updateService.FinalizeUpdate(true);
-                    Application.Current?.ApplicationLifetime?.Shutdown(2);
+
+                    if (Application.Current?.ApplicationLifetime?.TryShutdown(2) != true)
+                        Environment.Exit(2);
                 }
             );
         }

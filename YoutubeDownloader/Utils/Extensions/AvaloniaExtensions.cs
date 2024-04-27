@@ -16,20 +16,19 @@ internal static class AvaloniaExtensions
         lifetime.TryGetMainWindow()
         ?? (lifetime as ISingleViewApplicationLifetime)?.MainView?.GetVisualRoot() as TopLevel;
 
-    public static void Shutdown(this IApplicationLifetime lifetime, int exitCode = 0)
+    public static bool TryShutdown(this IApplicationLifetime lifetime, int exitCode = 0)
     {
         if (lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
         {
-            desktopLifetime.TryShutdown(exitCode);
-            return;
+            return desktopLifetime.TryShutdown(exitCode);
         }
 
         if (lifetime is IControlledApplicationLifetime controlledLifetime)
         {
             controlledLifetime.Shutdown(exitCode);
-            return;
+            return true;
         }
 
-        Environment.Exit(exitCode);
+        return false;
     }
 }

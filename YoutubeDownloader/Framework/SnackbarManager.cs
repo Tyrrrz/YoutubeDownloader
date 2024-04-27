@@ -9,22 +9,19 @@ public class SnackbarManager
 {
     private readonly TimeSpan _defaultDuration = TimeSpan.FromSeconds(5);
 
-    public void Notify(string message, TimeSpan? duration = null)
-    {
+    public void Notify(string message, TimeSpan? duration = null) =>
         SnackbarHost.Post(
             new SnackbarModel(message, duration ?? _defaultDuration),
             null,
             DispatcherPriority.Normal
         );
-    }
 
     public void Notify(
         string message,
         string actionText,
         Action actionHandler,
         TimeSpan? duration = null
-    )
-    {
+    ) =>
         SnackbarHost.Post(
             new SnackbarModel(
                 message,
@@ -34,5 +31,4 @@ public class SnackbarManager
             null,
             DispatcherPriority.Normal
         );
-    }
 }
