@@ -45,9 +45,6 @@ public partial class SettingsService()
     private int _parallelLimit = 2;
 
     [ObservableProperty]
-    private Version? _lastAppVersion;
-
-    [ObservableProperty]
     private IReadOnlyList<Cookie>? _lastAuthCookies;
 
     [ObservableProperty]
