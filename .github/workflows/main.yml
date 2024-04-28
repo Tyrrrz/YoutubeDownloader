@@ -134,7 +134,7 @@ jobs:
         with:
           name: YoutubeDownloader.${{ matrix.rid }}
           path: YoutubeDownloader/
-          
+
       - name: Set permissions
         if: !startsWith(matrix.rid, 'win')
         run: |
