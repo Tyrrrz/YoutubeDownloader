@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Onova;
 using Onova.Exceptions;
@@ -9,7 +10,15 @@ namespace YoutubeDownloader.Services;
 public class UpdateService(SettingsService settingsService) : IDisposable
 {
     private readonly IUpdateManager _updateManager = new UpdateManager(
-        new GithubPackageResolver("Tyrrrz", "YoutubeDownloader", "YoutubeDownloader.zip"),
+        new GithubPackageResolver(
+            "Tyrrrz",
+            "YoutubeDownloader",
+            // Examples:
+            // YoutubeDownloader.win-arm64.zip
+            // YoutubeDownloader.win-x64.zip
+            // YoutubeDownloader.linux-x64.zip
+            $"YoutubeDownloader.{RuntimeInformation.RuntimeIdentifier}.zip"
+        ),
         new ZipPackageExtractor()
     );
 

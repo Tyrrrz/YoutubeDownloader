@@ -42,8 +42,18 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 - 🟢 **[Stable release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
 - 🟠 [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions/workflows/main.yml)
 
+> **Important**:
+> To run **YoutubeDownloader**, you need to make sure that the **.NET 8.0 Runtime** is installed.
+> You can download it here:
+>
+> - [.NET 8.0 Runtime for **macOS x64**](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-8.0.0-macos-x64-installer)
+> - [.NET 8.0 Runtime for **macOS arm64**](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-8.0.0-macos-arm64-installer)
+> - [.NET 8.0 Runtime for **Linux**](https://learn.microsoft.com/dotnet/core/install/linux) (find the correct download for your distro)
+> - On **Windows**, the runtime should be installed automatically when you run the application for the first time
+
 ## Features
 
+- Fully cross-platform graphical user interface
 - Download videos by URL
 - Download videos from playlists or channels
 - Download videos by search query

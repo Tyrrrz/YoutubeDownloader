@@ -82,7 +82,10 @@ public partial class DownloadViewModel : ViewModelBase
         _cancellationTokenSource.Cancel();
     }
 
-    private bool CanShowFile() => Status == DownloadStatus.Completed;
+    private bool CanShowFile() =>
+        Status == DownloadStatus.Completed
+        // This only works on Windows currently
+        && OperatingSystem.IsWindows();
 
     [RelayCommand(CanExecute = nameof(CanShowFile))]
     private async Task ShowFileAsync()

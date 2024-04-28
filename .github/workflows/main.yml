@@ -40,6 +40,17 @@ jobs:
           --configuration Release
 
   pack:
+    strategy:
+      matrix:
+        rid:
+          - win-arm64
+          - win-x86
+          - win-x64
+          - linux-x64
+          - osx-arm64
+          - osx-x64
+
+    # Need to run on Windows because of DotnetRuntimeBootstrapper's dependency on Ressy
     runs-on: windows-latest
     timeout-minutes: 10
 
@@ -63,21 +74,52 @@ jobs:
           -p:CSharpier_Bypass=true
           --output YoutubeDownloader/bin/publish
           --configuration Release
-          --use-current-runtime
+          --runtime ${{ matrix.rid }}
+          --no-self-contained
 
       - name: Upload artifacts
         uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
-          name: YoutubeDownloader
+          name: YoutubeDownloader.${{ matrix.rid }}
           path: YoutubeDownloader/bin/publish
           if-no-files-found: error
 
-  deploy:
+  release:
     if: ${{ github.ref_type == 'tag' }}
 
     needs:
       - format
       - pack
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create ${{ github.ref_name }}
+          --repo ${{ github.event.repository.full_name }}
+          --title ${{ github.ref_name }}
+          --generate-notes
+          --verify-tag
+
+  deploy:
+    needs: release
+
+    strategy:
+      matrix:
+        rid:
+          - win-arm64
+          - win-x86
+          - win-x64
+          - linux-x64
+          - osx-arm64
+          - osx-x64
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -90,24 +132,27 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
         with:
-          name: YoutubeDownloader
+          name: YoutubeDownloader.${{ matrix.rid }}
           path: YoutubeDownloader/
+
+      - name: Set permissions
+        if: ${{ !startsWith(matrix.rid, 'win') }}
+        run: |
+          chmod +x YoutubeDownloader/YoutubeDownloader
+          chmod +x YoutubeDownloader/ffmpeg
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
         working-directory: YoutubeDownloader/
-        run: zip -r ../YoutubeDownloader.zip .
+        run: zip -r ../YoutubeDownloader.${{ matrix.rid }}.zip .
 
-      - name: Create release
+      - name: Upload release asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
-          gh release create ${{ github.ref_name }}
-          YoutubeDownloader.zip
+          gh release upload ${{ github.ref_name }}
+          YoutubeDownloader.${{ matrix.rid }}.zip
           --repo ${{ github.event.repository.full_name }}
-          --title ${{ github.ref_name }}
-          --generate-notes
-          --verify-tag
 
   notify:
     needs: deploy
