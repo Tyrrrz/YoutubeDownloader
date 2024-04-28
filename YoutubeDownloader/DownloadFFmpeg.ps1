@@ -1,5 +1,6 @@
 param (
-    [string]$platform
+    [string]$platform,
+    [string]$outputPath
 )
 
 $ErrorActionPreference = "Stop"
@@ -7,12 +8,8 @@ $ErrorActionPreference = "Stop"
 # Normalize platform identifier
 $platform = $platform.ToLower().Replace("win-", "windows-")
 
-# Determine output path
-$ffmpegFileName = If ($platform.Contains("windows-")) { "ffmpeg.exe" } Else { "ffmpeg" }
-$ffmpegFilePath = Join-Path $PSScriptRoot $ffmpegFileName
-
 # Check if already exists
-if (Test-Path $ffmpegFilePath) {
+if (Test-Path $outputPath) {
     Write-Host "Skipped downloading FFmpeg, file already exists."
     exit
 }
@@ -22,7 +19,7 @@ Write-Host "Downloading FFmpeg..."
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $http = New-Object System.Net.WebClient
 try {
-    $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/6.1.1/ffmpeg-$platform.zip", "$ffmpegFilePath.zip")
+    $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/6.1.1/ffmpeg-$platform.zip", "$outputPath.zip")
 } finally {
     $http.Dispose()
 }
@@ -30,9 +27,10 @@ try {
 try {
     # Extract FFmpeg
     Add-Type -Assembly System.IO.Compression.FileSystem
-    $zip = [IO.Compression.ZipFile]::OpenRead("$ffmpegFilePath.zip")
+    $zip = [IO.Compression.ZipFile]::OpenRead("$outputPath.zip")
     try {
-        [IO.Compression.ZipFileExtensions]::ExtractToFile($zip.GetEntry($ffmpegFileName), $ffmpegFilePath)
+        $fileName = If ($platform.Contains("windows-")) { "ffmpeg.exe" } Else { "ffmpeg" }
+        [IO.Compression.ZipFileExtensions]::ExtractToFile($zip.GetEntry($fileName), $outputPath)
     } finally {
         $zip.Dispose()
     }
@@ -40,5 +38,5 @@ try {
     Write-Host "Done downloading FFmpeg."
 } finally {
     # Clean up
-    Remove-Item "$ffmpegFilePath.zip" -Force
+    Remove-Item "$outputPath.zip" -Force
 }
