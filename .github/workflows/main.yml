@@ -135,13 +135,16 @@ jobs:
           name: YoutubeDownloader.${{ matrix.rid }}
           path: YoutubeDownloader/
           
-      - name: Set execute permission on FFmpeg
-        run: chmod +x YoutubeDownloader/ffmpeg
+      - name: Set permissions
+        if: !startsWith(matrix.rid, 'win')
+        run: |
+          chmod +x YoutubeDownloader/YoutubeDownloader
+          chmod +x YoutubeDownloader/ffmpeg
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
         working-directory: YoutubeDownloader/
-        run: zip -rX ../YoutubeDownloader.${{ matrix.rid }}.zip .
+        run: zip -r ../YoutubeDownloader.${{ matrix.rid }}.zip .
 
       - name: Upload release asset
         env:
