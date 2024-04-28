@@ -51,7 +51,7 @@ jobs:
           - osx-x64
 
     # Need to run on Windows because of DotnetRuntimeBootstrapper's dependency on Ressy
-    runs-on: windows-latestlatest
+    runs-on: windows-latest
     timeout-minutes: 10
 
     permissions:
@@ -89,7 +89,6 @@ jobs:
 
     needs:
       - format
-      - test
       - pack
 
     runs-on: ubuntu-latest
