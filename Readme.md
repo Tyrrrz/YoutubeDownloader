@@ -53,7 +53,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 ## Features
 
-- Fully cross-platform graphical user interface
+- Cross-platform graphical user interface
 - Download videos by URL
 - Download videos from playlists or channels
 - Download videos by search query
