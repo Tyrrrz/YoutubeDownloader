@@ -14,16 +14,11 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-        <!--  Hack: this brush is missing on initialization for some reason  -->
-        <Style>
-            <Style.Resources>
-                <ResourceDictionary>
-                    <SolidColorBrush x:Key="MaterialPaperBrush" Color="#FF303030" />
-                </ResourceDictionary>
-            </Style.Resources>
-        </Style>
-
-        <materialStyles:MaterialThemeBase />
+        <!--  This theme is used as a stub to pre-load default resources, the actual colors are set through code  -->
+        <materialStyles:MaterialTheme
+            BaseTheme="Light"
+            PrimaryColor="Grey"
+            SecondaryColor="DeepOrange" />
         <materialIcons:MaterialIconStyles />
         <dialogHostAvalonia:DialogHostStyles />
 

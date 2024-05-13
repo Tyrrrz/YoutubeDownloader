@@ -105,30 +105,35 @@ public class App : Application, IDisposable
             _ => PlatformSettings?.GetColorValues().ThemeVariant
         };
 
-        if (actualTheme == PlatformThemeVariant.Light)
+        this.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = actualTheme switch
         {
-            this.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = Theme.Create(
-                Theme.Light,
-                Color.Parse("#343838"),
-                Color.Parse("#F9A825")
-            );
+            PlatformThemeVariant.Light
+                => Theme.Create(Theme.Light, Color.Parse("#343838"), Color.Parse("#F9A825")),
+            PlatformThemeVariant.Dark
+                => Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825")),
+            _ => throw new InvalidOperationException($"Unknown theme '{actualTheme}'.")
+        };
 
-            Resources["SuccessBrush"] = new SolidColorBrush(Colors.DarkGreen);
-            Resources["CanceledBrush"] = new SolidColorBrush(Colors.DarkOrange);
-            Resources["FailedBrush"] = new SolidColorBrush(Colors.DarkRed);
-        }
-        else
+        Resources["SuccessBrush"] = actualTheme switch
         {
-            this.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = Theme.Create(
-                Theme.Dark,
-                Color.Parse("#E8E8E8"),
-                Color.Parse("#F9A825")
-            );
+            PlatformThemeVariant.Light => new SolidColorBrush(Colors.DarkGreen),
+            PlatformThemeVariant.Dark => new SolidColorBrush(Colors.LightGreen),
+            _ => throw new InvalidOperationException($"Unknown theme '{actualTheme}'.")
+        };
 
-            Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
-            Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
-            Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
-        }
+        Resources["CanceledBrush"] = actualTheme switch
+        {
+            PlatformThemeVariant.Light => new SolidColorBrush(Colors.DarkOrange),
+            PlatformThemeVariant.Dark => new SolidColorBrush(Colors.Orange),
+            _ => throw new InvalidOperationException($"Unknown theme '{actualTheme}'.")
+        };
+
+        Resources["FailedBrush"] = actualTheme switch
+        {
+            PlatformThemeVariant.Light => new SolidColorBrush(Colors.DarkRed),
+            PlatformThemeVariant.Dark => new SolidColorBrush(Colors.OrangeRed),
+            _ => throw new InvalidOperationException($"Unknown theme '{actualTheme}'.")
+        };
     }
 
     public override void OnFrameworkInitializationCompleted()
