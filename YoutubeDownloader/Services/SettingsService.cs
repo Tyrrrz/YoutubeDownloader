@@ -4,11 +4,10 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Avalonia;
-using Avalonia.Platform;
 using Cogwheel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Framework;
 using Container = YoutubeExplode.Videos.Streams.Container;
 
 namespace YoutubeDownloader.Services;
@@ -21,10 +20,10 @@ public partial class SettingsService()
     private bool _isUkraineSupportMessageEnabled = true;
 
     [ObservableProperty]
-    private bool _isAutoUpdateEnabled = true;
+    private ThemeVariant _theme;
 
     [ObservableProperty]
-    private bool _isDarkModeEnabled;
+    private bool _isAutoUpdateEnabled = true;
 
     [ObservableProperty]
     private bool _isAuthPersisted = true;
@@ -53,17 +52,6 @@ public partial class SettingsService()
 
     [ObservableProperty]
     private VideoQualityPreference _lastVideoQualityPreference = VideoQualityPreference.Highest;
-
-    public override void Reset()
-    {
-        base.Reset();
-
-        // Reset the dark mode setting separately because its default value is evaluated dynamically
-        // and cannot be set by the field initializer.
-        IsDarkModeEnabled =
-            Application.Current?.PlatformSettings?.GetColorValues().ThemeVariant
-            == PlatformThemeVariant.Dark;
-    }
 
     public override void Save()
     {

@@ -10,6 +10,8 @@ using Material.Styles.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
+using YoutubeDownloader.Utils;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -17,10 +19,13 @@ using YoutubeDownloader.Views;
 
 namespace YoutubeDownloader;
 
-public partial class App : Application, IDisposable
+public class App : Application, IDisposable
 {
     private readonly ServiceProvider _services;
+    private readonly SettingsService _settingsService;
     private readonly MainViewModel _mainViewModel;
+
+    private readonly DisposableCollector _eventRoot = new();
 
     public App()
     {
@@ -47,26 +52,41 @@ public partial class App : Application, IDisposable
         services.AddTransient<SettingsViewModel>();
 
         _services = services.BuildServiceProvider(true);
+        _settingsService = _services.GetRequiredService<SettingsService>();
         _mainViewModel = _services.GetRequiredService<ViewModelManager>().CreateMainViewModel();
+
+        // Re-initialize the theme when the user changes it
+        _eventRoot.Add(
+            _settingsService.WatchProperty(
+                o => o.Theme,
+                () =>
+                {
+                    RequestedThemeVariant = _settingsService.Theme switch
+                    {
+                        ThemeVariant.System => Avalonia.Styling.ThemeVariant.Default,
+                        ThemeVariant.Light => Avalonia.Styling.ThemeVariant.Light,
+                        ThemeVariant.Dark => Avalonia.Styling.ThemeVariant.Dark,
+                        _
+                            => throw new InvalidOperationException(
+                                $"Unknown theme '{_settingsService.Theme}'."
+                            )
+                    };
+
+                    InitializeTheme();
+                },
+                false
+            )
+        );
     }
 
     public override void Initialize()
     {
+        base.Initialize();
+
         // Increase maximum concurrent connections
         ServicePointManager.DefaultConnectionLimit = 20;
 
         AvaloniaXamlLoader.Load(this);
-    }
-
-    public override void OnFrameworkInitializationCompleted()
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            desktop.MainWindow = new MainView { DataContext = _mainViewModel };
-
-        base.OnFrameworkInitializationCompleted();
-
-        // Set custom theme colors
-        SetDefaultTheme();
     }
 
     public override void RegisterServices()
@@ -76,54 +96,62 @@ public partial class App : Application, IDisposable
         AvaloniaWebViewBuilder.Initialize(config => config.IsInPrivateModeEnabled = true);
     }
 
-    public void Dispose() => _services.Dispose();
-}
-
-public partial class App
-{
-    public static void SetLightTheme()
+    private void InitializeTheme()
     {
-        if (Current is null)
-            return;
+        var actualTheme = RequestedThemeVariant?.Key switch
+        {
+            "Light" => PlatformThemeVariant.Light,
+            "Dark" => PlatformThemeVariant.Dark,
+            _ => PlatformSettings?.GetColorValues().ThemeVariant
+        };
 
-        Current.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = Theme.Create(
-            Theme.Light,
-            Color.Parse("#343838"),
-            Color.Parse("#F9A825")
-        );
+        if (actualTheme == PlatformThemeVariant.Light)
+        {
+            this.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = Theme.Create(
+                Theme.Light,
+                Color.Parse("#343838"),
+                Color.Parse("#F9A825")
+            );
 
-        Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.DarkGreen);
-        Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.DarkOrange);
-        Current.Resources["FailedBrush"] = new SolidColorBrush(Colors.DarkRed);
-    }
-
-    public static void SetDarkTheme()
-    {
-        if (Current is null)
-            return;
-
-        Current.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = Theme.Create(
-            Theme.Dark,
-            Color.Parse("#E8E8E8"),
-            Color.Parse("#F9A825")
-        );
-
-        Current.Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
-        Current.Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
-        Current.Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
-    }
-
-    public static void SetDefaultTheme()
-    {
-        if (Current is null)
-            return;
-
-        var isDarkModeEnabledByDefault =
-            Current.PlatformSettings?.GetColorValues().ThemeVariant == PlatformThemeVariant.Dark;
-
-        if (isDarkModeEnabledByDefault)
-            SetDarkTheme();
+            Resources["SuccessBrush"] = new SolidColorBrush(Colors.DarkGreen);
+            Resources["CanceledBrush"] = new SolidColorBrush(Colors.DarkOrange);
+            Resources["FailedBrush"] = new SolidColorBrush(Colors.DarkRed);
+        }
         else
-            SetLightTheme();
+        {
+            this.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = Theme.Create(
+                Theme.Dark,
+                Color.Parse("#E8E8E8"),
+                Color.Parse("#F9A825")
+            );
+
+            Resources["SuccessBrush"] = new SolidColorBrush(Colors.LightGreen);
+            Resources["CanceledBrush"] = new SolidColorBrush(Colors.Orange);
+            Resources["FailedBrush"] = new SolidColorBrush(Colors.OrangeRed);
+        }
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            desktop.MainWindow = new MainView { DataContext = _mainViewModel };
+
+        base.OnFrameworkInitializationCompleted();
+
+        // Set up custom theme colors
+        InitializeTheme();
+
+        // Load settings
+        _settingsService.Load();
+    }
+
+    private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
+        // Re-initialize the theme when the system theme changes
+        InitializeTheme();
+
+    public void Dispose()
+    {
+        _eventRoot.Dispose();
+        _services.Dispose();
     }
 }
