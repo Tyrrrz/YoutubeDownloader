@@ -16,7 +16,6 @@ using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.Views;
-using ThemeVariant = Avalonia.Styling.ThemeVariant;
 
 namespace YoutubeDownloader;
 
@@ -64,9 +63,9 @@ public class App : Application, IDisposable
                 {
                     RequestedThemeVariant = _settingsService.Theme switch
                     {
-                        Framework.ThemeVariant.System => ThemeVariant.Default,
-                        Framework.ThemeVariant.Light => ThemeVariant.Light,
-                        Framework.ThemeVariant.Dark => ThemeVariant.Dark,
+                        ThemeVariant.System => Avalonia.Styling.ThemeVariant.Default,
+                        ThemeVariant.Light => Avalonia.Styling.ThemeVariant.Light,
+                        ThemeVariant.Dark => Avalonia.Styling.ThemeVariant.Dark,
                         _
                             => throw new InvalidOperationException(
                                 $"Unknown theme '{_settingsService.Theme}'."
@@ -99,18 +98,11 @@ public class App : Application, IDisposable
 
     private void InitializeTheme()
     {
-        var requestedTheme = RequestedThemeVariant ?? ThemeVariant.Default;
-
-        var actualTheme = requestedTheme.Key switch
+        var actualTheme = RequestedThemeVariant?.Key switch
         {
-            "Default" => PlatformSettings?.GetColorValues().ThemeVariant,
             "Light" => PlatformThemeVariant.Light,
             "Dark" => PlatformThemeVariant.Dark,
-            _
-                => throw new ArgumentOutOfRangeException(
-                    nameof(requestedTheme),
-                    $"Unknown theme '{requestedTheme}'."
-                )
+            _ => PlatformSettings?.GetColorValues().ThemeVariant
         };
 
         if (actualTheme == PlatformThemeVariant.Light)
