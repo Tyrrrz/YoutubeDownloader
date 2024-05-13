@@ -63,13 +63,9 @@ public class App : Application, IDisposable
                 {
                     RequestedThemeVariant = _settingsService.Theme switch
                     {
-                        ThemeVariant.System => Avalonia.Styling.ThemeVariant.Default,
                         ThemeVariant.Light => Avalonia.Styling.ThemeVariant.Light,
                         ThemeVariant.Dark => Avalonia.Styling.ThemeVariant.Dark,
-                        _
-                            => throw new InvalidOperationException(
-                                $"Unknown theme '{_settingsService.Theme}'."
-                            )
+                        _ => Avalonia.Styling.ThemeVariant.Default
                     };
 
                     InitializeTheme();
@@ -102,38 +98,28 @@ public class App : Application, IDisposable
         {
             "Light" => PlatformThemeVariant.Light,
             "Dark" => PlatformThemeVariant.Dark,
-            _ => PlatformSettings?.GetColorValues().ThemeVariant
+            _ => PlatformSettings?.GetColorValues().ThemeVariant ?? PlatformThemeVariant.Light
         };
 
-        this.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme = actualTheme switch
-        {
-            PlatformThemeVariant.Light
-                => Theme.Create(Theme.Light, Color.Parse("#343838"), Color.Parse("#F9A825")),
-            PlatformThemeVariant.Dark
-                => Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825")),
-            _ => throw new InvalidOperationException($"Unknown theme '{actualTheme}'.")
-        };
+        this.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme =
+            actualTheme == PlatformThemeVariant.Light
+                ? Theme.Create(Theme.Light, Color.Parse("#343838"), Color.Parse("#F9A825"))
+                : Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
 
-        Resources["SuccessBrush"] = actualTheme switch
-        {
-            PlatformThemeVariant.Light => new SolidColorBrush(Colors.DarkGreen),
-            PlatformThemeVariant.Dark => new SolidColorBrush(Colors.LightGreen),
-            _ => throw new InvalidOperationException($"Unknown theme '{actualTheme}'.")
-        };
+        Resources["SuccessBrush"] =
+            actualTheme == PlatformThemeVariant.Light
+                ? new SolidColorBrush(Colors.DarkGreen)
+                : new SolidColorBrush(Colors.LightGreen);
 
-        Resources["CanceledBrush"] = actualTheme switch
-        {
-            PlatformThemeVariant.Light => new SolidColorBrush(Colors.DarkOrange),
-            PlatformThemeVariant.Dark => new SolidColorBrush(Colors.Orange),
-            _ => throw new InvalidOperationException($"Unknown theme '{actualTheme}'.")
-        };
+        Resources["CanceledBrush"] =
+            actualTheme == PlatformThemeVariant.Light
+                ? new SolidColorBrush(Colors.DarkOrange)
+                : new SolidColorBrush(Colors.Orange);
 
-        Resources["FailedBrush"] = actualTheme switch
-        {
-            PlatformThemeVariant.Light => new SolidColorBrush(Colors.DarkRed),
-            PlatformThemeVariant.Dark => new SolidColorBrush(Colors.OrangeRed),
-            _ => throw new InvalidOperationException($"Unknown theme '{actualTheme}'.")
-        };
+        Resources["FailedBrush"] =
+            actualTheme == PlatformThemeVariant.Light
+                ? new SolidColorBrush(Colors.DarkRed)
+                : new SolidColorBrush(Colors.OrangeRed);
     }
 
     public override void OnFrameworkInitializationCompleted()
