@@ -79,18 +79,6 @@ public partial class MainViewModel(
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        // Reset settings (needed to resolve the default dark mode setting)
-        settingsService.Reset();
-
-        // Load settings
-        settingsService.Load();
-
-        // Set the correct theme
-        if (settingsService.IsDarkModeEnabled)
-            App.SetDarkTheme();
-        else
-            App.SetLightTheme();
-
         await ShowUkraineSupportMessageAsync();
         await CheckForUpdatesAsync();
     }

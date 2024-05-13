@@ -7,19 +7,33 @@
     xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
     xmlns:materialControls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-    xmlns:materialStyles="clr-namespace:Material.Styles.Themes;assembly=Material.Styles">
+    xmlns:materialStyles="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
+    ActualThemeVariantChanged="Application_OnActualThemeVariantChanged">
     <Application.DataTemplates>
         <framework:ViewManager />
     </Application.DataTemplates>
 
     <Application.Styles>
-        <materialStyles:MaterialTheme />
+        <!--  Hack: this brush is missing on initialization for some reason  -->
+        <Style>
+            <Style.Resources>
+                <ResourceDictionary>
+                    <SolidColorBrush x:Key="MaterialPaperBrush" Color="#FF303030" />
+                </ResourceDictionary>
+            </Style.Resources>
+        </Style>
+
+        <materialStyles:MaterialThemeBase />
         <materialIcons:MaterialIconStyles />
         <dialogHostAvalonia:DialogHostStyles />
 
         <!--  Combo box  -->
         <Style Selector="ComboBox">
             <Setter Property="FontSize" Value="14" />
+
+            <Style Selector="^ /template/ Panel#PART_RootPanel">
+                <Setter Property="Height" Value="22" />
+            </Style>
 
             <Style Selector="^ /template/ ToggleButton">
                 <Style Selector="^:checked, ^:unchecked">
