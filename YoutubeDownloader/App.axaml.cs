@@ -21,11 +21,11 @@ namespace YoutubeDownloader;
 
 public class App : Application, IDisposable
 {
+    private readonly DisposableCollector _eventRoot = new();
+
     private readonly ServiceProvider _services;
     private readonly SettingsService _settingsService;
     private readonly MainViewModel _mainViewModel;
-
-    private readonly DisposableCollector _eventRoot = new();
 
     public App()
     {

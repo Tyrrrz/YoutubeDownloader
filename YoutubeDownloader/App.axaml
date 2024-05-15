@@ -151,7 +151,7 @@
 
         <!--  Toggle switch  -->
         <Style Selector="ToggleSwitch">
-            <Setter Property="materialAssists:ToggleSwitchAssist.SwitchThumbOffBackground" Value="{DynamicResource MaterialBackgroundBrush}" />
+            <Setter Property="materialAssists:ToggleSwitchAssist.SwitchThumbOffBackground" Value="{DynamicResource ToggleBackgroundBrush}" />
         </Style>
 
         <!--  Tooltip  -->
@@ -164,24 +164,35 @@
     </Application.Styles>
 
     <Application.Resources>
-        <!--  Text box  -->
-        <ControlTheme
-            x:Key="CompactTextBox"
-            BasedOn="{StaticResource {x:Type TextBox}}"
-            TargetType="{x:Type TextBox}">
-            <Styles>
-                <Style Selector="TextBox">
-                    <Setter Property="Height" Value="22" />
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="ToggleBackgroundBrush" Color="#FFFFFF" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="ToggleBackgroundBrush" Color="#8E8E8E" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
 
-                    <Style Selector="^ /template/ Panel#PART_TextFieldPanel">
-                        <Setter Property="MinHeight" Value="0" />
-                    </Style>
+            <!--  Text box  -->
+            <ControlTheme
+                x:Key="CompactTextBox"
+                BasedOn="{StaticResource {x:Type TextBox}}"
+                TargetType="{x:Type TextBox}">
+                <Styles>
+                    <Style Selector="TextBox">
+                        <Setter Property="Height" Value="22" />
 
-                    <Style Selector="^ /template/ Panel#PART_TextContainer">
-                        <Setter Property="Margin" Value="0" />
+                        <Style Selector="^ /template/ Panel#PART_TextFieldPanel">
+                            <Setter Property="MinHeight" Value="0" />
+                        </Style>
+
+                        <Style Selector="^ /template/ Panel#PART_TextContainer">
+                            <Setter Property="Margin" Value="0" />
+                        </Style>
                     </Style>
-                </Style>
-            </Styles>
-        </ControlTheme>
+                </Styles>
+            </ControlTheme>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
