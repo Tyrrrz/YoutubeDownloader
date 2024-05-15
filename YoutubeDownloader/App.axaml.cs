@@ -105,21 +105,6 @@ public class App : Application, IDisposable
             actualTheme == PlatformThemeVariant.Light
                 ? Theme.Create(Theme.Light, Color.Parse("#343838"), Color.Parse("#F9A825"))
                 : Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
-
-        Resources["SuccessBrush"] =
-            actualTheme == PlatformThemeVariant.Light
-                ? new SolidColorBrush(Colors.DarkGreen)
-                : new SolidColorBrush(Colors.LightGreen);
-
-        Resources["CanceledBrush"] =
-            actualTheme == PlatformThemeVariant.Light
-                ? new SolidColorBrush(Colors.DarkOrange)
-                : new SolidColorBrush(Colors.Orange);
-
-        Resources["FailedBrush"] =
-            actualTheme == PlatformThemeVariant.Light
-                ? new SolidColorBrush(Colors.DarkRed)
-                : new SolidColorBrush(Colors.OrangeRed);
     }
 
     public override void OnFrameworkInitializationCompleted()

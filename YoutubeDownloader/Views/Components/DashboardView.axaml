@@ -208,6 +208,22 @@
                                         Classes.started="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
                                         PointerReleased="StatusTextBlock_OnPointerReleased"
                                         TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Resources>
+                                            <ResourceDictionary>
+                                                <ResourceDictionary.ThemeDictionaries>
+                                                    <ResourceDictionary x:Key="Default">
+                                                        <SolidColorBrush x:Key="SuccessBrush" Color="DarkGreen" />
+                                                        <SolidColorBrush x:Key="CanceledBrush" Color="DarkOrange" />
+                                                        <SolidColorBrush x:Key="FailedBrush" Color="DarkRed" />
+                                                    </ResourceDictionary>
+                                                    <ResourceDictionary x:Key="Dark">
+                                                        <SolidColorBrush x:Key="SuccessBrush" Color="LightGreen" />
+                                                        <SolidColorBrush x:Key="CanceledBrush" Color="Orange" />
+                                                        <SolidColorBrush x:Key="FailedBrush" Color="OrangeRed" />
+                                                    </ResourceDictionary>
+                                                </ResourceDictionary.ThemeDictionaries>
+                                            </ResourceDictionary>
+                                        </TextBlock.Resources>
                                         <TextBlock.Styles>
                                             <Style Selector="TextBlock">
                                                 <Style Selector="^.enqueued">
