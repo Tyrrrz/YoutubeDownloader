@@ -42,6 +42,9 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 - 🟢 **[Stable release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
 - 🟠 [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions/workflows/main.yml)
 
+> **Note**:
+> If you're unsure which build is right for your system, consult with [this page](https://useragent.cc) to determine your OS and CPU architecture.
+
 ## Features
 
 - Cross-platform graphical user interface
