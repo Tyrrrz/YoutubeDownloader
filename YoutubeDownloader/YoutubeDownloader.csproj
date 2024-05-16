@@ -21,7 +21,6 @@
     <PackageReference Include="CSharpier.MsBuild" Version="0.28.2" PrivateAssets="all" />
     <PackageReference Include="Deorcify" Version="1.0.2" PrivateAssets="all" />
     <PackageReference Include="DialogHost.Avalonia" Version="0.7.7" />
-    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.5.4" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.1.1" />
     <PackageReference Include="Material.Avalonia" Version="3.6.0" />
     <PackageReference Include="Material.Avalonia.DataGrid" Version="3.6.0" />
@@ -52,12 +51,12 @@
   </PropertyGroup>
   
   <Target Name="Download FFmpeg before build" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot; -Platform $(FFmpegPlatform) -OutputPath &quot;$(ProjectDir)/$(FFmpegFileName)&quot;" LogStandardErrorAsError="true" />
+    <Exec Command="pwsh -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot; -Platform $(FFmpegPlatform) -OutputPath &quot;$(ProjectDir)/$(FFmpegFileName)&quot;" LogStandardErrorAsError="true" />
     <Copy SourceFiles="$(ProjectDir)/$(FFmpegFileName)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="Download FFmpeg before publish" BeforeTargets="PrepareForPublish">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot; -Platform $(FFmpegPlatform) -OutputPath &quot;$(ProjectDir)/$(FFmpegFileName)&quot;" LogStandardErrorAsError="true" />
+    <Exec Command="pwsh -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot; -Platform $(FFmpegPlatform) -OutputPath &quot;$(ProjectDir)/$(FFmpegFileName)&quot;" LogStandardErrorAsError="true" />
     <Copy SourceFiles="$(ProjectDir)/$(FFmpegFileName)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
   </Target>
 

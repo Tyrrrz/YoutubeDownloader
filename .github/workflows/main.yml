@@ -50,8 +50,7 @@ jobs:
           - osx-arm64
           - osx-x64
 
-    # Need to run on Windows because of DotnetRuntimeBootstrapper's dependency on Ressy
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
 
     permissions:
@@ -75,7 +74,7 @@ jobs:
           --output YoutubeDownloader/bin/publish
           --configuration Release
           --runtime ${{ matrix.rid }}
-          --no-self-contained
+          --self-contained
 
       - name: Upload artifacts
         uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
