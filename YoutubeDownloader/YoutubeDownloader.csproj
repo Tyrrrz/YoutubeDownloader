@@ -4,6 +4,9 @@
     <OutputType>WinExe</OutputType>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationIcon>..\favicon.ico</ApplicationIcon>
+
+    <!-- App manifest is required to embed native windows, namely the WebBrowser control -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
