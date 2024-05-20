@@ -3,11 +3,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    Width="380">
-    <Design.DataContext>
-        <dialogs:SettingsViewModel />
-    </Design.DataContext>
-
+    Width="380"
+    x:DataType="dialogs:SettingsViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
         <TextBlock
             Grid.Row="0"

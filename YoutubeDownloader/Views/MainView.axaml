@@ -10,13 +10,10 @@
     Height="620"
     MinWidth="600"
     MinHeight="400"
+    x:DataType="viewModels:MainViewModel"
     Icon="/favicon.ico"
     RenderOptions.BitmapInterpolationMode="HighQuality"
     WindowStartupLocation="CenterScreen">
-    <Design.DataContext>
-        <viewModels:MainViewModel />
-    </Design.DataContext>
-
     <!--  Hack: dialog host animations mess up webview positioning, so need to disable them  -->
     <dialogHostAvalonia:DialogHost
         x:Name="DialogHost"

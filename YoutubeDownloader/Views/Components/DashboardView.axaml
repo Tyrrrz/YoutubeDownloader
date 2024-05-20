@@ -8,11 +8,8 @@
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     x:Name="UserControl"
+    x:DataType="components:DashboardViewModel"
     Loaded="UserControl_OnLoaded">
-    <Design.DataContext>
-        <components:DashboardViewModel />
-    </Design.DataContext>
-
     <DockPanel>
         <!--  Header  -->
         <StackPanel
@@ -315,7 +312,7 @@
                                     <Button
                                         Padding="4"
                                         VerticalAlignment="Center"
-                                        Command="{Binding $parent[UserControl].DataContext.RestartDownloadCommand}"
+                                        Command="{Binding $parent[UserControl].((components:DashboardViewModel)DataContext).RestartDownloadCommand}"
                                         CommandParameter="{Binding}"
                                         IsVisible="{Binding IsCanceledOrFailed}"
                                         Theme="{DynamicResource MaterialFlatButton}"

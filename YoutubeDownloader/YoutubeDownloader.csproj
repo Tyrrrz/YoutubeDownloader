@@ -4,9 +4,19 @@
     <OutputType>WinExe</OutputType>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationIcon>..\favicon.ico</ApplicationIcon>
-
-    <!-- App manifest is required to embed native windows, namely the WebBrowser control -->
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <PublishTrimmed>true</PublishTrimmed>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <NoWarn>$(NoWarn);IL2104</NoWarn>
+  </PropertyGroup>
+
+  <!-- Avalonia-related settings -->
+  <PropertyGroup>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <!-- Warnings not valid when using compiled bindings -->
+    <NoWarn>$(NoWarn);IL2026</NoWarn>
+    <!-- Warnings about Material.Avalonia having peer dependencies -->
+    <NoWarn>$(NoWarn);IL2036</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
