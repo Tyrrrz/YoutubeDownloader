@@ -48,6 +48,11 @@
     <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
   </ItemGroup>
 
+  <!-- Exlucde assemblies from trimming -->
+  <ItemGroup>
+    <TrimmerRootAssembly Include="Avalonia.WebView" />
+  </ItemGroup>
+
   <!-- Download FFmpeg and copy it to the output directory-->
   <PropertyGroup>
     <FFmpegPlatform>$(RuntimeIdentifier)</FFmpegPlatform>
