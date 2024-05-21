@@ -19,10 +19,24 @@
     <NoWarn>$(NoWarn);IL2036</NoWarn>
   </PropertyGroup>
 
+  <!-- Avalonia.WebView is completely incompatible with trimming -->
+  <ItemGroup>
+    <TrimmerRootAssembly Include="Avalonia.WebView" />
+    <TrimmerRootAssembly Include="Avalonia.WebView.Desktop" />
+    <TrimmerRootAssembly Include="Avalonia.WebView.Linux" />
+    <TrimmerRootAssembly Include="Avalonia.WebView.MacCatalyst" />
+    <TrimmerRootAssembly Include="Avalonia.WebView.Windows" />
+    <TrimmerRootAssembly Include="AvaloniaWebView.Shared" />
+    <TrimmerRootAssembly Include="Linux.WebView.Core" />
+    <TrimmerRootAssembly Include="Microsoft.Web.WebView2.Core" />
+    <TrimmerRootAssembly Include="WebView.Avalonia" />
+    <TrimmerRootAssembly Include="WebView.Core" />
+  </ItemGroup>
+  
   <ItemGroup>
     <AvaloniaResource Include="..\favicon.ico" Link="favicon.ico" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
     <PackageReference Include="Avalonia" Version="11.0.10" />
@@ -41,16 +55,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Onova" Version="2.6.11" />
     <PackageReference Include="WebView.Avalonia" Version="11.0.0.1" />
-    <PackageReference Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
+    <PackageReference Include="WebView.Avalonia.Desktop" Version="11.0.0.1" IsTrimmable="false" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
-  </ItemGroup>
-
-  <!-- Exlucde assemblies from trimming -->
-  <ItemGroup>
-    <TrimmerRootAssembly Include="Avalonia.WebView" />
   </ItemGroup>
 
   <!-- Download FFmpeg and copy it to the output directory-->
