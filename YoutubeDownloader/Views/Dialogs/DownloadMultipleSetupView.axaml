@@ -48,7 +48,7 @@
                 </ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*,Auto">
+                        <Grid Margin="0,0,8,0" ColumnDefinitions="Auto,*,Auto">
                             <!--  Thumbnail  -->
                             <Image
                                 Grid.Column="0"
