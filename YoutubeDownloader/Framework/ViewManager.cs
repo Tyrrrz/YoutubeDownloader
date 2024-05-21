@@ -31,6 +31,7 @@ public partial class ViewManager
             return null;
 
         view.DataContext ??= viewModel;
+
         return view;
     }
 }
