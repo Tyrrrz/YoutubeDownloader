@@ -50,7 +50,7 @@ jobs:
           - osx-arm64
           - osx-x64
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ startsWith(matrix.rid, 'win-') && 'windows-latest' || startsWith(matrix.rid, 'osx-') && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: 10
 
     permissions:

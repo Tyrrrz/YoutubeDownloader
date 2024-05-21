@@ -9,11 +9,8 @@
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     x:Name="UserControl"
     Width="500"
+    x:DataType="dialogs:DownloadSingleSetupViewModel"
     Loaded="UserControl_OnLoaded">
-    <Design.DataContext>
-        <dialogs:DownloadSingleSetupViewModel />
-    </Design.DataContext>
-
     <Grid RowDefinitions="Auto,*,Auto,Auto">
         <!--  Info  -->
         <StackPanel

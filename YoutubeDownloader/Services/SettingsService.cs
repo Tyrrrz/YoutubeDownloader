@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Text.Json;
@@ -48,6 +49,8 @@ public partial class SettingsService()
 
     [ObservableProperty]
     [property: JsonConverter(typeof(ContainerJsonConverter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Container))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ContainerJsonConverter))]
     private Container _lastContainer = Container.Mp4;
 
     [ObservableProperty]

@@ -4,11 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    Width="500">
-    <Design.DataContext>
-        <dialogs:MessageBoxViewModel />
-    </Design.DataContext>
-
+    Width="500"
+    x:DataType="dialogs:MessageBoxViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Title  -->
         <TextBlock
