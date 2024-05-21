@@ -32,11 +32,11 @@
     <TrimmerRootAssembly Include="WebView.Avalonia" />
     <TrimmerRootAssembly Include="WebView.Core" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <AvaloniaResource Include="..\favicon.ico" Link="favicon.ico" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
     <PackageReference Include="Avalonia" Version="11.0.10" />
@@ -57,7 +57,7 @@
     <PackageReference Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageReference Include="WebView.Avalonia.Desktop" Version="11.0.0.1" IsTrimmable="false" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
   </ItemGroup>
@@ -76,7 +76,7 @@
     <FFmpegFileName Condition="$(FFmpegPlatform.StartsWith('win'))">ffmpeg.exe</FFmpegFileName>
     <FFmpegFileName Condition="'$(FFmpegFileName)' == ''">ffmpeg</FFmpegFileName>
   </PropertyGroup>
-  
+
   <Target Name="Download FFmpeg before build" BeforeTargets="PreBuildEvent">
     <Exec Command="pwsh -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot; -Platform $(FFmpegPlatform) -OutputPath &quot;$(ProjectDir)/$(FFmpegFileName)&quot;" LogStandardErrorAsError="true" />
     <Copy SourceFiles="$(ProjectDir)/$(FFmpegFileName)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
