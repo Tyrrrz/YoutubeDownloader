@@ -3,38 +3,11 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>..\favicon.ico</ApplicationIcon>
-    <PublishTrimmed>true</PublishTrimmed>
-    <NoWarn>$(NoWarn);IL2104</NoWarn>
-  </PropertyGroup>
-
-  <!-- Avalonia-related settings -->
-  <PropertyGroup>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <!-- Warnings not valid when using compiled bindings -->
-    <NoWarn>$(NoWarn);IL2026</NoWarn>
-    <!-- Warnings about Material.Avalonia having peer dependencies -->
-    <NoWarn>$(NoWarn);IL2036</NoWarn>
-  </PropertyGroup>
-
-  <!-- Required by Avalonia.WebView -->
-  <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <PublishTrimmed>true</PublishTrimmed>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
-
-  <!-- Avalonia.WebView is completely incompatible with trimming -->
-  <ItemGroup>
-    <TrimmerRootAssembly Include="Avalonia.WebView" />
-    <TrimmerRootAssembly Include="Avalonia.WebView.Desktop" />
-    <TrimmerRootAssembly Include="Avalonia.WebView.Linux" />
-    <TrimmerRootAssembly Include="Avalonia.WebView.MacCatalyst" />
-    <TrimmerRootAssembly Include="Avalonia.WebView.Windows" />
-    <TrimmerRootAssembly Include="AvaloniaWebView.Shared" />
-    <TrimmerRootAssembly Include="Linux.WebView.Core" />
-    <TrimmerRootAssembly Include="Microsoft.Web.WebView2.Core" />
-    <TrimmerRootAssembly Include="WebView.Avalonia" />
-    <TrimmerRootAssembly Include="WebView.Core" />
-  </ItemGroup>
 
   <ItemGroup>
     <AvaloniaResource Include="..\favicon.ico" Link="favicon.ico" />
@@ -63,6 +36,20 @@
 
   <ItemGroup>
     <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Avalonia.WebView is completely incompatible with trimming -->
+  <ItemGroup>
+    <TrimmerRootAssembly Include="Avalonia.WebView" />
+    <TrimmerRootAssembly Include="Avalonia.WebView.Desktop" />
+    <TrimmerRootAssembly Include="Avalonia.WebView.Linux" />
+    <TrimmerRootAssembly Include="Avalonia.WebView.MacCatalyst" />
+    <TrimmerRootAssembly Include="Avalonia.WebView.Windows" />
+    <TrimmerRootAssembly Include="AvaloniaWebView.Shared" />
+    <TrimmerRootAssembly Include="Linux.WebView.Core" />
+    <TrimmerRootAssembly Include="Microsoft.Web.WebView2.Core" />
+    <TrimmerRootAssembly Include="WebView.Avalonia" />
+    <TrimmerRootAssembly Include="WebView.Core" />
   </ItemGroup>
 
   <!-- Download FFmpeg and copy it to the output directory-->
