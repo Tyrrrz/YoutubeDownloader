@@ -2,11 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationIcon>..\favicon.ico</ApplicationIcon>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
     <PublishTrimmed>true</PublishTrimmed>
-    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     <NoWarn>$(NoWarn);IL2104</NoWarn>
   </PropertyGroup>
 
@@ -17,6 +14,12 @@
     <NoWarn>$(NoWarn);IL2026</NoWarn>
     <!-- Warnings about Material.Avalonia having peer dependencies -->
     <NoWarn>$(NoWarn);IL2036</NoWarn>
+  </PropertyGroup>
+
+  <!-- Required by Avalonia.WebView -->
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
   </PropertyGroup>
 
   <!-- Avalonia.WebView is completely incompatible with trimming -->
@@ -43,7 +46,7 @@
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.10" />
     <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
     <PackageReference Include="Avalonia.Diagnostics" Version="11.0.10" Condition="'$(Configuration)' == 'Debug'" />
-    <PackageReference Include="Cogwheel" Version="2.0.4" />
+    <PackageReference Include="Cogwheel" Version="2.1.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="CSharpier.MsBuild" Version="0.28.2" PrivateAssets="all" />
     <PackageReference Include="Deorcify" Version="1.0.2" PrivateAssets="all" />
