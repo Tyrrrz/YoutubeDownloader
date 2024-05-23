@@ -135,7 +135,7 @@ jobs:
           path: YoutubeDownloader/
 
       - name: Set permissions
-        if: ${{ !startsWith(matrix.rid, 'win') }}
+        if: ${{ !startsWith(matrix.rid, 'win-') }}
         run: |
           chmod +x YoutubeDownloader/YoutubeDownloader
           chmod +x YoutubeDownloader/ffmpeg

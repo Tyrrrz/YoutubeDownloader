@@ -63,7 +63,7 @@
     <FFmpegPlatform Condition="'$(FFmpegPlatform)' == '' AND $([MSBuild]::IsOsPlatform('Linux')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64'">linux-x64</FFmpegPlatform>
     <FFmpegPlatform Condition="'$(FFmpegPlatform)' == '' AND $([MSBuild]::IsOsPlatform('OSX')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64'">osx-arm64</FFmpegPlatform>
     <FFmpegPlatform Condition="'$(FFmpegPlatform)' == '' AND $([MSBuild]::IsOsPlatform('OSX')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64'">osx-x64</FFmpegPlatform>
-    <FFmpegFileName Condition="$(FFmpegPlatform.StartsWith('win'))">ffmpeg.exe</FFmpegFileName>
+    <FFmpegFileName Condition="$(FFmpegPlatform.StartsWith('win-'))">ffmpeg.exe</FFmpegFileName>
     <FFmpegFileName Condition="'$(FFmpegFileName)' == ''">ffmpeg</FFmpegFileName>
   </PropertyGroup>
 
