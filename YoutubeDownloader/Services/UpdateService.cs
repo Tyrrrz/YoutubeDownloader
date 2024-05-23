@@ -9,18 +9,20 @@ namespace YoutubeDownloader.Services;
 
 public class UpdateService(SettingsService settingsService) : IDisposable
 {
-    private readonly IUpdateManager _updateManager = new UpdateManager(
-        new GithubPackageResolver(
-            "Tyrrrz",
-            "YoutubeDownloader",
-            // Examples:
-            // YoutubeDownloader.win-arm64.zip
-            // YoutubeDownloader.win-x64.zip
-            // YoutubeDownloader.linux-x64.zip
-            $"YoutubeDownloader.{RuntimeInformation.RuntimeIdentifier}.zip"
-        ),
-        new ZipPackageExtractor()
-    );
+    private readonly IUpdateManager? _updateManager = OperatingSystem.IsWindows()
+        ? new UpdateManager(
+            new GithubPackageResolver(
+                "Tyrrrz",
+                "YoutubeDownloader",
+                // Examples:
+                // YoutubeDownloader.win-arm64.zip
+                // YoutubeDownloader.win-x64.zip
+                // YoutubeDownloader.linux-x64.zip
+                $"YoutubeDownloader.{RuntimeInformation.RuntimeIdentifier}.zip"
+            ),
+            new ZipPackageExtractor()
+        )
+        : null;
 
     private Version? _updateVersion;
     private bool _updatePrepared;
@@ -28,6 +30,9 @@ public class UpdateService(SettingsService settingsService) : IDisposable
 
     public async Task<Version?> CheckForUpdatesAsync()
     {
+        if (_updateManager is null)
+            return null;
+
         if (!settingsService.IsAutoUpdateEnabled)
             return null;
 
@@ -37,6 +42,9 @@ public class UpdateService(SettingsService settingsService) : IDisposable
 
     public async Task PrepareUpdateAsync(Version version)
     {
+        if (_updateManager is null)
+            return;
+
         if (!settingsService.IsAutoUpdateEnabled)
             return;
 
@@ -57,6 +65,9 @@ public class UpdateService(SettingsService settingsService) : IDisposable
 
     public void FinalizeUpdate(bool needRestart)
     {
+        if (_updateManager is null)
+            return;
+
         if (!settingsService.IsAutoUpdateEnabled)
             return;
 
@@ -82,5 +93,5 @@ public class UpdateService(SettingsService settingsService) : IDisposable
         }
     }
 
-    public void Dispose() => _updateManager.Dispose();
+    public void Dispose() => _updateManager?.Dispose();
 }
