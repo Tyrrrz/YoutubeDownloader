@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -17,56 +16,53 @@ namespace YoutubeDownloader.Core.Resolving;
 
 public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 {
-    private static readonly ImmutableHashSet<string> PersonalizedChannelIds =
-    [
-        "WL", // watch later
-        "LL", // liked videos
-        "LM", // liked music
-    ];
     private readonly YoutubeClient _youtube = new(Http.Client, initialCookies ?? []);
+    private readonly bool _isAuthenticated = initialCookies?.Any() == true;
 
-    public async Task<QueryResult> ResolveAsync(
+    private async Task<QueryResult?> TryResolvePlaylistAsync(
         string query,
-        CancellationToken cancellationToken = default
+        CancellationToken cancellationToken
     )
     {
-        // Only consider URLs for parsing IDs.
-        // All other queries should be treated as search keywords.
-        var isUrl = Uri.IsWellFormedUriString(query, UriKind.Absolute);
+        if (PlaylistId.TryParse(query) is not { } playlistId)
+            return null;
 
-        // Playlist
-        if (isUrl && PlaylistId.TryParse(query) is { } playlistId)
-        {
-            // should download video directly other than download by channel when the channel is personalized and no login info
-            if (!(PersonalizedChannelIds.Contains(playlistId.Value) && initialCookies is not { Count: > 0 }))
-            {
-                var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
-                var videos = await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
-                return new QueryResult(
-                    QueryResultKind.Playlist,
-                    $"Playlist: {playlist.Title}",
-                    videos
-                );
-            }
-        }
+        // Skip personal system playlists if the user is not authenticated
+        if (!_isAuthenticated && playlistId == "WL" || playlistId == "LL" || playlistId == "LM")
+            return null;
 
-        // Video
-        if (isUrl && VideoId.TryParse(query) is { } videoId)
-        {
-            var video = await _youtube.Videos.GetAsync(videoId, cancellationToken);
-            return new QueryResult(QueryResultKind.Video, video.Title, [video]);
-        }
+        var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
+        var videos = await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
 
-        // Channel
-        if (isUrl && ChannelId.TryParse(query) is { } channelId)
+        return new QueryResult(QueryResultKind.Playlist, $"Playlist: {playlist.Title}", videos);
+    }
+
+    private async Task<QueryResult?> TryResolveVideoAsync(
+        string query,
+        CancellationToken cancellationToken
+    )
+    {
+        if (VideoId.TryParse(query) is not { } videoId)
+            return null;
+
+        var video = await _youtube.Videos.GetAsync(videoId, cancellationToken);
+        return new QueryResult(QueryResultKind.Video, video.Title, [video]);
+    }
+
+    private async Task<QueryResult?> TryResolveChannelAsync(
+        string query,
+        CancellationToken cancellationToken
+    )
+    {
+        if (ChannelId.TryParse(query) is { } channelId)
         {
             var channel = await _youtube.Channels.GetAsync(channelId, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channelId, cancellationToken);
+
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
 
-        // Channel (by handle)
-        if (isUrl && ChannelHandle.TryParse(query) is { } channelHandle)
+        if (ChannelHandle.TryParse(query) is { } channelHandle)
         {
             var channel = await _youtube.Channels.GetByHandleAsync(
                 channelHandle,
@@ -74,34 +70,51 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
             );
 
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
+
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
 
-        // Channel (by username)
-        if (isUrl && UserName.TryParse(query) is { } userName)
+        if (UserName.TryParse(query) is { } userName)
         {
             var channel = await _youtube.Channels.GetByUserAsync(userName, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
+
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
 
-        // Channel (by slug)
-        if (isUrl && ChannelSlug.TryParse(query) is { } channelSlug)
+        if (ChannelSlug.TryParse(query) is { } channelSlug)
         {
             var channel = await _youtube.Channels.GetBySlugAsync(channelSlug, cancellationToken);
             var videos = await _youtube.Channels.GetUploadsAsync(channel.Id, cancellationToken);
+
             return new QueryResult(QueryResultKind.Channel, $"Channel: {channel.Title}", videos);
         }
 
-        // Search
-        {
-            var videos = await _youtube
-                .Search.GetVideosAsync(query, cancellationToken)
-                .CollectAsync(20);
-
-            return new QueryResult(QueryResultKind.Search, $"Search: {query}", videos);
-        }
+        return null;
     }
+
+    private async Task<QueryResult> ResolveSearchAsync(
+        string query,
+        CancellationToken cancellationToken
+    )
+    {
+        var videos = await _youtube
+            .Search.GetVideosAsync(query, cancellationToken)
+            .CollectAsync(20);
+
+        return new QueryResult(QueryResultKind.Search, $"Search: {query}", videos);
+    }
+
+    public async Task<QueryResult> ResolveAsync(
+        string query,
+        CancellationToken cancellationToken = default
+    ) =>
+        (
+            await TryResolvePlaylistAsync(query, cancellationToken)
+            ?? await TryResolveVideoAsync(query, cancellationToken)
+            ?? await TryResolveChannelAsync(query, cancellationToken)
+            ?? await ResolveSearchAsync(query, cancellationToken)
+        );
 
     public async Task<QueryResult> ResolveAsync(
         IReadOnlyList<string> queries,
