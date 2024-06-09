@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -16,6 +17,12 @@ namespace YoutubeDownloader.Core.Resolving;
 
 public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 {
+    private static readonly ImmutableHashSet<string> PersonalizedChannelIds =
+    [
+        "WL", // watch later
+        "LL", // liked videos
+        "LM", // liked music
+    ];
     private readonly YoutubeClient _youtube = new(Http.Client, initialCookies ?? []);
 
     public async Task<QueryResult> ResolveAsync(
@@ -30,9 +37,17 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
         // Playlist
         if (isUrl && PlaylistId.TryParse(query) is { } playlistId)
         {
-            var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
-            var videos = await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
-            return new QueryResult(QueryResultKind.Playlist, $"Playlist: {playlist.Title}", videos);
+            // should download video directly other than download by channel when the channel is personalized and no login info
+            if (!(PersonalizedChannelIds.Contains(playlistId.Value) && initialCookies is not { Count: > 0 }))
+            {
+                var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
+                var videos = await _youtube.Playlists.GetVideosAsync(playlistId, cancellationToken);
+                return new QueryResult(
+                    QueryResultKind.Playlist,
+                    $"Playlist: {playlist.Title}",
+                    videos
+                );
+            }
         }
 
         // Video
