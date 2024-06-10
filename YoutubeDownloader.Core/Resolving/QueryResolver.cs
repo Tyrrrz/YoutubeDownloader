@@ -21,14 +21,17 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 
     private async Task<QueryResult?> TryResolvePlaylistAsync(
         string query,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         if (PlaylistId.TryParse(query) is not { } playlistId)
             return null;
 
         // Skip personal system playlists if the user is not authenticated
-        if (!_isAuthenticated && playlistId == "WL" || playlistId == "LL" || playlistId == "LM")
+        var isPersonalSystemPlaylist =
+            playlistId == "WL" || playlistId == "LL" || playlistId == "LM";
+
+        if (isPersonalSystemPlaylist && !_isAuthenticated)
             return null;
 
         var playlist = await _youtube.Playlists.GetAsync(playlistId, cancellationToken);
@@ -39,7 +42,7 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 
     private async Task<QueryResult?> TryResolveVideoAsync(
         string query,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         if (VideoId.TryParse(query) is not { } videoId)
@@ -51,7 +54,7 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 
     private async Task<QueryResult?> TryResolveChannelAsync(
         string query,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         if (ChannelId.TryParse(query) is { } channelId)
@@ -95,7 +98,7 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
 
     private async Task<QueryResult> ResolveSearchAsync(
         string query,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         var videos = await _youtube
@@ -109,12 +112,10 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
         string query,
         CancellationToken cancellationToken = default
     ) =>
-        (
-            await TryResolvePlaylistAsync(query, cancellationToken)
-            ?? await TryResolveVideoAsync(query, cancellationToken)
-            ?? await TryResolveChannelAsync(query, cancellationToken)
-            ?? await ResolveSearchAsync(query, cancellationToken)
-        );
+        await TryResolvePlaylistAsync(query, cancellationToken)
+        ?? await TryResolveVideoAsync(query, cancellationToken)
+        ?? await TryResolveChannelAsync(query, cancellationToken)
+        ?? await ResolveSearchAsync(query, cancellationToken);
 
     public async Task<QueryResult> ResolveAsync(
         IReadOnlyList<string> queries,
