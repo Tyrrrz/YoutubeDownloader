@@ -3,8 +3,11 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    Width="380"
-    x:DataType="dialogs:SettingsViewModel">
+    Width="380">
+    <Design.DataContext>
+        <dialogs:SettingsViewModel />
+    </Design.DataContext>
+
     <Grid RowDefinitions="Auto,*,Auto">
         <TextBlock
             Grid.Row="0"
@@ -79,6 +82,15 @@
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectSubtitles}" />
                     </DockPanel>
 
+					<!--  DL subtitles  -->
+					<DockPanel 
+						Margin="16,8"
+                        LastChildFill="False"
+                        ToolTip.Tip="download subtitle side by side video srt">
+						<TextBlock DockPanel.Dock="Left" Text="Download subtitles" />
+						<ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding DLSubtitles}" />
+						
+					</DockPanel>
                     <!--  Inject tags  -->
                     <DockPanel
                         Margin="16,8"

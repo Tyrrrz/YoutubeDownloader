@@ -43,6 +43,7 @@ public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null)
         IVideo video,
         VideoDownloadOption downloadOption,
         bool includeSubtitles = true,
+        bool dlsubtitles = true,
         IProgress<Percentage>? progress = null,
         CancellationToken cancellationToken = default
     )
@@ -57,6 +58,24 @@ public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null)
             );
 
             trackInfos.AddRange(manifest.Tracks);
+        }
+
+        if (dlsubtitles && !downloadOption.Container.IsAudioOnly)
+        {
+            var manifest = await _youtube.Videos.ClosedCaptions.GetManifestAsync(
+                video.Id,
+                cancellationToken
+            );
+            if (manifest != null)
+            {
+                var trackInfo = manifest.GetByLanguage("en");
+                //var track = await _youtube.Videos.ClosedCaptions.GetAsync(trackInfo);
+                string ext = Path.GetExtension(filePath);
+                int place = filePath.LastIndexOf(ext);
+                string srtPath = filePath.Remove(place, ext.Length).Insert(place, ".srt");
+                await _youtube.Videos.ClosedCaptions.DownloadAsync(trackInfo, srtPath);
+            }
+
         }
 
         var dirPath = Path.GetDirectoryName(filePath);

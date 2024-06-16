@@ -45,7 +45,11 @@ public class SettingsViewModel : DialogViewModelBase
         get => _settingsService.ShouldInjectSubtitles;
         set => _settingsService.ShouldInjectSubtitles = value;
     }
-
+    public bool DLSubtitles
+    {
+        get => _settingsService.DLSubtitles;
+        set => _settingsService.DLSubtitles = value;
+    }
     public bool ShouldInjectTags
     {
         get => _settingsService.ShouldInjectTags;
