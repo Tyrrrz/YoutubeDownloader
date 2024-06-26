@@ -62,8 +62,3 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 ![single](.assets/single.png)
 ![multiple](.assets/multiple.png)
 
-
-## Building from Source
-
-- Requirements:
-  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4)
