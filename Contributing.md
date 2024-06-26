@@ -1,7 +1,10 @@
 # Contributing
 
+## Building from source
 
-## Building from Source
+### Requirements
 
-- Requirements:
-  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4)
+- Windows, Linux, or macOS machine
+- Latest [.NET SDK](https://dotnet.microsoft.com/download)
+- Latest [PowerShell (`pwsh`)](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)
+- (Recommended) .NET IDE such as Visual Studio or JetBrains Rider
