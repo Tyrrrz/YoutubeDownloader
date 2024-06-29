@@ -12,19 +12,37 @@
     x:DataType="dialogs:DownloadMultipleSetupViewModel"
     Loaded="UserControl_OnLoaded">
     <Grid RowDefinitions="Auto,*,Auto,Auto">
-        <!--  Title  -->
-        <TextBlock
-            Grid.Row="0"
-            Margin="16"
-            FontSize="19"
-            Text="{Binding Title}"
-            TextTrimming="CharacterEllipsis">
-            <TextBlock.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
-                </ContextMenu>
-            </TextBlock.ContextMenu>
-        </TextBlock>
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <!--  Title  -->
+            <TextBlock
+                Grid.Row="0"
+                Margin="16"
+                FontSize="19"
+                Text="{Binding Title}"
+                TextTrimming="CharacterEllipsis">
+                <TextBlock.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
+                    </ContextMenu>
+                </TextBlock.ContextMenu>
+            </TextBlock>
+
+            <!--  Close  -->
+            <Button
+                Grid.Column="1"
+                Margin="8,0"
+                Padding="8"
+                VerticalAlignment="Center"
+                Command="{Binding CloseCommand}"
+                CornerRadius="30"
+                Opacity="0.7"
+                Theme="{DynamicResource MaterialFlatButton}">
+                <materialIcons:MaterialIcon
+                    Width="24"
+                    Height="24"
+                    Kind="Close" />
+            </Button>
+        </Grid>
 
         <!--  Videos  -->
         <Border

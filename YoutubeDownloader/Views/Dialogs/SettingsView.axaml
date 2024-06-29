@@ -3,15 +3,33 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Width="380"
     x:DataType="dialogs:SettingsViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
-        <TextBlock
-            Grid.Row="0"
-            Margin="16"
-            FontSize="19"
-            FontWeight="Light"
-            Text="Settings" />
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <TextBlock
+                Grid.Row="0"
+                Margin="16"
+                FontSize="19"
+                FontWeight="Light"
+                Text="Settings" />
+
+            <Button
+                Grid.Column="1"
+                Margin="8,0"
+                Padding="8"
+                VerticalAlignment="Center"
+                Command="{Binding CloseCommand}"
+                CornerRadius="30"
+                Opacity="0.7"
+                Theme="{DynamicResource MaterialFlatButton}">
+                <materialIcons:MaterialIcon
+                    Width="24"
+                    Height="24"
+                    Kind="Close" />
+            </Button>
+        </Grid>
 
         <Border
             Grid.Row="1"

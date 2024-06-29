@@ -12,54 +12,72 @@
     x:DataType="dialogs:DownloadSingleSetupViewModel"
     Loaded="UserControl_OnLoaded">
     <Grid RowDefinitions="Auto,*,Auto,Auto">
-        <!--  Info  -->
-        <StackPanel
-            Grid.Row="0"
-            Margin="16"
-            Orientation="Vertical">
-            <!--  Title  -->
-            <TextBlock
-                FontSize="19"
-                Text="{Binding Video.Title}"
-                TextTrimming="CharacterEllipsis"
-                ToolTip.Tip="{Binding Video.Title}">
-                <TextBlock.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
-                    </ContextMenu>
-                </TextBlock.ContextMenu>
-            </TextBlock>
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <!--  Info  -->
+            <StackPanel
+                Grid.Row="0"
+                Margin="16"
+                Orientation="Vertical">
+                <!--  Title  -->
+                <TextBlock
+                    FontSize="19"
+                    Text="{Binding Video.Title}"
+                    TextTrimming="CharacterEllipsis"
+                    ToolTip.Tip="{Binding Video.Title}">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
+                </TextBlock>
 
-            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
-                <!--  Author  -->
-                <StackPanel Orientation="Horizontal">
-                    <materialIcons:MaterialIcon
-                        Width="16"
-                        Height="16"
-                        BorderThickness="1"
-                        Kind="UserOutline" />
-                    <TextBlock
-                        Margin="3,0,0,0"
-                        FontWeight="Light"
-                        Text="{Binding Video.Author.Title}"
-                        TextTrimming="CharacterEllipsis" />
-                </StackPanel>
+                <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                    <!--  Author  -->
+                    <StackPanel Orientation="Horizontal">
+                        <materialIcons:MaterialIcon
+                            Width="16"
+                            Height="16"
+                            BorderThickness="1"
+                            Kind="UserOutline" />
+                        <TextBlock
+                            Margin="3,0,0,0"
+                            FontWeight="Light"
+                            Text="{Binding Video.Author.Title}"
+                            TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
 
-                <!--  Duration  -->
-                <StackPanel Margin="16,0,0,0" Orientation="Horizontal">
-                    <materialIcons:MaterialIcon
-                        Width="16"
-                        Height="16"
-                        BorderThickness="1"
-                        Kind="ClockOutline" />
-                    <TextBlock
-                        Margin="3,0,0,0"
-                        FontWeight="Light"
-                        Text="{Binding Video.Duration, TargetNullValue=Live}"
-                        TextTrimming="CharacterEllipsis" />
+                    <!--  Duration  -->
+                    <StackPanel Margin="16,0,0,0" Orientation="Horizontal">
+                        <materialIcons:MaterialIcon
+                            Width="16"
+                            Height="16"
+                            BorderThickness="1"
+                            Kind="ClockOutline" />
+                        <TextBlock
+                            Margin="3,0,0,0"
+                            FontWeight="Light"
+                            Text="{Binding Video.Duration, TargetNullValue=Live}"
+                            TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
-        </StackPanel>
+
+            <!--  Close  -->
+            <Button
+                Grid.Column="1"
+                Margin="8"
+                Padding="8"
+                VerticalAlignment="Top"
+                Command="{Binding CloseCommand}"
+                CornerRadius="30"
+                Opacity="0.7"
+                Theme="{DynamicResource MaterialFlatButton}">
+                <materialIcons:MaterialIcon
+                    Width="24"
+                    Height="24"
+                    Kind="Close" />
+            </Button>
+        </Grid>
 
         <!--  Thumbnail  -->
         <Border
