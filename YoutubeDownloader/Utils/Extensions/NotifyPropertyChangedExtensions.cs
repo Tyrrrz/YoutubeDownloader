@@ -11,15 +11,11 @@ internal static class NotifyPropertyChangedExtensions
         this TOwner owner,
         Expression<Func<TOwner, TProperty>> propertyExpression,
         Action callback,
-        bool watchInitialValue = true
+        bool watchInitialValue = false
     )
         where TOwner : INotifyPropertyChanged
     {
-        var memberExpression =
-            propertyExpression.Body as MemberExpression
-            // Property value might be boxed inside a conversion expression, if the types don't match
-            ?? (propertyExpression.Body as UnaryExpression)?.Operand as MemberExpression;
-
+        var memberExpression = propertyExpression.Body as MemberExpression;
         if (memberExpression?.Member is not PropertyInfo property)
             throw new ArgumentException("Provided expression must reference a property.");
 
@@ -45,7 +41,7 @@ internal static class NotifyPropertyChangedExtensions
     public static IDisposable WatchAllProperties<TOwner>(
         this TOwner owner,
         Action callback,
-        bool watchInitialValues = true
+        bool watchInitialValues = false
     )
         where TOwner : INotifyPropertyChanged
     {

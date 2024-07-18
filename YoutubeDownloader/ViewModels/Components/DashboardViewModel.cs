@@ -54,7 +54,8 @@ public partial class DashboardViewModel : ViewModelBase
         _eventRoot.Add(
             _settingsService.WatchProperty(
                 o => o.ParallelLimit,
-                () => _downloadSemaphore.MaxCount = _settingsService.ParallelLimit
+                () => _downloadSemaphore.MaxCount = _settingsService.ParallelLimit,
+                true
             )
         );
 
