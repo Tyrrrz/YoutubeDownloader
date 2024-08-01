@@ -16,18 +16,18 @@
 
   <ItemGroup>
     <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
-    <PackageReference Include="Avalonia" Version="11.0.11" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.11" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.11" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.0.11" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="Avalonia" Version="11.1.1" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.1.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.1.1" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.1.1" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="Cogwheel" Version="2.1.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="CSharpier.MsBuild" Version="0.28.2" PrivateAssets="all" />
     <PackageReference Include="Deorcify" Version="1.0.2" PrivateAssets="all" />
     <PackageReference Include="DialogHost.Avalonia" Version="0.7.9" />
     <PackageReference Include="Gress" Version="2.1.1" />
-    <PackageReference Include="Material.Avalonia" Version="3.6.0" />
-    <PackageReference Include="Material.Avalonia.DataGrid" Version="3.6.0" />
+    <PackageReference Include="Material.Avalonia" Version="3.7.2" />
+    <PackageReference Include="Material.Avalonia.DataGrid" Version="3.7.2" />
     <PackageReference Include="Material.Icons.Avalonia" Version="2.1.10" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Onova" Version="2.6.12" />
