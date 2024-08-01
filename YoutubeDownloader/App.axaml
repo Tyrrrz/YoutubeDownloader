@@ -79,6 +79,7 @@
 
         <Style Selector="dialogHostAvalonia|DialogOverlayPopupHost">
             <Setter Property="Margin" Value="48" />
+            <Setter Property="Background" Value="{DynamicResource MaterialPaperBrush}" />
         </Style>
 
         <!--  Snack bar host  -->
