@@ -19,7 +19,7 @@ Write-Host "Downloading FFmpeg..."
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $http = New-Object System.Net.WebClient
 try {
-    $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/6.1.1/ffmpeg-$platform.zip", "$outputPath.zip")
+    $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/7.0/ffmpeg-$platform.zip", "$outputPath.zip")
 } finally {
     $http.Dispose()
 }
