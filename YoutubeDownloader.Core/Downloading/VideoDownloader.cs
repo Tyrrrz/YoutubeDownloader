@@ -67,6 +67,7 @@ public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null)
             downloadOption.StreamInfos,
             trackInfos,
             new ConversionRequestBuilder(filePath)
+                .SetFFmpegPath(FFmpeg.TryGetCliFilePath() ?? "ffmpeg")
                 .SetContainer(downloadOption.Container)
                 .SetPreset(ConversionPreset.Medium)
                 .Build(),
