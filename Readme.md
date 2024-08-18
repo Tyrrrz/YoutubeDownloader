@@ -46,8 +46,8 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 > If you're unsure which build is right for your system, consult with [this page](https://useragent.cc) to determine your OS and CPU architecture.
 
 > **Note**:
-> **YoutubeDownloader** relies on [FFmpeg](https://ffmpeg.org) to handle video processing, and it comes bundled with the application.
-> You can also download a version of **YoutubeDownloader** that doesn't include FFmpeg (`YoutubeDownloader.Raw.*`) if you prefer to use your own installation.
+> **YoutubeDownloader** comes bundled with [FFmpeg](https://ffmpeg.org) which is used for processing videos.
+> You can also download a version of **YoutubeDownloader** that doesn't include FFmpeg (`YoutubeDownloader.Raw.*` builds) if you prefer to use your own installation.
 
 ## Features
 
