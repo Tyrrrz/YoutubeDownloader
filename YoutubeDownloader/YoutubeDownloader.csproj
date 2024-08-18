@@ -53,7 +53,7 @@
     <TrimmerRootAssembly Include="WebView.Core" />
   </ItemGroup>
 
-  <!-- Download FFmpeg and copy it to the output directory-->
+  <!-- Task to download FFmpeg -->
   <PropertyGroup>
     <FFmpegPlatform>$(RuntimeIdentifier)</FFmpegPlatform>
     <FFmpegPlatform Condition="'$(FFmpegPlatform)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64'">win-arm64</FFmpegPlatform>
@@ -68,14 +68,13 @@
     <FFmpegFileName Condition="'$(FFmpegFileName)' == ''">ffmpeg</FFmpegFileName>
   </PropertyGroup>
 
-  <Target Name="Download FFmpeg before build" BeforeTargets="PreBuildEvent">
+  <Target Name="DownloadFFmpeg">
     <Exec Command="pwsh -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot; -Platform $(FFmpegPlatform) -OutputPath &quot;$(ProjectDir)/$(FFmpegFileName)&quot;" LogStandardErrorAsError="true" />
-    <Copy SourceFiles="$(ProjectDir)/$(FFmpegFileName)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
   </Target>
 
-  <Target Name="Download FFmpeg before publish" BeforeTargets="PrepareForPublish">
-    <Exec Command="pwsh -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot; -Platform $(FFmpegPlatform) -OutputPath &quot;$(ProjectDir)/$(FFmpegFileName)&quot;" LogStandardErrorAsError="true" />
-    <Copy SourceFiles="$(ProjectDir)/$(FFmpegFileName)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
-  </Target>
+  <ItemGroup>
+    <None Include="ffmpeg.exe" CopyToOutputDirectory="PreserveNewest" Condition="Exists('ffmpeg.exe')" />
+    <None Include="ffmpeg" CopyToOutputDirectory="PreserveNewest" Condition="Exists('ffmpeg')" />
+  </ItemGroup>
 
 </Project>

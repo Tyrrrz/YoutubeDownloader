@@ -46,9 +46,20 @@ jobs:
           - win-arm64
           - win-x86
           - win-x64
+          - linux-arm64
+          - linux-x86
           - linux-x64
           - osx-arm64
           - osx-x64
+        include-ffmpeg:
+          - true
+          - false
+        exclude:
+          # FFmpeg builds for these platforms are not easily available
+          - include-ffmpeg: true
+            rid: linux-arm64
+          - include-ffmpeg: true
+            rid: linux-x86
 
     runs-on: ${{ startsWith(matrix.rid, 'win-') && 'windows-latest' || startsWith(matrix.rid, 'osx-') && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: 10
@@ -66,6 +77,11 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Download FFmpeg
+        if: ${{ matrix.include-ffmpeg }}
+        working-directory: YoutubeDownloader/
+        run: dotnet build -t:DownloadFFmpeg
+
       - name: Publish app
         run: >
           dotnet publish YoutubeDownloader
@@ -79,7 +95,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         with:
-          name: YoutubeDownloader.${{ matrix.rid }}
+          name: ${{ matrix.include-ffmpeg && 'YoutubeDownloader' || 'YoutubeDownloader.Raw' }}.${{ matrix.rid }}
           path: YoutubeDownloader/bin/publish
           if-no-files-found: error
 
@@ -116,9 +132,20 @@ jobs:
           - win-arm64
           - win-x86
           - win-x64
+          - linux-arm64
+          - linux-x86
           - linux-x64
           - osx-arm64
           - osx-x64
+        include-ffmpeg:
+          - true
+          - false
+        exclude:
+          # FFmpeg builds for these platforms are not easily available
+          - include-ffmpeg: true
+            rid: linux-arm64
+          - include-ffmpeg: true
+            rid: linux-x86
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -131,26 +158,26 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          name: YoutubeDownloader.${{ matrix.rid }}
+          name: ${{ matrix.include-ffmpeg && 'YoutubeDownloader' || 'YoutubeDownloader.Raw' }}.${{ matrix.rid }}
           path: YoutubeDownloader/
 
       - name: Set permissions
         if: ${{ !startsWith(matrix.rid, 'win-') }}
         run: |
           chmod +x YoutubeDownloader/YoutubeDownloader
-          chmod +x YoutubeDownloader/ffmpeg
+          ${{ matrix.include-ffmpeg && 'chmod +x YoutubeDownloader/ffmpeg' || '' }}
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
         working-directory: YoutubeDownloader/
-        run: zip -r ../YoutubeDownloader.${{ matrix.rid }}.zip .
+        run: zip -r ../${{ matrix.include-ffmpeg && 'YoutubeDownloader' || 'YoutubeDownloader.Raw' }}.${{ matrix.rid }}.zip .
 
       - name: Upload release asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           gh release upload ${{ github.ref_name }}
-          YoutubeDownloader.${{ matrix.rid }}.zip
+          ${{ matrix.include-ffmpeg && 'YoutubeDownloader' || 'YoutubeDownloader.Raw' }}.${{ matrix.rid }}.zip
           --repo ${{ github.event.repository.full_name }}
 
   notify:

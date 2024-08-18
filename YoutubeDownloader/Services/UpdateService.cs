@@ -14,11 +14,12 @@ public class UpdateService(SettingsService settingsService) : IDisposable
             new GithubPackageResolver(
                 "Tyrrrz",
                 "YoutubeDownloader",
+                // Use the raw builds to avoid updating FFmpeg.
                 // Examples:
-                // YoutubeDownloader.win-arm64.zip
-                // YoutubeDownloader.win-x64.zip
-                // YoutubeDownloader.linux-x64.zip
-                $"YoutubeDownloader.{RuntimeInformation.RuntimeIdentifier}.zip"
+                // YoutubeDownloader.Raw.win-arm64.zip
+                // YoutubeDownloader.Raw.win-x64.zip
+                // YoutubeDownloader.Raw.linux-x64.zip
+                $"YoutubeDownloader.Raw.{RuntimeInformation.RuntimeIdentifier}.zip"
             ),
             new ZipPackageExtractor()
         )

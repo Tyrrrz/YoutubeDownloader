@@ -83,7 +83,7 @@ public partial class MainViewModel(
             $"""
             FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH.
 
-            Click DOWNLOAD to go to the FFmpeg download page. You can also install FFmpeg using a package manager instead.
+            Click DOWNLOAD to go to the FFmpeg download page. Alternatively, you can download a version of {Program.Name} that has FFmpeg bundled with it.
             """,
             "DOWNLOAD",
             "CLOSE"
