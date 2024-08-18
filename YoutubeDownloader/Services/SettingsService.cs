@@ -17,7 +17,7 @@ namespace YoutubeDownloader.Services;
 [INotifyPropertyChanged]
 public partial class SettingsService()
     : SettingsBase(
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat"),
+        Path.Combine(AppContext.BaseDirectory, "Settings.dat"),
         SerializerContext.Default
     )
 {
