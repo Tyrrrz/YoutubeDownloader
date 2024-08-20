@@ -7,6 +7,9 @@ namespace YoutubeDownloader.Core.Downloading;
 
 public static class FFmpeg
 {
+    private static string CliFileName { get; } =
+        OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg";
+
     public static string? TryGetCliFilePath()
     {
         static IEnumerable<string> GetProbeDirectoryPaths()
@@ -14,19 +17,20 @@ public static class FFmpeg
             yield return AppContext.BaseDirectory;
             yield return Directory.GetCurrentDirectory();
 
-            foreach (
-                var path in Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator)
-                    ?? Enumerable.Empty<string>()
-            )
+            if (Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator) is { } paths)
             {
-                yield return path;
+                foreach (var path in paths)
+                    yield return path;
             }
         }
 
         return GetProbeDirectoryPaths()
-            .Select(dirPath =>
-                Path.Combine(dirPath, OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg")
-            )
+            .Select(dirPath => Path.Combine(dirPath, CliFileName))
             .FirstOrDefault(File.Exists);
     }
+
+    public static bool IsBundled() =>
+        File.Exists(Path.Combine(AppContext.BaseDirectory, CliFileName));
+
+    public static bool IsAvailable() => !string.IsNullOrWhiteSpace(TryGetCliFilePath());
 }

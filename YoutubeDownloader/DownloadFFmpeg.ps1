@@ -1,3 +1,6 @@
+# This script is called from inside an MSBuild task to download FFmpeg binaries:
+# dotnet build -t:DownloadFFmpeg
+
 param (
     [string]$platform,
     [string]$outputPath
@@ -7,12 +10,6 @@ $ErrorActionPreference = "Stop"
 
 # Normalize platform identifier
 $platform = $platform.ToLower().Replace("win-", "windows-")
-
-# Check if already exists
-if (Test-Path $outputPath) {
-    Write-Host "Skipped downloading FFmpeg, file already exists."
-    exit
-}
 
 # Download the archive
 Write-Host "Downloading FFmpeg..."
