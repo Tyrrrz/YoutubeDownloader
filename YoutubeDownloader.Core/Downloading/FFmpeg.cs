@@ -7,9 +7,10 @@ namespace YoutubeDownloader.Core.Downloading;
 
 public static class FFmpeg
 {
-    public static bool IsBundled() => OperatingSystem.IsWindows()
-        ? File.Exists(Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe"))
-        : File.Exists(Path.Combine(AppContext.BaseDirectory, "ffmpeg"));
+    public static bool IsBundled() =>
+        OperatingSystem.IsWindows()
+            ? File.Exists(Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe"))
+            : File.Exists(Path.Combine(AppContext.BaseDirectory, "ffmpeg"));
 
     public static string? TryGetCliFilePath()
     {
