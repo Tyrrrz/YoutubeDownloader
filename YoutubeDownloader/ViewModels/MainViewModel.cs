@@ -75,7 +75,7 @@ public partial class MainViewModel(
 
     private async Task ShowFFmpegMessageAsync()
     {
-        if (!string.IsNullOrWhiteSpace(FFmpeg.TryGetCliFilePath()))
+        if (FFmpeg.IsAvailable())
             return;
 
         var dialog = viewModelManager.CreateMessageBoxViewModel(
@@ -83,7 +83,9 @@ public partial class MainViewModel(
             $"""
             FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH.
 
-            Click DOWNLOAD to go to the FFmpeg download page. Alternatively, you can download a version of {Program.Name} that has FFmpeg bundled with it.
+            Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it.
+            
+            Click DOWNLOAD to go to the FFmpeg download page.
             """,
             "DOWNLOAD",
             "CLOSE"

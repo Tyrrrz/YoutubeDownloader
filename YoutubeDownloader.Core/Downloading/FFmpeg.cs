@@ -33,4 +33,6 @@ public static class FFmpeg
             )
             .FirstOrDefault(File.Exists);
     }
+
+    public static bool IsAvailable() => !string.IsNullOrWhiteSpace(TryGetCliFilePath());
 }

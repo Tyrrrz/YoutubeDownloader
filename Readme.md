@@ -47,7 +47,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 > **Note**:
 > **YoutubeDownloader** comes bundled with [FFmpeg](https://ffmpeg.org) which is used for processing videos.
-> You can also download a version of **YoutubeDownloader** that doesn't include FFmpeg (`YoutubeDownloader.Raw.*` builds) if you prefer to use your own installation.
+> You can also download a version of **YoutubeDownloader** that doesn't include FFmpeg (`YoutubeDownloader.Bare.*` builds) if you prefer to use your own installation.
 
 ## Features
 

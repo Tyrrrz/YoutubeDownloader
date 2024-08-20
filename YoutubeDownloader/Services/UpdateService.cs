@@ -20,10 +20,10 @@ public class UpdateService(SettingsService settingsService) : IDisposable
                 // YoutubeDownloader.win-arm64.zip
                 // YoutubeDownloader.win-x64.zip
                 // YoutubeDownloader.linux-x64.zip
-                // YoutubeDownloader.Raw.linux-x64.zip
+                // YoutubeDownloader.Bare.linux-x64.zip
                 FFmpeg.IsBundled()
                     ? $"YoutubeDownloader.{RuntimeInformation.RuntimeIdentifier}.zip"
-                    : $"YoutubeDownloader.Raw.{RuntimeInformation.RuntimeIdentifier}.zip"
+                    : $"YoutubeDownloader.Bare.{RuntimeInformation.RuntimeIdentifier}.zip"
             ),
             new ZipPackageExtractor()
         )
