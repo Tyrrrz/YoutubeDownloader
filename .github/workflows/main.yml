@@ -76,8 +76,7 @@ jobs:
 
       - name: Download FFmpeg
         if: ${{ matrix.bundle-ffmpeg }}
-        working-directory: YoutubeDownloader/
-        run: dotnet build -t:DownloadFFmpeg
+        run: dotnet build YoutubeDownloader -t:DownloadFFmpeg
 
       - name: Publish app
         run: >
