@@ -111,11 +111,17 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
     public async Task<QueryResult> ResolveAsync(
         string query,
         CancellationToken cancellationToken = default
-    ) =>
-        await TryResolvePlaylistAsync(query, cancellationToken)
-        ?? await TryResolveVideoAsync(query, cancellationToken)
-        ?? await TryResolveChannelAsync(query, cancellationToken)
-        ?? await ResolveSearchAsync(query, cancellationToken);
+    )
+    {
+        // If the query starts with a question mark, it's always treated as a search query
+        if (query.StartsWith('?'))
+            return await ResolveSearchAsync(query[1..], cancellationToken);
+
+        return await TryResolvePlaylistAsync(query, cancellationToken)
+            ?? await TryResolveVideoAsync(query, cancellationToken)
+            ?? await TryResolveChannelAsync(query, cancellationToken)
+            ?? await ResolveSearchAsync(query, cancellationToken);
+    }
 
     public async Task<QueryResult> ResolveAsync(
         IReadOnlyList<string> queries,
