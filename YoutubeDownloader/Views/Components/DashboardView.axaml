@@ -27,6 +27,7 @@
                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                         Text="{Binding Query}"
                         Theme="{DynamicResource SoloTextBox}"
+                        ToolTip.Tip="Any valid YouTube URL or ID is accepted. Prepend a question mark (?) to perform search by text."
                         Watermark="URL or search query">
                         <TextBox.InnerLeftContent>
                             <materialIcons:MaterialIcon
