@@ -53,6 +53,11 @@ jobs:
         bundle-ffmpeg:
           - true
           - false
+        include:
+          - bundle-ffmpeg: true
+            artifact-name-base: YoutubeDownloader
+          - bundle-ffmpeg: false
+            artifact-name-base: YoutubeDownloader.Bare
         exclude:
           # FFmpeg builds for these platforms are not easily available
           - bundle-ffmpeg: true
@@ -76,7 +81,8 @@ jobs:
 
       - name: Download FFmpeg
         if: ${{ matrix.bundle-ffmpeg }}
-        run: dotnet build YoutubeDownloader -t:DownloadFFmpeg
+        shell: pwsh
+        run: YoutubeDownloader/DownloadFFmpeg.ps1 -platform ${{ matrix.rid }}
 
       - name: Publish app
         run: >
@@ -91,7 +97,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         with:
-          name: ${{ matrix.bundle-ffmpeg && 'YoutubeDownloader' || 'YoutubeDownloader.Bare' }}.${{ matrix.rid }}
+          name: ${{ matrix.artifact-name-base }}.${{ matrix.rid }}
           path: YoutubeDownloader/bin/publish
           if-no-files-found: error
 
@@ -135,6 +141,11 @@ jobs:
         bundle-ffmpeg:
           - true
           - false
+        include:
+          - bundle-ffmpeg: true
+            artifact-name-base: YoutubeDownloader
+          - bundle-ffmpeg: false
+            artifact-name-base: YoutubeDownloader.Bare
         exclude:
           # FFmpeg builds for these platforms are not easily available
           - bundle-ffmpeg: true
@@ -151,26 +162,28 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          name: ${{ matrix.bundle-ffmpeg && 'YoutubeDownloader' || 'YoutubeDownloader.Bare' }}.${{ matrix.rid }}
+          name: ${{ matrix.artifact-name-base }}.${{ matrix.rid }}
           path: YoutubeDownloader/
 
-      - name: Set permissions
+      - name: Set permissions (app)
         if: ${{ !startsWith(matrix.rid, 'win-') }}
-        run: |
-          chmod +x YoutubeDownloader/YoutubeDownloader
-          ${{ matrix.bundle-ffmpeg && 'chmod +x YoutubeDownloader/ffmpeg' || '' }}
+        run: chmod +x YoutubeDownloader/YoutubeDownloader
+
+      - name: Set permissions (FFmpeg)
+        if: ${{ !startsWith(matrix.rid, 'win-') && matrix.bundle-ffmpeg }}
+        run: chmod +x YoutubeDownloader/ffmpeg
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
         working-directory: YoutubeDownloader/
-        run: zip -r ../${{ matrix.bundle-ffmpeg && 'YoutubeDownloader' || 'YoutubeDownloader.Bare' }}.${{ matrix.rid }}.zip .
+        run: zip -r ../${{ matrix.artifact-name-base }}.${{ matrix.rid }}.zip .
 
       - name: Upload release asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           gh release upload ${{ github.ref_name }}
-          ${{ matrix.bundle-ffmpeg && 'YoutubeDownloader' || 'YoutubeDownloader.Bare' }}.${{ matrix.rid }}.zip
+          ${{ matrix.artifact-name-base }}.${{ matrix.rid }}.zip
           --repo ${{ github.event.repository.full_name }}
 
   notify:
