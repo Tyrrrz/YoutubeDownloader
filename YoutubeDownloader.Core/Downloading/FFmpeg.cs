@@ -17,12 +17,17 @@ public static class FFmpeg
             yield return AppContext.BaseDirectory;
             yield return Directory.GetCurrentDirectory();
 
-            var UserAndMachineEnvironmentVariables =
-                $"{Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)}{Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)}";
-
-            if (UserAndMachineEnvironmentVariables?.Split(Path.PathSeparator) is { } paths)
+            // User PATH environment variable
+            if (Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)?.Split(Path.PathSeparator) is { } userPaths)
             {
-                foreach (var path in paths)
+                foreach (var path in userPaths)
+                    yield return path;
+            }
+
+            // System PATH environment variable
+            if (Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)?.Split(Path.PathSeparator) is { } systemPaths)
+            {
+                foreach (var path in systemPaths)
                     yield return path;
             }
         }
