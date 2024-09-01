@@ -4,5 +4,5 @@ public enum ThemeVariant
 {
     System,
     Light,
-    Dark
+    Dark,
 }

@@ -58,8 +58,8 @@ public partial class DownloadSingleSetupViewModel(
             [
                 new FilePickerFileType($"{container.Name} file")
                 {
-                    Patterns = [$"*.{container.Name}"]
-                }
+                    Patterns = [$"*.{container.Name}"],
+                },
             ],
             FileNameTemplate.Apply(settingsService.FileNameTemplate, Video, container)
         );

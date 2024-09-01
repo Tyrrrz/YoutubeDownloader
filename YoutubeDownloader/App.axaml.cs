@@ -65,7 +65,7 @@ public class App : Application, IDisposable
                     {
                         ThemeVariant.Light => Avalonia.Styling.ThemeVariant.Light,
                         ThemeVariant.Dark => Avalonia.Styling.ThemeVariant.Dark,
-                        _ => Avalonia.Styling.ThemeVariant.Default
+                        _ => Avalonia.Styling.ThemeVariant.Default,
                     };
 
                     InitializeTheme();
@@ -97,7 +97,7 @@ public class App : Application, IDisposable
         {
             "Light" => PlatformThemeVariant.Light,
             "Dark" => PlatformThemeVariant.Dark,
-            _ => PlatformSettings?.GetColorValues().ThemeVariant ?? PlatformThemeVariant.Light
+            _ => PlatformSettings?.GetColorValues().ThemeVariant ?? PlatformThemeVariant.Light,
         };
 
         this.LocateMaterialTheme<MaterialThemeBase>().CurrentTheme =

@@ -17,8 +17,8 @@ public static class Http
                     new ProductInfoHeaderValue(
                         "YoutubeDownloader",
                         Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)
-                    )
-                }
-            }
+                    ),
+                },
+            },
         };
 }
