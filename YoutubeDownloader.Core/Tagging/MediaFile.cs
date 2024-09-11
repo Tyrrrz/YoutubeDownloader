@@ -21,15 +21,16 @@ internal partial class MediaFile(TagFile file) : IDisposable
 
     public void SetComment(string comment) => file.Tag.Comment = comment;
 
-    public void Dispose()
+    public void Save()
     {
         file.Tag.DateTagged = DateTime.Now;
         file.Save();
-        file.Dispose();
     }
+
+    public void Dispose() => file.Dispose();
 }
 
 internal partial class MediaFile
 {
-    public static MediaFile Create(string filePath) => new(TagFile.Create(filePath));
+    public static MediaFile Open(string filePath) => new(TagFile.Create(filePath));
 }
