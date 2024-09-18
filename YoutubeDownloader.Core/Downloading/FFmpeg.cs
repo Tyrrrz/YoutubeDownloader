@@ -17,22 +17,47 @@ public static class FFmpeg
             yield return AppContext.BaseDirectory;
             yield return Directory.GetCurrentDirectory();
 
-            // User PATH environment variable
-            if (Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)?.Split(Path.PathSeparator) is { } userPaths)
+            // Process PATH
+            if (
+                Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator) is
+                { } processPaths
+            )
             {
-                foreach (var path in userPaths)
+                foreach (var path in processPaths)
                     yield return path;
             }
 
-            // System PATH environment variable
-            if (Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)?.Split(Path.PathSeparator) is { } systemPaths)
+            // Registry-based PATH variables
+            if (OperatingSystem.IsWindows())
             {
-                foreach (var path in systemPaths)
-                    yield return path;
+                // User PATH
+                if (
+                    Environment
+                        .GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)
+                        ?.Split(Path.PathSeparator) is
+                    { } userPaths
+                )
+                {
+                    foreach (var path in userPaths)
+                        yield return path;
+                }
+
+                // System PATH
+                if (
+                    Environment
+                        .GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)
+                        ?.Split(Path.PathSeparator) is
+                    { } systemPaths
+                )
+                {
+                    foreach (var path in systemPaths)
+                        yield return path;
+                }
             }
         }
 
         return GetProbeDirectoryPaths()
+            .Distinct(StringComparer.Ordinal)
             .Select(dirPath => Path.Combine(dirPath, CliFileName))
             .FirstOrDefault(File.Exists);
     }
