@@ -118,18 +118,12 @@ public partial class DashboardViewModel : ViewModelBase
 
             if (_settingsService.ShouldInjectTags)
             {
-                try
-                {
-                    await tagInjector.InjectTagsAsync(
-                        download.FilePath!,
-                        download.Video!,
-                        download.CancellationToken
-                    );
-                }
-                catch
-                {
-                    // Media tagging is not critical
-                }
+
+                await tagInjector.InjectTagsAsync(
+                    download.FilePath!,
+                    download.Video!,
+                    download.CancellationToken
+                );
             }
 
             download.Status = DownloadStatus.Completed;
