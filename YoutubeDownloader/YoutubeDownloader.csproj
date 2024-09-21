@@ -4,6 +4,8 @@
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>..\favicon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Trimmed builds break support for Windows 10 for some reason -->
+    <!-- https://github.com/Tyrrrz/YoutubeDownloader/issues/496 -->
     <PublishTrimmed>false</PublishTrimmed>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
