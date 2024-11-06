@@ -36,7 +36,6 @@ if (Test-Path $outputPath) {
 
 # Download the archive
 Write-Host "Downloading FFmpeg for $platform..."
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $http = New-Object System.Net.WebClient
 try {
     $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/7.0/ffmpeg-$platform.zip", "$outputPath.zip")
