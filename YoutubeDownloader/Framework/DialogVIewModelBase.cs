@@ -6,8 +6,9 @@ namespace YoutubeDownloader.Framework;
 
 public abstract partial class DialogViewModelBase<T> : ViewModelBase
 {
-    private readonly TaskCompletionSource<T> _closeTcs =
-        new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly TaskCompletionSource<T> _closeTcs = new(
+        TaskCreationOptions.RunContinuationsAsynchronously
+    );
 
     [ObservableProperty]
     private T? _dialogResult;
