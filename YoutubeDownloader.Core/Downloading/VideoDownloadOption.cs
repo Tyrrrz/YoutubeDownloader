@@ -52,6 +52,8 @@ public partial record VideoDownloadOption
                     var languageSpecificAudioStreamInfos = audioStreamInfos
                         .Where(s => s.AudioLanguage is not null)
                         .DistinctBy(s => s.AudioLanguage)
+                        // Default language first so it's encoded as the first audio track in the output file
+                        .OrderByDescending(s => s.IsAudioLanguageDefault)
                         .ToArray();
 
                     // If there are language-specific streams, include them all
@@ -86,7 +88,7 @@ public partial record VideoDownloadOption
             {
                 var audioStreamInfo = manifest
                     .GetAudioStreams()
-                    // Prefer audio streams in the default language
+                    // Prefer audio streams in the default language (or non-language-specific streams)
                     .OrderByDescending(s => s.IsAudioLanguageDefault ?? true)
                     // Prefer audio streams with the same container
                     .ThenByDescending(s => s.Container == Container.WebM)
@@ -112,7 +114,7 @@ public partial record VideoDownloadOption
             {
                 var audioStreamInfo = manifest
                     .GetAudioStreams()
-                    // Prefer audio streams in the default language
+                    // Prefer audio streams in the default language (or non-language-specific streams)
                     .OrderByDescending(s => s.IsAudioLanguageDefault ?? true)
                     // Prefer audio streams with the same container
                     .ThenByDescending(s => s.Container == Container.Mp4)
