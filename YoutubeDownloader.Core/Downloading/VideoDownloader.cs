@@ -19,20 +19,26 @@ public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null)
 
     public async Task<IReadOnlyList<VideoDownloadOption>> GetDownloadOptionsAsync(
         VideoId videoId,
+        bool includeLanguageSpecificAudioStreams = true,
         CancellationToken cancellationToken = default
     )
     {
         var manifest = await _youtube.Videos.Streams.GetManifestAsync(videoId, cancellationToken);
-        return VideoDownloadOption.ResolveAll(manifest);
+        return VideoDownloadOption.ResolveAll(manifest, includeLanguageSpecificAudioStreams);
     }
 
     public async Task<VideoDownloadOption> GetBestDownloadOptionAsync(
         VideoId videoId,
         VideoDownloadPreference preference,
+        bool includeLanguageSpecificAudioStreams = true,
         CancellationToken cancellationToken = default
     )
     {
-        var options = await GetDownloadOptionsAsync(videoId, cancellationToken);
+        var options = await GetDownloadOptionsAsync(
+            videoId,
+            includeLanguageSpecificAudioStreams,
+            cancellationToken
+        );
 
         return preference.TryGetBestOption(options)
             ?? throw new InvalidOperationException("No suitable download option found.");

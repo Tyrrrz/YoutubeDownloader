@@ -56,6 +56,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 - Download videos from playlists or channels
 - Download videos by search query
 - Selectable video quality and format
+- Automatically embed audio tracks in alternative languages
 - Automatically embed subtitles
 - Automatically inject media tags
 - Log in with a YouTube account to access private content

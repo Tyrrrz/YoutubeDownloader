@@ -49,6 +49,13 @@ public partial class SettingsService()
         set => SetProperty(ref _isAuthPersisted, value);
     }
 
+    private bool _shouldInjectLanguageSpecificAudioStreams = true;
+    public bool ShouldInjectLanguageSpecificAudioStreams
+    {
+        get => _shouldInjectLanguageSpecificAudioStreams;
+        set => SetProperty(ref _shouldInjectLanguageSpecificAudioStreams, value);
+    }
+
     private bool _shouldInjectSubtitles = true;
     public bool ShouldInjectSubtitles
     {
