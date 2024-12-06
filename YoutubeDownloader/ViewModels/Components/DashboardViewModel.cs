@@ -104,6 +104,7 @@ public partial class DashboardViewModel : ViewModelBase
                 ?? await downloader.GetBestDownloadOptionAsync(
                     download.Video!.Id,
                     download.DownloadPreference!,
+                    _settingsService.ShouldInjectLanguageSpecificAudioStreams,
                     download.CancellationToken
                 );
 
@@ -190,7 +191,10 @@ public partial class DashboardViewModel : ViewModelBase
             if (result.Videos.Count == 1)
             {
                 var video = result.Videos.Single();
-                var downloadOptions = await downloader.GetDownloadOptionsAsync(video.Id);
+                var downloadOptions = await downloader.GetDownloadOptionsAsync(
+                    video.Id,
+                    _settingsService.ShouldInjectLanguageSpecificAudioStreams
+                );
 
                 var download = await _dialogManager.ShowDialogAsync(
                     _viewModelManager.CreateDownloadSingleSetupViewModel(video, downloadOptions)

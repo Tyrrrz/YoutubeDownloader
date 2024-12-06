@@ -18,7 +18,10 @@ public partial record VideoDownloadOption(
 
 public partial record VideoDownloadOption
 {
-    internal static IReadOnlyList<VideoDownloadOption> ResolveAll(StreamManifest manifest)
+    internal static IReadOnlyList<VideoDownloadOption> ResolveAll(
+        StreamManifest manifest,
+        bool includeLanguageSpecificAudioStreams = true
+    )
     {
         IEnumerable<VideoDownloadOption> GetVideoAndAudioOptions()
         {
@@ -48,13 +51,15 @@ public partial record VideoDownloadOption
                         .ThenByDescending(s => s.Bitrate)
                         .ToArray();
 
-                    // Prefer language-specific audio streams, if available
-                    var languageSpecificAudioStreamInfos = audioStreamInfos
-                        .Where(s => s.AudioLanguage is not null)
-                        .DistinctBy(s => s.AudioLanguage)
-                        // Default language first so it's encoded as the first audio track in the output file
-                        .OrderByDescending(s => s.IsAudioLanguageDefault)
-                        .ToArray();
+                    // Prefer language-specific audio streams, if available and if allowed
+                    var languageSpecificAudioStreamInfos = includeLanguageSpecificAudioStreams
+                        ? audioStreamInfos
+                            .Where(s => s.AudioLanguage is not null)
+                            .DistinctBy(s => s.AudioLanguage)
+                            // Default language first so it's encoded as the first audio track in the output file
+                            .OrderByDescending(s => s.IsAudioLanguageDefault)
+                            .ToArray()
+                        : [];
 
                     // If there are language-specific streams, include them all
                     if (languageSpecificAudioStreamInfos.Any())
@@ -68,7 +73,11 @@ public partial record VideoDownloadOption
                     // If there are no language-specific streams, download the single best quality audio stream
                     else
                     {
-                        var audioStreamInfo = audioStreamInfos.FirstOrDefault();
+                        var audioStreamInfo = audioStreamInfos
+                            // Prefer audio streams in the default language (or non-language-specific streams)
+                            .OrderByDescending(s => s.IsAudioLanguageDefault ?? true)
+                            .FirstOrDefault();
+
                         if (audioStreamInfo is not null)
                         {
                             yield return new VideoDownloadOption(

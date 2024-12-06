@@ -40,6 +40,12 @@ public class SettingsViewModel : DialogViewModelBase
         set => _settingsService.IsAuthPersisted = value;
     }
 
+    public bool ShouldInjectLanguageSpecificAudioStreams
+    {
+        get => _settingsService.ShouldInjectLanguageSpecificAudioStreams;
+        set => _settingsService.ShouldInjectLanguageSpecificAudioStreams = value;
+    }
+
     public bool ShouldInjectSubtitles
     {
         get => _settingsService.ShouldInjectSubtitles;
