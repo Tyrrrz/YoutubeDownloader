@@ -40,21 +40,41 @@ public partial record VideoDownloadOption
                 // Separate audio + video stream
                 else
                 {
-                    // Prefer audio stream with the same container
-                    var audioStreamInfo = manifest
+                    var audioStreamInfos = manifest
                         .GetAudioStreams()
+                        // Prefer audio streams with the same container
                         .OrderByDescending(s => s.Container == videoStreamInfo.Container)
                         .ThenByDescending(s => s is AudioOnlyStreamInfo)
                         .ThenByDescending(s => s.Bitrate)
-                        .FirstOrDefault();
+                        .ToArray();
 
-                    if (audioStreamInfo is not null)
+                    // Prefer language-specific audio streams, if available
+                    var languageSpecificAudioStreamInfos = audioStreamInfos
+                        .Where(s => s.AudioLanguage is not null)
+                        .DistinctBy(s => s.AudioLanguage)
+                        .ToArray();
+
+                    // If there are language-specific streams, include them all
+                    if (languageSpecificAudioStreamInfos.Any())
                     {
                         yield return new VideoDownloadOption(
                             videoStreamInfo.Container,
                             false,
-                            new IStreamInfo[] { videoStreamInfo, audioStreamInfo }
+                            [videoStreamInfo, .. languageSpecificAudioStreamInfos]
                         );
+                    }
+                    // If there are no language-specific streams, download the single best quality audio stream
+                    else
+                    {
+                        var audioStreamInfo = audioStreamInfos.FirstOrDefault();
+                        if (audioStreamInfo is not null)
+                        {
+                            yield return new VideoDownloadOption(
+                                videoStreamInfo.Container,
+                                false,
+                                [videoStreamInfo, audioStreamInfo]
+                            );
+                        }
                     }
                 }
             }
@@ -66,7 +86,10 @@ public partial record VideoDownloadOption
             {
                 var audioStreamInfo = manifest
                     .GetAudioStreams()
-                    .OrderByDescending(s => s.Container == Container.WebM)
+                    // Prefer audio streams in the default language
+                    .OrderByDescending(s => s.IsAudioLanguageDefault ?? true)
+                    // Prefer audio streams with the same container
+                    .ThenByDescending(s => s.Container == Container.WebM)
                     .ThenByDescending(s => s is AudioOnlyStreamInfo)
                     .ThenByDescending(s => s.Bitrate)
                     .FirstOrDefault();
@@ -89,7 +112,10 @@ public partial record VideoDownloadOption
             {
                 var audioStreamInfo = manifest
                     .GetAudioStreams()
-                    .OrderByDescending(s => s.Container == Container.Mp4)
+                    // Prefer audio streams in the default language
+                    .OrderByDescending(s => s.IsAudioLanguageDefault ?? true)
+                    // Prefer audio streams with the same container
+                    .ThenByDescending(s => s.Container == Container.Mp4)
                     .ThenByDescending(s => s is AudioOnlyStreamInfo)
                     .ThenByDescending(s => s.Bitrate)
                     .FirstOrDefault();
