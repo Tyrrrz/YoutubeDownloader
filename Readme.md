@@ -126,7 +126,7 @@ We welcome contributions to improve **YouTubeDownloader**! Whether you're fixing
    git clone https://github.com/Tyrrrz/YoutubeDownloader.git
    ```
 3. **Create a Branch**
-   Create a new branch for you changes
+   Create a new branch for your changes
     ```bash
     git checkout -b feature/your-feature-name
     ```
