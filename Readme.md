@@ -62,7 +62,7 @@ unzip YoutubeDownloader.Bare.linux-x64.zip
 
 ### Granting execution execution
 ```bash
-sudo chmod +x YoutubeDownloader
+### Granting execution permission
 ```
 
 ### Launching application
