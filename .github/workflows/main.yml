@@ -33,11 +33,24 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
+      # Build the project separately to discern between build and format errors
+      - name: Build
+        run: >
+          dotnet build
+          -p:CSharpier_Bypass=true
+          --configuration Release
+
       - name: Verify formatting
+        id: verify
         run: >
           dotnet build
           -t:CSharpierFormat
           --configuration Release
+          --no-restore
+
+      - name: Report issues
+        if: ${{ failure() && steps.verify.outcome == 'failure' }}
+        run: echo "::error title=Bad formatting::Formatting issues detected. Please build the solution locally to fix them."
 
   pack:
     strategy:
