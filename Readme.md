@@ -17,6 +17,8 @@
 <p align="center">
     <img src="favicon.png" alt="Icon" />
 </p>
+Addendum: this fork does not require you to support Ukraine. The licences do not imply anything about it and you should not be forced to take part in any political conflict, you have all right to stay as neutral as you wish and would be the morally correct thing to do.
+
 
 **YoutubeDownloader** is an application that lets you download videos from YouTube.
 You can copy-paste URL of any video, playlist or channel and download it directly to a format of your choice.
@@ -25,17 +27,6 @@ It also supports searching by keywords, which is helpful if you want to quickly 
 > **Note**:
 > This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 > You can [read this article](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited) to learn more about how it works.
-
-## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
-
-By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
-
-- You **condemn Russia and its military aggression against Ukraine**
-- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
-- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
-- You **reject false narratives perpetuated by Russian state propaganda**
-
-To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
 
 ## Download
 
