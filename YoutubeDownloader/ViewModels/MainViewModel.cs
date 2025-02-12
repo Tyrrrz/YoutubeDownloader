@@ -24,30 +24,6 @@ public partial class MainViewModel(
 
     public DashboardViewModel Dashboard { get; } = viewModelManager.CreateDashboardViewModel();
 
-    private async Task ShowUkraineSupportMessageAsync()
-    {
-        if (!settingsService.IsUkraineSupportMessageEnabled)
-            return;
-
-        var dialog = viewModelManager.CreateMessageBoxViewModel(
-            "Thank you for supporting Ukraine!",
-            """
-            As Russia wages a genocidal war against my country, I'm grateful to everyone who continues to stand with Ukraine in our fight for freedom.
-
-            Click LEARN MORE to find ways that you can help.
-            """,
-            "LEARN MORE",
-            "CLOSE"
-        );
-
-        // Disable this message in the future
-        settingsService.IsUkraineSupportMessageEnabled = false;
-        settingsService.Save();
-
-        if (await dialogManager.ShowDialogAsync(dialog) == true)
-            ProcessEx.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
-    }
-
     private async Task ShowDevelopmentBuildMessageAsync()
     {
         if (!Program.IsDevelopmentBuild)
@@ -130,7 +106,6 @@ public partial class MainViewModel(
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        await ShowUkraineSupportMessageAsync();
         await ShowDevelopmentBuildMessageAsync();
         await ShowFFmpegMessageAsync();
         await CheckForUpdatesAsync();

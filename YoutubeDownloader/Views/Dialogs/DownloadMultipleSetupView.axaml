@@ -124,11 +124,12 @@
                 Theme="{DynamicResource MaterialFilledComboBox}" />
 
             <!--  Video quality preference  -->
+          <!--ItemsSource="{Binding AvailableVideoQualityPreferences}"-->
             <ComboBox
                 Margin="8,0,0,0"
                 materialAssists:ComboBoxAssist.Label="Video quality"
                 IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
-                ItemsSource="{Binding AvailableVideoQualityPreferences}"
+
                 SelectedItem="{Binding SelectedVideoQualityPreference}"
                 Theme="{DynamicResource MaterialFilledComboBox}">
                 <ComboBox.ItemTemplate>

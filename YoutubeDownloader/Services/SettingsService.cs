@@ -21,13 +21,6 @@ public partial class SettingsService()
         SerializerContext.Default
     )
 {
-    private bool _isUkraineSupportMessageEnabled = true;
-    public bool IsUkraineSupportMessageEnabled
-    {
-        get => _isUkraineSupportMessageEnabled;
-        set => SetProperty(ref _isUkraineSupportMessageEnabled, value);
-    }
-
     private ThemeVariant _theme;
     public ThemeVariant Theme
     {
