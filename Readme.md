@@ -18,7 +18,7 @@
     <img src="favicon.png" alt="Icon" />
 </p>
 
-**Addendum**: this fork does not require you to support Ukraine. The licences do not imply anything about it and you should not be forced to take part in any political conflict, you have all right to stay as neutral as you wish and would be the morally correct thing to do.
+**Addendum**: this fork does not require you to support Ukraine. The licences do not imply anything about it and you should not be forced to take part in any political conflict, you have all right to stay as neutral as you wish and this would be the morally correct thing to do.
 
 
 **YoutubeDownloader** is an application that lets you download videos from YouTube.
