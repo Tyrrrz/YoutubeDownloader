@@ -11,7 +11,7 @@ public abstract partial class DialogViewModelBase<T> : ViewModelBase
     );
 
     [ObservableProperty]
-    private T? _dialogResult;
+    public partial T? DialogResult { get; set; }
 
     [RelayCommand]
     protected void Close(T dialogResult)

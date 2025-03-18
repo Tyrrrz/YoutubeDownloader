@@ -6,20 +6,20 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public partial class MessageBoxViewModel : DialogViewModelBase
 {
     [ObservableProperty]
-    private string? _title = "Title";
+    public partial string? Title { get; set; } = "Title";
 
     [ObservableProperty]
-    private string? _message = "Message";
+    public partial string? Message { get; set; } = "Message";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDefaultButtonVisible))]
     [NotifyPropertyChangedFor(nameof(ButtonsCount))]
-    private string? _defaultButtonText = "OK";
+    public partial string? DefaultButtonText { get; set; } = "OK";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsCancelButtonVisible))]
     [NotifyPropertyChangedFor(nameof(ButtonsCount))]
-    private string? _cancelButtonText = "Cancel";
+    public partial string? CancelButtonText { get; set; } = "Cancel";
 
     public bool IsDefaultButtonVisible => !string.IsNullOrWhiteSpace(DefaultButtonText);
 

@@ -23,13 +23,13 @@ public partial class DownloadSingleSetupViewModel(
 ) : DialogViewModelBase<DownloadViewModel>
 {
     [ObservableProperty]
-    private IVideo? _video;
+    public partial IVideo? Video { get; set; }
 
     [ObservableProperty]
-    private IReadOnlyList<VideoDownloadOption>? _availableDownloadOptions;
+    public partial IReadOnlyList<VideoDownloadOption>? AvailableDownloadOptions { get; set; }
 
     [ObservableProperty]
-    private VideoDownloadOption? _selectedDownloadOption;
+    public partial VideoDownloadOption? SelectedDownloadOption { get; set; }
 
     [RelayCommand]
     private void Initialize()
