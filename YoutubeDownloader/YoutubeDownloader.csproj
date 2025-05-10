@@ -12,6 +12,10 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DownloadFFmpeg>true</DownloadFFmpeg>
+  </PropertyGroup>
+
   <ItemGroup>
     <AvaloniaResource Include="..\favicon.ico" Link="favicon.ico" />
   </ItemGroup>
@@ -59,5 +63,10 @@
     <TrimmerRootAssembly Include="WebView.Avalonia" />
     <TrimmerRootAssembly Include="WebView.Core" />
   </ItemGroup>
+
+  <Target Name="DownloadFFmpeg" BeforeTargets="Restore;PreBuildEvent" Condition="$(DownloadFFmpeg) AND !Exists('ffmpeg.exe') AND !Exists('ffmpeg')">
+    <Exec Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Download-FFmpeg.ps1 -Platform $(RuntimeIdentifier) -OutputPath $(ProjectDir)" LogStandardErrorAsError="true" Condition="'$(RuntimeIdentifier)' != ''" />
+    <Exec Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Download-FFmpeg.ps1 -OutputPath $(ProjectDir)" LogStandardErrorAsError="true" Condition="'$(RuntimeIdentifier)' == ''" />
+  </Target>
 
 </Project>
