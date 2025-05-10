@@ -189,6 +189,10 @@ jobs:
           if [ -f YoutubeDownloader/ffmpeg ]; then
               chmod +x YoutubeDownloader/ffmpeg
           fi
+          
+          if [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg ]; then
+              chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg
+          fi
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
