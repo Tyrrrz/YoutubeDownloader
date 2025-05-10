@@ -98,6 +98,7 @@ jobs:
           -p:Version=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
           -p:CSharpier_Bypass=true
           -p:DownloadFFmpeg=${{ matrix.bundle-ffmpeg }}
+          -p:PublishMacOSBundle=${{ startsWith(matrix.rid, 'osx-') }}
           --output YoutubeDownloader/bin/publish
           --configuration Release
           --runtime ${{ matrix.rid }}
@@ -174,13 +175,20 @@ jobs:
           name: ${{ matrix.artifact-name-base }}.${{ matrix.rid }}
           path: YoutubeDownloader/
 
-      - name: Set permissions (app)
+      - name: Set permissions
         if: ${{ !startsWith(matrix.rid, 'win-') }}
-        run: chmod +x YoutubeDownloader/YoutubeDownloader
-
-      - name: Set permissions (FFmpeg)
-        if: ${{ !startsWith(matrix.rid, 'win-') && matrix.bundle-ffmpeg }}
-        run: chmod +x YoutubeDownloader/ffmpeg
+        run: |
+          if [ -f YoutubeDownloader/YoutubeDownloader ]; then
+              chmod +x YoutubeDownloader/YoutubeDownloader
+          fi
+          
+          if [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader ]; then
+              chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader
+          fi
+          
+          if [ -f YoutubeDownloader/ffmpeg ]; then
+              chmod +x YoutubeDownloader/ffmpeg
+          fi
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive

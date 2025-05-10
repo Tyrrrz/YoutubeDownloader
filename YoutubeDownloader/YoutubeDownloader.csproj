@@ -69,4 +69,8 @@
     <Exec Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Download-FFmpeg.ps1 -OutputPath $(ProjectDir)" LogStandardErrorAsError="true" Condition="'$(RuntimeIdentifier)' == ''" />
   </Target>
 
+  <Target Name="PublishMacOSBundle" AfterTargets="Publish" Condition="$(PublishMacOSBundle)">
+    <Exec Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Publish-MacOSBundle.ps1 -PublishDirPath $(PublishDir) -IconsFilePath $(ProjectDir)/../favicon.icns -FullVersion $(Version) -ShortVersion $(AssemblyVersion)" LogStandardErrorAsError="true" />
+  </Target>
+
 </Project>
