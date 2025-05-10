@@ -49,7 +49,7 @@ try {
     <key>CFBundleIdentifier</key>
     <string>me.Tyrrrz.YoutubeDownloader</string>
     <key>CFBundleSpokenName</key>
-    <string>Discord Chat Exporter</string>
+    <string>YoutubeDownloader</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon</string>
     <key>CFBundleIconName</key>
