@@ -8,5 +8,8 @@
 bin/
 obj/
 
+# Avalonia
+.avalonia-build-tasks/
+
 # Test results
 TestResults/
