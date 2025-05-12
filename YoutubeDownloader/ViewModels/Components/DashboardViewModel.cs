@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -179,18 +180,63 @@ public partial class DashboardViewModel : ViewModelBase
             var resolver = new QueryResolver(_settingsService.LastAuthCookies);
             var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
 
-            var result = await resolver.ResolveAsync(
-                Query.Split(
-                    "\n",
-                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-                ),
-                progress
+            // Split queries by newlines
+            var queries = Query.Split(
+                "\n",
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
             );
 
-            // Single video
-            if (result.Videos.Count == 1)
+            // Process individual queries
+            var queryResults = new List<QueryResult>();
+            var queryErrors = new Dictionary<string, YoutubeExplodeException>();
+            foreach (var query in queries)
             {
-                var video = result.Videos.Single();
+                try
+                {
+                    queryResults.Add(await resolver.ResolveAsync(query));
+                }
+                catch (YoutubeExplodeException ex)
+                    when (ex is VideoUnavailableException or PlaylistUnavailableException)
+                {
+                    queryErrors[query] = ex;
+                }
+
+                progress.Report(
+                    Percentage.FromFraction(
+                        1.0 * (queryResults.Count + queryErrors.Count) / queries.Length
+                    )
+                );
+            }
+
+            // Report failed queries
+            if (queryErrors.Any())
+            {
+                await _dialogManager.ShowDialogAsync(
+                    _viewModelManager.CreateMessageBoxViewModel(
+                        "Error",
+                        queryErrors.Count > 1
+                            ? "Following queries failed to resolve:"
+                                + Environment.NewLine
+                                + string.Join(
+                                    Environment.NewLine,
+                                    queryErrors.Values.Select(v => "— " + v.Message)
+                                )
+                            : queryErrors.Values.Single().Message
+                    )
+                );
+
+                // Don't continue if all queries failed
+                if (!queryResults.Any())
+                    return;
+            }
+
+            // Aggregate results
+            var queryResult = QueryResult.Aggregate(queryResults);
+
+            // Single video result
+            if (queryResult.Videos.Count == 1)
+            {
+                var video = queryResult.Videos.Single();
 
                 var downloadOptions = await downloader.GetDownloadOptionsAsync(
                     video.Id,
@@ -209,14 +255,14 @@ public partial class DashboardViewModel : ViewModelBase
                 Query = "";
             }
             // Multiple videos
-            else if (result.Videos.Count > 1)
+            else if (queryResult.Videos.Count > 1)
             {
                 var downloads = await _dialogManager.ShowDialogAsync(
                     _viewModelManager.CreateDownloadMultipleSetupViewModel(
-                        result.Title,
-                        result.Videos,
+                        queryResult.Title,
+                        queryResult.Videos,
                         // Pre-select videos if they come from a single query and not from search
-                        result.Kind
+                        queryResult.Kind
                             is not QueryResultKind.Search
                                 and not QueryResultKind.Aggregate
                     )
