@@ -29,17 +29,6 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly ResizableSemaphore _downloadSemaphore = new();
     private readonly AutoResetProgressMuxer _progressMuxer;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsProgressIndeterminate))]
-    [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
-    [NotifyCanExecuteChangedFor(nameof(ShowAuthSetupCommand))]
-    [NotifyCanExecuteChangedFor(nameof(ShowSettingsCommand))]
-    public partial bool IsBusy { get; set; }
-
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
-    public partial string? Query { get; set; }
-
     public DashboardViewModel(
         ViewModelManager viewModelManager,
         DialogManager dialogManager,
@@ -68,11 +57,22 @@ public partial class DashboardViewModel : ViewModelBase
         );
     }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsProgressIndeterminate))]
+    [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowAuthSetupCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowSettingsCommand))]
+    public partial bool IsBusy { get; set; }
+
     public ProgressContainer<Percentage> Progress { get; } = new();
 
-    public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
-
     public bool IsProgressIndeterminate => IsBusy && Progress.Current.Fraction is <= 0 or >= 1;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
+    public partial string? Query { get; set; }
+
+    public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
     private bool CanShowAuthSetup() => !IsBusy;
 
@@ -189,7 +189,7 @@ public partial class DashboardViewModel : ViewModelBase
             // Process individual queries
             var queryResults = new List<QueryResult>();
             var queryErrors = new Dictionary<string, YoutubeExplodeException>();
-            foreach (var query in queries)
+            foreach (var (i, query) in queries.Index())
             {
                 try
                 {
@@ -201,11 +201,7 @@ public partial class DashboardViewModel : ViewModelBase
                     queryErrors[query] = ex;
                 }
 
-                progress.Report(
-                    Percentage.FromFraction(
-                        1.0 * (queryResults.Count + queryErrors.Count) / queries.Length
-                    )
-                );
+                progress.Report(Percentage.FromFraction(1.0 * (i + 1) / queries.Length));
             }
 
             // Report failed queries
