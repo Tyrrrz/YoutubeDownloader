@@ -20,7 +20,7 @@
         CloseOnClickAway="False"
         DisableOpeningAnimation="True"
         Loaded="DialogHost_OnLoaded">
-        <materialStyles:SnackbarHost HostName="Root">
+        <materialStyles:SnackbarHost HostName="Root" SnackbarMaxCounts="3">
             <ContentControl Content="{Binding Dashboard}" />
         </materialStyles:SnackbarHost>
     </dialogHostAvalonia:DialogHost>
