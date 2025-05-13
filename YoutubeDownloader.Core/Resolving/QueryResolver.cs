@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Gress;
 using YoutubeDownloader.Core.Utils;
 using YoutubeExplode;
 using YoutubeExplode.Channels;
@@ -121,34 +119,5 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null)
             ?? await TryResolveVideoAsync(query, cancellationToken)
             ?? await TryResolveChannelAsync(query, cancellationToken)
             ?? await ResolveSearchAsync(query, cancellationToken);
-    }
-
-    public async Task<QueryResult> ResolveAsync(
-        IReadOnlyList<string> queries,
-        IProgress<Percentage>? progress = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        if (queries.Count == 1)
-            return await ResolveAsync(queries.Single(), cancellationToken);
-
-        var videos = new List<IVideo>();
-        var videoIds = new HashSet<VideoId>();
-
-        var completed = 0;
-        foreach (var query in queries)
-        {
-            var result = await ResolveAsync(query, cancellationToken);
-
-            foreach (var video in result.Videos)
-            {
-                if (videoIds.Add(video.Id))
-                    videos.Add(video);
-            }
-
-            progress?.Report(Percentage.FromFraction(1.0 * ++completed / queries.Count));
-        }
-
-        return new QueryResult(QueryResultKind.Aggregate, $"{queries.Count} queries", videos);
     }
 }
