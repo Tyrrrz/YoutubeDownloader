@@ -8,8 +8,15 @@ public record QueryResult(QueryResultKind Kind, string Title, IReadOnlyList<IVid
 {
     public static QueryResult Aggregate(IReadOnlyList<QueryResult> results) =>
         new(
-            results.Count == 1 ? results.Single().Kind : QueryResultKind.Aggregate,
-            results.Count == 1 ? results.Single().Title : $"{results.Count} Queries",
+            // Single query -> inherit kind, multiple queries -> aggregate
+            results.Count == 1
+                ? results.Single().Kind
+                : QueryResultKind.Aggregate,
+            // Single query -> inherit title, multiple queries -> aggregate
+            results.Count == 1
+                ? results.Single().Title
+                : $"{results.Count} queries",
+            // Combine all videos, deduplicate by ID
             results.SelectMany(q => q.Videos).DistinctBy(v => v.Id).ToArray()
         );
 }

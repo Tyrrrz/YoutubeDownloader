@@ -22,6 +22,7 @@ namespace YoutubeDownloader.ViewModels.Components;
 public partial class DashboardViewModel : ViewModelBase
 {
     private readonly ViewModelManager _viewModelManager;
+    private readonly SnackbarManager _snackbarManager;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
@@ -31,11 +32,13 @@ public partial class DashboardViewModel : ViewModelBase
 
     public DashboardViewModel(
         ViewModelManager viewModelManager,
+        SnackbarManager snackbarManager,
         DialogManager dialogManager,
         SettingsService settingsService
     )
     {
         _viewModelManager = viewModelManager;
+        _snackbarManager = snackbarManager;
         _dialogManager = dialogManager;
         _settingsService = settingsService;
 
@@ -182,48 +185,30 @@ public partial class DashboardViewModel : ViewModelBase
 
             // Split queries by newlines
             var queries = Query.Split(
-                "\n",
+                '\n',
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
             );
 
             // Process individual queries
             var queryResults = new List<QueryResult>();
-            var queryErrors = new Dictionary<string, YoutubeExplodeException>();
             foreach (var (i, query) in queries.Index())
             {
                 try
                 {
                     queryResults.Add(await resolver.ResolveAsync(query));
                 }
+                // If it's not the only query in the list, don't interrupt the process
+                // and report the error via an async notification instead of a sync dialog.
+                // https://github.com/Tyrrrz/YoutubeDownloader/issues/563
                 catch (YoutubeExplodeException ex)
-                    when (ex is VideoUnavailableException or PlaylistUnavailableException)
+                    when (ex is VideoUnavailableException or PlaylistUnavailableException
+                        && queries.Length > 1
+                    )
                 {
-                    queryErrors[query] = ex;
+                    _snackbarManager.Notify(ex.Message);
                 }
 
-                progress.Report(Percentage.FromFraction(1.0 * (i + 1) / queries.Length));
-            }
-
-            // Report failed queries
-            if (queryErrors.Any())
-            {
-                await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateMessageBoxViewModel(
-                        "Error",
-                        queryErrors.Count > 1
-                            ? "Following queries failed to resolve:"
-                                + Environment.NewLine
-                                + string.Join(
-                                    Environment.NewLine,
-                                    queryErrors.Values.Select(v => "— " + v.Message)
-                                )
-                            : queryErrors.Values.Single().Message
-                    )
-                );
-
-                // Don't continue if all queries failed
-                if (!queryResults.Any())
-                    return;
+                progress.Report(Percentage.FromFraction((i + 1.0) / queries.Length));
             }
 
             // Aggregate results
