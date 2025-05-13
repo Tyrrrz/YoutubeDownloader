@@ -62,7 +62,9 @@ public partial class MainViewModel(
             $"""
             You're using a development build of {Program.Name}. These builds are not thoroughly tested and may contain bugs.
 
-            Auto-updates are disabled for development builds. If you want to switch to a stable release, please download it manually.
+            Auto-updates are disabled for development builds.
+
+            Click SEE RELEASES if you want to download a stable release instead.
             """,
             "SEE RELEASES",
             "CLOSE"
@@ -82,7 +84,7 @@ public partial class MainViewModel(
             $"""
             FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH.
 
-            Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it.
+            Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
 
             Click DOWNLOAD to go to the FFmpeg download page.
             """,
