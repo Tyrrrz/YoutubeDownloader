@@ -106,6 +106,8 @@ public class App : Application, IDisposable
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+            singleView.MainView = new MainView { DataContext = _mainViewModel };
 
         base.OnFrameworkInitializationCompleted();
 

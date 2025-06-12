@@ -4,7 +4,7 @@ using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.Utils;
 
-internal class DisposableCollector : IDisposable
+public class DisposableCollector : IDisposable
 {
     private readonly object _lock = new();
     private readonly List<IDisposable> _items = [];
