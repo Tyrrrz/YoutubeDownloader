@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.WebView.Desktop;
 using YoutubeDownloader.Utils;
 
-namespace YoutubeDownloader;
+namespace YoutubeDownloader.Desktop;
 
 public static class Program
 {
