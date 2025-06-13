@@ -13,10 +13,3 @@ obj/
 
 # Test results
 TestResults/
-/YoutubeDownloader.Android/arm
-/YoutubeDownloader.Android/arm-v7n
-/YoutubeDownloader.Android/arm64-v8a
-/YoutubeDownloader.Android/armv7-a
-/YoutubeDownloader.Android/i686
-/YoutubeDownloader.Android/native
-/YoutubeDownloader.Android/x86_64

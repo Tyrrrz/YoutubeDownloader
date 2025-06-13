@@ -27,4 +27,40 @@
     <ProjectReference Include="..\YoutubeDownloader\YoutubeDownloader.csproj" />
   </ItemGroup>
 
+	<PropertyGroup>
+		<DownloadFFmpegAndroid>true</DownloadFFmpegAndroid>
+	</PropertyGroup>
+
+	<!-- Include FFmpeg binaries for different Android architectures -->
+	<ItemGroup>
+		<!-- ARM (32-bit) -->
+		<AndroidAsset Include="arm\ffmpeg" Condition="Exists('arm\ffmpeg')">
+			<Link>assets\arm\ffmpeg</Link>
+		</AndroidAsset>
+
+		<!-- ARM64 (64-bit) -->
+
+		<!-- x86 (32-bit Intel) -->
+		<AndroidAsset Include="i686\ffmpeg" Condition="Exists('i686\ffmpeg')">
+			<Link>assets\i686\ffmpeg</Link>
+		</AndroidAsset>
+
+		<!-- x86_64 (64-bit Intel) -->
+		<AndroidAsset Include="x86_64\ffmpeg" Condition="Exists('x86_64\ffmpeg')">
+			<Link>assets\x86_64\ffmpeg</Link>
+		</AndroidAsset>
+
+		<!-- You can also include lite versions if needed -->
+		<AndroidAsset Include="arm64-v8a-lite\ffmpeg" Condition="Exists('arm64-v8a-lite\ffmpeg')">
+			<Link>assets\arm64-v8a-lite\ffmpeg</Link>
+		</AndroidAsset>
+	</ItemGroup>
+
+	<!-- Target to download FFmpeg binaries for Android -->
+	<Target Name="DownloadFFmpegAndroid" BeforeTargets="BeforeBuild" Condition="$(DownloadFFmpegAndroid) AND !Exists('arm64-v8a\ffmpeg') AND !Exists('arm\ffmpeg')">
+
+		<!-- Download all architectures by default for maximum compatibility -->
+		<Exec Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Download-FFmpeg-Android.ps1 -DownloadAll -OutputPath $(ProjectDir)" LogStandardErrorAsError="true" ContinueOnError="false" />
+	</Target>
+	
 </Project>
