@@ -3,7 +3,7 @@ using Avalonia.Controls;
 
 namespace YoutubeDownloader.Framework;
 
-public class Window<TDataContext> : Window
+public class ViewBase<TDataContext> : UserControl
 {
     public new TDataContext DataContext
     {
