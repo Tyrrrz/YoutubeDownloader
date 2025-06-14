@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ public static class AndroidFFmpegInitializer
         {
             Core.Downloading.FFmpeg.SetCustomPath(extractedPath);
 
-            await CleanupUnusedArchitecturesAsync();
+            CleanupUnusedArchitecturesAsync();
         }
     }
 
@@ -49,7 +50,7 @@ public static class AndroidFFmpegInitializer
             // Set execute permissions
             try
             {
-                var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                var process = Process.Start(new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = "chmod",
                     Arguments = $"+x \"{extractedPath}\"",
@@ -64,12 +65,12 @@ public static class AndroidFFmpegInitializer
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"FFmpeg extraction failed: {ex.Message}");
+            Debug.WriteLine($"FFmpeg extraction failed: {ex.Message}");
             return null;
         }
     }
 
-    private static async Task CleanupUnusedArchitecturesAsync()
+    private static void CleanupUnusedArchitecturesAsync()
     {
         try
         {
@@ -82,38 +83,34 @@ public static class AndroidFFmpegInitializer
             var currentArch = GetAndroidArchitecture();
 
             // Remove any previously extracted FFmpeg binaries from other architectures
-            await Task.Run(() =>
+            foreach (var arch in AllArchitectures)
             {
-                foreach (var arch in AllArchitectures)
-                {
-                    if (arch == currentArch) continue;
+                if (arch == currentArch) continue;
 
-                    try
+                try
+                {
+                    var oldBinaryPath = Path.Combine(internalDir, $"ffmpeg_{arch}");
+                    if (File.Exists(oldBinaryPath))
                     {
-                        var oldBinaryPath = Path.Combine(internalDir, $"ffmpeg_{arch}");
-                        if (File.Exists(oldBinaryPath))
-                        {
-                            File.Delete(oldBinaryPath);
-                            System.Diagnostics.Debug.WriteLine($"Cleaned up unused FFmpeg binary: {arch}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Failed to cleanup {arch}: {ex.Message}");
+                        File.Delete(oldBinaryPath);
+                        Debug.WriteLine($"Cleaned up unused FFmpeg binary: {arch}");
                     }
                 }
-            });
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to cleanup {arch}: {ex.Message}");
+                }
+            }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Cleanup failed: {ex.Message}");
+            Debug.WriteLine($"Cleanup failed: {ex.Message}");
         }
     }
 
     private static string GetAndroidArchitecture()
     {
-        var arch = RuntimeInformation.ProcessArchitecture;
-        return arch switch
+        return RuntimeInformation.ProcessArchitecture switch
         {
             Architecture.Arm => "arm",
             Architecture.Arm64 => "arm64-v8a",
