@@ -72,7 +72,6 @@ public class MainActivity : AvaloniaMainActivity<App>
 
     private void CheckAndRequestPermissionsAsync()
     {
-        // Step 1: Handle MANAGE_EXTERNAL_STORAGE for Android 11+ first
         if (OperatingSystem.IsAndroidVersionAtLeast(30))
         {
             if (!global::Android.OS.Environment.IsExternalStorageManager)
@@ -82,7 +81,6 @@ public class MainActivity : AvaloniaMainActivity<App>
             }
         }
 
-        // Step 2: Check regular permissions
         var requiredPermissions = GetRequiredPermissions();
         var permissionsToRequest = new List<string>();
 
@@ -240,42 +238,6 @@ public class MainActivity : AvaloniaMainActivity<App>
         builder.Show();
     }
 
-    private void ShowCriticalPermissionDeniedDialog(List<string> deniedPermissions)
-    {
-        var builder = new AlertDialog.Builder(this);
-        builder.SetTitle("Critical Permissions Required");
-        builder.SetMessage("The following critical permissions are required for the app to function:\n\n" +
-                          string.Join("\n", deniedPermissions.Select(FormatPermissionName)) +
-                          "\n\nThe app cannot continue without these permissions.");
-        builder.SetPositiveButton("Open Settings", (sender, e) =>
-        {
-            OpenAppSettings();
-            // Close app after opening settings
-            Finish();
-        });
-        builder.SetNegativeButton("Exit", (sender, e) =>
-        {
-            Finish();
-        });
-        builder.SetCancelable(false);
-        builder.Show();
-    }
-
-    private void ShowNonCriticalPermissionDialog(List<string> deniedPermissions)
-    {
-        var builder = new AlertDialog.Builder(this);
-        builder.SetTitle("Permissions Denied");
-        builder.SetMessage("The following permissions were denied:\n\n" +
-                          string.Join("\n", deniedPermissions.Select(FormatPermissionName)) +
-                          "\n\nThe app cannot function properly without these permissions and will now close.");
-        builder.SetPositiveButton("Exit", (sender, e) =>
-        {
-            Finish();
-        });
-        builder.SetCancelable(false);
-        builder.Show();
-    }
-
     private void ShowPermissionDeniedDialog(string message)
     {
         var builder = new AlertDialog.Builder(this);
@@ -287,28 +249,6 @@ public class MainActivity : AvaloniaMainActivity<App>
         });
         builder.SetCancelable(false);
         builder.Show();
-    }
-
-    private void OpenAppSettings()
-    {
-        try
-        {
-            var intent = new Intent(Settings.ActionApplicationDetailsSettings);
-            intent.SetData(global::Android.Net.Uri.Parse($"package:{PackageName}"));
-            StartActivity(intent);
-        }
-        catch (Exception)
-        {
-            try
-            {
-                var intent = new Intent(Settings.ActionSettings);
-                StartActivity(intent);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Unable to open settings: {ex.Message}");
-            }
-        }
     }
 
     private string FormatPermissionName(string permission)
