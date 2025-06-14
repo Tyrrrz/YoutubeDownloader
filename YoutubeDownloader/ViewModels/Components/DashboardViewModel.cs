@@ -89,80 +89,87 @@ public partial class DashboardViewModel : ViewModelBase
     private async Task ShowSettingsAsync() =>
         await _dialogManager.ShowDialogAsync(_viewModelManager.CreateSettingsViewModel());
 
-    private async void EnqueueDownload(DownloadViewModel download, int position = 0)
+    private void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
         Downloads.Insert(position, download);
         var progress = _progressMuxer.CreateInput();
 
-        try
-        {
-            var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
-            var tagInjector = new MediaTagInjector();
-
-            using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
-
-            download.Status = DownloadStatus.Started;
-
-            var downloadOption =
-                download.DownloadOption
-                ?? await downloader.GetBestDownloadOptionAsync(
-                    download.Video!.Id,
-                    download.DownloadPreference!,
-                    _settingsService.ShouldInjectLanguageSpecificAudioStreams,
-                    download.CancellationToken
-                );
-
-            await downloader.DownloadVideoAsync(
-                download.FilePath!,
-                download.Video!,
-                downloadOption,
-                _settingsService.ShouldInjectSubtitles,
-                download.Progress.Merge(progress),
-                download.CancellationToken
-            );
-
-            if (_settingsService.ShouldInjectTags)
-            {
-                try
-                {
-                    await tagInjector.InjectTagsAsync(
-                        download.FilePath!,
-                        download.Video!,
-                        download.CancellationToken
-                    );
-                }
-                catch
-                {
-                    // Media tagging is not critical
-                }
-            }
-
-            download.Status = DownloadStatus.Completed;
-        }
-        catch (Exception ex)
+        _ = Task.Run(async () =>
         {
             try
             {
-                // Delete the incompletely downloaded file
-                if (!string.IsNullOrWhiteSpace(download.FilePath))
-                    File.Delete(download.FilePath);
+                var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
+                var tagInjector = new MediaTagInjector();
+
+                using var access = await _downloadSemaphore.AcquireAsync(
+                    download.CancellationToken
+                );
+
+                download.Status = DownloadStatus.Started;
+
+                var downloadOption =
+                    download.DownloadOption
+                    ?? await downloader.GetBestDownloadOptionAsync(
+                        download.Video!.Id,
+                        download.DownloadPreference!,
+                        _settingsService.ShouldInjectLanguageSpecificAudioStreams,
+                        download.CancellationToken
+                    );
+
+                await downloader.DownloadVideoAsync(
+                    download.FilePath!,
+                    download.Video!,
+                    downloadOption,
+                    _settingsService.ShouldInjectSubtitles,
+                    download.Progress.Merge(progress),
+                    download.CancellationToken
+                );
+
+                if (_settingsService.ShouldInjectTags)
+                {
+                    try
+                    {
+                        await tagInjector.InjectTagsAsync(
+                            download.FilePath!,
+                            download.Video!,
+                            download.CancellationToken
+                        );
+                    }
+                    catch
+                    {
+                        // Media tagging is not critical
+                    }
+                }
+
+                download.Status = DownloadStatus.Completed;
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore
+                try
+                {
+                    // Delete the incompletely downloaded file
+                    if (!string.IsNullOrWhiteSpace(download.FilePath))
+                        File.Delete(download.FilePath);
+                }
+                catch
+                {
+                    // Ignore
+                }
+
+                download.Status =
+                    ex is OperationCanceledException
+                        ? DownloadStatus.Canceled
+                        : DownloadStatus.Failed;
+
+                // Short error message for YouTube-related errors, full for others
+                download.ErrorMessage = ex is YoutubeExplodeException ? ex.Message : ex.ToString();
             }
-
-            download.Status =
-                ex is OperationCanceledException ? DownloadStatus.Canceled : DownloadStatus.Failed;
-
-            // Short error message for YouTube-related errors, full for others
-            download.ErrorMessage = ex is YoutubeExplodeException ? ex.Message : ex.ToString();
-        }
-        finally
-        {
-            progress.ReportCompletion();
-            download.Dispose();
-        }
+            finally
+            {
+                progress.ReportCompletion();
+                download.Dispose();
+            }
+        });
     }
 
     private bool CanProcessQuery() => !IsBusy && !string.IsNullOrWhiteSpace(Query);
@@ -180,93 +187,110 @@ public partial class DashboardViewModel : ViewModelBase
 
         try
         {
-            var resolver = new QueryResolver(_settingsService.LastAuthCookies);
-            var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
-
-            // Split queries by newlines
-            var queries = Query.Split(
-                '\n',
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-            );
-
-            // Process individual queries
-            var queryResults = new List<QueryResult>();
-            foreach (var (i, query) in queries.Index())
+            // Move all network operations to background thread
+            await Task.Run(async () =>
             {
-                try
+                var resolver = new QueryResolver(_settingsService.LastAuthCookies);
+                var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
+
+                // Split queries by newlines
+                var queries = Query.Split(
+                    '\n',
+                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+                );
+
+                // Process individual queries
+                var queryResults = new List<QueryResult>();
+                foreach (var (i, query) in queries.Index())
                 {
-                    queryResults.Add(await resolver.ResolveAsync(query));
+                    try
+                    {
+                        queryResults.Add(await resolver.ResolveAsync(query));
+                    }
+                    // If it's not the only query in the list, don't interrupt the process
+                    // and report the error via an async notification instead of a sync dialog.
+                    // https://github.com/Tyrrrz/YoutubeDownloader/issues/563
+                    catch (YoutubeExplodeException ex)
+                        when (ex is VideoUnavailableException or PlaylistUnavailableException
+                            && queries.Length > 1
+                        )
+                    {
+                        // Schedule snackbar notification on UI thread
+                        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                            _snackbarManager.Notify(ex.Message)
+                        );
+                    }
+
+                    progress.Report(Percentage.FromFraction((i + 1.0) / queries.Length));
                 }
-                // If it's not the only query in the list, don't interrupt the process
-                // and report the error via an async notification instead of a sync dialog.
-                // https://github.com/Tyrrrz/YoutubeDownloader/issues/563
-                catch (YoutubeExplodeException ex)
-                    when (ex is VideoUnavailableException or PlaylistUnavailableException
-                        && queries.Length > 1
-                    )
+
+                // Aggregate results
+                var queryResult = QueryResult.Aggregate(queryResults);
+
+                // Switch back to UI thread for UI operations
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
                 {
-                    _snackbarManager.Notify(ex.Message);
-                }
+                    // Single video result
+                    if (queryResult.Videos.Count == 1)
+                    {
+                        var video = queryResult.Videos.Single();
 
-                progress.Report(Percentage.FromFraction((i + 1.0) / queries.Length));
-            }
+                        // Get download options on background thread
+                        var downloadOptions = await Task.Run(async () =>
+                            await downloader.GetDownloadOptionsAsync(
+                                video.Id,
+                                _settingsService.ShouldInjectLanguageSpecificAudioStreams
+                            )
+                        );
 
-            // Aggregate results
-            var queryResult = QueryResult.Aggregate(queryResults);
+                        var download = await _dialogManager.ShowDialogAsync(
+                            _viewModelManager.CreateDownloadSingleSetupViewModel(
+                                video,
+                                downloadOptions
+                            )
+                        );
 
-            // Single video result
-            if (queryResult.Videos.Count == 1)
-            {
-                var video = queryResult.Videos.Single();
+                        if (download is null)
+                            return;
 
-                var downloadOptions = await downloader.GetDownloadOptionsAsync(
-                    video.Id,
-                    _settingsService.ShouldInjectLanguageSpecificAudioStreams
-                );
+                        EnqueueDownload(download);
 
-                var download = await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateDownloadSingleSetupViewModel(video, downloadOptions)
-                );
+                        Query = "";
+                    }
+                    // Multiple videos
+                    else if (queryResult.Videos.Count > 1)
+                    {
+                        var downloads = await _dialogManager.ShowDialogAsync(
+                            _viewModelManager.CreateDownloadMultipleSetupViewModel(
+                                queryResult.Title,
+                                queryResult.Videos,
+                                // Pre-select videos if they come from a single query and not from search
+                                queryResult.Kind
+                                    is not QueryResultKind.Search
+                                        and not QueryResultKind.Aggregate
+                            )
+                        );
 
-                if (download is null)
-                    return;
+                        if (downloads is null)
+                            return;
 
-                EnqueueDownload(download);
+                        foreach (var download in downloads)
+                            EnqueueDownload(download);
 
-                Query = "";
-            }
-            // Multiple videos
-            else if (queryResult.Videos.Count > 1)
-            {
-                var downloads = await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateDownloadMultipleSetupViewModel(
-                        queryResult.Title,
-                        queryResult.Videos,
-                        // Pre-select videos if they come from a single query and not from search
-                        queryResult.Kind
-                            is not QueryResultKind.Search
-                                and not QueryResultKind.Aggregate
-                    )
-                );
-
-                if (downloads is null)
-                    return;
-
-                foreach (var download in downloads)
-                    EnqueueDownload(download);
-
-                Query = "";
-            }
-            // No videos found
-            else
-            {
-                await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateMessageBoxViewModel(
-                        "Nothing found",
-                        "Couldn't find any videos based on the query or URL you provided"
-                    )
-                );
-            }
+                        Query = "";
+                    }
+                    // No videos found
+                    else
+                    {
+                        await _dialogManager.ShowDialogAsync(
+                            _viewModelManager.CreateMessageBoxViewModel(
+                                "Nothing found",
+                                "Couldn't find any videos based on the query or URL you provided"
+                            )
+                        );
+                    }
+                });
+            });
         }
         catch (Exception ex)
         {
