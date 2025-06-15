@@ -50,7 +50,7 @@ public static class AndroidFFmpegInitializer
             // Set execute permissions
             try
             {
-                var process = Process.Start(new System.Diagnostics.ProcessStartInfo
+                var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "chmod",
                     Arguments = $"+x \"{extractedPath}\"",

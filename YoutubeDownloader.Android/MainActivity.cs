@@ -259,7 +259,7 @@ public class MainActivity : AvaloniaMainActivity<App>
             return "• Read External Storage";
         if (permission == Manifest.Permission.WriteExternalStorage)
             return "• Write External Storage";
-        if (permission == "MANAGE_EXTERNAL_STORAGE")
+        if (permission == Manifest.Permission.ManageExternalStorage)
             return "• Manage External Storage";
         
         // Handle version-specific permissions
