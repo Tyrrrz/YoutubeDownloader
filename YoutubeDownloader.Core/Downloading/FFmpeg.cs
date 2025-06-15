@@ -10,8 +10,23 @@ public static class FFmpeg
     private static string CliFileName { get; } =
         OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg";
 
+    private static string? _customFFmpegPath;
+
+    /// <summary>
+    /// Set a custom FFmpeg path (useful for Android apps that extract from assets)
+    /// </summary>
+    public static void SetCustomPath(string? ffmpegPath)
+    {
+        _customFFmpegPath = ffmpegPath;
+    }
+
     public static string? TryGetCliFilePath()
     {
+        // First check if a custom path was set (e.g., from Android app)
+        if (!string.IsNullOrEmpty(_customFFmpegPath) && File.Exists(_customFFmpegPath))
+            return _customFFmpegPath;
+
+        // Fallback to original logic
         static IEnumerable<string> GetProbeDirectoryPaths()
         {
             yield return AppContext.BaseDirectory;
@@ -63,7 +78,8 @@ public static class FFmpeg
     }
 
     public static bool IsBundled() =>
-        File.Exists(Path.Combine(AppContext.BaseDirectory, CliFileName));
+        (!string.IsNullOrEmpty(_customFFmpegPath) && File.Exists(_customFFmpegPath))
+        || File.Exists(Path.Combine(AppContext.BaseDirectory, CliFileName));
 
     public static bool IsAvailable() => !string.IsNullOrWhiteSpace(TryGetCliFilePath());
 }

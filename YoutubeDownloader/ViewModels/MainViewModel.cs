@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -20,7 +21,7 @@ public partial class MainViewModel(
     UpdateService updateService
 ) : ViewModelBase
 {
-    public string Title { get; } = $"{Program.Name} v{Program.VersionString}";
+    public string Title { get; } = $"{ProgramInfo.Name} v{ProgramInfo.VersionString}";
 
     public DashboardViewModel Dashboard { get; } = viewModelManager.CreateDashboardViewModel();
 
@@ -50,7 +51,7 @@ public partial class MainViewModel(
 
     private async Task ShowDevelopmentBuildMessageAsync()
     {
-        if (!Program.IsDevelopmentBuild)
+        if (!ProgramInfo.IsDevelopmentBuild)
             return;
 
         // If debugging, the user is likely a developer
@@ -60,7 +61,7 @@ public partial class MainViewModel(
         var dialog = viewModelManager.CreateMessageBoxViewModel(
             "Unstable build warning",
             $"""
-            You're using a development build of {Program.Name}. These builds are not thoroughly tested and may contain bugs.
+            You're using a development build of {ProgramInfo.Name}. These builds are not thoroughly tested and may contain bugs.
 
             Auto-updates are disabled for development builds.
 
@@ -71,7 +72,7 @@ public partial class MainViewModel(
         );
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
-            ProcessEx.StartShellExecute(Program.ProjectReleasesUrl);
+            ProcessEx.StartShellExecute(ProgramInfo.ProjectReleasesUrl);
     }
 
     private async Task ShowFFmpegMessageAsync()
@@ -82,9 +83,9 @@ public partial class MainViewModel(
         var dialog = viewModelManager.CreateMessageBoxViewModel(
             "FFmpeg is missing",
             $"""
-            FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH.
+            FFmpeg is required for {ProgramInfo.Name} to work. Please download it and make it available in the application directory or on the system PATH.
 
-            Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
+            Alternatively, you can also download a version of {ProgramInfo.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
 
             Click DOWNLOAD to go to the FFmpeg download page.
             """,
@@ -107,7 +108,7 @@ public partial class MainViewModel(
             if (updateVersion is null)
                 return;
 
-            snackbarManager.Notify($"Downloading update to {Program.Name} v{updateVersion}...");
+            snackbarManager.Notify($"Downloading update to {ProgramInfo.Name} v{updateVersion}...");
             await updateService.PrepareUpdateAsync(updateVersion);
 
             snackbarManager.Notify(
