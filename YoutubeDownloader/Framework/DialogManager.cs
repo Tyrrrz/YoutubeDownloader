@@ -65,7 +65,7 @@ public class DialogManager : IDisposable
             }
         );
 
-        return file?.Path.LocalPath;
+        return file?.TryGetLocalPath() ?? file?.Path.ToString();
     }
 
     public async Task<string?> PromptDirectoryPathAsync(string defaultDirPath = "")
@@ -74,19 +74,21 @@ public class DialogManager : IDisposable
             Application.Current?.ApplicationLifetime?.TryGetTopLevel()
             ?? throw new ApplicationException("Could not find the top-level visual element.");
 
-        var startLocation = await topLevel.StorageProvider.TryGetFolderFromPathAsync(
-            defaultDirPath
-        );
-
-        var folderPickResult = await topLevel.StorageProvider.OpenFolderPickerAsync(
+        var result = await topLevel.StorageProvider.OpenFolderPickerAsync(
             new FolderPickerOpenOptions
             {
                 AllowMultiple = false,
-                SuggestedStartLocation = startLocation,
+                SuggestedStartLocation = await topLevel.StorageProvider.TryGetFolderFromPathAsync(
+                    defaultDirPath
+                ),
             }
         );
 
-        return folderPickResult.FirstOrDefault()?.Path.LocalPath;
+        var directory = result.FirstOrDefault();
+        if (directory is null)
+            return null;
+
+        return directory.TryGetLocalPath() ?? directory.Path.ToString();
     }
 
     public void Dispose() => _dialogLock.Dispose();
