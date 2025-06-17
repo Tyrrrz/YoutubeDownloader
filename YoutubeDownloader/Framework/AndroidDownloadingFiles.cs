@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using YoutubeDownloader.Core.Downloading;
@@ -12,6 +13,10 @@ namespace YoutubeDownloader.Framework;
 
 public static class AndroidDownloadingFiles
 {
+    private static readonly Dictionary<string, IStorageFile> _pendingFiles = [];
+    private static readonly Lock _lockObject = new();
+    private static int _fileCounter = 0;
+
     public static async Task<string?> PromptSaveFilePathAndroidAsync(
         TopLevel topLevel,
         SettingsService settingsService,
@@ -60,19 +65,31 @@ public static class AndroidDownloadingFiles
                 return null;
 
             // For Android, we need to handle the file path differently
-            // Return a path that the download system can work with
             if (outputFile.Path.AbsoluteUri.StartsWith("content://"))
             {
-                // For content URIs, we'll need to create a temp file path
-                // The actual saving will be handled later using the IStorageFile
+                // For content URIs, create a unique temp file path and store the IStorageFile reference
                 string tempDir = Path.GetTempPath();
-                string tempFileName = $"{suggestedFileName}";
+
+                // Generate a unique temporary file name to avoid conflicts
+                string uniqueId;
+                lock (_lockObject)
+                {
+                    uniqueId = $"{DateTime.Now:yyyyMMdd_HHmmss}_{++_fileCounter:D4}";
+                }
+
+                string fileExtension = Path.GetExtension(suggestedFileName);
+                string tempFileName =
+                    $"{Path.GetFileNameWithoutExtension(suggestedFileName)}_{uniqueId}_{fileExtension}";
                 string tempPath = Path.Combine(tempDir, tempFileName);
 
-                // Store the IStorageFile reference for later use
-                // You might need to add this as a property or pass it along
-                // This is a simplified approach - you may need to modify your download system
-                // to accept IStorageFile instead of just file paths
+                // Ensure the temp path is unique even if somehow there's still a collision
+                tempPath = GetUniqueFilePath(tempPath);
+
+                // Store the IStorageFile reference using the temp path as key
+                lock (_lockObject)
+                {
+                    _pendingFiles[tempPath] = outputFile;
+                }
 
                 return tempPath;
             }
@@ -86,6 +103,144 @@ public static class AndroidDownloadingFiles
         {
             return null;
         }
+    }
+
+    /// <summary>
+    /// Moves the downloaded file from temporary location to the final Android storage location
+    /// </summary>
+    /// <param name="tempFilePath">The temporary file path where the download was saved</param>
+    /// <returns>True if the move was successful, false otherwise</returns>
+    public static async Task<bool> MoveDownloadedFileAsync(string tempFilePath)
+    {
+        try
+        {
+            IStorageFile? storageFile;
+
+            lock (_lockObject)
+            {
+                if (!_pendingFiles.TryGetValue(tempFilePath, out storageFile))
+                {
+                    // Not an Android content URI file, no need to move
+                    return true;
+                }
+            }
+
+            // Check if the temporary file exists
+            if (!File.Exists(tempFilePath))
+            {
+                lock (_lockObject)
+                {
+                    _pendingFiles.Remove(tempFilePath);
+                }
+                return false;
+            }
+
+            // Read the temporary file
+            byte[] fileData = await File.ReadAllBytesAsync(tempFilePath);
+
+            // Write to the final storage location
+            using (var stream = await storageFile.OpenWriteAsync())
+            {
+                await stream.WriteAsync(fileData);
+                await stream.FlushAsync();
+            }
+
+            // Clean up: delete temporary file and remove from tracking
+            try
+            {
+                File.Delete(tempFilePath);
+            }
+            catch
+            {
+                // Ignore cleanup errors
+            }
+
+            lock (_lockObject)
+            {
+                _pendingFiles.Remove(tempFilePath);
+            }
+
+            return true;
+        }
+        catch (Exception)
+        {
+            // Clean up on error
+            lock (_lockObject)
+            {
+                _pendingFiles.Remove(tempFilePath);
+            }
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Checks if the given file path is a temporary Android file that needs to be moved
+    /// </summary>
+    /// <param name="filePath">The file path to check</param>
+    /// <returns>True if this is a pending Android file</returns>
+    public static bool IsPendingAndroidFile(string filePath)
+    {
+        lock (_lockObject)
+        {
+            return _pendingFiles.ContainsKey(filePath);
+        }
+    }
+
+    /// <summary>
+    /// Cleans up any pending files (call this when download is cancelled or fails)
+    /// </summary>
+    /// <param name="tempFilePath">The temporary file path to clean up</param>
+    public static void CleanupPendingFile(string tempFilePath)
+    {
+        bool wasRemoved;
+        lock (_lockObject)
+        {
+            wasRemoved = _pendingFiles.Remove(tempFilePath);
+        }
+
+        if (wasRemoved)
+        {
+            try
+            {
+                if (File.Exists(tempFilePath))
+                {
+                    File.Delete(tempFilePath);
+                }
+            }
+            catch
+            {
+                // Ignore cleanup errors
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a unique file path by appending a number if the file already exists
+    /// </summary>
+    /// <param name="basePath">The base file path</param>
+    /// <returns>A unique file path</returns>
+    private static string GetUniqueFilePath(string basePath)
+    {
+        if (!File.Exists(basePath))
+            return basePath;
+
+        string directory = Path.GetDirectoryName(basePath) ?? "";
+        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(basePath);
+        string extension = Path.GetExtension(basePath);
+
+        int counter = 1;
+        string uniquePath;
+
+        do
+        {
+            uniquePath = Path.Combine(
+                directory,
+                $"{fileNameWithoutExtension}_{counter}{extension}"
+            );
+            counter++;
+        } while (File.Exists(uniquePath));
+
+        return uniquePath;
     }
 
     private static async Task<IStorageFolder?> GetSuggestedStartLocationAsync(

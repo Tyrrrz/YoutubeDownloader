@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
@@ -20,7 +21,8 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public partial class DownloadMultipleSetupViewModel(
     ViewModelManager viewModelManager,
-    SettingsService settingsService
+    SettingsService settingsService,
+    DialogManager dialogManager
 ) : DialogViewModelBase<IReadOnlyList<DownloadViewModel>>
 {
     [ObservableProperty]
@@ -65,41 +67,119 @@ public partial class DownloadMultipleSetupViewModel(
     [RelayCommand(CanExecute = nameof(CanConfirm))]
     private async Task ConfirmAsync()
     {
-        var dirPath = await DialogManager.PromptDirectoryPathAsync();
-        if (string.IsNullOrWhiteSpace(dirPath))
-            return;
-
         var downloads = new List<DownloadViewModel>();
-        for (var i = 0; i < SelectedVideos.Count; i++)
+
+        if (OperatingSystem.IsAndroid())
         {
-            var video = SelectedVideos[i];
+            TopLevel? topLevel = Application.Current?.ApplicationLifetime?.TryGetTopLevel();
+            if (topLevel == null)
+                return;
 
-            var baseFilePath = Path.Combine(
-                dirPath,
-                FileNameTemplate.Apply(
-                    settingsService.FileNameTemplate,
-                    video,
-                    SelectedContainer,
-                    (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
-                )
-            );
+            var downloader = new VideoDownloader(settingsService.LastAuthCookies);
 
-            if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
-                continue;
+            for (var i = 0; i < SelectedVideos.Count; i++)
+            {
+                var video = SelectedVideos[i];
 
-            var filePath = PathEx.EnsureUniquePath(baseFilePath);
+                try
+                {
+                    var downloadOptions = await downloader.GetDownloadOptionsAsync(
+                        video.Id,
+                        settingsService.ShouldInjectLanguageSpecificAudioStreams
+                    );
 
-            // Download does not start immediately, so lock in the file path to avoid conflicts
-            DirectoryEx.CreateDirectoryForFile(filePath);
-            await File.WriteAllBytesAsync(filePath, []);
+                    var selectedOption = await downloader.GetBestDownloadOptionAsync(
+                        video.Id,
+                        new VideoDownloadPreference(
+                            SelectedContainer,
+                            SelectedVideoQualityPreference
+                        ),
+                        settingsService.ShouldInjectLanguageSpecificAudioStreams
+                    );
 
-            downloads.Add(
-                viewModelManager.CreateDownloadViewModel(
-                    video,
-                    new VideoDownloadPreference(SelectedContainer, SelectedVideoQualityPreference),
-                    filePath
-                )
-            );
+                    if (selectedOption == null)
+                    {
+                        continue;
+                    }
+
+                    var filePath = await AndroidDownloadingFiles.PromptSaveFilePathAndroidAsync(
+                        topLevel,
+                        settingsService,
+                        selectedOption,
+                        video
+                    );
+
+                    if (string.IsNullOrWhiteSpace(filePath))
+                    {
+                        continue;
+                    }
+
+                    downloads.Add(
+                        viewModelManager.CreateDownloadViewModel(video, selectedOption, filePath)
+                    );
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+        }
+        else
+        {
+            var dirPath = await DialogManager.PromptDirectoryPathAsync();
+            if (string.IsNullOrWhiteSpace(dirPath))
+                return;
+
+            for (var i = 0; i < SelectedVideos.Count; i++)
+            {
+                var video = SelectedVideos[i];
+                var videoNumber = (i + 1)
+                    .ToString()
+                    .PadLeft(SelectedVideos.Count.ToString().Length, '0');
+
+                var baseFilePath = Path.Combine(
+                    dirPath,
+                    FileNameTemplate.Apply(
+                        settingsService.FileNameTemplate,
+                        video,
+                        SelectedContainer,
+                        videoNumber
+                    )
+                );
+
+                if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
+                    continue;
+
+                var filePath = PathEx.EnsureUniquePath(baseFilePath);
+
+                DirectoryEx.CreateDirectoryForFile(filePath);
+                await File.WriteAllBytesAsync(filePath, []);
+
+                downloads.Add(
+                    viewModelManager.CreateDownloadViewModel(
+                        video,
+                        new VideoDownloadPreference(
+                            SelectedContainer,
+                            SelectedVideoQualityPreference
+                        ),
+                        filePath
+                    )
+                );
+            }
+        }
+
+        if (downloads.Count == 0)
+        {
+            if (OperatingSystem.IsAndroid())
+            {
+                await dialogManager.ShowDialogAsync(
+                    viewModelManager.CreateMessageBoxViewModel(
+                        "No files selected",
+                        "No files were selected for download. This could be because you cancelled the file selection or no suitable download options were found for the selected quality and format."
+                    )
+                );
+            }
+            return;
         }
 
         settingsService.LastContainer = SelectedContainer;

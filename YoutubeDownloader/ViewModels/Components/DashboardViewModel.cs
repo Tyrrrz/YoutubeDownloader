@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -16,6 +15,7 @@ using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
+using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader.ViewModels.Components;
@@ -145,6 +145,17 @@ public partial class DashboardViewModel : ViewModelBase
                     }
                 }
 
+                if (OperatingSystem.IsAndroid())
+                {
+                    bool moveSuccessful = await AndroidDownloadingFiles.MoveDownloadedFileAsync(
+                        download.FilePath!
+                    );
+                    if (!moveSuccessful)
+                    {
+                        throw new IOException("Failed to move downloaded file to final location");
+                    }
+                }
+
                 await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     download.Status = DownloadStatus.Completed;
@@ -154,9 +165,18 @@ public partial class DashboardViewModel : ViewModelBase
             {
                 try
                 {
-                    // Delete the incompletely downloaded file
+                    // Clean up the incompletely downloaded file
                     if (!string.IsNullOrWhiteSpace(download.FilePath))
-                        File.Delete(download.FilePath);
+                    {
+                        if (OperatingSystem.IsAndroid())
+                        {
+                            AndroidDownloadingFiles.CleanupPendingFile(download.FilePath);
+                        }
+                        else
+                        {
+                            File.Delete(download.FilePath);
+                        }
+                    }
                 }
                 catch
                 {

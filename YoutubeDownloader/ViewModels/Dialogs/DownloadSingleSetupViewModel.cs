@@ -83,7 +83,6 @@ public partial class DownloadSingleSetupViewModel(
         if (string.IsNullOrWhiteSpace(filePath))
             return;
 
-        // Download does not start immediately, so lock in the file path to avoid conflicts
         if (!OperatingSystem.IsAndroid())
         {
             DirectoryEx.CreateDirectoryForFile(filePath);

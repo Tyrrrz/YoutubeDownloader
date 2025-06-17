@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" package="com.tyrrrz.youtubedownloader" android:versionCode="1" android:versionName="1.0.0.0">
+	<uses-permission android:name="android.permission.INTERNET" />
 	<application android:label="YoutubeDownloader" android:icon="@drawable/Icon" />
 </manifest>

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Avalonia;
@@ -17,13 +16,7 @@ public class MainActivity : AvaloniaMainActivity<App>
 {
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
-        return base.CustomizeAppBuilder(builder);
-    }
-
-    protected override void OnCreate(Bundle? savedInstanceState)
-    {
-        base.OnCreate(savedInstanceState);
-
         AndroidFFmpegInitializer.Initialize();
+        return base.CustomizeAppBuilder(builder);
     }
 }
