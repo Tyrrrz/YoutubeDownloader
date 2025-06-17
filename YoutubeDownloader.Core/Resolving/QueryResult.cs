@@ -22,7 +22,7 @@ public record QueryResult(QueryResultKind Kind, string Title, IReadOnlyList<IVid
                 ? results.Single().Title
                 : $"{results.Count} queries",
             // Combine all videos, deduplicate by ID
-            results.SelectMany(q => q.Videos).DistinctBy(v => v.Id).ToArray()
+            [.. results.SelectMany(q => q.Videos).DistinctBy(v => v.Id)]
         );
     }
 }

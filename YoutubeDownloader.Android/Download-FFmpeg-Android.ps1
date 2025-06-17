@@ -13,11 +13,11 @@ $ErrorActionPreference = "Stop"
 
 # Android architecture mappings
 $AndroidArchitectures = @{
-    "arm" = "arm-full.tar.bz2"
+    # "arm" = "arm-full.tar.bz2"
     # "arm-v7n" = "arm-v7n-full.tar.bz2" Remove for now, as these architectures are not commonly used in Android development anymore
     "arm64-v8a" = "arm64-v8a-full.tar.bz2"
     # "armv7-a" = "armv7-a-full.tar.bz2" Remove for now, as these architectures are not commonly used in Android development anymore
-    "i686" = "i686-full.tar.bz2" 
+    # "i686" = "i686-full.tar.bz2" 
     "x86_64" = "x86_64-full.tar.bz2"
 }
 

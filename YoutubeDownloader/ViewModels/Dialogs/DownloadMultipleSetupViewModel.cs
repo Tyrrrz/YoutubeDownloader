@@ -20,7 +20,6 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public partial class DownloadMultipleSetupViewModel(
     ViewModelManager viewModelManager,
-    DialogManager dialogManager,
     SettingsService settingsService
 ) : DialogViewModelBase<IReadOnlyList<DownloadViewModel>>
 {
@@ -44,7 +43,7 @@ public partial class DownloadMultipleSetupViewModel(
 
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         // Without .AsEnumerable(), the below line throws a compile-time error starting with .NET SDK v9.0.200
-        Enum.GetValues<VideoQualityPreference>().AsEnumerable().Reverse().ToArray();
+        [.. Enum.GetValues<VideoQualityPreference>().AsEnumerable().Reverse()];
 
     [RelayCommand]
     private void Initialize()
@@ -66,7 +65,7 @@ public partial class DownloadMultipleSetupViewModel(
     [RelayCommand(CanExecute = nameof(CanConfirm))]
     private async Task ConfirmAsync()
     {
-        var dirPath = await dialogManager.PromptDirectoryPathAsync();
+        var dirPath = await DialogManager.PromptDirectoryPathAsync();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 

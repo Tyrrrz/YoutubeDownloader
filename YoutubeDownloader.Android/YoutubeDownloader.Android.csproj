@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0-android</TargetFramework>
-    <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
-    <Nullable>enable</Nullable>
-    <ApplicationId>com.CompanyName.YoutubeDownloader</ApplicationId>
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-    <AndroidPackageFormat>apk</AndroidPackageFormat>
-    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+	<OutputType>Exe</OutputType>
+	<TargetFramework>net9.0-android</TargetFramework>
+	<SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+	<Nullable>enable</Nullable>
+	<ApplicationId>com.tyrrrz.youtubedownloader</ApplicationId>
+	<ApplicationVersion>1</ApplicationVersion>
+	<ApplicationDisplayVersion>1.0.0.0</ApplicationDisplayVersion>
+	<AndroidPackageFormat>apk</AndroidPackageFormat>
+	<AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -33,10 +33,10 @@
 
 	<!-- Include FFmpeg binaries for different Android architectures -->
 	<ItemGroup>
-		<!-- ARM (32-bit) -->
+		<!-- ARM (32-bit)
 		<AndroidAsset Include="arm\ffmpeg" Condition="Exists('arm\ffmpeg')">
 			<Link>assets\arm\ffmpeg</Link>
-		</AndroidAsset>
+		</AndroidAsset>-->
 
 		<!-- ARM64 (64-bit) -->
 
@@ -50,19 +50,21 @@
 		</AndroidAsset>
 		-->
 		
-		<!-- x86 (32-bit Intel) -->
+		<!-- x86 (32-bit Intel)
 		<AndroidAsset Include="i686\ffmpeg" Condition="Exists('i686\ffmpeg')">
 			<Link>assets\i686\ffmpeg</Link>
-		</AndroidAsset>
+		</AndroidAsset>-->
 
 		<!-- x86_64 (64-bit Intel) -->
-		<AndroidAsset Include="x86_64\ffmpeg" Condition="Exists('x86_64\ffmpeg')">
-			<Link>assets\x86_64\ffmpeg</Link>
-		</AndroidAsset>
+		<AndroidNativeLibrary Include="x86_64\ffmpeg" Condition="Exists('x86_64\ffmpeg')">
+			<Link>libs\x86_64\ffmpeg</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</AndroidNativeLibrary>
 
-		<AndroidAsset Include="arm64-v8a\ffmpeg" Condition="Exists('arm64-v8a\ffmpeg')">
-			<Link>assets\arm64-v8a\ffmpeg</Link>
-		</AndroidAsset>
+		<AndroidNativeLibrary Include="arm64-v8a\ffmpeg" Condition="Exists('arm64-v8a\ffmpeg')">
+			<Link>libs\arm64-v8a\ffmpeg</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</AndroidNativeLibrary>
 
 	</ItemGroup>
 

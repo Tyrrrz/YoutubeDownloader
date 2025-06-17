@@ -47,7 +47,7 @@ public class DialogManager : IDisposable
         }
     }
 
-    public async Task<string?> PromptSaveFilePathAsync(
+    public static async Task<string?> PromptSaveFilePathAsync(
         IReadOnlyList<FilePickerFileType>? fileTypes = null,
         string defaultFilePath = ""
     )
@@ -68,7 +68,7 @@ public class DialogManager : IDisposable
         return file?.Path.LocalPath;
     }
 
-    public async Task<string?> PromptDirectoryPathAsync(string defaultDirPath = "")
+    public static async Task<string?> PromptDirectoryPathAsync(string defaultDirPath = "")
     {
         var topLevel =
             Application.Current?.ApplicationLifetime?.TryGetTopLevel()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -105,7 +106,10 @@ public partial class DashboardViewModel : ViewModelBase
                     download.CancellationToken
                 );
 
-                download.Status = DownloadStatus.Started;
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    download.Status = DownloadStatus.Started;
+                });
 
                 var downloadOption =
                     download.DownloadOption
@@ -141,7 +145,10 @@ public partial class DashboardViewModel : ViewModelBase
                     }
                 }
 
-                download.Status = DownloadStatus.Completed;
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    download.Status = DownloadStatus.Completed;
+                });
             }
             catch (Exception ex)
             {
@@ -156,18 +163,25 @@ public partial class DashboardViewModel : ViewModelBase
                     // Ignore
                 }
 
-                download.Status =
-                    ex is OperationCanceledException
-                        ? DownloadStatus.Canceled
-                        : DownloadStatus.Failed;
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    download.Status =
+                        ex is OperationCanceledException
+                            ? DownloadStatus.Canceled
+                            : DownloadStatus.Failed;
 
-                // Short error message for YouTube-related errors, full for others
-                download.ErrorMessage = ex is YoutubeExplodeException ? ex.Message : ex.ToString();
+                    download.ErrorMessage =
+                        ex is YoutubeExplodeException ? ex.Message : ex.ToString();
+                });
             }
             finally
             {
                 progress.ReportCompletion();
-                download.Dispose();
+
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    download.Dispose();
+                });
             }
         });
     }
