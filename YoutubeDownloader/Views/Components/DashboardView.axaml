@@ -116,6 +116,8 @@
                     HorizontalAlignment="Center"
                     FontSize="18"
                     FontWeight="Light"
+                    IsVisible="{OnPlatform True,
+                                           Android=False}"
                     LineSpacing="8"
                     TextAlignment="Center"
                     TextWrapping="Wrap">
@@ -129,6 +131,23 @@
                     <Run FontWeight="SemiBold" Text="Shift+Enter" />
                     <Run Text="to add multiple items" />
                 </TextBlock>
+
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="18"
+                    FontWeight="Light"
+                    IsVisible="{OnPlatform False,
+                                           Android=True}"
+                    LineSpacing="8"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap">
+                    <Run Text="Copy-paste a" />
+                    <Run FontWeight="SemiBold" Text="URL" />
+                    <Run Text="or enter a" />
+                    <Run FontWeight="SemiBold" Text="search query" />
+                    <Run Text="to start downloading" />
+                </TextBlock>
+
             </StackPanel>
 
             <!--  Downloads  -->

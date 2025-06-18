@@ -23,7 +23,7 @@ public static class FFmpeg
     public static string? TryGetCliFilePath()
     {
         // First check if a custom path was set (e.g., from Android app)
-        if (!string.IsNullOrEmpty(_customFFmpegPath))
+        if (!string.IsNullOrEmpty(_customFFmpegPath) && File.Exists(_customFFmpegPath))
             return _customFFmpegPath;
 
         // Fallback to original logic
