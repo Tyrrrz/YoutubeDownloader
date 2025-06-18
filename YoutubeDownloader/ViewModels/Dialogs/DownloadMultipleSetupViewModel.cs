@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
@@ -21,8 +22,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public partial class DownloadMultipleSetupViewModel(
     ViewModelManager viewModelManager,
-    SettingsService settingsService,
-    DialogManager dialogManager
+    SettingsService settingsService
 ) : DialogViewModelBase<IReadOnlyList<DownloadViewModel>>
 {
     [ObservableProperty]
@@ -45,7 +45,7 @@ public partial class DownloadMultipleSetupViewModel(
 
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         // Without .AsEnumerable(), the below line throws a compile-time error starting with .NET SDK v9.0.200
-        [.. Enum.GetValues<VideoQualityPreference>().AsEnumerable().Reverse()];
+        Enum.GetValues<VideoQualityPreference>().AsEnumerable().Reverse().ToArray();
 
     [RelayCommand]
     private void Initialize()
@@ -71,120 +71,164 @@ public partial class DownloadMultipleSetupViewModel(
 
         if (OperatingSystem.IsAndroid())
         {
-            TopLevel? topLevel = Application.Current?.ApplicationLifetime?.TryGetTopLevel();
-            if (topLevel == null)
-                return;
-
-            var downloader = new VideoDownloader(settingsService.LastAuthCookies);
-
-            for (var i = 0; i < SelectedVideos.Count; i++)
-            {
-                var video = SelectedVideos[i];
-
-                try
-                {
-                    var downloadOptions = await downloader.GetDownloadOptionsAsync(
-                        video.Id,
-                        settingsService.ShouldInjectLanguageSpecificAudioStreams
-                    );
-
-                    var selectedOption = await downloader.GetBestDownloadOptionAsync(
-                        video.Id,
-                        new VideoDownloadPreference(
-                            SelectedContainer,
-                            SelectedVideoQualityPreference
-                        ),
-                        settingsService.ShouldInjectLanguageSpecificAudioStreams
-                    );
-
-                    if (selectedOption == null)
-                    {
-                        continue;
-                    }
-
-                    var filePath = await AndroidDownloadingFiles.PromptSaveFilePathAndroidAsync(
-                        topLevel,
-                        settingsService,
-                        selectedOption,
-                        video
-                    );
-
-                    if (string.IsNullOrWhiteSpace(filePath))
-                    {
-                        continue;
-                    }
-
-                    downloads.Add(
-                        viewModelManager.CreateDownloadViewModel(video, selectedOption, filePath)
-                    );
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
+            await HandleAndroidMultipleDownloadsAsync(downloads);
         }
         else
         {
-            var dirPath = await DialogManager.PromptDirectoryPathAsync();
-            if (string.IsNullOrWhiteSpace(dirPath))
-                return;
-
-            for (var i = 0; i < SelectedVideos.Count; i++)
-            {
-                var video = SelectedVideos[i];
-                var videoNumber = (i + 1)
-                    .ToString()
-                    .PadLeft(SelectedVideos.Count.ToString().Length, '0');
-
-                var baseFilePath = Path.Combine(
-                    dirPath,
-                    FileNameTemplate.Apply(
-                        settingsService.FileNameTemplate,
-                        video,
-                        SelectedContainer,
-                        videoNumber
-                    )
-                );
-
-                if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
-                    continue;
-
-                var filePath = PathEx.EnsureUniquePath(baseFilePath);
-
-                DirectoryEx.CreateDirectoryForFile(filePath);
-                await File.WriteAllBytesAsync(filePath, []);
-
-                downloads.Add(
-                    viewModelManager.CreateDownloadViewModel(
-                        video,
-                        new VideoDownloadPreference(
-                            SelectedContainer,
-                            SelectedVideoQualityPreference
-                        ),
-                        filePath
-                    )
-                );
-            }
+            await HandleDesktopMultipleDownloadsAsync(downloads);
         }
 
-        if (downloads.Count == 0)
+        if (downloads.Count != 0)
         {
-            if (OperatingSystem.IsAndroid())
-            {
-                await dialogManager.ShowDialogAsync(
-                    viewModelManager.CreateMessageBoxViewModel(
-                        "No files selected",
-                        "No files were selected for download. This could be because you cancelled the file selection or no suitable download options were found for the selected quality and format."
-                    )
-                );
-            }
+            settingsService.LastContainer = SelectedContainer;
+            settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
+            Close(downloads);
+        }
+    }
+
+    private async Task HandleDesktopMultipleDownloadsAsync(List<DownloadViewModel> downloads)
+    {
+        var dirPath = await DialogManager.PromptDirectoryPathAsync();
+        if (string.IsNullOrWhiteSpace(dirPath))
             return;
+
+        for (var i = 0; i < SelectedVideos.Count; i++)
+        {
+            var video = SelectedVideos[i];
+
+            var baseFilePath = Path.Combine(
+                dirPath,
+                FileNameTemplate.Apply(
+                    settingsService.FileNameTemplate,
+                    video,
+                    SelectedContainer,
+                    (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
+                )
+            );
+
+            if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
+                continue;
+
+            var filePath = PathEx.EnsureUniquePath(baseFilePath);
+
+            // Download does not start immediately, so lock in the file path to avoid conflicts
+            DirectoryEx.CreateDirectoryForFile(filePath);
+            await File.WriteAllBytesAsync(filePath, []);
+
+            downloads.Add(
+                viewModelManager.CreateDownloadViewModel(
+                    video,
+                    new VideoDownloadPreference(SelectedContainer, SelectedVideoQualityPreference),
+                    filePath
+                )
+            );
+        }
+    }
+
+    private async Task HandleAndroidMultipleDownloadsAsync(List<DownloadViewModel> downloads)
+    {
+        TopLevel? topLevel = Application.Current?.ApplicationLifetime?.TryGetTopLevel();
+        if (topLevel?.StorageProvider == null)
+            return;
+
+        var folderPickerOptions = new FolderPickerOpenOptions
+        {
+            Title = "Select Download Folder",
+            AllowMultiple = false,
+        };
+
+        try
+        {
+            var suggestedStartLocation =
+                await AndroidDownloadingFiles.GetSuggestedStartLocationAsync(
+                    topLevel.StorageProvider
+                );
+            if (suggestedStartLocation != null)
+            {
+                folderPickerOptions.SuggestedStartLocation = suggestedStartLocation;
+            }
+        }
+        catch
+        {
+            // Continue without suggested location if it fails
         }
 
-        settingsService.LastContainer = SelectedContainer;
-        settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
+        var selectedFolders = await topLevel.StorageProvider.OpenFolderPickerAsync(
+            folderPickerOptions
+        );
+        if (selectedFolders.Count == 0)
+            return;
 
-        Close(downloads);
+        var selectedFolder = selectedFolders[0];
+
+        for (var i = 0; i < SelectedVideos.Count; i++)
+        {
+            var video = SelectedVideos[i];
+
+            // Generate the filename using the same template as desktop
+            var fileName = FileNameTemplate.Apply(
+                settingsService.FileNameTemplate,
+                video,
+                SelectedContainer,
+                (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
+            );
+
+            try
+            {
+                // Create the file in the selected folder
+                var outputFile = await selectedFolder.CreateFileAsync(fileName);
+                if (outputFile == null)
+                    continue; // Skip this file if creation failed
+
+                string? filePath = null;
+
+                // Handle the file path based on URI type
+                if (outputFile.Path.AbsoluteUri.StartsWith("content://"))
+                {
+                    // For content URIs, create a unique temp file path
+                    string tempDir = Path.GetTempPath();
+                    string uniqueId = $"{DateTime.Now:yyyyMMdd_HHmmss}_{i + 1:D4}";
+                    string fileExtension = Path.GetExtension(fileName);
+                    string tempFileName =
+                        $"{Path.GetFileNameWithoutExtension(fileName)}_{uniqueId}{fileExtension}";
+                    string tempPath = Path.Combine(tempDir, tempFileName);
+
+                    // Ensure the temp path is unique
+                    tempPath = AndroidDownloadingFiles.GetUniqueFilePath(tempPath);
+
+                    // Use the AndroidDownloadingFiles helper to manage the storage file
+                    filePath = AndroidDownloadingFiles.CreateAndroidFileReference(
+                        tempPath,
+                        outputFile
+                    );
+                }
+                else
+                {
+                    // For regular file URIs, convert to local path
+                    filePath = AndroidDownloadingFiles.GetLocalFilePath(
+                        outputFile.Path.AbsoluteUri
+                    );
+                }
+
+                if (!string.IsNullOrWhiteSpace(filePath))
+                {
+                    downloads.Add(
+                        viewModelManager.CreateDownloadViewModel(
+                            video,
+                            new VideoDownloadPreference(
+                                SelectedContainer,
+                                SelectedVideoQualityPreference
+                            ),
+                            filePath
+                        )
+                    );
+                }
+            }
+            catch (Exception)
+            {
+                // Skip this file if there's an error creating it
+                continue;
+            }
+        }
     }
 }

@@ -219,7 +219,7 @@ public static class AndroidDownloadingFiles
     /// </summary>
     /// <param name="basePath">The base file path</param>
     /// <returns>A unique file path</returns>
-    private static string GetUniqueFilePath(string basePath)
+    public static string GetUniqueFilePath(string basePath)
     {
         if (!File.Exists(basePath))
             return basePath;
@@ -243,7 +243,7 @@ public static class AndroidDownloadingFiles
         return uniquePath;
     }
 
-    private static async Task<IStorageFolder?> GetSuggestedStartLocationAsync(
+    public static async Task<IStorageFolder?> GetSuggestedStartLocationAsync(
         IStorageProvider storageProvider
     )
     {
@@ -303,7 +303,7 @@ public static class AndroidDownloadingFiles
     /// </summary>
     /// <param name="path">The file path or URI</param>
     /// <returns>Local file system path</returns>
-    private static string GetLocalFilePath(string path)
+    public static string GetLocalFilePath(string path)
     {
         // If it's already a local path, return as-is
         if (!path.StartsWith("file://"))
@@ -322,5 +322,20 @@ public static class AndroidDownloadingFiles
             // If URI parsing fails, return the original path
             return path;
         }
+    }
+
+    /// <summary>
+    /// Creates a reference to an Android storage file for multiple file downloads
+    /// </summary>
+    /// <param name="tempFilePath">The temporary file path to use as a key</param>
+    /// <param name="storageFile">The IStorageFile to associate with the temp path</param>
+    /// <returns>The temp file path that can be used for downloading</returns>
+    public static string CreateAndroidFileReference(string tempFilePath, IStorageFile storageFile)
+    {
+        lock (_lockObject)
+        {
+            _pendingFiles[tempFilePath] = storageFile;
+        }
+        return tempFilePath;
     }
 }
