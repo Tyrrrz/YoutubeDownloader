@@ -3,7 +3,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
-    Width="380"
+    MinWidth="300"
+    MaxWidth="600"
     x:DataType="dialogs:SettingsViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
         <TextBlock
@@ -18,98 +19,119 @@
             Padding="0,8"
             BorderBrush="{DynamicResource MaterialDividerBrush}"
             BorderThickness="0,1">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Orientation="Vertical">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8,0" Orientation="Vertical">
                     <!--  Theme  -->
-                    <DockPanel
-                        Margin="16,8"
-                        LastChildFill="False"
+                    <Grid
+                        Margin="8"
+                        ColumnDefinitions="*,Auto"
                         ToolTip.Tip="Preferred user interface theme">
-                        <TextBlock DockPanel.Dock="Left" Text="Theme" />
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Text="Theme" />
                         <ComboBox
-                            Width="150"
-                            DockPanel.Dock="Right"
+                            Grid.Column="1"
+                            MinWidth="120"
                             ItemsSource="{Binding AvailableThemes}"
                             SelectedItem="{Binding Theme}" />
-                    </DockPanel>
+                    </Grid>
 
                     <!--  Auto-updates  -->
-                    <DockPanel
-                        Margin="16,8"
+                    <Grid
+                        Margin="8"
+                        ColumnDefinitions="*,Auto"
                         IsVisible="{OnPlatform False,
-                                               Windows=True}"
-                        LastChildFill="False">
+                                               Windows=True}">
                         <ToolTip.Tip>
-                            <TextBlock>
+                            <TextBlock MaxWidth="250" TextWrapping="Wrap">
                                 <Run Text="Perform automatic updates on every launch." />
                                 <LineBreak />
                                 <Run FontWeight="SemiBold" Text="Warning:" />
-                                <Run Text="it's recommended to leave this option enabled to ensure that the app" />
-                                <LineBreak />
-                                <Run Text=" " />
-                                <Run Text="is compatible with the latest version of YouTube." />
+                                <Run Text="it's recommended to leave this option enabled to ensure that the app is compatible with the latest version of YouTube." />
                             </TextBlock>
                         </ToolTip.Tip>
-                        <TextBlock DockPanel.Dock="Left" Text="Auto-update" />
-                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding IsAutoUpdateEnabled}" />
-                    </DockPanel>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Text="Auto-update" />
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsAutoUpdateEnabled}" />
+                    </Grid>
 
                     <!--  Persist authentication  -->
-                    <DockPanel
+                    <Grid
+                        Margin="8"
+                        ColumnDefinitions="*,Auto"
                         IsVisible="{OnPlatform False,
                                                Windows=True}"
-                        LastChildFill="False"
                         ToolTip.Tip="Save authentication cookies to a file so that they can be persisted between sessions">
                         <TextBlock
-                            Margin="16,8"
-                            DockPanel.Dock="Left"
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
                             Text="Persist authentication" />
-                        <ToggleSwitch
-                            Margin="16,8"
-                            DockPanel.Dock="Right"
-                            IsChecked="{Binding IsAuthPersisted}" />
-                    </DockPanel>
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsAuthPersisted}" />
+                    </Grid>
 
                     <!--  Inject language-specific audio streams  -->
-                    <DockPanel
-                        Margin="16,8"
-                        LastChildFill="False"
+                    <Grid
+                        Margin="8"
+                        ColumnDefinitions="*,Auto"
                         ToolTip.Tip="Inject audio tracks in alternative languages (if available) into downloaded files">
-                        <TextBlock DockPanel.Dock="Left" Text="Inject alternative languages" />
-                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectLanguageSpecificAudioStreams}" />
-                    </DockPanel>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Text="Inject alternative languages"
+                            TextWrapping="Wrap" />
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShouldInjectLanguageSpecificAudioStreams}" />
+                    </Grid>
 
                     <!--  Inject subtitles  -->
-                    <DockPanel
-                        Margin="16,8"
-                        LastChildFill="False"
+                    <Grid
+                        Margin="8"
+                        ColumnDefinitions="*,Auto"
                         ToolTip.Tip="Inject subtitles (if available) into downloaded files">
-                        <TextBlock DockPanel.Dock="Left" Text="Inject subtitles" />
-                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectSubtitles}" />
-                    </DockPanel>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Text="Inject subtitles" />
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShouldInjectSubtitles}" />
+                    </Grid>
 
                     <!--  Inject tags  -->
-                    <DockPanel
-                        Margin="16,8"
-                        LastChildFill="False"
+                    <Grid
+                        Margin="8"
+                        ColumnDefinitions="*,Auto"
                         ToolTip.Tip="Inject media tags (if available) into downloaded files">
-                        <TextBlock DockPanel.Dock="Left" Text="Inject media tags" />
-                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectTags}" />
-                    </DockPanel>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Text="Inject media tags" />
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShouldInjectTags}" />
+                    </Grid>
 
                     <!--  Skip existing files  -->
-                    <DockPanel
-                        Margin="16,8"
-                        LastChildFill="False"
+                    <Grid
+                        Margin="8"
+                        ColumnDefinitions="*,Auto"
                         ToolTip.Tip="When downloading multiple videos, skip those that already have matching files in the output directory">
-                        <TextBlock DockPanel.Dock="Left" Text="Skip existing files" />
-                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldSkipExistingFiles}" />
-                    </DockPanel>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Text="Skip existing files" />
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShouldSkipExistingFiles}" />
+                    </Grid>
 
                     <!--  File name template  -->
-                    <DockPanel Margin="16,8" LastChildFill="False">
+                    <Grid Margin="8" ColumnDefinitions="*,Auto">
                         <ToolTip.Tip>
-                            <TextBlock>
+                            <TextBlock MaxWidth="300" TextWrapping="Wrap">
                                 <Run Text="Template used for generating file names for downloaded videos." />
                                 <LineBreak />
                                 <LineBreak />
@@ -132,33 +154,47 @@
                                 <Run Text="— video author" />
                             </TextBlock>
                         </ToolTip.Tip>
-                        <TextBlock DockPanel.Dock="Left" Text="File name template" />
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Text="File name template" />
                         <TextBox
-                            Width="150"
-                            Height="20"
-                            DockPanel.Dock="Right"
+                            Grid.Column="1"
+                            Height="30"
+                            MinWidth="120"
                             FontSize="13"
                             Text="{Binding FileNameTemplate}"
                             Theme="{DynamicResource CompactTextBox}" />
-                    </DockPanel>
+                    </Grid>
 
                     <!--  Parallel limit  -->
-                    <DockPanel
-                        Margin="16,8"
-                        LastChildFill="False"
+                    <Grid
+                        Margin="8"
+                        ColumnDefinitions="*,Auto,*"
                         ToolTip.Tip="How many downloads can be active at the same time">
-                        <TextBlock DockPanel.Dock="Left" Text="Parallel limit" />
-                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                            <TextBlock Margin="10,0" Text="{Binding ParallelLimit}" />
-                            <Slider
-                                Width="150"
-                                IsSnapToTickEnabled="True"
-                                Maximum="10"
-                                Minimum="1"
-                                TickFrequency="1"
-                                Value="{Binding ParallelLimit}" />
-                        </StackPanel>
-                    </DockPanel>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Text="Parallel limit" />
+                        <TextBlock
+                            Grid.Column="1"
+                            MinWidth="20"
+                            Margin="8,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding ParallelLimit}"
+                            TextAlignment="Center" />
+                        <Slider
+                            Grid.Column="2"
+                            MinWidth="100"
+                            VerticalAlignment="Center"
+                            IsSnapToTickEnabled="True"
+                            Maximum="10"
+                            Minimum="1"
+                            TickFrequency="1"
+                            Value="{Binding ParallelLimit}" />
+                    </Grid>
                 </StackPanel>
             </ScrollViewer>
         </Border>

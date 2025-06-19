@@ -13,3 +13,5 @@ obj/
 
 # Test results
 TestResults/
+/YoutubeDownloader.Android/x86_64
+/YoutubeDownloader.Android/x86_64/ffmpeg

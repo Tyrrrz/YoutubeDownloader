@@ -8,7 +8,8 @@
     xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     x:Name="UserControl"
-    Width="500"
+    MinWidth="300"
+    MaxWidth="700"
     x:DataType="dialogs:DownloadMultipleSetupViewModel"
     Loaded="UserControl_OnLoaded">
     <Grid RowDefinitions="Auto,*,Auto,Auto">
@@ -17,8 +18,10 @@
             Grid.Row="0"
             Margin="16"
             FontSize="19"
+            MaxLines="2"
             Text="{Binding Title}"
-            TextTrimming="CharacterEllipsis">
+            TextTrimming="CharacterEllipsis"
+            TextWrapping="Wrap">
             <TextBlock.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
@@ -45,7 +48,7 @@
                 </ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,0,8,0" ColumnDefinitions="Auto,*,Auto">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
                             <!--  Thumbnail  -->
                             <Image
                                 Grid.Column="0"
@@ -56,32 +59,34 @@
                             <!--  Info  -->
                             <StackPanel
                                 Grid.Column="1"
-                                Margin="8,0,0,0"
+                                Margin="8,0,8,0"
                                 Orientation="Vertical">
                                 <!--  Title  -->
                                 <TextBlock
                                     FontSize="16"
+                                    MaxLines="2"
                                     Text="{Binding Title}"
                                     TextTrimming="CharacterEllipsis"
+                                    TextWrapping="Wrap"
                                     ToolTip.Tip="{Binding Title}" />
 
-                                <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                                <Grid Margin="0,8,0,0" ColumnDefinitions="*,Auto">
                                     <!--  Author  -->
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal">
                                         <materialIcons:MaterialIcon
                                             Width="16"
                                             Height="16"
                                             BorderThickness="1"
                                             Kind="UserOutline" />
                                         <TextBlock
-                                            Margin="3,0,0,0"
+                                            Margin="3,0,8,0"
                                             FontWeight="Light"
                                             Text="{Binding Author.Title}"
                                             TextTrimming="CharacterEllipsis" />
                                     </StackPanel>
 
                                     <!--  Duration  -->
-                                    <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
                                         <materialIcons:MaterialIcon
                                             Width="16"
                                             Height="16"
@@ -93,7 +98,7 @@
                                             Text="{Binding Duration, TargetNullValue=Live}"
                                             TextTrimming="CharacterEllipsis" />
                                     </StackPanel>
-                                </StackPanel>
+                                </Grid>
                             </StackPanel>
 
                             <!--  Checkmark  -->
@@ -101,7 +106,6 @@
                                 Grid.Column="2"
                                 Width="24"
                                 Height="24"
-                                Margin="8,0,0,0"
                                 IsVisible="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
                                 Kind="Check" />
                         </Grid>
@@ -111,13 +115,13 @@
         </Border>
 
         <!--  Preferences  -->
-        <UniformGrid
+        <Grid
             Grid.Row="2"
             Margin="16"
-            Columns="2">
+            ColumnDefinitions="*,8,*">
             <!--  Container preference  -->
             <ComboBox
-                Margin="0,0,8,0"
+                Grid.Column="0"
                 materialAssists:ComboBoxAssist.Label="Container"
                 ItemsSource="{Binding AvailableContainers}"
                 SelectedItem="{Binding SelectedContainer}"
@@ -125,7 +129,7 @@
 
             <!--  Video quality preference  -->
             <ComboBox
-                Margin="8,0,0,0"
+                Grid.Column="2"
                 materialAssists:ComboBoxAssist.Label="Video quality"
                 IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
                 ItemsSource="{Binding AvailableVideoQualityPreferences}"
@@ -137,35 +141,38 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-        </UniformGrid>
+        </Grid>
 
         <!--  Buttons  -->
-        <StackPanel
+        <Grid
             Grid.Row="3"
             Margin="16,8,16,16"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal">
+            ColumnDefinitions="*,*">
             <!--  Download  -->
             <Button
-                Margin="0,0,8,0"
+                Grid.Column="0"
+                Margin="0,0,4,0"
                 Command="{Binding ConfirmCommand}"
                 IsDefault="True"
                 Theme="{DynamicResource MaterialOutlineButton}">
                 <Button.Content>
-                    <TextBlock>
+                    <TextBlock TextAlignment="Center">
                         <Run Text="DOWNLOAD" />
-                        <Run Text="(" /><Run Text="{Binding SelectedVideos.Count, FallbackValue=0, Mode=OneWay}" /><Run Text=")" />
+                        <Run Text="(" />
+                        <Run Text="{Binding SelectedVideos.Count, FallbackValue=0, Mode=OneWay}" />
+                        <Run Text=")" />
                     </TextBlock>
                 </Button.Content>
             </Button>
 
             <!--  Cancel  -->
             <Button
-                Margin="8,0,0,0"
+                Grid.Column="1"
+                Margin="4,0,0,0"
                 Command="{Binding CloseCommand}"
                 Content="CANCEL"
                 IsCancel="True"
                 Theme="{DynamicResource MaterialOutlineButton}" />
-        </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

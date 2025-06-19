@@ -2,7 +2,7 @@
 
 namespace YoutubeDownloader.Utils;
 
-internal static class NativeMethods
+public static class NativeMethods
 {
     public static class Windows
     {
