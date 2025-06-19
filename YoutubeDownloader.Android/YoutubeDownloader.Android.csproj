@@ -31,6 +31,10 @@
 		<DownloadFFmpegAndroid>true</DownloadFFmpegAndroid>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<AndroidLinkTool>r8</AndroidLinkTool>
+	</PropertyGroup>
+
 	<!-- Include FFmpeg binaries for different Android architectures -->
 	<ItemGroup>
 		<!-- ARM (32-bit)

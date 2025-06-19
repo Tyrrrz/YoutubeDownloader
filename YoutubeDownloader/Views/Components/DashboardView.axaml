@@ -188,6 +188,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock
+                                    VerticalAlignment="Center"
                                     FontSize="14"
                                     Foreground="{DynamicResource MaterialBodyBrush}"
                                     Text="{Binding FileName}"
@@ -218,6 +219,7 @@
                                     <TextBlock
                                         x:Name="StatusTextBlock"
                                         Grid.Column="1"
+                                        VerticalAlignment="Center"
                                         Classes.canceled="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
                                         Classes.completed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Completed}}"
                                         Classes.enqueued="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"

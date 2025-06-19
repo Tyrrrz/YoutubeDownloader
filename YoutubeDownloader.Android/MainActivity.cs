@@ -25,10 +25,13 @@ public class MainActivity : AvaloniaMainActivity<App>
 {
     private const int PERMISSION_REQUEST_CODE = 1001;
     private const int MANAGE_STORAGE_REQUEST_CODE = 1002;
+    private PowerManager.WakeLock? _wakeLock;
 
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
+
+        DontSleepDevice();
 
         InitializeTheme();
 
@@ -37,25 +40,45 @@ public class MainActivity : AvaloniaMainActivity<App>
         AndroidFFmpegInitializer.Initialize();
     }
 
+    // running forever to prevent the device from sleeping when downloading.
+    // later need to make better function to acquire and release properly.
+    private void DontSleepDevice()
+    {
+        PowerManager powerManager = (PowerManager)GetSystemService(PowerService)!;
+        _wakeLock = powerManager!.NewWakeLock(WakeLockFlags.Full | WakeLockFlags.AcquireCausesWakeup | WakeLockFlags.OnAfterRelease, "YourApp::NoSleepWakeLock");
+        _wakeLock!.Acquire();
+    }
+
+    // this method we will need later to allow the device to sleep again when download is finished
+    //private void AllowSleepDevice()
+    //{
+    //    if (_wakeLock != null && _wakeLock.IsHeld)
+    //    {
+    //        _wakeLock.Release();
+    //        _wakeLock = null;
+    //    }
+    //}
+
     private static string[] GetRequiredPermissions()
     {
         var permissions = new List<string>
         {
             Manifest.Permission.Internet,
         };
-        if (OperatingSystem.IsAndroidVersionAtLeast(28))
-        {
-            permissions.Add(Manifest.Permission.ForegroundService);
-        }
-        if (OperatingSystem.IsAndroidVersionAtLeast(33))
-        {
-            permissions.Add(Manifest.Permission.PostNotifications);
-        }
-        else if (OperatingSystem.IsAndroidVersionAtLeast(30))
-        {
-            permissions.Add(Manifest.Permission.ReadExternalStorage);
-        }
-        else
+
+        // Commented out - not currently needed
+        // if (OperatingSystem.IsAndroidVersionAtLeast(28))
+        // {
+        //     permissions.Add(Manifest.Permission.ForegroundService);
+        // }
+
+        // Commented out - not currently needed
+        // if (OperatingSystem.IsAndroidVersionAtLeast(33))
+        // {
+        //     permissions.Add(Manifest.Permission.PostNotifications);
+        // }
+        // else 
+        if (!OperatingSystem.IsAndroidVersionAtLeast(29))
         {
             permissions.Add(Manifest.Permission.ReadExternalStorage);
             permissions.Add(Manifest.Permission.WriteExternalStorage);
@@ -212,9 +235,10 @@ public class MainActivity : AvaloniaMainActivity<App>
     {
         return permission == Manifest.Permission.Internet ||
                permission == Manifest.Permission.ReadExternalStorage ||
-               permission == Manifest.Permission.WriteExternalStorage ||
-               permission == Manifest.Permission.ReadMediaVideo ||
-               permission == Manifest.Permission.ReadMediaAudio;
+               permission == Manifest.Permission.WriteExternalStorage;
+        // Commented out - not currently requested
+        // || permission == Manifest.Permission.ReadMediaVideo ||
+        // permission == Manifest.Permission.ReadMediaAudio;
     }
 
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
@@ -279,26 +303,27 @@ public class MainActivity : AvaloniaMainActivity<App>
                 return "• Wake Lock";
         }
 
-        if (OperatingSystem.IsAndroidVersionAtLeast(28))
-        {
-            if (permission == Manifest.Permission.ForegroundService)
-                return "• Foreground Service";
-        }
+        // Commented out - not currently used
+        // if (OperatingSystem.IsAndroidVersionAtLeast(28))
+        // {
+        //     if (permission == Manifest.Permission.ForegroundService)
+        //         return "• Foreground Service";
+        // }
 
-        if (OperatingSystem.IsAndroidVersionAtLeast(30))
-        {
-            if (permission == Manifest.Permission.ManageExternalStorage)
-                return "• Manage External Storage";
-        }
+        // if (OperatingSystem.IsAndroidVersionAtLeast(30))
+        // {
+        //     if (permission == Manifest.Permission.ManageExternalStorage)
+        //         return "• Manage External Storage";
+        // }
 
-        if (OperatingSystem.IsAndroidVersionAtLeast(33))
-        {
-            switch (permission)
-            {
-                case Manifest.Permission.PostNotifications:
-                    return "• Post Notifications";
-            }
-        }
+        // if (OperatingSystem.IsAndroidVersionAtLeast(33))
+        // {
+        //     switch (permission)
+        //     {
+        //         case Manifest.Permission.PostNotifications:
+        //             return "• Post Notifications";
+        //     }
+        // }
 
         return $"• {permission}";
     }
@@ -313,12 +338,14 @@ public class MainActivity : AvaloniaMainActivity<App>
                 // Dark theme active
 #pragma warning disable CA1422 // Validate platform compatibility
                 Window!.SetNavigationBarColor(global::Android.Graphics.Color.Argb(0xFF, 0x42, 0x42, 0x42));
+                Window!.SetStatusBarColor(global::Android.Graphics.Color.Argb(0xFF, 0x42, 0x42, 0x42));
 #pragma warning restore CA1422
                 break;
             case UiMode.NightNo:
                 // Light theme active
 #pragma warning disable CA1422
                 Window!.SetNavigationBarColor(global::Android.Graphics.Color.Argb(255, 255, 255, 255));
+                Window!.SetStatusBarColor(global::Android.Graphics.Color.Argb(255, 255, 255, 255));
 #pragma warning restore CA1422
                 break;
         }
@@ -336,12 +363,14 @@ public class MainActivity : AvaloniaMainActivity<App>
                 // Dark theme active
 #pragma warning disable CA1422 // Validate platform compatibility
                 Window!.SetNavigationBarColor(global::Android.Graphics.Color.Argb(0xFF, 0x42, 0x42, 0x42));
+                Window!.SetStatusBarColor(global::Android.Graphics.Color.Argb(0xFF, 0x42, 0x42, 0x42));
 #pragma warning restore CA1422 // Validate platform compatibility
                 break;
             case UiMode.NightNo:
                 // Light theme active
 #pragma warning disable CA1422 // Validate platform compatibility (total bullshit I ain't spending time on drawing custom background for simple color for future API)
                 Window!.SetNavigationBarColor(global::Android.Graphics.Color.Argb(255, 255, 255, 255));
+                Window!.SetStatusBarColor(global::Android.Graphics.Color.Argb(255, 255, 255, 255));
 #pragma warning restore CA1422 // Validate platform compatibility
                 break;
         }
