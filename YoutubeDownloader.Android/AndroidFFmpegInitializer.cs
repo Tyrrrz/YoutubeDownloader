@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Java.Lang;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.ViewModels.Dialogs;
 
@@ -22,11 +23,12 @@ public static class AndroidFFmpegInitializer
     {
         try
         {
+            JavaSystem.LoadLibrary("ffmpeg");
             var appInfo = global::Android.App.Application.Context.ApplicationInfo;
-            var path = Path.Combine(appInfo!.NativeLibraryDir!, "ffmpeg");
+            var path = Path.Combine(appInfo!.NativeLibraryDir!, "libffmpeg.so");
             return path;
         }
-        catch (Exception ex)
+        catch (System.Exception ex)
         {
             DialogManager dialogManager = new();
             MessageBoxViewModel messageBoxViewModel = new()

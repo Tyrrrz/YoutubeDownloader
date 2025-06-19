@@ -56,13 +56,13 @@
 		</AndroidAsset>-->
 
 		<!-- x86_64 (64-bit Intel) -->
-		<AndroidNativeLibrary Include="x86_64\ffmpeg" Condition="Exists('x86_64\ffmpeg')">
-			<Link>libs\x86_64\ffmpeg</Link>
+		<AndroidNativeLibrary Include="x86_64\libffmpeg.so" Condition="Exists('x86_64\libffmpeg.so')">
+			<Link>libs\x86_64\libffmpeg.so</Link>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</AndroidNativeLibrary>
 
-		<AndroidNativeLibrary Include="arm64-v8a\ffmpeg" Condition="Exists('arm64-v8a\ffmpeg')">
-			<Link>libs\arm64-v8a\ffmpeg</Link>
+		<AndroidNativeLibrary Include="arm64-v8a\libffmpeg.so" Condition="Exists('arm64-v8a\libffmpeg.so')">
+			<Link>libs\arm64-v8a\libffmpeg.so</Link>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</AndroidNativeLibrary>
 

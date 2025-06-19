@@ -100,11 +100,11 @@ function Download-And-Extract-FFmpeg {
                 New-Item -ItemType Directory -Path $finalOutputDir -Force | Out-Null
             }
             
-            # Copy ffmpeg binary to final location
-            $finalFFmpegPath = Join-Path $finalOutputDir "ffmpeg"
+            # Copy ffmpeg binary to final location with new name
+            $finalFFmpegPath = Join-Path $finalOutputDir "libffmpeg.so"
             Copy-Item $ffmpegPath $finalFFmpegPath -Force
             
-            Write-Host "FFmpeg for $ArchName extracted to: $finalFFmpegPath"
+            Write-Host "FFmpeg for $ArchName extracted and renamed to: $finalFFmpegPath"
         } else {
             Write-Warning "Could not find ffmpeg binary in extracted archive for $ArchName"
         }
