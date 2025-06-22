@@ -22,6 +22,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public partial class DownloadMultipleSetupViewModel(
     ViewModelManager viewModelManager,
+    DialogManager dialogManager,
     SettingsService settingsService
 ) : DialogViewModelBase<IReadOnlyList<DownloadViewModel>>
 {
@@ -88,7 +89,7 @@ public partial class DownloadMultipleSetupViewModel(
 
     private async Task HandleDesktopMultipleDownloadsAsync(List<DownloadViewModel> downloads)
     {
-        var dirPath = await DialogManager.PromptDirectoryPathAsync();
+        var dirPath = await dialogManager.PromptDirectoryPathAsync();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 

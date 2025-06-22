@@ -1,8 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Java.Lang;
+using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.ViewModels.Dialogs;
 
@@ -10,12 +10,12 @@ namespace YoutubeDownloader.Android;
 
 public static class AndroidFFmpegInitializer
 {
-    public static async void Initialize()
+    public static async Task InitializeAsync()
     {
         var extractedPath = await ExtractFFmpegFromAssetsAsync();
         if (!string.IsNullOrEmpty(extractedPath))
         {
-            Core.Downloading.FFmpeg.SetCustomPath(extractedPath);
+            FFmpeg.SetCustomPath(extractedPath);
         }
     }
 

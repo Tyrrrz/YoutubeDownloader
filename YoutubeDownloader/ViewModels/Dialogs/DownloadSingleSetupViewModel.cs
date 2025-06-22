@@ -20,6 +20,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public partial class DownloadSingleSetupViewModel(
     ViewModelManager viewModelManager,
+    DialogManager dialogManager,
     SettingsService settingsService
 ) : DialogViewModelBase<DownloadViewModel>
 {
@@ -69,7 +70,7 @@ public partial class DownloadSingleSetupViewModel(
         }
         else
         {
-            filePath = await DialogManager.PromptSaveFilePathAsync(
+            filePath = await dialogManager.PromptSaveFilePathAsync(
                 [
                     new FilePickerFileType($"{container.Name} file")
                     {

@@ -62,7 +62,7 @@ public partial record VideoDownloadOption
                         : [];
 
                     // If there are language-specific streams, include them all
-                    if (languageSpecificAudioStreamInfos.Length != 0)
+                    if (languageSpecificAudioStreamInfos.Any())
                     {
                         yield return new VideoDownloadOption(
                             videoStreamInfo.Container,

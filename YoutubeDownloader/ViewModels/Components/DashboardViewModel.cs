@@ -15,7 +15,6 @@ using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
-using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader.ViewModels.Components;
@@ -30,6 +29,8 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly DisposableCollector _eventRoot = new();
     private readonly ResizableSemaphore _downloadSemaphore = new();
     private readonly AutoResetProgressMuxer _progressMuxer;
+
+    public static event EventHandler<bool>? DownloadingStatusChanged;
 
     public DashboardViewModel(
         ViewModelManager viewModelManager,
@@ -78,6 +79,26 @@ public partial class DashboardViewModel : ViewModelBase
 
     public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
+    public static bool IsDownloading { get; private set; }
+
+    private static void UpdateDownloadingStatus(bool isDownloading)
+    {
+        if (IsDownloading != isDownloading)
+        {
+            IsDownloading = isDownloading;
+            DownloadingStatusChanged?.Invoke(null, isDownloading);
+        }
+    }
+
+    private void CheckAndUpdateDownloadingStatus()
+    {
+        var hasActiveDownloads = Downloads.Any(d =>
+            d.Status == DownloadStatus.Enqueued || d.Status == DownloadStatus.Started
+        );
+
+        UpdateDownloadingStatus(hasActiveDownloads);
+    }
+
     private bool CanShowAuthSetup() => !IsBusy;
 
     [RelayCommand(CanExecute = nameof(CanShowAuthSetup))]
@@ -93,6 +114,8 @@ public partial class DashboardViewModel : ViewModelBase
     private void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
         Downloads.Insert(position, download);
+        CheckAndUpdateDownloadingStatus(); // Update status when download is enqueued
+
         var progress = _progressMuxer.CreateInput();
 
         _ = Task.Run(async () =>
@@ -109,6 +132,7 @@ public partial class DashboardViewModel : ViewModelBase
                 await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     download.Status = DownloadStatus.Started;
+                    CheckAndUpdateDownloadingStatus();
                 });
 
                 var downloadOption =
@@ -159,6 +183,7 @@ public partial class DashboardViewModel : ViewModelBase
                 await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     download.Status = DownloadStatus.Completed;
+                    CheckAndUpdateDownloadingStatus(); // Update when completed
                 });
             }
             catch (Exception ex)
@@ -192,6 +217,8 @@ public partial class DashboardViewModel : ViewModelBase
 
                     download.ErrorMessage =
                         ex is YoutubeExplodeException ? ex.Message : ex.ToString();
+
+                    CheckAndUpdateDownloadingStatus();
                 });
             }
             finally
@@ -350,6 +377,7 @@ public partial class DashboardViewModel : ViewModelBase
         Downloads.Remove(download);
         download.CancelCommand.Execute(null);
         download.Dispose();
+        CheckAndUpdateDownloadingStatus();
     }
 
     [RelayCommand]

@@ -12,7 +12,7 @@ public class MediaTagInjector
 {
     private readonly MusicBrainzClient _musicBrainz = new();
 
-    private static void InjectMiscMetadata(MediaFile mediaFile, IVideo video)
+    private void InjectMiscMetadata(MediaFile mediaFile, IVideo video)
     {
         var description = (video as Video)?.Description;
         if (!string.IsNullOrWhiteSpace(description))
@@ -60,7 +60,7 @@ public class MediaTagInjector
             mediaFile.SetAlbum(recording.Album);
     }
 
-    private static async Task InjectThumbnailAsync(
+    private async Task InjectThumbnailAsync(
         MediaFile mediaFile,
         IVideo video,
         CancellationToken cancellationToken = default
