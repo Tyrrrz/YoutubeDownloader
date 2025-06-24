@@ -46,7 +46,7 @@ if (Test-Path $OutputPath) {
 Write-Host "Downloading FFmpeg for $Platform..."
 $http = New-Object System.Net.WebClient
 try {
-    $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/7.0/ffmpeg-$Platform.zip", "$OutputPath.zip")
+    $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.1/ffmpeg-$Platform.zip", "$OutputPath.zip")
 } finally {
     $http.Dispose()
 }

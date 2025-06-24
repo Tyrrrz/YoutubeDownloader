@@ -60,6 +60,8 @@ jobs:
           - win-x86
           - win-x64
           - linux-arm64
+          # Linux x86 is not supported by .NET
+          # - linux-x86
           - linux-x64
           - osx-arm64
           - osx-x64
@@ -71,10 +73,6 @@ jobs:
             artifact-name-base: YoutubeDownloader
           - bundle-ffmpeg: false
             artifact-name-base: YoutubeDownloader.Bare
-        exclude:
-          # FFmpeg builds for these platforms are not easily available
-          - bundle-ffmpeg: true
-            rid: linux-arm64
 
     runs-on: ${{ startsWith(matrix.rid, 'win-') && 'windows-latest' || startsWith(matrix.rid, 'osx-') && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: 10
@@ -145,6 +143,8 @@ jobs:
           - win-x86
           - win-x64
           - linux-arm64
+          # Linux x86 is not supported by .NET
+          # - linux-x86
           - linux-x64
           - osx-arm64
           - osx-x64
@@ -156,10 +156,6 @@ jobs:
             artifact-name-base: YoutubeDownloader
           - bundle-ffmpeg: false
             artifact-name-base: YoutubeDownloader.Bare
-        exclude:
-          # FFmpeg builds for these platforms are not easily available
-          - bundle-ffmpeg: true
-            rid: linux-arm64
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
