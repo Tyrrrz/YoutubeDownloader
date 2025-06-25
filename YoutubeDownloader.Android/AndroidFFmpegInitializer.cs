@@ -23,6 +23,7 @@ public static class AndroidFFmpegInitializer
     {
         try
         {
+            await Task.Delay(0);
             JavaSystem.LoadLibrary("ffmpeg");
             var appInfo = global::Android.App.Application.Context.ApplicationInfo;
             var path = Path.Combine(appInfo!.NativeLibraryDir!, "libffmpeg.so");
@@ -30,14 +31,6 @@ public static class AndroidFFmpegInitializer
         }
         catch (System.Exception ex)
         {
-            DialogManager dialogManager = new();
-            MessageBoxViewModel messageBoxViewModel = new()
-            {
-                Title = "FFmpeg Extraction Error",
-                Message = $"Failed to extract FFmpeg from assets. Please ensure the file exists in the assets directory.\n{ex.Message}",
-                DefaultButtonText = "OK"
-            };
-            await dialogManager.ShowDialogAsync(messageBoxViewModel);
             Debug.WriteLine($"FFmpeg extraction failed: {ex.Message}");
             return null;
         }
