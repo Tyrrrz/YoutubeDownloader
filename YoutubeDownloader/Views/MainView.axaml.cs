@@ -4,7 +4,7 @@ using YoutubeDownloader.ViewModels;
 
 namespace YoutubeDownloader.Views;
 
-public partial class MainView : Window<MainViewModel>
+public partial class MainView : ViewBase<MainViewModel>
 {
     public MainView() => InitializeComponent();
 
