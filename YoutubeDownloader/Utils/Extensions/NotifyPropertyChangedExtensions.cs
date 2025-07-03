@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace YoutubeDownloader.Utils.Extensions;
 
-internal static class NotifyPropertyChangedExtensions
+public static class NotifyPropertyChangedExtensions
 {
     public static IDisposable WatchProperty<TOwner, TProperty>(
         this TOwner owner,

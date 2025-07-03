@@ -106,7 +106,8 @@ public partial class DownloadViewModel : ViewModelBase
         }
     }
 
-    private bool CanOpenFile() => Status == DownloadStatus.Completed;
+    private bool CanOpenFile() =>
+        Status == DownloadStatus.Completed && !OperatingSystem.IsAndroid();
 
     [RelayCommand(CanExecute = nameof(CanOpenFile))]
     private async Task OpenFileAsync()

@@ -11,7 +11,7 @@ namespace YoutubeDownloader.Framework;
 
 public partial class ViewManager
 {
-    private Control? TryCreateView(ViewModelBase viewModel) =>
+    private static Control? TryCreateView(ViewModelBase viewModel) =>
         viewModel switch
         {
             MainViewModel => new MainView(),

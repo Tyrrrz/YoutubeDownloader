@@ -149,6 +149,6 @@ public partial record VideoDownloadOption
         options.AddRange(GetVideoAndAudioOptions());
         options.AddRange(GetAudioOnlyOptions());
 
-        return options.ToArray();
+        return [.. options];
     }
 }

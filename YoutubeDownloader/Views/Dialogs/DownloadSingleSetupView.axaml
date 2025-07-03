@@ -8,20 +8,23 @@
     xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     x:Name="UserControl"
-    Width="500"
+    MinWidth="300"
+    MaxWidth="600"
     x:DataType="dialogs:DownloadSingleSetupViewModel"
     Loaded="UserControl_OnLoaded">
     <Grid RowDefinitions="Auto,*,Auto,Auto">
         <!--  Info  -->
         <StackPanel
             Grid.Row="0"
-            Margin="16"
+            Margin="16,16,16,8"
             Orientation="Vertical">
             <!--  Title  -->
             <TextBlock
                 FontSize="19"
+                MaxLines="2"
                 Text="{Binding Video.Title}"
                 TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap"
                 ToolTip.Tip="{Binding Video.Title}">
                 <TextBlock.ContextMenu>
                     <ContextMenu>
@@ -30,23 +33,23 @@
                 </TextBlock.ContextMenu>
             </TextBlock>
 
-            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+            <Grid Margin="0,8,0,0" ColumnDefinitions="*,Auto">
                 <!--  Author  -->
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <materialIcons:MaterialIcon
                         Width="16"
                         Height="16"
                         BorderThickness="1"
                         Kind="UserOutline" />
                     <TextBlock
-                        Margin="3,0,0,0"
+                        Margin="3,0,8,0"
                         FontWeight="Light"
                         Text="{Binding Video.Author.Title}"
                         TextTrimming="CharacterEllipsis" />
                 </StackPanel>
 
                 <!--  Duration  -->
-                <StackPanel Margin="16,0,0,0" Orientation="Horizontal">
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <materialIcons:MaterialIcon
                         Width="16"
                         Height="16"
@@ -58,23 +61,27 @@
                         Text="{Binding Video.Duration, TargetNullValue=Live}"
                         TextTrimming="CharacterEllipsis" />
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </StackPanel>
 
         <!--  Thumbnail  -->
         <Border
             Grid.Row="1"
+            Margin="8,0"
             BorderBrush="{DynamicResource MaterialDividerBrush}"
             BorderThickness="0,1">
-            <Image asyncImageLoader:ImageLoader.Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlStringConverter.Instance}}" />
+            <Image
+                MaxHeight="300"
+                asyncImageLoader:ImageLoader.Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlStringConverter.Instance}}"
+                Stretch="Uniform" />
         </Border>
 
         <!--  Download options  -->
         <ComboBox
             Grid.Row="2"
             Margin="16"
+            HorizontalAlignment="Stretch"
             materialAssists:ComboBoxAssist.Label="Format"
-            DockPanel.Dock="Left"
             ItemsSource="{Binding AvailableDownloadOptions}"
             SelectedItem="{Binding SelectedDownloadOption}"
             Theme="{DynamicResource MaterialFilledComboBox}">
@@ -105,14 +112,14 @@
         </ComboBox>
 
         <!--  Buttons  -->
-        <StackPanel
+        <Grid
             Grid.Row="3"
             Margin="16,8,16,16"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal">
+            ColumnDefinitions="*,*">
             <!--  Download  -->
             <Button
-                Margin="0,0,8,0"
+                Grid.Column="0"
+                Margin="0,0,4,0"
                 Command="{Binding ConfirmCommand}"
                 Content="DOWNLOAD"
                 IsDefault="True"
@@ -120,11 +127,12 @@
 
             <!--  Cancel  -->
             <Button
-                Margin="8,0,0,0"
+                Grid.Column="1"
+                Margin="4,0,0,0"
                 Command="{Binding CloseCommand}"
                 Content="CANCEL"
                 IsCancel="True"
                 Theme="{DynamicResource MaterialOutlineButton}" />
-        </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
