@@ -159,6 +159,18 @@
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
                     </DockPanel>
+
+                    <!--  Proxy  -->
+                    <StackPanel
+                        Margin="16,8"
+                        ToolTip.Tip="Enable proxy server">
+                        <!--<TextBlock DockPanel.Dock="Left" Text="Parallel limit" />-->
+                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding ShouldUseProxy}">Enable proxy</CheckBox>
+                            <TextBox IsEnabled="{Binding ShouldUseProxy}" Watermark="Proxy url (e.g. http://127.0.0.1:8118)" Margin="10,0" Text="{Binding ProxyUrl}" />
+                        </StackPanel>
+                    </StackPanel>
+
                 </StackPanel>
             </ScrollViewer>
         </Border>

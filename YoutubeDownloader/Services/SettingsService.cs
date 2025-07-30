@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using Cogwheel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Core.Utils;
 using YoutubeDownloader.Framework;
 using Container = YoutubeExplode.Videos.Streams.Container;
 
@@ -42,6 +43,22 @@ public partial class SettingsService()
 
     [ObservableProperty]
     public partial bool ShouldSkipExistingFiles { get; set; }
+
+    [ObservableProperty]
+    public partial bool ShouldUseProxy { get; set; }
+
+    partial void OnShouldUseProxyChanged(bool value)
+    {
+        Http.ShouldUseProxy = value;
+    }
+
+    [ObservableProperty]
+    public partial string ProxyUrl { get; set; } = string.Empty;
+
+    partial void OnProxyUrlChanged(string value)
+    {
+        Http.ProxyUrl = value;
+    }
 
     [ObservableProperty]
     public partial string FileNameTemplate { get; set; } = "$title";

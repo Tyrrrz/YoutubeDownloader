@@ -76,6 +76,18 @@ public class SettingsViewModel : DialogViewModelBase
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
 
+    public bool ShouldUseProxy
+    {
+        get => _settingsService.ShouldUseProxy;
+        set => _settingsService.ShouldUseProxy = value;
+    }
+
+    public string ProxyUrl
+    {
+        get => _settingsService.ProxyUrl;
+        set => _settingsService.ProxyUrl = value;
+    }
+
     protected override void Dispose(bool disposing)
     {
         if (disposing)
