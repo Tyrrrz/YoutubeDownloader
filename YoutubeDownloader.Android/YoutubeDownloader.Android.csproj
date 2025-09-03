@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	<OutputType>Exe</OutputType>
+	<TargetFramework>net9.0-android</TargetFramework>
+	<SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+	<ApplicationId>me.tyrrrz.youtubedownloader</ApplicationId>
+	<ApplicationVersion>1</ApplicationVersion>
+	<ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+	<AndroidPackageFormat>apk</AndroidPackageFormat>
+	<AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+  </PropertyGroup>
+
+	<ItemGroup>
+    <AndroidResource Include="Icon.png">
+      <Link>Resources\drawable\Icon.png</Link>
+    </AndroidResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Android" Version="11.3.1" />
+    <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
+    <ProjectReference Include="..\YoutubeDownloader\YoutubeDownloader.csproj" />
+  </ItemGroup>
+
+	<PropertyGroup>
+		<DownloadFFmpegAndroid>true</DownloadFFmpegAndroid>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<AndroidLinkTool>r8</AndroidLinkTool>
+	</PropertyGroup>
+
+	<!-- Include FFmpeg binaries for different Android architectures -->
+	<ItemGroup>
+		<!-- ARM (32-bit)
+		<AndroidAsset Include="arm\ffmpeg" Condition="Exists('arm\ffmpeg')">
+			<Link>assets\arm\ffmpeg</Link>
+		</AndroidAsset>-->
+
+		<!-- ARM64 (64-bit) -->
+
+		<!-- Remove for now, as these architectures are not commonly used in Android development anymore
+		<AndroidAsset Include="armv7-a\ffmpeg" Condition="Exists('armv7-a\ffmpeg')">
+			<Link>assets\armv7-a\ffmpeg</Link>
+		</AndroidAsset>
+
+		<AndroidAsset Include="arm-v7n\ffmpeg" Condition="Exists('arm-v7n\ffmpeg')">
+			<Link>assets\arm-v7n\ffmpeg</Link>
+		</AndroidAsset>
+		-->
+		
+		<!-- x86 (32-bit Intel)
+		<AndroidAsset Include="i686\ffmpeg" Condition="Exists('i686\ffmpeg')">
+			<Link>assets\i686\ffmpeg</Link>
+		</AndroidAsset>-->
+
+		<!-- x86_64 (64-bit Intel) -->
+		<AndroidNativeLibrary Include="x86_64\libffmpeg.so" Condition="Exists('x86_64\libffmpeg.so')">
+			<Link>libs\x86_64\libffmpeg.so</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</AndroidNativeLibrary>
+
+		<AndroidNativeLibrary Include="arm64-v8a\libffmpeg.so" Condition="Exists('arm64-v8a\libffmpeg.so')">
+			<Link>libs\arm64-v8a\libffmpeg.so</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</AndroidNativeLibrary>
+
+	</ItemGroup>
+
+	<!-- Target to download FFmpeg binaries for Android -->
+	<Target Name="DownloadFFmpegAndroid" BeforeTargets="BeforeBuild" Condition="$(DownloadFFmpegAndroid) AND !Exists('arm64-v8a\ffmpeg') AND !Exists('arm\ffmpeg')">
+
+		<!-- Download all architectures by default for maximum compatibility -->
+		<Exec Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Download-FFmpeg-Android.ps1 -DownloadAll -OutputPath $(ProjectDir)" LogStandardErrorAsError="true" ContinueOnError="false" />
+	</Target>
+	
+</Project>

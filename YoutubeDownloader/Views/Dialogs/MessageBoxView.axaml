@@ -4,40 +4,51 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    Width="500"
+    Width="320"
+    MinWidth="280"
+    MinHeight="120"
+    MaxWidth="350"
+    MaxHeight="250"
     x:DataType="dialogs:MessageBoxViewModel">
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid Margin="0" RowDefinitions="Auto,*,Auto">
         <!--  Title  -->
         <TextBlock
             Grid.Row="0"
-            Margin="16"
-            FontSize="19"
-            FontWeight="Light"
+            Margin="16,14,16,8"
+            FontSize="15"
+            FontWeight="SemiBold"
             Text="{Binding Title}"
             TextTrimming="CharacterEllipsis"
+            TextWrapping="NoWrap"
             ToolTip.Tip="{Binding Title}" />
 
         <!--  Message  -->
-        <Border
+        <ScrollViewer
             Grid.Row="1"
-            Padding="0,8"
-            BorderBrush="{DynamicResource MaterialDividerBrush}"
-            BorderThickness="0,1">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <TextBlock
-                    Margin="16,8"
-                    Text="{Binding Message}"
-                    TextWrapping="Wrap" />
-            </ScrollViewer>
-        </Border>
+            Margin="16,0,16,8"
+            Padding="0"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <TextBlock
+                FontSize="13"
+                LineHeight="18"
+                Text="{Binding Message}"
+                TextWrapping="Wrap" />
+        </ScrollViewer>
 
-        <UniformGrid
+        <!--  Buttons  -->
+        <StackPanel
             Grid.Row="2"
-            Margin="16"
+            Margin="24,16,24,20"
             HorizontalAlignment="Right"
-            Columns="{Binding ButtonsCount}">
-            <!--  OK  -->
+            Orientation="Horizontal"
+            Spacing="12">
+
+            <!--  OK Button  -->
             <Button
+                Height="36"
+                MinWidth="80"
+                Padding="20,0"
                 Command="{Binding CloseCommand}"
                 Content="{Binding DefaultButtonText}"
                 IsDefault="True"
@@ -48,15 +59,16 @@
                 </Button.CommandParameter>
             </Button>
 
-            <!--  Cancel  -->
+            <!--  Cancel Button  -->
             <Button
-                Margin="16,0,0,0"
-                HorizontalAlignment="Stretch"
+                Height="36"
+                MinWidth="80"
+                Padding="20,0"
                 Command="{Binding CloseCommand}"
                 Content="{Binding CancelButtonText}"
                 IsCancel="True"
                 IsVisible="{Binding IsCancelButtonVisible}"
                 Theme="{DynamicResource MaterialOutlineButton}" />
-        </UniformGrid>
+        </StackPanel>
     </Grid>
 </UserControl>
