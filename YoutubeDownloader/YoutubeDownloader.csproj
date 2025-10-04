@@ -12,6 +12,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <DownloadFFmpeg>true</DownloadFFmpeg>
+    <PublishMacOSBundle>false</PublishMacOSBundle>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="..\favicon.ico" Link="favicon.ico" />
@@ -66,7 +67,7 @@
   </ItemGroup>
   <Target
     Name="DownloadFFmpeg"
-    BeforeTargets="Restore;PreBuildEvent"
+    BeforeTargets="PreBuildEvent"
     Condition="$(DownloadFFmpeg) AND !Exists('ffmpeg.exe') AND !Exists('ffmpeg')"
   >
     <Exec
@@ -79,6 +80,15 @@
       LogStandardErrorAsError="true"
       Condition="'$(RuntimeIdentifier)' == ''"
     />
+    <!-- Update FFmpeg references so that the files get copied to the output within the same build sequence -->
+    <ItemGroup>
+      <None
+        Include="ffmpeg.exe"
+        CopyToOutputDirectory="PreserveNewest"
+        Condition="Exists('ffmpeg.exe')"
+      />
+      <None Include="ffmpeg" CopyToOutputDirectory="PreserveNewest" Condition="Exists('ffmpeg')" />
+    </ItemGroup>
   </Target>
   <Target Name="PublishMacOSBundle" AfterTargets="Publish" Condition="$(PublishMacOSBundle)">
     <Exec
