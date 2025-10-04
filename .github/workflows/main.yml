@@ -174,12 +174,12 @@ jobs:
       - name: Set permissions
         if: ${{ !startsWith(matrix.rid, 'win-') }}
         run: |
-          [ -f YoutubeDownloader/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader
-          [ -f YoutubeDownloader/ffmpeg ] && chmod +x YoutubeDownloader/ffmpeg
+          [ -f YoutubeDownloader/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader || true
+          [ -f YoutubeDownloader/ffmpeg ] && chmod +x YoutubeDownloader/ffmpeg || true
           
           # macOS bundle
-          [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader
-          [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg
+          [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader || true
+          [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg || true
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
