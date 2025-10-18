@@ -19,11 +19,12 @@ public partial class SettingsService()
         SerializerContext.Default
     )
 {
-    [ObservableProperty]
-    public partial bool IsUkraineSupportMessageEnabled { get; set; } = true;
-
-    [ObservableProperty]
-    public partial ThemeVariant Theme { get; set; }
+    private ThemeVariant _theme;
+    public ThemeVariant Theme
+    {
+        get => _theme;
+        set => SetProperty(ref _theme, value);
+    }
 
     [ObservableProperty]
     public partial bool IsAutoUpdateEnabled { get; set; } = true;
