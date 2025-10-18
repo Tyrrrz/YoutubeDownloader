@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using Avalonia.Interactivity;
 using Avalonia.WebView.Windows.Core;
 using Microsoft.Web.WebView2.Core;
@@ -14,7 +13,7 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
 {
     private const string HomePageUrl = "https://www.youtube.com";
     private static readonly string LoginPageUrl =
-        $"https://accounts.google.com/ServiceLogin?continue={WebUtility.UrlEncode(HomePageUrl)}";
+        $"https://accounts.google.com/ServiceLogin?continue={Uri.EscapeDataString(HomePageUrl)}";
 
     private CoreWebView2? _coreWebView2;
 

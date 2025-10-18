@@ -26,10 +26,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Install .NET
-        uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
+        uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
         with:
           dotnet-version: 9.0.x
 
@@ -60,6 +60,8 @@ jobs:
           - win-x86
           - win-x64
           - linux-arm64
+          # Linux x86 is not supported by .NET
+          # - linux-x86
           - linux-x64
           - osx-arm64
           - osx-x64
@@ -71,10 +73,6 @@ jobs:
             artifact-name-base: YoutubeDownloader
           - bundle-ffmpeg: false
             artifact-name-base: YoutubeDownloader.Bare
-        exclude:
-          # FFmpeg builds for these platforms are not easily available
-          - bundle-ffmpeg: true
-            rid: linux-arm64
 
     runs-on: ${{ startsWith(matrix.rid, 'win-') && 'windows-latest' || startsWith(matrix.rid, 'osx-') && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: 10
@@ -85,30 +83,27 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Install .NET
-        uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
+        uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
         with:
           dotnet-version: 9.0.x
-
-      - name: Download FFmpeg
-        if: ${{ matrix.bundle-ffmpeg }}
-        shell: pwsh
-        run: YoutubeDownloader/DownloadFFmpeg.ps1 -platform ${{ matrix.rid }}
 
       - name: Publish app
         run: >
           dotnet publish YoutubeDownloader
           -p:Version=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
           -p:CSharpier_Bypass=true
+          -p:DownloadFFmpeg=${{ matrix.bundle-ffmpeg }}
+          -p:PublishMacOSBundle=${{ startsWith(matrix.rid, 'osx-') }}
           --output YoutubeDownloader/bin/publish
           --configuration Release
           --runtime ${{ matrix.rid }}
           --self-contained
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - name: Upload app binaries
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ matrix.artifact-name-base }}.${{ matrix.rid }}
           path: YoutubeDownloader/bin/publish
@@ -148,6 +143,8 @@ jobs:
           - win-x86
           - win-x64
           - linux-arm64
+          # Linux x86 is not supported by .NET
+          # - linux-x86
           - linux-x64
           - osx-arm64
           - osx-x64
@@ -159,10 +156,6 @@ jobs:
             artifact-name-base: YoutubeDownloader
           - bundle-ffmpeg: false
             artifact-name-base: YoutubeDownloader.Bare
-        exclude:
-          # FFmpeg builds for these platforms are not easily available
-          - bundle-ffmpeg: true
-            rid: linux-arm64
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -172,19 +165,21 @@ jobs:
       contents: write
 
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      - name: Download app binaries
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: ${{ matrix.artifact-name-base }}.${{ matrix.rid }}
           path: YoutubeDownloader/
 
-      - name: Set permissions (app)
+      - name: Set permissions
         if: ${{ !startsWith(matrix.rid, 'win-') }}
-        run: chmod +x YoutubeDownloader/YoutubeDownloader
-
-      - name: Set permissions (FFmpeg)
-        if: ${{ !startsWith(matrix.rid, 'win-') && matrix.bundle-ffmpeg }}
-        run: chmod +x YoutubeDownloader/ffmpeg
+        run: |
+          [ -f YoutubeDownloader/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader || true
+          [ -f YoutubeDownloader/ffmpeg ] && chmod +x YoutubeDownloader/ffmpeg || true
+          
+          # macOS bundle
+          [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader || true
+          [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg || true
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace YoutubeDownloader.ViewModels.Components;
 public partial class DashboardViewModel : ViewModelBase
 {
     private readonly ViewModelManager _viewModelManager;
+    private readonly SnackbarManager _snackbarManager;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
@@ -28,24 +30,15 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly ResizableSemaphore _downloadSemaphore = new();
     private readonly AutoResetProgressMuxer _progressMuxer;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsProgressIndeterminate))]
-    [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
-    [NotifyCanExecuteChangedFor(nameof(ShowAuthSetupCommand))]
-    [NotifyCanExecuteChangedFor(nameof(ShowSettingsCommand))]
-    private bool _isBusy;
-
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
-    private string? _query;
-
     public DashboardViewModel(
         ViewModelManager viewModelManager,
+        SnackbarManager snackbarManager,
         DialogManager dialogManager,
         SettingsService settingsService
     )
     {
         _viewModelManager = viewModelManager;
+        _snackbarManager = snackbarManager;
         _dialogManager = dialogManager;
         _settingsService = settingsService;
 
@@ -67,11 +60,22 @@ public partial class DashboardViewModel : ViewModelBase
         );
     }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsProgressIndeterminate))]
+    [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowAuthSetupCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowSettingsCommand))]
+    public partial bool IsBusy { get; set; }
+
     public ProgressContainer<Percentage> Progress { get; } = new();
 
-    public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
-
     public bool IsProgressIndeterminate => IsBusy && Progress.Current.Fraction is <= 0 or >= 1;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ProcessQueryCommand))]
+    public partial string? Query { get; set; }
+
+    public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
     private bool CanShowAuthSetup() => !IsBusy;
 
@@ -179,18 +183,42 @@ public partial class DashboardViewModel : ViewModelBase
             var resolver = new QueryResolver(_settingsService.LastAuthCookies);
             var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
 
-            var result = await resolver.ResolveAsync(
-                Query.Split(
-                    "\n",
-                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-                ),
-                progress
+            // Split queries by newlines
+            var queries = Query.Split(
+                '\n',
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
             );
 
-            // Single video
-            if (result.Videos.Count == 1)
+            // Process individual queries
+            var queryResults = new List<QueryResult>();
+            foreach (var (i, query) in queries.Index())
             {
-                var video = result.Videos.Single();
+                try
+                {
+                    queryResults.Add(await resolver.ResolveAsync(query));
+                }
+                // If it's not the only query in the list, don't interrupt the process
+                // and report the error via an async notification instead of a sync dialog.
+                // https://github.com/Tyrrrz/YoutubeDownloader/issues/563
+                catch (YoutubeExplodeException ex)
+                    when (ex is VideoUnavailableException or PlaylistUnavailableException
+                        && queries.Length > 1
+                    )
+                {
+                    _snackbarManager.Notify(ex.Message);
+                }
+
+                progress.Report(Percentage.FromFraction((i + 1.0) / queries.Length));
+            }
+
+            // Aggregate results
+            var queryResult = QueryResult.Aggregate(queryResults);
+
+            // Single video result
+            if (queryResult.Videos.Count == 1)
+            {
+                var video = queryResult.Videos.Single();
+
                 var downloadOptions = await downloader.GetDownloadOptionsAsync(
                     video.Id,
                     _settingsService.ShouldInjectLanguageSpecificAudioStreams
@@ -204,16 +232,18 @@ public partial class DashboardViewModel : ViewModelBase
                     return;
 
                 EnqueueDownload(download);
+
+                Query = "";
             }
             // Multiple videos
-            else if (result.Videos.Count > 1)
+            else if (queryResult.Videos.Count > 1)
             {
                 var downloads = await _dialogManager.ShowDialogAsync(
                     _viewModelManager.CreateDownloadMultipleSetupViewModel(
-                        result.Title,
-                        result.Videos,
+                        queryResult.Title,
+                        queryResult.Videos,
                         // Pre-select videos if they come from a single query and not from search
-                        result.Kind
+                        queryResult.Kind
                             is not QueryResultKind.Search
                                 and not QueryResultKind.Aggregate
                     )
@@ -224,6 +254,8 @@ public partial class DashboardViewModel : ViewModelBase
 
                 foreach (var download in downloads)
                     EnqueueDownload(download);
+
+                Query = "";
             }
             // No videos found
             else

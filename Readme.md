@@ -32,6 +32,10 @@ It also supports searching by keywords, which is helpful if you want to quickly 
 - 🟢 **[Stable release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
 - 🟠 [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions/workflows/main.yml)
 
+> **Important**:
+> To launch the app on MacOS, you need to first remove the downloaded file from quarantine.
+> You can do that by running the following command in the terminal: `xattr -rd com.apple.quarantine YoutubeDownloader.app`.
+
 > **Note**:
 > If you're unsure which build is right for your system, consult with [this page](https://useragent.cc) to determine your OS and CPU architecture.
 

@@ -137,7 +137,7 @@
                 HorizontalScrollBarVisibility="Disabled"
                 IsVisible="{Binding !!Downloads.Count}"
                 ItemsSource="{Binding Downloads}"
-                VerticalScrollBarVisibility="Auto">
+                VerticalScrollBarVisibility="Visible">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{Binding RemoveSuccessfulDownloadsCommand}" Header="Remove successful downloads" />
