@@ -73,7 +73,8 @@ public class MediaTagInjector
                 )
                 .OrderByDescending(t => t.Resolution.Area)
                 .Select(t => t.Url)
-                .FirstOrDefault() ?? $"https://i.ytimg.com/vi/{video.Id}/hqdefault.jpg";
+                .FirstOrDefault()
+            ?? $"https://i.ytimg.com/vi/{video.Id}/hqdefault.jpg";
 
         mediaFile.SetThumbnail(
             await Http.Client.GetByteArrayAsync(thumbnailUrl, cancellationToken)

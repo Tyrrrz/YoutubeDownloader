@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="CSharpier.MsBuild" Version="1.0.2" PrivateAssets="all" />
+    <PackageReference Include="CSharpier.MsBuild" Version="1.1.2" PrivateAssets="all" />
     <PackageReference Include="Gress" Version="2.1.1" />
     <PackageReference Include="JsonExtensions" Version="1.2.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />

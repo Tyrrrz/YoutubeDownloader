@@ -40,7 +40,7 @@ public partial class DownloadMultipleSetupViewModel(
     public ObservableCollection<IVideo> SelectedVideos { get; } = [];
 
     public IReadOnlyList<Container> AvailableContainers { get; } =
-        [Container.Mp4, Container.WebM, Container.Mp3, new("ogg")];
+    [Container.Mp4, Container.WebM, Container.Mp3, new("ogg")];
 
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         // Without .AsEnumerable(), the below line throws a compile-time error starting with .NET SDK v9.0.200

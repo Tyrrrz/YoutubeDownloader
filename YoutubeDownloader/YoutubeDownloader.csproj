@@ -37,7 +37,7 @@
     />
     <PackageReference Include="Cogwheel" Version="2.1.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="CSharpier.MsBuild" Version="1.0.2" PrivateAssets="all" />
+    <PackageReference Include="CSharpier.MsBuild" Version="1.1.2" PrivateAssets="all" />
     <PackageReference Include="Deorcify" Version="1.1.0" PrivateAssets="all" />
     <PackageReference Include="DialogHost.Avalonia" Version="0.9.3" />
     <PackageReference Include="Gress" Version="2.1.1" />
