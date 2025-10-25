@@ -96,7 +96,7 @@ public partial class DashboardViewModel : ViewModelBase
 
         try
         {
-            var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
+            using var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
             var tagInjector = new MediaTagInjector();
 
             using var access = await _downloadSemaphore.AcquireAsync(download.CancellationToken);
@@ -180,8 +180,7 @@ public partial class DashboardViewModel : ViewModelBase
 
         try
         {
-            var resolver = new QueryResolver(_settingsService.LastAuthCookies);
-            var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
+            using var resolver = new QueryResolver(_settingsService.LastAuthCookies);
 
             // Split queries by newlines
             var queries = Query.Split(
@@ -218,6 +217,8 @@ public partial class DashboardViewModel : ViewModelBase
             if (queryResult.Videos.Count == 1)
             {
                 var video = queryResult.Videos.Single();
+
+                using var downloader = new VideoDownloader(_settingsService.LastAuthCookies);
 
                 var downloadOptions = await downloader.GetDownloadOptionsAsync(
                     video.Id,
