@@ -6,23 +6,26 @@ namespace YoutubeDownloader.Utils.Extensions;
 
 internal static class DisposableExtensions
 {
-    public static void DisposeAll(this IEnumerable<IDisposable> disposables)
+    extension(IEnumerable<IDisposable> disposables)
     {
-        var exceptions = default(List<Exception>);
-
-        foreach (var disposable in disposables)
+        public void DisposeAll()
         {
-            try
-            {
-                disposable.Dispose();
-            }
-            catch (Exception ex)
-            {
-                (exceptions ??= []).Add(ex);
-            }
-        }
+            var exceptions = default(List<Exception>);
 
-        if (exceptions?.Any() == true)
-            throw new AggregateException(exceptions);
+            foreach (var disposable in disposables)
+            {
+                try
+                {
+                    disposable.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    (exceptions ??= []).Add(ex);
+                }
+            }
+
+            if (exceptions?.Any() == true)
+                throw new AggregateException(exceptions);
+        }
     }
 }

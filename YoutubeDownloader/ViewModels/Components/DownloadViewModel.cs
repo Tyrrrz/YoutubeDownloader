@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -96,7 +97,7 @@ public partial class DownloadViewModel : ViewModelBase
         try
         {
             // Navigate to the file in Windows Explorer
-            ProcessEx.Start("explorer", ["/select,", FilePath]);
+            Process.Start("explorer", ["/select,", FilePath]);
         }
         catch (Exception ex)
         {
@@ -116,7 +117,7 @@ public partial class DownloadViewModel : ViewModelBase
 
         try
         {
-            ProcessEx.StartShellExecute(FilePath);
+            Process.StartShellExecute(FilePath);
         }
         catch (Exception ex)
         {

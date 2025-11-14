@@ -1,0 +1,38 @@
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+
+namespace YoutubeDownloader.Utils.Extensions;
+
+internal static class ProcessExtensions
+{
+    extension(Process)
+    {
+        public static void Start(string path, IReadOnlyList<string>? arguments = null)
+        {
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo(path);
+
+            if (arguments is not null)
+            {
+                foreach (var argument in arguments)
+                    process.StartInfo.ArgumentList.Add(argument);
+            }
+
+            process.Start();
+        }
+
+        public static void StartShellExecute(string path, IReadOnlyList<string>? arguments = null)
+        {
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo(path) { UseShellExecute = true };
+
+            if (arguments is not null)
+            {
+                foreach (var argument in arguments)
+                    process.StartInfo.ArgumentList.Add(argument);
+            }
+
+            process.Start();
+        }
+    }
+}

@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
 
@@ -45,7 +44,7 @@ public partial class MainViewModel(
         settingsService.Save();
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
-            ProcessEx.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
+            Process.StartShellExecute("https://tyrrrz.me/ukraine?source=youtubedownloader");
     }
 
     private async Task ShowDevelopmentBuildMessageAsync()
@@ -71,7 +70,7 @@ public partial class MainViewModel(
         );
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
-            ProcessEx.StartShellExecute(Program.ProjectReleasesUrl);
+            Process.StartShellExecute(Program.ProjectReleasesUrl);
     }
 
     private async Task ShowFFmpegMessageAsync()
@@ -93,7 +92,7 @@ public partial class MainViewModel(
         );
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
-            ProcessEx.StartShellExecute("https://ffmpeg.org/download.html");
+            Process.StartShellExecute("https://ffmpeg.org/download.html");
 
         if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
             Environment.Exit(3);

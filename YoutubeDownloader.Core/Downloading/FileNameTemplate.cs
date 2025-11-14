@@ -1,5 +1,6 @@
 ﻿using System;
-using YoutubeDownloader.Core.Utils;
+using System.IO;
+using YoutubeDownloader.Core.Utils.Extensions;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
@@ -13,7 +14,7 @@ public static class FileNameTemplate
         Container container,
         string? number = null
     ) =>
-        PathEx.EscapeFileName(
+        Path.EscapeFileName(
             template
                 .Replace("$numc", number ?? "", StringComparison.Ordinal)
                 .Replace("$num", number is not null ? $"[{number}]" : "", StringComparison.Ordinal)
