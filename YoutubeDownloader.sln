@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{131C2561-E
 		Directory.Build.props = Directory.Build.props
 		License.txt = License.txt
 		Readme.md = Readme.md
+		global.json = global.json
+		NuGet.config = NuGet.config
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubeDownloader.Core", "YoutubeDownloader.Core\YoutubeDownloader.Core.csproj", "{5122A9DE-232C-4DA8-AD76-8B72AA377D5E}"
