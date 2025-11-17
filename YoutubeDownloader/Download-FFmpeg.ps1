@@ -3,7 +3,7 @@ param (
     [string]$Platform,
 
     [Parameter(Mandatory=$false)]
-    [string]$OutputPath
+    [string]$OutputPath = $PSScriptRoot
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,12 +25,9 @@ if (-not $Platform) {
 
 # Normalize platform identifier
 $Platform = $Platform.ToLower().Replace("win-", "windows-")
-$fileName = if ($Platform.Contains("windows-")) { "ffmpeg.exe" } else { "ffmpeg" }
 
-# If the output path is not specified, use the current directory
-if (-not $OutputPath) {
-    $OutputPath = "$PSScriptRoot/$fileName"
-}
+# Identify the FFmpeg filename based on the platform
+$fileName = if ($Platform.Contains("windows-")) { "ffmpeg.exe" } else { "ffmpeg" }
 
 # If the output path is an existing directory, append the default file name for the platform
 if (Test-Path $OutputPath -PathType Container) {
@@ -46,7 +43,7 @@ if (Test-Path $OutputPath) {
 Write-Host "Downloading FFmpeg for $Platform..."
 $http = New-Object System.Net.WebClient
 try {
-    $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.1/ffmpeg-$Platform.zip", "$OutputPath.zip")
+    $http.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.2/ffmpeg-$Platform.zip", "$OutputPath.zip")
 } finally {
     $http.Dispose()
 }
