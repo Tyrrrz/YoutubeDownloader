@@ -22,7 +22,7 @@
 You can copy-paste URL of any video, playlist or channel and download it directly in a format of your choice.
 It also supports searching by keywords, which is helpful if you want to quickly look up and download videos.
 
-> **Note**:
+> [!NOTE]
 > This application uses [**YoutubeExplode**](https://github.com/Tyrrrz/YoutubeExplode) under the hood to interact with YouTube.
 > You can [read this article](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited) to learn more about how it works.
 
@@ -42,14 +42,14 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 - 🟢 **[Stable release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
 - 🟠 [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions/workflows/main.yml)
 
-> **Important**:
+> [!IMPORTANT]
 > To launch the app on MacOS, you need to first remove the downloaded file from quarantine.
 > You can do that by running the following command in the terminal: `xattr -rd com.apple.quarantine YoutubeDownloader.app`.
 
-> **Note**:
+> [!NOTE]
 > If you're unsure which build is right for your system, consult with [this page](https://useragent.cc) to determine your OS and CPU architecture.
 
-> **Note**:
+> [!NOTE]
 > **YoutubeDownloader** comes bundled with [FFmpeg](https://ffmpeg.org) which is used for processing videos.
 > You can also download a version of **YoutubeDownloader** that doesn't include FFmpeg (`YoutubeDownloader.Bare.*` builds) if you prefer to use your own installation.
 
