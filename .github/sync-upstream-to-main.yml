@@ -1,0 +1,28 @@
+# /.github/workflows/sync-upstream-to-main.yml
+name: sync-upstream-to-main
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_PAT }}
+
+      - run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/Tyrrrz/YoutubeDownloader.git || true
+          git fetch upstream --prune
+          git merge --ff-only upstream/master
+          git push origin main
