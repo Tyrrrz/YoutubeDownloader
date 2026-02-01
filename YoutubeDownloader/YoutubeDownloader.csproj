@@ -26,7 +26,7 @@
     <None Include="ffmpeg" CopyToOutputDirectory="PreserveNewest" Condition="Exists('ffmpeg')" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.5.0" />
+    <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.6.0" />
     <PackageReference Include="Avalonia" Version="11.3.0" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.0" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.0" />
@@ -39,7 +39,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="CSharpier.MsBuild" Version="1.1.2" PrivateAssets="all" />
     <PackageReference Include="Deorcify" Version="1.1.0" PrivateAssets="all" />
-    <PackageReference Include="DialogHost.Avalonia" Version="0.10.3" />
+    <PackageReference Include="DialogHost.Avalonia" Version="0.10.4" />
     <PackageReference Include="Gress" Version="2.1.1" />
     <PackageReference Include="Material.Avalonia" Version="3.9.2" />
     <PackageReference Include="Material.Avalonia.DataGrid" Version="3.9.2" />
