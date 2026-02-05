@@ -32,5 +32,19 @@ internal partial class MediaFile(TagFile file) : IDisposable
 
 internal partial class MediaFile
 {
-    public static MediaFile Open(string filePath) => new(TagFile.Create(filePath));
+    public static MediaFile Open(string filePath)
+    {
+        // Validate input
+        if (string.IsNullOrWhiteSpace(filePath))
+            throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
+
+        // Canonicalize the path to resolve any relative path components and prevent path traversal
+        var fullPath = System.IO.Path.GetFullPath(filePath);
+
+        // Verify the file exists to prevent information disclosure
+        if (!System.IO.File.Exists(fullPath))
+            throw new System.IO.FileNotFoundException("The specified file does not exist.", fullPath);
+
+        return new(TagFile.Create(fullPath));
+    }
 }
