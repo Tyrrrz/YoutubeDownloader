@@ -65,6 +65,4 @@ public static class FFmpeg
 
     public static bool IsBundled() =>
         File.Exists(Path.Combine(AppContext.BaseDirectory, CliFileName));
-
-    public static bool IsAvailable() => !string.IsNullOrWhiteSpace(TryGetCliFilePath());
 }

@@ -101,7 +101,7 @@ public partial class MainViewModel(
         else
         {
             // No explicit path — fall back to auto-detection check
-            if (FFmpeg.IsAvailable())
+            if (FFmpeg.TryGetCliFilePath() is not null)
                 return;
 
             var dialog = viewModelManager.CreateMessageBoxViewModel(
