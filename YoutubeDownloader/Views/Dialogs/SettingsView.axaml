@@ -164,20 +164,17 @@
                     <!--  FFmpeg path  -->
                     <DockPanel
                         Margin="16,8"
-                        LastChildFill="True"
+                        LastChildFill="False"
                         ToolTip.Tip="Path to the FFmpeg executable. Leave empty to use auto-detection.">
-                        <TextBlock
-                            DockPanel.Dock="Left"
-                            VerticalAlignment="Center"
-                            Text="FFmpeg path" />
+                        <TextBlock DockPanel.Dock="Left" Text="FFmpeg path" />
                         <TextBox
+                            Width="150"
                             Height="20"
-                            Margin="16,0,0,0"
-                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
                             FontSize="13"
                             Text="{Binding FFmpegPath}"
                             Theme="{DynamicResource CompactTextBox}"
-                            Watermark="Auto-detected">
+                            Watermark="Auto-detect">
                             <TextBox.InnerRightContent>
                                 <StackPanel Orientation="Horizontal">
                                     <Button
