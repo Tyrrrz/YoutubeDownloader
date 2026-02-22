@@ -82,15 +82,15 @@
                             Height="20"
                             DockPanel.Dock="Right"
                             FontSize="13"
-                            Text="{Binding FFmpegPath}"
+                            Text="{Binding FFmpegFilePath}"
                             Theme="{DynamicResource CompactTextBox}"
                             Watermark="Auto-detect">
                             <TextBox.InnerRightContent>
                                 <StackPanel Orientation="Horizontal">
                                     <Button
                                         Padding="4"
-                                        Command="{Binding ResetFFmpegPathCommand}"
-                                        IsVisible="{Binding FFmpegPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                        Command="{Binding ResetFFmpegFilePathCommand}"
+                                        IsEnabled="{Binding FFmpegFilePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Reset to auto-detection">
                                         <materialIcons:MaterialIcon
@@ -100,7 +100,7 @@
                                     </Button>
                                     <Button
                                         Padding="4"
-                                        Command="{Binding BrowseFFmpegPathCommand}"
+                                        Command="{Binding BrowseFFmpegFilePathCommand}"
                                         Theme="{DynamicResource MaterialFlatButton}"
                                         ToolTip.Tip="Browse for FFmpeg executable">
                                         <materialIcons:MaterialIcon

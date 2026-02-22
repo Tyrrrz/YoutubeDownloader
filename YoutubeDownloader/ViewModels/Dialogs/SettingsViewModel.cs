@@ -45,10 +45,10 @@ public partial class SettingsViewModel : DialogViewModelBase
         set => _settingsService.IsAuthPersisted = value;
     }
 
-    public string? FFmpegPath
+    public string? FFmpegFilePath
     {
-        get => _settingsService.FFmpegPath;
-        set => _settingsService.FFmpegPath = string.IsNullOrEmpty(value) ? null : value;
+        get => _settingsService.FFmpegFilePath;
+        set => _settingsService.FFmpegFilePath = !string.IsNullOrWhiteSpace(value) ? value : null;
     }
 
     public bool ShouldInjectLanguageSpecificAudioStreams
@@ -88,7 +88,7 @@ public partial class SettingsViewModel : DialogViewModelBase
     }
 
     [RelayCommand]
-    private async Task BrowseFFmpegPathAsync()
+    private async Task BrowseFFmpegFilePathAsync()
     {
         var fileTypes = OperatingSystem.IsWindows()
             ? new[]
@@ -103,11 +103,11 @@ public partial class SettingsViewModel : DialogViewModelBase
         if (string.IsNullOrWhiteSpace(filePath))
             return;
 
-        FFmpegPath = filePath;
+        FFmpegFilePath = filePath;
     }
 
     [RelayCommand]
-    private void ResetFFmpegPath() => FFmpegPath = null;
+    private void ResetFFmpegFilePath() => FFmpegFilePath = null;
 
     protected override void Dispose(bool disposing)
     {

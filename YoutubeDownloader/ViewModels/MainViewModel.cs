@@ -75,26 +75,24 @@ public partial class MainViewModel(
             Process.StartShellExecute(Program.ProjectReleasesUrl);
     }
 
-    private async Task ShowFFmpegMessageAsync()
+    private async Task ShowFFmpegMissingMessageAsync()
     {
         string message;
+        string confirmButton;
 
-        if (settingsService.FFmpegPath is { } ffmpegPath)
+        if (settingsService.FFmpegFilePath is { } ffmpegFilePath)
         {
             // Explicit path set — only show the dialog if the file is missing
-            if (File.Exists(ffmpegPath))
+            if (File.Exists(ffmpegFilePath))
                 return;
 
             message = $"""
                 FFmpeg is required for {Program.Name} to work, but the configured path does not exist:
-                {ffmpegPath}
+                {ffmpegFilePath}
 
                 Please update the FFmpeg path in settings or clear it to use auto-detection.
-
-                Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
-
-                Click DOWNLOAD to go to the FFmpeg download page.
                 """;
+            confirmButton = "SETTINGS";
         }
         else
         {
@@ -119,17 +117,23 @@ public partial class MainViewModel(
                     )
                 )}
                 """;
+            confirmButton = "DOWNLOAD";
         }
 
         var dialog = viewModelManager.CreateMessageBoxViewModel(
             "FFmpeg is missing",
             message,
-            "DOWNLOAD",
+            confirmButton,
             "CLOSE"
         );
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
-            Process.StartShellExecute("https://ffmpeg.org/download.html");
+        {
+            if (confirmButton == "SETTINGS")
+                await dialogManager.ShowDialogAsync(viewModelManager.CreateSettingsViewModel());
+            else
+                Process.StartShellExecute("https://ffmpeg.org/download.html");
+        }
 
         if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
             Environment.Exit(3);
@@ -170,7 +174,7 @@ public partial class MainViewModel(
     {
         await ShowUkraineSupportMessageAsync();
         await ShowDevelopmentBuildMessageAsync();
-        await ShowFFmpegMessageAsync();
+        await ShowFFmpegMissingMessageAsync();
         await CheckForUpdatesAsync();
     }
 
