@@ -77,22 +77,26 @@ public partial class MainViewModel(
 
     private async Task ShowFFmpegMissingMessageAsync()
     {
-        string message;
-        string confirmButton;
-
         if (settingsService.FFmpegFilePath is { } ffmpegFilePath)
         {
             // Explicit path set — only show the dialog if the file is missing
             if (File.Exists(ffmpegFilePath))
                 return;
 
-            message = $"""
+            var dialog = viewModelManager.CreateMessageBoxViewModel(
+                "FFmpeg is missing",
+                $"""
                 FFmpeg is required for {Program.Name} to work, but the configured path does not exist:
                 {ffmpegFilePath}
 
                 Please update the FFmpeg path in settings or clear it to use auto-detection.
-                """;
-            confirmButton = "SETTINGS";
+                """,
+                "SETTINGS",
+                "CLOSE"
+            );
+
+            if (await dialogManager.ShowDialogAsync(dialog) == true)
+                await dialogManager.ShowDialogAsync(viewModelManager.CreateSettingsViewModel());
         }
         else
         {
@@ -100,7 +104,9 @@ public partial class MainViewModel(
             if (FFmpeg.IsAvailable())
                 return;
 
-            message = $"""
+            var dialog = viewModelManager.CreateMessageBoxViewModel(
+                "FFmpeg is missing",
+                $"""
                 FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH, or configure the location in settings.
 
                 Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
@@ -116,22 +122,12 @@ public partial class MainViewModel(
                         $"- {d}"
                     )
                 )}
-                """;
-            confirmButton = "DOWNLOAD";
-        }
+                """,
+                "DOWNLOAD",
+                "CLOSE"
+            );
 
-        var dialog = viewModelManager.CreateMessageBoxViewModel(
-            "FFmpeg is missing",
-            message,
-            confirmButton,
-            "CLOSE"
-        );
-
-        if (await dialogManager.ShowDialogAsync(dialog) == true)
-        {
-            if (confirmButton == "SETTINGS")
-                await dialogManager.ShowDialogAsync(viewModelManager.CreateSettingsViewModel());
-            else
+            if (await dialogManager.ShowDialogAsync(dialog) == true)
                 Process.StartShellExecute("https://ffmpeg.org/download.html");
         }
 
