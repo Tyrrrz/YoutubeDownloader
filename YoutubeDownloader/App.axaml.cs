@@ -109,23 +109,17 @@ public class App : Application, IDisposable
 
     private void InitializeLanguage()
     {
-        var language = _settingsService.Language;
-
-        if (language == Language.System)
-        {
-            // Detect from the system UI culture
-            var cultureName = CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName;
-            language = cultureName.ToLowerInvariant() switch
-            {
-                "ukr" => Language.Ukrainian,
-                "deu" => Language.German,
-                "fra" => Language.French,
-                "spa" => Language.Spanish,
-                _ => Language.English,
-            };
-        }
-
-        LocalizedStrings.Current.Language = language;
+        LocalizedStrings.Current.Language =
+            _settingsService.Language != Language.System
+                ? _settingsService.Language
+                : CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
+                {
+                    "ukr" => Language.Ukrainian,
+                    "deu" => Language.German,
+                    "fra" => Language.French,
+                    "spa" => Language.Spanish,
+                    _ => Language.English,
+                };
     }
 
     public override void OnFrameworkInitializationCompleted()

@@ -104,7 +104,7 @@ public partial class MainViewModel(
                     )
                 )}
                 """,
-                Localization.FFmpegDownloadButton,
+                Localization.DownloadButton,
                 Localization.CloseButton
             );
 

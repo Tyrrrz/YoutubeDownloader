@@ -9,7 +9,7 @@ public partial class LocalizedStrings : ObservableObject
     public static LocalizedStrings Current { get; } = new();
 
     [ObservableProperty]
-    private Language _language = Language.English;
+    public partial Language Language { get; set; } = Language.English;
 
     partial void OnLanguageChanged(Language value) =>
         // Notify all string properties so the UI refreshes
@@ -129,7 +129,6 @@ public partial class LocalizedStrings : ObservableObject
     public string FFmpegMissingTitle => Get();
     public string FFmpegMissingMessage => Get();
     public string FFmpegPathMissingMessage => Get();
-    public string FFmpegDownloadButton => Get();
     public string NothingFoundTitle => Get();
     public string NothingFoundMessage => Get();
     public string ErrorTitle => Get();
@@ -265,7 +264,6 @@ public partial class LocalizedStrings : ObservableObject
 
                 Please update the FFmpeg path in settings or clear it to use auto-detection.
                 """,
-            [nameof(FFmpegDownloadButton)] = "DOWNLOAD",
             [nameof(NothingFoundTitle)] = "Nothing found",
             [nameof(NothingFoundMessage)] =
                 "Couldn't find any videos based on the query or URL you provided",
@@ -395,7 +393,6 @@ public partial class LocalizedStrings : ObservableObject
 
                 Будь ласка, оновіть шлях FFmpeg у налаштуваннях або очистіть його для автовизначення.
                 """,
-            [nameof(FFmpegDownloadButton)] = "ЗАВАНТАЖИТИ",
             [nameof(NothingFoundTitle)] = "Нічого не знайдено",
             [nameof(NothingFoundMessage)] = "Не вдалося знайти відео за вказаним запитом або URL",
             [nameof(ErrorTitle)] = "Помилка",
@@ -526,7 +523,6 @@ public partial class LocalizedStrings : ObservableObject
 
                 Bitte aktualisieren Sie den FFmpeg-Pfad in den Einstellungen oder löschen Sie ihn zur automatischen Erkennung.
                 """,
-            [nameof(FFmpegDownloadButton)] = "HERUNTERLADEN",
             [nameof(NothingFoundTitle)] = "Nichts gefunden",
             [nameof(NothingFoundMessage)] =
                 "Es konnten keine Videos basierend auf der angegebenen Anfrage oder URL gefunden werden",
@@ -659,7 +655,6 @@ public partial class LocalizedStrings : ObservableObject
 
                 Veuillez mettre à jour le chemin FFmpeg dans les paramètres ou le vider pour utiliser la détection automatique.
                 """,
-            [nameof(FFmpegDownloadButton)] = "TÉLÉCHARGER",
             [nameof(NothingFoundTitle)] = "Rien trouvé",
             [nameof(NothingFoundMessage)] =
                 "Impossible de trouver des vidéos correspondant à la requête ou l'URL fournie",
@@ -791,7 +786,6 @@ public partial class LocalizedStrings : ObservableObject
 
                 Por favor, actualiza la ruta de FFmpeg en los ajustes o bórrala para usar la detección automática.
                 """,
-            [nameof(FFmpegDownloadButton)] = "DESCARGAR",
             [nameof(NothingFoundTitle)] = "Nada encontrado",
             [nameof(NothingFoundMessage)] =
                 "No se encontraron videos basados en la consulta o URL proporcionada",
