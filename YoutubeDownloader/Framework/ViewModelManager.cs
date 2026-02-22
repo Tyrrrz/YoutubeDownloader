@@ -101,7 +101,7 @@ public class ViewModelManager(IServiceProvider services)
         CreateMessageBoxViewModel(
             title,
             message,
-            global::YoutubeDownloader.Localization.Localization.Current.CloseButton,
+            Localization.Localization.Current.CloseButton,
             null
         );
 

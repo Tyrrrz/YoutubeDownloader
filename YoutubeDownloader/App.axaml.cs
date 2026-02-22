@@ -16,6 +16,7 @@ using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.Views;
+using Language = YoutubeDownloader.Localization.Language;
 
 namespace YoutubeDownloader;
 
@@ -110,21 +111,21 @@ public class App : Application, IDisposable
     {
         var language = _settingsService.Language;
 
-        if (language == global::YoutubeDownloader.Localization.Language.System)
+        if (language == Language.System)
         {
             // Detect from the system UI culture
-            var cultureName = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            language = cultureName switch
+            var cultureName = CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName;
+            language = cultureName.ToLowerInvariant() switch
             {
-                "uk" => global::YoutubeDownloader.Localization.Language.Ukrainian,
-                "de" => global::YoutubeDownloader.Localization.Language.German,
-                "fr" => global::YoutubeDownloader.Localization.Language.French,
-                "es" => global::YoutubeDownloader.Localization.Language.Spanish,
-                _ => global::YoutubeDownloader.Localization.Language.English,
+                "ukr" => Language.Ukrainian,
+                "deu" => Language.German,
+                "fra" => Language.French,
+                "spa" => Language.Spanish,
+                _ => Language.English,
             };
         }
 
-        global::YoutubeDownloader.Localization.Localization.Current.Language = language;
+        Localization.Localization.Current.Language = language;
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -137,11 +138,11 @@ public class App : Application, IDisposable
         // Set up custom theme colors
         InitializeTheme();
 
+        // Apply the initial language
+        InitializeLanguage();
+
         // Load settings
         _settingsService.Load();
-
-        // Apply the loaded language
-        InitializeLanguage();
     }
 
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
