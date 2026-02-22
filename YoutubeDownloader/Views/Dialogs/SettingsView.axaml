@@ -3,6 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Width="380"
     x:DataType="dialogs:SettingsViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
@@ -169,25 +170,40 @@
                             DockPanel.Dock="Left"
                             VerticalAlignment="Center"
                             Text="FFmpeg path" />
-                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
-                            <Button
-                                Command="{Binding ResetFFmpegPathCommand}"
-                                Content="RESET"
-                                IsVisible="{Binding FFmpegPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                Theme="{DynamicResource MaterialFlatButton}" />
-                            <Button
-                                Command="{Binding BrowseFFmpegPathCommand}"
-                                Content="BROWSE"
-                                Theme="{DynamicResource MaterialFlatButton}" />
-                        </StackPanel>
                         <TextBox
                             Height="20"
-                            Margin="8,0"
+                            Margin="16,0,0,0"
                             VerticalAlignment="Center"
                             FontSize="13"
                             Text="{Binding FFmpegPath}"
                             Theme="{DynamicResource CompactTextBox}"
-                            Watermark="Auto-detected" />
+                            Watermark="Auto-detected">
+                            <TextBox.InnerRightContent>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding ResetFFmpegPathCommand}"
+                                        IsVisible="{Binding FFmpegPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="Reset to auto-detection">
+                                        <materialIcons:MaterialIcon
+                                            Width="14"
+                                            Height="14"
+                                            Kind="Close" />
+                                    </Button>
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding BrowseFFmpegPathCommand}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="Browse for FFmpeg executable">
+                                        <materialIcons:MaterialIcon
+                                            Width="14"
+                                            Height="14"
+                                            Kind="FolderOpen" />
+                                    </Button>
+                                </StackPanel>
+                            </TextBox.InnerRightContent>
+                        </TextBox>
                     </DockPanel>
                 </StackPanel>
             </ScrollViewer>
