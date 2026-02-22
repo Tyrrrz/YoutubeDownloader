@@ -4,9 +4,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace YoutubeDownloader.Localization;
 
-public partial class Localization : ObservableObject
+public partial class LocalizedStrings : ObservableObject
 {
-    public static Localization Current { get; } = new();
+    public static LocalizedStrings Current { get; } = new();
 
     [ObservableProperty]
     private Language _language = Language.English;

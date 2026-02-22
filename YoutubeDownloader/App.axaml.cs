@@ -17,6 +17,7 @@ using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.Views;
 using Language = YoutubeDownloader.Localization.Language;
+using LocalizedStrings = YoutubeDownloader.Localization.LocalizedStrings;
 
 namespace YoutubeDownloader;
 
@@ -125,7 +126,7 @@ public class App : Application, IDisposable
             };
         }
 
-        Localization.Localization.Current.Language = language;
+        LocalizedStrings.Current.Language = language;
     }
 
     public override void OnFrameworkInitializationCompleted()

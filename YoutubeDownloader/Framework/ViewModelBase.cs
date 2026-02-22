@@ -1,12 +1,12 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using YoutubeDownloader.Localization;
 
 namespace YoutubeDownloader.Framework;
 
 public abstract class ViewModelBase : ObservableObject, IDisposable
 {
-    public global::YoutubeDownloader.Localization.Localization Localization =>
-        global::YoutubeDownloader.Localization.Localization.Current;
+    public LocalizedStrings Localization => LocalizedStrings.Current;
 
     ~ViewModelBase() => Dispose(false);
 

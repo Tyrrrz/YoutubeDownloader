@@ -165,7 +165,7 @@
                     <!--  File name  -->
                     <DataGridTemplateColumn
                         Width="*"
-                        Header="{Binding DownloadsFileColumnHeader, Source={x:Static loc:Localization.Current}}"
+                        Header="{Binding DownloadsFileColumnHeader, Source={x:Static loc:LocalizedStrings.Current}}"
                         SortMemberPath="FileName">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -182,7 +182,7 @@
                     <!--  Status  -->
                     <DataGridTemplateColumn
                         MinWidth="100"
-                        Header="{Binding DownloadsStatusColumnHeader, Source={x:Static loc:Localization.Current}}"
+                        Header="{Binding DownloadsStatusColumnHeader, Source={x:Static loc:LocalizedStrings.Current}}"
                         SortMemberPath="Progress.Current.Fraction">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

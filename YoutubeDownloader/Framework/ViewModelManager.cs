@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Utils.Extensions;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -98,12 +99,7 @@ public class ViewModelManager(IServiceProvider services)
     }
 
     public MessageBoxViewModel CreateMessageBoxViewModel(string title, string message) =>
-        CreateMessageBoxViewModel(
-            title,
-            message,
-            Localization.Localization.Current.CloseButton,
-            null
-        );
+        CreateMessageBoxViewModel(title, message, LocalizedStrings.Current.CloseButton, null);
 
     public SettingsViewModel CreateSettingsViewModel() =>
         services.GetRequiredService<SettingsViewModel>();
