@@ -78,6 +78,7 @@ public partial class MainViewModel(
         if (FFmpeg.IsAvailable())
             return;
 
+        var diagnostics = FFmpeg.GetDiagnosticsReport();
         var dialog = viewModelManager.CreateMessageBoxViewModel(
             "FFmpeg is missing",
             $"""
@@ -86,6 +87,9 @@ public partial class MainViewModel(
             Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
 
             Click DOWNLOAD to go to the FFmpeg download page.
+
+            Diagnostics:
+            {diagnostics}
             """,
             "DOWNLOAD",
             "CLOSE"
