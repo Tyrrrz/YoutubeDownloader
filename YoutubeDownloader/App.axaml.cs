@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -73,14 +74,7 @@ public class App : Application, IDisposable
         );
 
         // Apply the selected language when the user changes it
-        _eventRoot.Add(
-            _settingsService.WatchProperty(
-                o => o.Language,
-                () =>
-                    global::YoutubeDownloader.Localization.Localization.Current.Language =
-                        _settingsService.Language
-            )
-        );
+        _eventRoot.Add(_settingsService.WatchProperty(o => o.Language, () => InitializeLanguage()));
     }
 
     public override void Initialize()
@@ -112,6 +106,27 @@ public class App : Application, IDisposable
                 : Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
     }
 
+    private void InitializeLanguage()
+    {
+        var language = _settingsService.Language;
+
+        if (language == global::YoutubeDownloader.Localization.Language.System)
+        {
+            // Detect from the system UI culture
+            var cultureName = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            language = cultureName switch
+            {
+                "uk" => global::YoutubeDownloader.Localization.Language.Ukrainian,
+                "de" => global::YoutubeDownloader.Localization.Language.German,
+                "fr" => global::YoutubeDownloader.Localization.Language.French,
+                "es" => global::YoutubeDownloader.Localization.Language.Spanish,
+                _ => global::YoutubeDownloader.Localization.Language.English,
+            };
+        }
+
+        global::YoutubeDownloader.Localization.Localization.Current.Language = language;
+    }
+
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -126,8 +141,7 @@ public class App : Application, IDisposable
         _settingsService.Load();
 
         // Apply the loaded language
-        global::YoutubeDownloader.Localization.Localization.Current.Language =
-            _settingsService.Language;
+        InitializeLanguage();
     }
 
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
