@@ -48,7 +48,7 @@ public partial class SettingsViewModel : DialogViewModelBase
     public string? FFmpegPath
     {
         get => _settingsService.FFmpegPath;
-        set => _settingsService.FFmpegPath = value;
+        set => _settingsService.FFmpegPath = string.IsNullOrEmpty(value) ? null : value;
     }
 
     public bool ShouldInjectLanguageSpecificAudioStreams
