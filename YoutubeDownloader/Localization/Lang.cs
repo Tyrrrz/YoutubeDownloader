@@ -86,6 +86,11 @@ public partial class LocalizedStrings : ObservableObject
     public string FileNameTemplateTokenAuthorDesc => Get();
     public string ParallelLimitLabel => Get();
     public string ParallelLimitTooltip => Get();
+    public string FFmpegPathLabel => Get();
+    public string FFmpegPathTooltip => Get();
+    public string FFmpegPathWatermark => Get();
+    public string FFmpegPathResetTooltip => Get();
+    public string FFmpegPathBrowseTooltip => Get();
 
     // ---- Auth Setup ----
 
@@ -111,6 +116,7 @@ public partial class LocalizedStrings : ObservableObject
     public string CloseButton => Get();
     public string DownloadButton => Get();
     public string CancelButton => Get();
+    public string SettingsButton => Get();
 
     // ---- Dialog messages ----
 
@@ -122,6 +128,7 @@ public partial class LocalizedStrings : ObservableObject
     public string SeeReleasesButton => Get();
     public string FFmpegMissingTitle => Get();
     public string FFmpegMissingMessage => Get();
+    public string FFmpegPathMissingMessage => Get();
     public string FFmpegDownloadButton => Get();
     public string NothingFoundTitle => Get();
     public string NothingFoundMessage => Get();
@@ -203,6 +210,12 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— video author",
             [nameof(ParallelLimitLabel)] = "Parallel limit",
             [nameof(ParallelLimitTooltip)] = "How many downloads can be active at the same time",
+            [nameof(FFmpegPathLabel)] = "FFmpeg path",
+            [nameof(FFmpegPathTooltip)] =
+                "Path to the FFmpeg executable. Leave empty to use auto-detection.",
+            [nameof(FFmpegPathWatermark)] = "Auto-detect",
+            [nameof(FFmpegPathResetTooltip)] = "Reset to auto-detection",
+            [nameof(FFmpegPathBrowseTooltip)] = "Browse for FFmpeg executable",
             // Auth Setup
             [nameof(AuthenticationTitle)] = "Authentication",
             [nameof(AuthenticatedText)] = "You are currently authenticated",
@@ -220,6 +233,7 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(CloseButton)] = "CLOSE",
             [nameof(DownloadButton)] = "DOWNLOAD",
             [nameof(CancelButton)] = "CANCEL",
+            [nameof(SettingsButton)] = "SETTINGS",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Thank you for supporting Ukraine!",
             [nameof(UkraineSupportMessage)] = """
@@ -239,11 +253,17 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(SeeReleasesButton)] = "SEE RELEASES",
             [nameof(FFmpegMissingTitle)] = "FFmpeg is missing",
             [nameof(FFmpegMissingMessage)] = """
-                FFmpeg is required for {0} to work. Please download it and make it available in the application directory or on the system PATH.
+                FFmpeg is required for {0} to work. Please download it and make it available in the application directory or on the system PATH, or configure the location in settings.
 
                 Alternatively, you can also download a version of {0} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
 
                 Click DOWNLOAD to go to the FFmpeg download page.
+                """,
+            [nameof(FFmpegPathMissingMessage)] = """
+                FFmpeg is required for this app to work, but the configured path does not exist:
+                {0}
+
+                Please update the FFmpeg path in settings or clear it to use auto-detection.
                 """,
             [nameof(FFmpegDownloadButton)] = "DOWNLOAD",
             [nameof(NothingFoundTitle)] = "Nothing found",
@@ -320,6 +340,12 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— автор відео",
             [nameof(ParallelLimitLabel)] = "Паралельний ліміт",
             [nameof(ParallelLimitTooltip)] = "Скільки завантажень може бути активними одночасно",
+            [nameof(FFmpegPathLabel)] = "Шлях FFmpeg",
+            [nameof(FFmpegPathTooltip)] =
+                "Шлях до виконуваного файлу FFmpeg. Залиште порожнім для автоматичного визначення.",
+            [nameof(FFmpegPathWatermark)] = "Авто",
+            [nameof(FFmpegPathResetTooltip)] = "Скинути до автоматичного визначення",
+            [nameof(FFmpegPathBrowseTooltip)] = "Вибрати файл FFmpeg",
             // Auth Setup
             [nameof(AuthenticationTitle)] = "Автентифікація",
             [nameof(AuthenticatedText)] = "Ви автентифіковані",
@@ -337,6 +363,7 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(CloseButton)] = "ЗАКРИТИ",
             [nameof(DownloadButton)] = "ЗАВАНТАЖИТИ",
             [nameof(CancelButton)] = "СКАСУВАТИ",
+            [nameof(SettingsButton)] = "НАЛАШТУВАННЯ",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Дякуємо за підтримку України!",
             [nameof(UkraineSupportMessage)] = """
@@ -356,11 +383,17 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(SeeReleasesButton)] = "ПЕРЕГЛЯНУТИ РЕЛІЗИ",
             [nameof(FFmpegMissingTitle)] = "FFmpeg відсутній",
             [nameof(FFmpegMissingMessage)] = """
-                FFmpeg потрібен для роботи {0}. Завантажте його та зробіть доступним у каталозі програми або у системному PATH.
+                FFmpeg потрібен для роботи {0}. Завантажте його та зробіть доступним у каталозі програми або у системному PATH, або вкажіть розташування у налаштуваннях.
 
                 Альтернативно, ви можете завантажити версію {0} з вбудованим FFmpeg. Шукайте ресурси релізу, які НЕ позначені як *.Bare.
 
                 Натисніть ЗАВАНТАЖИТИ, щоб перейти на сторінку завантаження FFmpeg.
+                """,
+            [nameof(FFmpegPathMissingMessage)] = """
+                FFmpeg потрібен для роботи програми, але вказаний шлях не існує:
+                {0}
+
+                Будь ласка, оновіть шлях FFmpeg у налаштуваннях або очистіть його для автовизначення.
                 """,
             [nameof(FFmpegDownloadButton)] = "ЗАВАНТАЖИТИ",
             [nameof(NothingFoundTitle)] = "Нічого не знайдено",
@@ -438,6 +471,12 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— Videoautor",
             [nameof(ParallelLimitLabel)] = "Paralleles Limit",
             [nameof(ParallelLimitTooltip)] = "Wie viele Downloads gleichzeitig aktiv sein können",
+            [nameof(FFmpegPathLabel)] = "FFmpeg-Pfad",
+            [nameof(FFmpegPathTooltip)] =
+                "Pfad zur FFmpeg-Programmdatei. Leer lassen für automatische Erkennung.",
+            [nameof(FFmpegPathWatermark)] = "Auto",
+            [nameof(FFmpegPathResetTooltip)] = "Zurücksetzen auf automatische Erkennung",
+            [nameof(FFmpegPathBrowseTooltip)] = "FFmpeg-Programmdatei suchen",
             // Auth Setup
             [nameof(AuthenticationTitle)] = "Authentifizierung",
             [nameof(AuthenticatedText)] = "Sie sind derzeit authentifiziert",
@@ -455,6 +494,7 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(CloseButton)] = "SCHLIESSEN",
             [nameof(DownloadButton)] = "HERUNTERLADEN",
             [nameof(CancelButton)] = "ABBRECHEN",
+            [nameof(SettingsButton)] = "EINSTELLUNGEN",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Danke für Ihre Unterstützung der Ukraine!",
             [nameof(UkraineSupportMessage)] = """
@@ -474,11 +514,17 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(SeeReleasesButton)] = "RELEASES ANZEIGEN",
             [nameof(FFmpegMissingTitle)] = "FFmpeg fehlt",
             [nameof(FFmpegMissingMessage)] = """
-                FFmpeg wird benötigt damit {0} funktioniert. Bitte laden Sie es herunter und machen Sie es im Anwendungsverzeichnis oder im System-PATH verfügbar.
+                FFmpeg wird benötigt damit {0} funktioniert. Bitte laden Sie es herunter und machen Sie es im Anwendungsverzeichnis oder im System-PATH verfügbar, oder konfigurieren Sie den Speicherort in den Einstellungen.
 
                 Alternativ können Sie auch eine Version von {0} herunterladen, die FFmpeg enthält. Suchen Sie nach Release-Dateien, die NICHT mit *.Bare markiert sind.
 
                 Klicken Sie auf HERUNTERLADEN um zur FFmpeg-Downloadseite zu gelangen.
+                """,
+            [nameof(FFmpegPathMissingMessage)] = """
+                FFmpeg wird für diese App benötigt, aber der konfigurierte Pfad existiert nicht:
+                {0}
+
+                Bitte aktualisieren Sie den FFmpeg-Pfad in den Einstellungen oder löschen Sie ihn zur automatischen Erkennung.
                 """,
             [nameof(FFmpegDownloadButton)] = "HERUNTERLADEN",
             [nameof(NothingFoundTitle)] = "Nichts gefunden",
@@ -558,6 +604,12 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(ParallelLimitLabel)] = "Limite parallèle",
             [nameof(ParallelLimitTooltip)] =
                 "Combien de téléchargements peuvent être actifs en même temps",
+            [nameof(FFmpegPathLabel)] = "Chemin FFmpeg",
+            [nameof(FFmpegPathTooltip)] =
+                "Chemin vers l'exécutable FFmpeg. Laisser vide pour la détection automatique.",
+            [nameof(FFmpegPathWatermark)] = "Auto",
+            [nameof(FFmpegPathResetTooltip)] = "Réinitialiser la détection automatique",
+            [nameof(FFmpegPathBrowseTooltip)] = "Parcourir l'exécutable FFmpeg",
             // Auth Setup
             [nameof(AuthenticationTitle)] = "Authentification",
             [nameof(AuthenticatedText)] = "Vous êtes actuellement authentifié",
@@ -575,6 +627,7 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(CloseButton)] = "FERMER",
             [nameof(DownloadButton)] = "TÉLÉCHARGER",
             [nameof(CancelButton)] = "ANNULER",
+            [nameof(SettingsButton)] = "PARAMÈTRES",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Merci de soutenir l'Ukraine !",
             [nameof(UkraineSupportMessage)] = """
@@ -594,11 +647,17 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(SeeReleasesButton)] = "VOIR LES VERSIONS",
             [nameof(FFmpegMissingTitle)] = "FFmpeg est manquant",
             [nameof(FFmpegMissingMessage)] = """
-                FFmpeg est requis pour que {0} fonctionne. Veuillez le télécharger et le rendre disponible dans le répertoire de l'application ou dans le PATH système.
+                FFmpeg est requis pour que {0} fonctionne. Veuillez le télécharger et le rendre disponible dans le répertoire de l'application ou dans le PATH système, ou configurer son emplacement dans les paramètres.
 
                 Alternativement, vous pouvez télécharger une version de {0} avec FFmpeg intégré. Cherchez les fichiers de version qui ne sont PAS marqués *.Bare.
 
                 Cliquez sur TÉLÉCHARGER pour accéder à la page de téléchargement de FFmpeg.
+                """,
+            [nameof(FFmpegPathMissingMessage)] = """
+                FFmpeg est requis pour cette application, mais le chemin configuré n'existe pas :
+                {0}
+
+                Veuillez mettre à jour le chemin FFmpeg dans les paramètres ou le vider pour utiliser la détection automatique.
                 """,
             [nameof(FFmpegDownloadButton)] = "TÉLÉCHARGER",
             [nameof(NothingFoundTitle)] = "Rien trouvé",
@@ -677,6 +736,12 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(ParallelLimitLabel)] = "Límite paralelo",
             [nameof(ParallelLimitTooltip)] =
                 "Cuántas descargas pueden estar activas al mismo tiempo",
+            [nameof(FFmpegPathLabel)] = "Ruta de FFmpeg",
+            [nameof(FFmpegPathTooltip)] =
+                "Ruta al ejecutable de FFmpeg. Dejar vacío para detección automática.",
+            [nameof(FFmpegPathWatermark)] = "Auto",
+            [nameof(FFmpegPathResetTooltip)] = "Restablecer detección automática",
+            [nameof(FFmpegPathBrowseTooltip)] = "Buscar ejecutable de FFmpeg",
             // Auth Setup
             [nameof(AuthenticationTitle)] = "Autenticación",
             [nameof(AuthenticatedText)] = "Actualmente estás autenticado",
@@ -694,6 +759,7 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(CloseButton)] = "CERRAR",
             [nameof(DownloadButton)] = "DESCARGAR",
             [nameof(CancelButton)] = "CANCELAR",
+            [nameof(SettingsButton)] = "AJUSTES",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "¡Gracias por apoyar a Ucrania!",
             [nameof(UkraineSupportMessage)] = """
@@ -713,11 +779,17 @@ public partial class LocalizedStrings : ObservableObject
             [nameof(SeeReleasesButton)] = "VER LANZAMIENTOS",
             [nameof(FFmpegMissingTitle)] = "Falta FFmpeg",
             [nameof(FFmpegMissingMessage)] = """
-                FFmpeg es necesario para que {0} funcione. Descárgalo y ponlo disponible en el directorio de la aplicación o en el PATH del sistema.
+                FFmpeg es necesario para que {0} funcione. Descárgalo y ponlo disponible en el directorio de la aplicación o en el PATH del sistema, o configura la ubicación en los ajustes.
 
                 Alternativamente, puedes descargar una versión de {0} que incluye FFmpeg. Busca los archivos de lanzamiento que NO estén marcados como *.Bare.
 
                 Haz clic en DESCARGAR para ir a la página de descarga de FFmpeg.
+                """,
+            [nameof(FFmpegPathMissingMessage)] = """
+                FFmpeg es necesario para esta aplicación, pero la ruta configurada no existe:
+                {0}
+
+                Por favor, actualiza la ruta de FFmpeg en los ajustes o bórrala para usar la detección automática.
                 """,
             [nameof(FFmpegDownloadButton)] = "DESCARGAR",
             [nameof(NothingFoundTitle)] = "Nada encontrado",

@@ -36,6 +36,9 @@ public partial class SettingsService()
     public partial bool IsAuthPersisted { get; set; } = true;
 
     [ObservableProperty]
+    public partial string? FFmpegFilePath { get; set; }
+
+    [ObservableProperty]
     public partial bool ShouldInjectLanguageSpecificAudioStreams { get; set; } = true;
 
     [ObservableProperty]

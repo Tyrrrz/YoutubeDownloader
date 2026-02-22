@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
@@ -63,20 +65,52 @@ public partial class MainViewModel(
             Process.StartShellExecute(Program.ProjectReleasesUrl);
     }
 
-    private async Task ShowFFmpegMessageAsync()
+    private async Task ShowFFmpegMissingMessageAsync()
     {
-        if (FFmpeg.IsAvailable())
-            return;
+        if (settingsService.FFmpegFilePath is { } ffmpegFilePath)
+        {
+            // Explicit path set — only show the dialog if the file is missing
+            if (File.Exists(ffmpegFilePath))
+                return;
 
-        var dialog = viewModelManager.CreateMessageBoxViewModel(
-            Localization.FFmpegMissingTitle,
-            string.Format(Localization.FFmpegMissingMessage, Program.Name),
-            Localization.FFmpegDownloadButton,
-            Localization.CloseButton
-        );
+            var dialog = viewModelManager.CreateMessageBoxViewModel(
+                Localization.FFmpegMissingTitle,
+                string.Format(Localization.FFmpegPathMissingMessage, ffmpegFilePath),
+                Localization.SettingsButton,
+                Localization.CloseButton
+            );
 
-        if (await dialogManager.ShowDialogAsync(dialog) == true)
-            Process.StartShellExecute("https://ffmpeg.org/download.html");
+            if (await dialogManager.ShowDialogAsync(dialog) == true)
+                await dialogManager.ShowDialogAsync(viewModelManager.CreateSettingsViewModel());
+        }
+        else
+        {
+            // No explicit path — fall back to auto-detection check
+            if (FFmpeg.TryGetCliFilePath() is not null)
+                return;
+
+            var dialog = viewModelManager.CreateMessageBoxViewModel(
+                Localization.FFmpegMissingTitle,
+                $"""
+                {string.Format(Localization.FFmpegMissingMessage, Program.Name)}
+
+                ――――――――――――――――――――――――――――――――――――――――――
+
+                Searched for '{FFmpeg.CliFileName}' in the following directories:
+                {string.Join(
+                    Environment.NewLine,
+                    FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d =>
+                        $"- {d}"
+                    )
+                )}
+                """,
+                Localization.FFmpegDownloadButton,
+                Localization.CloseButton
+            );
+
+            if (await dialogManager.ShowDialogAsync(dialog) == true)
+                Process.StartShellExecute("https://ffmpeg.org/download.html");
+        }
 
         if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
             Environment.Exit(3);
@@ -119,7 +153,7 @@ public partial class MainViewModel(
     {
         await ShowUkraineSupportMessageAsync();
         await ShowDevelopmentBuildMessageAsync();
-        await ShowFFmpegMessageAsync();
+        await ShowFFmpegMissingMessageAsync();
         await CheckForUpdatesAsync();
     }
 

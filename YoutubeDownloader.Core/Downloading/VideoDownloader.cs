@@ -49,6 +49,7 @@ public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null) : IDi
         IVideo video,
         VideoDownloadOption downloadOption,
         bool includeSubtitles = true,
+        string? ffmpegPath = null,
         IProgress<Percentage>? progress = null,
         CancellationToken cancellationToken = default
     )
@@ -73,7 +74,7 @@ public class VideoDownloader(IReadOnlyList<Cookie>? initialCookies = null) : IDi
             downloadOption.StreamInfos,
             trackInfos,
             new ConversionRequestBuilder(filePath)
-                .SetFFmpegPath(FFmpeg.TryGetCliFilePath() ?? "ffmpeg")
+                .SetFFmpegPath(ffmpegPath ?? FFmpeg.TryGetCliFilePath() ?? "ffmpeg")
                 .SetContainer(downloadOption.Container)
                 .SetPreset(ConversionPreset.Medium)
                 .Build(),

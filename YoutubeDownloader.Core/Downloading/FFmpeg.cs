@@ -7,63 +7,62 @@ namespace YoutubeDownloader.Core.Downloading;
 
 public static class FFmpeg
 {
-    private static string CliFileName { get; } =
+    public static string CliFileName { get; } =
         OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg";
 
-    public static string? TryGetCliFilePath()
+    public static IEnumerable<string> GetProbeDirectoryPaths()
     {
-        static IEnumerable<string> GetProbeDirectoryPaths()
+        yield return AppContext.BaseDirectory;
+        yield return Directory.GetCurrentDirectory();
+
+        // Process PATH
+        if (
+            Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator) is
+            { } processPaths
+        )
         {
-            yield return AppContext.BaseDirectory;
-            yield return Directory.GetCurrentDirectory();
-
-            // Process PATH
-            if (
-                Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator) is
-                { } processPaths
-            )
-            {
-                foreach (var path in processPaths)
+            foreach (var path in processPaths)
+                if (!string.IsNullOrWhiteSpace(path))
                     yield return path;
-            }
-
-            // Registry-based PATH variables
-            if (OperatingSystem.IsWindows())
-            {
-                // User PATH
-                if (
-                    Environment
-                        .GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)
-                        ?.Split(Path.PathSeparator) is
-                    { } userPaths
-                )
-                {
-                    foreach (var path in userPaths)
-                        yield return path;
-                }
-
-                // System PATH
-                if (
-                    Environment
-                        .GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)
-                        ?.Split(Path.PathSeparator) is
-                    { } systemPaths
-                )
-                {
-                    foreach (var path in systemPaths)
-                        yield return path;
-                }
-            }
         }
 
-        return GetProbeDirectoryPaths()
+        // Registry-based PATH variables
+        if (OperatingSystem.IsWindows())
+        {
+            // User PATH
+            if (
+                Environment
+                    .GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)
+                    ?.Split(Path.PathSeparator) is
+                { } userPaths
+            )
+            {
+                foreach (var path in userPaths)
+                    if (!string.IsNullOrWhiteSpace(path))
+                        yield return path;
+            }
+
+            // System PATH
+            if (
+                Environment
+                    .GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)
+                    ?.Split(Path.PathSeparator) is
+                { } systemPaths
+            )
+            {
+                foreach (var path in systemPaths)
+                    if (!string.IsNullOrWhiteSpace(path))
+                        yield return path;
+            }
+        }
+    }
+
+    public static string? TryGetCliFilePath() =>
+        GetProbeDirectoryPaths()
             .Distinct(StringComparer.Ordinal)
             .Select(dirPath => Path.Combine(dirPath, CliFileName))
             .FirstOrDefault(File.Exists);
-    }
 
     public static bool IsBundled() =>
         File.Exists(Path.Combine(AppContext.BaseDirectory, CliFileName));
-
-    public static bool IsAvailable() => !string.IsNullOrWhiteSpace(TryGetCliFilePath());
 }

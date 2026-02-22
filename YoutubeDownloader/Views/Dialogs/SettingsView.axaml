@@ -3,6 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Width="380"
     x:DataType="dialogs:SettingsViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
@@ -70,6 +71,48 @@
                             Margin="16,8"
                             DockPanel.Dock="Right"
                             IsChecked="{Binding IsAuthPersisted}" />
+                    </DockPanel>
+
+                    <!--  FFmpeg path  -->
+                    <DockPanel
+                        Margin="16,8"
+                        LastChildFill="False"
+                        ToolTip.Tip="{Binding Localization.FFmpegPathTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.FFmpegPathLabel}" />
+                        <TextBox
+                            Width="150"
+                            Height="20"
+                            DockPanel.Dock="Right"
+                            FontSize="13"
+                            Text="{Binding FFmpegFilePath}"
+                            Theme="{DynamicResource CompactTextBox}"
+                            Watermark="{Binding Localization.FFmpegPathWatermark}">
+                            <TextBox.InnerRightContent>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding ResetFFmpegFilePathCommand}"
+                                        IsEnabled="{Binding FFmpegFilePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="{Binding Localization.FFmpegPathResetTooltip}">
+                                        <materialIcons:MaterialIcon
+                                            Width="14"
+                                            Height="14"
+                                            Kind="Close" />
+                                    </Button>
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding BrowseFFmpegFilePathCommand}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="{Binding Localization.FFmpegPathBrowseTooltip}">
+                                        <materialIcons:MaterialIcon
+                                            Width="14"
+                                            Height="14"
+                                            Kind="FolderOpen" />
+                                    </Button>
+                                </StackPanel>
+                            </TextBox.InnerRightContent>
+                        </TextBox>
                     </DockPanel>
 
                     <!--  Inject language-specific audio streams  -->
