@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -76,31 +77,53 @@ public partial class MainViewModel(
 
     private async Task ShowFFmpegMessageAsync()
     {
-        if (settingsService.FFmpegPath is not null)
-            return;
+        string message;
 
-        if (FFmpeg.IsAvailable())
-            return;
+        if (settingsService.FFmpegPath is { } ffmpegPath)
+        {
+            // Explicit path set — only show the dialog if the file is missing
+            if (File.Exists(ffmpegPath))
+                return;
+
+            message = $"""
+                FFmpeg is required for {Program.Name} to work, but the configured path does not exist:
+                {ffmpegPath}
+
+                Please update the FFmpeg path in settings or clear it to use auto-detection.
+
+                Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
+
+                Click DOWNLOAD to go to the FFmpeg download page.
+                """;
+        }
+        else
+        {
+            // No explicit path — fall back to auto-detection check
+            if (FFmpeg.IsAvailable())
+                return;
+
+            message = $"""
+                FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH, or configure the location in settings.
+
+                Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
+
+                Click DOWNLOAD to go to the FFmpeg download page.
+
+                ――――――――――――――――――――――――――――――――――――――――――
+
+                Searched for '{FFmpeg.CliFileName}' in the following directories:
+                {string.Join(
+                    Environment.NewLine,
+                    FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d =>
+                        $"- {d}"
+                    )
+                )}
+                """;
+        }
 
         var dialog = viewModelManager.CreateMessageBoxViewModel(
             "FFmpeg is missing",
-            $"""
-            FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH, or configure the location in settings.
-
-            Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
-
-            Click DOWNLOAD to go to the FFmpeg download page.
-
-            ――――――――――――――――――――――――――――――――――――――――――
-
-            Searched for '{FFmpeg.CliFileName}' in the following directories:
-            {string.Join(
-                Environment.NewLine,
-                FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d =>
-                    $"- {d}"
-                )
-            )}
-            """,
+            message,
             "DOWNLOAD",
             "CLOSE"
         );
