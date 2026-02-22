@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
@@ -22,10 +23,18 @@ public class SettingsViewModel : DialogViewModelBase
 
     public IReadOnlyList<ThemeVariant> AvailableThemes { get; } = Enum.GetValues<ThemeVariant>();
 
+    public IReadOnlyList<Language> AvailableLanguages { get; } = Enum.GetValues<Language>();
+
     public ThemeVariant Theme
     {
         get => _settingsService.Theme;
         set => _settingsService.Theme = value;
+    }
+
+    public Language Language
+    {
+        get => _settingsService.Language;
+        set => _settingsService.Language = value;
     }
 
     public bool IsAutoUpdateEnabled

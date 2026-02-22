@@ -8,6 +8,7 @@ using AvaloniaWebView;
 using Material.Styles.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
@@ -71,6 +72,14 @@ public class App : Application, IDisposable
                 }
             )
         );
+
+        // Apply the selected language when the user changes it
+        _eventRoot.Add(
+            _settingsService.WatchProperty(
+                o => o.Language,
+                () => Lang.Current.Language = _settingsService.Language
+            )
+        );
     }
 
     public override void Initialize()
@@ -114,6 +123,9 @@ public class App : Application, IDisposable
 
         // Load settings
         _settingsService.Load();
+
+        // Apply the loaded language
+        Lang.Current.Language = _settingsService.Language;
     }
 
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>

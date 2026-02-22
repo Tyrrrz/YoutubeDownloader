@@ -21,7 +21,7 @@
             TextTrimming="CharacterEllipsis">
             <TextBlock.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding CopyTitleCommand}" Header="Copy" />
+                    <MenuItem Command="{Binding CopyTitleCommand}" Header="{Binding Lang.CopyMenuItem}" />
                 </ContextMenu>
             </TextBlock.ContextMenu>
         </TextBlock>
@@ -118,7 +118,7 @@
             <!--  Container preference  -->
             <ComboBox
                 Margin="0,0,8,0"
-                materialAssists:ComboBoxAssist.Label="Container"
+                materialAssists:ComboBoxAssist.Label="{Binding Lang.ContainerLabel}"
                 ItemsSource="{Binding AvailableContainers}"
                 SelectedItem="{Binding SelectedContainer}"
                 Theme="{DynamicResource MaterialFilledComboBox}" />
@@ -126,7 +126,7 @@
             <!--  Video quality preference  -->
             <ComboBox
                 Margin="8,0,0,0"
-                materialAssists:ComboBoxAssist.Label="Video quality"
+                materialAssists:ComboBoxAssist.Label="{Binding Lang.VideoQualityLabel}"
                 IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
                 ItemsSource="{Binding AvailableVideoQualityPreferences}"
                 SelectedItem="{Binding SelectedVideoQualityPreference}"
@@ -153,7 +153,7 @@
                 Theme="{DynamicResource MaterialOutlineButton}">
                 <Button.Content>
                     <TextBlock>
-                        <Run Text="DOWNLOAD" />
+                        <Run Text="{Binding Lang.DownloadButton}" />
                         <Run Text="(" /><Run Text="{Binding SelectedVideos.Count, FallbackValue=0, Mode=OneWay}" /><Run Text=")" />
                     </TextBlock>
                 </Button.Content>
@@ -163,7 +163,7 @@
             <Button
                 Margin="8,0,0,0"
                 Command="{Binding CloseCommand}"
-                Content="CANCEL"
+                Content="{Binding Lang.CancelButton}"
                 IsCancel="True"
                 Theme="{DynamicResource MaterialOutlineButton}" />
         </StackPanel>

@@ -8,6 +8,7 @@ using Cogwheel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using Container = YoutubeExplode.Videos.Streams.Container;
 
 namespace YoutubeDownloader.Services;
@@ -24,6 +25,9 @@ public partial class SettingsService()
 
     [ObservableProperty]
     public partial ThemeVariant Theme { get; set; }
+
+    [ObservableProperty]
+    public partial Language Language { get; set; }
 
     [ObservableProperty]
     public partial bool IsAutoUpdateEnabled { get; set; } = true;

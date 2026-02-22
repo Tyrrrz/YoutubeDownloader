@@ -11,7 +11,7 @@
             Margin="16"
             FontSize="19"
             FontWeight="Light"
-            Text="Settings" />
+            Text="{Binding Lang.SettingsTitle}" />
 
         <Border
             Grid.Row="1"
@@ -24,8 +24,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="Preferred user interface theme">
-                        <TextBlock DockPanel.Dock="Left" Text="Theme" />
+                        ToolTip.Tip="{Binding Lang.ThemeTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.ThemeLabel}" />
                         <ComboBox
                             Width="150"
                             DockPanel.Dock="Right"
@@ -33,24 +33,26 @@
                             SelectedItem="{Binding Theme}" />
                     </DockPanel>
 
+                    <!--  Language  -->
+                    <DockPanel
+                        Margin="16,8"
+                        LastChildFill="False">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.LanguageLabel}" />
+                        <ComboBox
+                            Width="150"
+                            DockPanel.Dock="Right"
+                            ItemsSource="{Binding AvailableLanguages}"
+                            SelectedItem="{Binding Language}" />
+                    </DockPanel>
+
                     <!--  Auto-updates  -->
                     <DockPanel
                         Margin="16,8"
                         IsVisible="{OnPlatform False,
                                                Windows=True}"
-                        LastChildFill="False">
-                        <ToolTip.Tip>
-                            <TextBlock>
-                                <Run Text="Perform automatic updates on every launch." />
-                                <LineBreak />
-                                <Run FontWeight="SemiBold" Text="Warning:" />
-                                <Run Text="it's recommended to leave this option enabled to ensure that the app" />
-                                <LineBreak />
-                                <Run Text=" " />
-                                <Run Text="is compatible with the latest version of YouTube." />
-                            </TextBlock>
-                        </ToolTip.Tip>
-                        <TextBlock DockPanel.Dock="Left" Text="Auto-update" />
+                        LastChildFill="False"
+                        ToolTip.Tip="{Binding Lang.AutoUpdateTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.AutoUpdateLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding IsAutoUpdateEnabled}" />
                     </DockPanel>
 
@@ -59,11 +61,11 @@
                         IsVisible="{OnPlatform False,
                                                Windows=True}"
                         LastChildFill="False"
-                        ToolTip.Tip="Save authentication cookies to a file so that they can be persisted between sessions">
+                        ToolTip.Tip="{Binding Lang.PersistAuthTooltip}">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
-                            Text="Persist authentication" />
+                            Text="{Binding Lang.PersistAuthLabel}" />
                         <ToggleSwitch
                             Margin="16,8"
                             DockPanel.Dock="Right"
@@ -74,8 +76,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="Inject audio tracks in alternative languages (if available) into downloaded files">
-                        <TextBlock DockPanel.Dock="Left" Text="Inject alternative languages" />
+                        ToolTip.Tip="{Binding Lang.InjectAltLanguagesTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.InjectAltLanguagesLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectLanguageSpecificAudioStreams}" />
                     </DockPanel>
 
@@ -83,8 +85,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="Inject subtitles (if available) into downloaded files">
-                        <TextBlock DockPanel.Dock="Left" Text="Inject subtitles" />
+                        ToolTip.Tip="{Binding Lang.InjectSubtitlesTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.InjectSubtitlesLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectSubtitles}" />
                     </DockPanel>
 
@@ -92,8 +94,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="Inject media tags (if available) into downloaded files">
-                        <TextBlock DockPanel.Dock="Left" Text="Inject media tags" />
+                        ToolTip.Tip="{Binding Lang.InjectTagsTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.InjectTagsLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectTags}" />
                     </DockPanel>
 
@@ -101,8 +103,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="When downloading multiple videos, skip those that already have matching files in the output directory">
-                        <TextBlock DockPanel.Dock="Left" Text="Skip existing files" />
+                        ToolTip.Tip="{Binding Lang.SkipExistingFilesTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.SkipExistingFilesLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldSkipExistingFiles}" />
                     </DockPanel>
 
@@ -110,29 +112,29 @@
                     <DockPanel Margin="16,8" LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock>
-                                <Run Text="Template used for generating file names for downloaded videos." />
+                                <Run Text="{Binding Lang.FileNameTemplateTooltip}" />
                                 <LineBreak />
                                 <LineBreak />
                                 <Run Text="Available tokens:" />
                                 <LineBreak />
                                 <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="$num" />
-                                <Run Text="— video's position in the list (if applicable)" />
+                                <Run FontWeight="SemiBold" Text="{Binding Lang.FileNameTemplateTokenNum}" />
+                                <Run Text="{Binding Lang.FileNameTemplateTokenNumDesc}" />
                                 <LineBreak />
                                 <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="$id" />
-                                <Run Text="— video ID" />
+                                <Run FontWeight="SemiBold" Text="{Binding Lang.FileNameTemplateTokenId}" />
+                                <Run Text="{Binding Lang.FileNameTemplateTokenIdDesc}" />
                                 <LineBreak />
                                 <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="$title" />
-                                <Run Text="— video title" />
+                                <Run FontWeight="SemiBold" Text="{Binding Lang.FileNameTemplateTokenTitle}" />
+                                <Run Text="{Binding Lang.FileNameTemplateTokenTitleDesc}" />
                                 <LineBreak />
                                 <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="$author" />
-                                <Run Text="— video author" />
+                                <Run FontWeight="SemiBold" Text="{Binding Lang.FileNameTemplateTokenAuthor}" />
+                                <Run Text="{Binding Lang.FileNameTemplateTokenAuthorDesc}" />
                             </TextBlock>
                         </ToolTip.Tip>
-                        <TextBlock DockPanel.Dock="Left" Text="File name template" />
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.FileNameTemplateLabel}" />
                         <TextBox
                             Width="150"
                             Height="20"
@@ -146,8 +148,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="How many downloads can be active at the same time">
-                        <TextBlock DockPanel.Dock="Left" Text="Parallel limit" />
+                        ToolTip.Tip="{Binding Lang.ParallelLimitTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.ParallelLimitLabel}" />
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                             <TextBlock Margin="10,0" Text="{Binding ParallelLimit}" />
                             <Slider
@@ -169,7 +171,7 @@
             Margin="16"
             HorizontalAlignment="Stretch"
             Command="{Binding CloseCommand}"
-            Content="CLOSE"
+            Content="{Binding Lang.CloseButton}"
             IsCancel="True"
             IsDefault="True"
             Theme="{DynamicResource MaterialOutlineButton}" />
