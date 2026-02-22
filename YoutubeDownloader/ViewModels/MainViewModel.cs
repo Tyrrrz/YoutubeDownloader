@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
@@ -86,6 +87,11 @@ public partial class MainViewModel(
             Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
 
             Click DOWNLOAD to go to the FFmpeg download page.
+
+            ――――――――――――――――――――――――――――――――――――――――――
+
+            Searched for '{FFmpeg.CliFileName}' in the following directories:
+            {string.Join(Environment.NewLine, FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d => $"- {d}"))}
             """,
             "DOWNLOAD",
             "CLOSE"
