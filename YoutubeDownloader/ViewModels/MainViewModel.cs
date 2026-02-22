@@ -88,7 +88,7 @@ public partial class MainViewModel(
 
             Click DOWNLOAD to go to the FFmpeg download page.
 
-            ――――――――――――――――――――――――――――――――
+            ――――――――――――――――――――――――――――――――――――――――――
             Searched for '{FFmpeg.CliFileName}' in the following directories:
             {string.Join(Environment.NewLine, FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d => $"- {d}"))}
             """,
