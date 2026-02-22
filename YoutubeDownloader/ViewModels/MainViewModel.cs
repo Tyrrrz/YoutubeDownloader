@@ -75,7 +75,7 @@ public partial class MainViewModel(
 
     private async Task ShowFFmpegMessageAsync()
     {
-        if (settingsService.IsFFmpegPathValid())
+        if (settingsService.FFmpegPath is not null)
             return;
 
         if (FFmpeg.IsAvailable())
@@ -84,9 +84,7 @@ public partial class MainViewModel(
         var dialog = viewModelManager.CreateMessageBoxViewModel(
             "FFmpeg is missing",
             $"""
-            FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH.
-
-            You can also configure a custom FFmpeg path in Settings.
+            FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH, or configure the location in settings.
 
             Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
 

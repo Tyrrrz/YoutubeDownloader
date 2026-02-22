@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
@@ -11,7 +10,7 @@ using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class SettingsViewModel : DialogViewModelBase
+public partial class SettingsViewModel : DialogViewModelBase
 {
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
@@ -24,9 +23,6 @@ public class SettingsViewModel : DialogViewModelBase
         _settingsService = settingsService;
 
         _eventRoot.Add(_settingsService.WatchAllProperties(OnAllPropertiesChanged));
-
-        BrowseFFmpegPathCommand = new AsyncRelayCommand(BrowseFFmpegPathAsync);
-        ResetFFmpegPathCommand = new RelayCommand(() => FFmpegPath = "");
     }
 
     public IReadOnlyList<ThemeVariant> AvailableThemes { get; } = Enum.GetValues<ThemeVariant>();
@@ -47,6 +43,12 @@ public class SettingsViewModel : DialogViewModelBase
     {
         get => _settingsService.IsAuthPersisted;
         set => _settingsService.IsAuthPersisted = value;
+    }
+
+    public string? FFmpegPath
+    {
+        get => _settingsService.FFmpegPath;
+        set => _settingsService.FFmpegPath = value;
     }
 
     public bool ShouldInjectLanguageSpecificAudioStreams
@@ -85,22 +87,13 @@ public class SettingsViewModel : DialogViewModelBase
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
     }
 
-    public string FFmpegPath
-    {
-        get => _settingsService.FFmpegPath;
-        set => _settingsService.FFmpegPath = value;
-    }
-
-    public IAsyncRelayCommand BrowseFFmpegPathCommand { get; }
-
-    public IRelayCommand ResetFFmpegPathCommand { get; }
-
+    [RelayCommand]
     private async Task BrowseFFmpegPathAsync()
     {
-        var fileTypes = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+        var fileTypes = OperatingSystem.IsWindows()
             ? new[]
             {
-                new FilePickerFileType("FFmpeg executable") { Patterns = ["ffmpeg.exe"] },
+                new FilePickerFileType("FFmpeg executable") { Patterns = ["*.exe"] },
                 FilePickerFileTypes.All,
             }
             : null;
@@ -112,6 +105,9 @@ public class SettingsViewModel : DialogViewModelBase
 
         FFmpegPath = filePath;
     }
+
+    [RelayCommand]
+    private void ResetFFmpegPath() => FFmpegPath = null;
 
     protected override void Dispose(bool disposing)
     {

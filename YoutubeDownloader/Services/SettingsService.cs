@@ -32,6 +32,9 @@ public partial class SettingsService()
     public partial bool IsAuthPersisted { get; set; } = true;
 
     [ObservableProperty]
+    public partial string? FFmpegPath { get; set; }
+
+    [ObservableProperty]
     public partial bool ShouldInjectLanguageSpecificAudioStreams { get; set; } = true;
 
     [ObservableProperty]
@@ -59,12 +62,6 @@ public partial class SettingsService()
     [ObservableProperty]
     public partial VideoQualityPreference LastVideoQualityPreference { get; set; } =
         VideoQualityPreference.Highest;
-
-    [ObservableProperty]
-    public partial string FFmpegPath { get; set; } = "";
-
-    public bool IsFFmpegPathValid() =>
-        !string.IsNullOrWhiteSpace(FFmpegPath) && File.Exists(FFmpegPath);
 
     public override void Save()
     {

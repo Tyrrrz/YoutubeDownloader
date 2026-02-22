@@ -164,7 +164,7 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="Path to the FFmpeg executable. Leave empty to use auto-detection.">
+                        ToolTip.Tip="Path to the FFmpeg executable. Leave unset to use auto-detection.">
                         <TextBlock DockPanel.Dock="Left" Text="FFmpeg path" />
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
                             <Button
