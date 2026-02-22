@@ -117,6 +117,7 @@ public partial class DashboardViewModel : ViewModelBase
                 download.Video!,
                 downloadOption,
                 _settingsService.ShouldInjectSubtitles,
+                _settingsService.FFmpegFilePath,
                 download.Progress.Merge(progress),
                 download.CancellationToken
             );

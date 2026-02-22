@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -74,31 +75,61 @@ public partial class MainViewModel(
             Process.StartShellExecute(Program.ProjectReleasesUrl);
     }
 
-    private async Task ShowFFmpegMessageAsync()
+    private async Task ShowFFmpegMissingMessageAsync()
     {
-        if (FFmpeg.IsAvailable())
-            return;
+        if (settingsService.FFmpegFilePath is { } ffmpegFilePath)
+        {
+            // Explicit path set — only show the dialog if the file is missing
+            if (File.Exists(ffmpegFilePath))
+                return;
 
-        var dialog = viewModelManager.CreateMessageBoxViewModel(
-            "FFmpeg is missing",
-            $"""
-            FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH.
+            var dialog = viewModelManager.CreateMessageBoxViewModel(
+                "FFmpeg is missing",
+                $"""
+                FFmpeg is required for {Program.Name} to work, but the configured path does not exist:
+                {ffmpegFilePath}
 
-            Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
+                Please update the FFmpeg path in settings or clear it to use auto-detection.
+                """,
+                "SETTINGS",
+                "CLOSE"
+            );
 
-            Click DOWNLOAD to go to the FFmpeg download page.
+            if (await dialogManager.ShowDialogAsync(dialog) == true)
+                await dialogManager.ShowDialogAsync(viewModelManager.CreateSettingsViewModel());
+        }
+        else
+        {
+            // No explicit path — fall back to auto-detection check
+            if (FFmpeg.TryGetCliFilePath() is not null)
+                return;
 
-            ――――――――――――――――――――――――――――――――――――――――――
+            var dialog = viewModelManager.CreateMessageBoxViewModel(
+                "FFmpeg is missing",
+                $"""
+                FFmpeg is required for {Program.Name} to work. Please download it and make it available in the application directory or on the system PATH, or configure the location in settings.
 
-            Searched for '{FFmpeg.CliFileName}' in the following directories:
-            {string.Join(Environment.NewLine, FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d => $"- {d}"))}
-            """,
-            "DOWNLOAD",
-            "CLOSE"
-        );
+                Alternatively, you can also download a version of {Program.Name} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
 
-        if (await dialogManager.ShowDialogAsync(dialog) == true)
-            Process.StartShellExecute("https://ffmpeg.org/download.html");
+                Click DOWNLOAD to go to the FFmpeg download page.
+
+                ――――――――――――――――――――――――――――――――――――――――――
+
+                Searched for '{FFmpeg.CliFileName}' in the following directories:
+                {string.Join(
+                    Environment.NewLine,
+                    FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d =>
+                        $"- {d}"
+                    )
+                )}
+                """,
+                "DOWNLOAD",
+                "CLOSE"
+            );
+
+            if (await dialogManager.ShowDialogAsync(dialog) == true)
+                Process.StartShellExecute("https://ffmpeg.org/download.html");
+        }
 
         if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
             Environment.Exit(3);
@@ -139,7 +170,7 @@ public partial class MainViewModel(
     {
         await ShowUkraineSupportMessageAsync();
         await ShowDevelopmentBuildMessageAsync();
-        await ShowFFmpegMessageAsync();
+        await ShowFFmpegMissingMessageAsync();
         await CheckForUpdatesAsync();
     }
 
