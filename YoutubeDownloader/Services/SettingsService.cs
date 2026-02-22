@@ -60,6 +60,12 @@ public partial class SettingsService()
     public partial VideoQualityPreference LastVideoQualityPreference { get; set; } =
         VideoQualityPreference.Highest;
 
+    [ObservableProperty]
+    public partial string FFmpegPath { get; set; } = "";
+
+    public bool IsFFmpegPathValid() =>
+        !string.IsNullOrWhiteSpace(FFmpegPath) && File.Exists(FFmpegPath);
+
     public override void Save()
     {
         // Clear the cookies if they are not supposed to be persisted

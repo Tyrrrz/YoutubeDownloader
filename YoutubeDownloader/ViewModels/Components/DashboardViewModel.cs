@@ -112,11 +112,16 @@ public partial class DashboardViewModel : ViewModelBase
                     download.CancellationToken
                 );
 
+            var ffmpegPath = _settingsService.IsFFmpegPathValid()
+                ? _settingsService.FFmpegPath
+                : null;
+
             await downloader.DownloadVideoAsync(
                 download.FilePath!,
                 download.Video!,
                 downloadOption,
                 _settingsService.ShouldInjectSubtitles,
+                ffmpegPath,
                 download.Progress.Merge(progress),
                 download.CancellationToken
             );

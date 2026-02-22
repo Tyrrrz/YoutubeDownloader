@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
@@ -9,15 +13,20 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 
 public class SettingsViewModel : DialogViewModelBase
 {
+    private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
     private readonly DisposableCollector _eventRoot = new();
 
-    public SettingsViewModel(SettingsService settingsService)
+    public SettingsViewModel(DialogManager dialogManager, SettingsService settingsService)
     {
+        _dialogManager = dialogManager;
         _settingsService = settingsService;
 
         _eventRoot.Add(_settingsService.WatchAllProperties(OnAllPropertiesChanged));
+
+        BrowseFFmpegPathCommand = new AsyncRelayCommand(BrowseFFmpegPathAsync);
+        ResetFFmpegPathCommand = new RelayCommand(() => FFmpegPath = "");
     }
 
     public IReadOnlyList<ThemeVariant> AvailableThemes { get; } = Enum.GetValues<ThemeVariant>();
@@ -74,6 +83,34 @@ public class SettingsViewModel : DialogViewModelBase
     {
         get => _settingsService.ParallelLimit;
         set => _settingsService.ParallelLimit = Math.Clamp(value, 1, 10);
+    }
+
+    public string FFmpegPath
+    {
+        get => _settingsService.FFmpegPath;
+        set => _settingsService.FFmpegPath = value;
+    }
+
+    public IAsyncRelayCommand BrowseFFmpegPathCommand { get; }
+
+    public IRelayCommand ResetFFmpegPathCommand { get; }
+
+    private async Task BrowseFFmpegPathAsync()
+    {
+        var fileTypes = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            ? new[]
+            {
+                new FilePickerFileType("FFmpeg executable") { Patterns = ["ffmpeg.exe"] },
+                FilePickerFileTypes.All,
+            }
+            : null;
+
+        var filePath = await _dialogManager.PromptOpenFilePathAsync(fileTypes);
+
+        if (string.IsNullOrWhiteSpace(filePath))
+            return;
+
+        FFmpegPath = filePath;
     }
 
     protected override void Dispose(bool disposing)

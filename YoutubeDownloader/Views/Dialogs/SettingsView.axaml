@@ -159,6 +159,32 @@
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
                     </DockPanel>
+
+                    <!--  FFmpeg path  -->
+                    <DockPanel
+                        Margin="16,8"
+                        LastChildFill="False"
+                        ToolTip.Tip="Path to the FFmpeg executable. Leave empty to use auto-detection.">
+                        <TextBlock DockPanel.Dock="Left" Text="FFmpeg path" />
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
+                            <Button
+                                Command="{Binding ResetFFmpegPathCommand}"
+                                Content="RESET"
+                                IsVisible="{Binding FFmpegPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                Theme="{DynamicResource MaterialFlatButton}" />
+                            <Button
+                                Command="{Binding BrowseFFmpegPathCommand}"
+                                Content="BROWSE"
+                                Theme="{DynamicResource MaterialFlatButton}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <TextBlock
+                        Margin="16,0,16,4"
+                        FontSize="11"
+                        IsVisible="{Binding FFmpegPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        Opacity="0.6"
+                        Text="{Binding FFmpegPath}"
+                        TextTrimming="CharacterEllipsis" />
                 </StackPanel>
             </ScrollViewer>
         </Border>
