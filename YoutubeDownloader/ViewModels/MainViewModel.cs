@@ -29,10 +29,10 @@ public partial class MainViewModel(
             return;
 
         var dialog = viewModelManager.CreateMessageBoxViewModel(
-            Lang.UkraineSupportTitle,
-            Lang.UkraineSupportMessage,
-            Lang.LearnMoreButton,
-            Lang.CloseButton
+            Localization.UkraineSupportTitle,
+            Localization.UkraineSupportMessage,
+            Localization.LearnMoreButton,
+            Localization.CloseButton
         );
 
         // Disable this message in the future
@@ -53,10 +53,10 @@ public partial class MainViewModel(
             return;
 
         var dialog = viewModelManager.CreateMessageBoxViewModel(
-            Lang.UnstableBuildTitle,
-            string.Format(Lang.UnstableBuildMessage, Program.Name),
-            Lang.SeeReleasesButton,
-            Lang.CloseButton
+            Localization.UnstableBuildTitle,
+            string.Format(Localization.UnstableBuildMessage, Program.Name),
+            Localization.SeeReleasesButton,
+            Localization.CloseButton
         );
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
@@ -69,10 +69,10 @@ public partial class MainViewModel(
             return;
 
         var dialog = viewModelManager.CreateMessageBoxViewModel(
-            Lang.FfmpegMissingTitle,
-            string.Format(Lang.FfmpegMissingMessage, Program.Name),
-            Lang.DownloadButton2,
-            Lang.CloseButton
+            Localization.FFmpegMissingTitle,
+            string.Format(Localization.FFmpegMissingMessage, Program.Name),
+            Localization.FFmpegDownloadButton,
+            Localization.CloseButton
         );
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
@@ -91,13 +91,13 @@ public partial class MainViewModel(
                 return;
 
             snackbarManager.Notify(
-                string.Format(Lang.UpdateDownloadingMessage, Program.Name, updateVersion)
+                string.Format(Localization.UpdateDownloadingMessage, Program.Name, updateVersion)
             );
             await updateService.PrepareUpdateAsync(updateVersion);
 
             snackbarManager.Notify(
-                Lang.UpdateReadyMessage,
-                Lang.UpdateInstallNowButton,
+                Localization.UpdateReadyMessage,
+                Localization.UpdateInstallNowButton,
                 () =>
                 {
                     updateService.FinalizeUpdate(true);
@@ -110,7 +110,7 @@ public partial class MainViewModel(
         catch
         {
             // Failure to update shouldn't crash the application
-            snackbarManager.Notify(Lang.UpdateFailedMessage);
+            snackbarManager.Notify(Localization.UpdateFailedMessage);
         }
     }
 

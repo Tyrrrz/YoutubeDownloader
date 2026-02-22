@@ -263,8 +263,8 @@ public partial class DashboardViewModel : ViewModelBase
             {
                 await _dialogManager.ShowDialogAsync(
                     _viewModelManager.CreateMessageBoxViewModel(
-                        Lang.NothingFoundTitle,
-                        Lang.NothingFoundMessage
+                        Localization.NothingFoundTitle,
+                        Localization.NothingFoundMessage
                     )
                 );
             }
@@ -273,7 +273,7 @@ public partial class DashboardViewModel : ViewModelBase
         {
             await _dialogManager.ShowDialogAsync(
                 _viewModelManager.CreateMessageBoxViewModel(
-                    Lang.ErrorTitle,
+                    Localization.ErrorTitle,
                     // Short error message for YouTube-related errors, full for others
                     ex is YoutubeExplodeException
                         ? ex.Message

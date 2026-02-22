@@ -1,27 +1,19 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace YoutubeDownloader.Localization;
 
-public class Lang : INotifyPropertyChanged
+public partial class Localization : ObservableObject
 {
-    public static Lang Current { get; } = new();
+    public static Localization Current { get; } = new();
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
+    [ObservableProperty]
     private Language _language = Language.English;
 
-    public Language Language
-    {
-        get => _language;
-        set
-        {
-            _language = value;
-            // Notify that all properties have changed
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
-        }
-    }
+    partial void OnLanguageChanged(Language value) =>
+        // Notify all string properties so the UI refreshes
+        OnPropertyChanged(string.Empty);
 
     private string Get([CallerMemberName] string? key = null)
     {
@@ -29,8 +21,8 @@ public class Lang : INotifyPropertyChanged
             return string.Empty;
 
         if (
-            _language != Language.English
-            && Translations.TryGetValue(_language, out var dict)
+            this.Language != Language.English
+            && Translations.TryGetValue(this.Language, out var dict)
             && dict.TryGetValue(key, out var translated)
         )
             return translated;
@@ -45,11 +37,13 @@ public class Lang : INotifyPropertyChanged
     public string ProcessQueryTooltip => Get();
     public string AuthTooltip => Get();
     public string SettingsTooltip => Get();
-    public string DashboardUrlLabel => Get();
     public string DashboardSearchQueryLabel => Get();
-    public string DashboardPlaceholderLine1 => Get();
-    public string DashboardPlaceholderLine2 => Get();
     public string DashboardShiftEnterLabel => Get();
+    public string DashboardPlaceholderCopyPasteA => Get();
+    public string DashboardPlaceholderOrEnterA => Get();
+    public string DashboardPlaceholderToStartDownloading => Get();
+    public string DashboardPlaceholderPress => Get();
+    public string DashboardPlaceholderToAddMultiple => Get();
     public string DownloadsFileColumnHeader => Get();
     public string DownloadsStatusColumnHeader => Get();
     public string ContextMenuRemoveSuccessful => Get();
@@ -86,13 +80,9 @@ public class Lang : INotifyPropertyChanged
     public string SkipExistingFilesTooltip => Get();
     public string FileNameTemplateLabel => Get();
     public string FileNameTemplateTooltip => Get();
-    public string FileNameTemplateTokenNum => Get();
     public string FileNameTemplateTokenNumDesc => Get();
-    public string FileNameTemplateTokenId => Get();
     public string FileNameTemplateTokenIdDesc => Get();
-    public string FileNameTemplateTokenTitle => Get();
     public string FileNameTemplateTokenTitleDesc => Get();
-    public string FileNameTemplateTokenAuthor => Get();
     public string FileNameTemplateTokenAuthorDesc => Get();
     public string ParallelLimitLabel => Get();
     public string ParallelLimitTooltip => Get();
@@ -130,9 +120,9 @@ public class Lang : INotifyPropertyChanged
     public string UnstableBuildTitle => Get();
     public string UnstableBuildMessage => Get();
     public string SeeReleasesButton => Get();
-    public string FfmpegMissingTitle => Get();
-    public string FfmpegMissingMessage => Get();
-    public string DownloadButton2 => Get();
+    public string FFmpegMissingTitle => Get();
+    public string FFmpegMissingMessage => Get();
+    public string FFmpegDownloadButton => Get();
     public string NothingFoundTitle => Get();
     public string NothingFoundMessage => Get();
     public string ErrorTitle => Get();
@@ -157,12 +147,13 @@ public class Lang : INotifyPropertyChanged
             [nameof(ProcessQueryTooltip)] = "Process query (Enter)",
             [nameof(AuthTooltip)] = "Authentication",
             [nameof(SettingsTooltip)] = "Settings",
-            [nameof(DashboardUrlLabel)] = "URL",
             [nameof(DashboardSearchQueryLabel)] = "search query",
-            [nameof(DashboardPlaceholderLine1)] =
-                "Copy-paste a URL or enter a search query to start downloading",
-            [nameof(DashboardPlaceholderLine2)] = "Press Shift+Enter to add multiple items",
             [nameof(DashboardShiftEnterLabel)] = "Shift+Enter",
+            [nameof(DashboardPlaceholderCopyPasteA)] = "Copy-paste a ",
+            [nameof(DashboardPlaceholderOrEnterA)] = " or enter a ",
+            [nameof(DashboardPlaceholderToStartDownloading)] = " to start downloading",
+            [nameof(DashboardPlaceholderPress)] = "Press ",
+            [nameof(DashboardPlaceholderToAddMultiple)] = " to add multiple items",
             [nameof(DownloadsFileColumnHeader)] = "File",
             [nameof(DownloadsStatusColumnHeader)] = "Status",
             [nameof(ContextMenuRemoveSuccessful)] = "Remove successful downloads",
@@ -184,8 +175,10 @@ public class Lang : INotifyPropertyChanged
             [nameof(ThemeTooltip)] = "Preferred user interface theme",
             [nameof(LanguageLabel)] = "Language",
             [nameof(AutoUpdateLabel)] = "Auto-update",
-            [nameof(AutoUpdateTooltip)] =
-                "Perform automatic updates on every launch.\nWarning: it's recommended to leave this option enabled to ensure that the app is compatible with the latest version of YouTube.",
+            [nameof(AutoUpdateTooltip)] = """
+                Perform automatic updates on every launch.
+                Warning: it's recommended to leave this option enabled to ensure that the app is compatible with the latest version of YouTube.
+                """,
             [nameof(PersistAuthLabel)] = "Persist authentication",
             [nameof(PersistAuthTooltip)] =
                 "Save authentication cookies to a file so that they can be persisted between sessions",
@@ -203,14 +196,10 @@ public class Lang : INotifyPropertyChanged
             [nameof(FileNameTemplateLabel)] = "File name template",
             [nameof(FileNameTemplateTooltip)] =
                 "Template used for generating file names for downloaded videos.",
-            [nameof(FileNameTemplateTokenNum)] = "$num",
             [nameof(FileNameTemplateTokenNumDesc)] =
                 "— video's position in the list (if applicable)",
-            [nameof(FileNameTemplateTokenId)] = "$id",
             [nameof(FileNameTemplateTokenIdDesc)] = "— video ID",
-            [nameof(FileNameTemplateTokenTitle)] = "$title",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— video title",
-            [nameof(FileNameTemplateTokenAuthor)] = "$author",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— video author",
             [nameof(ParallelLimitLabel)] = "Parallel limit",
             [nameof(ParallelLimitTooltip)] = "How many downloads can be active at the same time",
@@ -233,17 +222,30 @@ public class Lang : INotifyPropertyChanged
             [nameof(CancelButton)] = "CANCEL",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Thank you for supporting Ukraine!",
-            [nameof(UkraineSupportMessage)] =
-                "As Russia wages a genocidal war against my country, I'm grateful to everyone who continues to stand with Ukraine in our fight for freedom.\n\nClick LEARN MORE to find ways that you can help.",
+            [nameof(UkraineSupportMessage)] = """
+                As Russia wages a genocidal war against my country, I'm grateful to everyone who continues to stand with Ukraine in our fight for freedom.
+
+                Click LEARN MORE to find ways that you can help.
+                """,
             [nameof(LearnMoreButton)] = "LEARN MORE",
             [nameof(UnstableBuildTitle)] = "Unstable build warning",
-            [nameof(UnstableBuildMessage)] =
-                "You're using a development build of {0}. These builds are not thoroughly tested and may contain bugs.\n\nAuto-updates are disabled for development builds.\n\nClick SEE RELEASES if you want to download a stable release instead.",
+            [nameof(UnstableBuildMessage)] = """
+                You're using a development build of {0}. These builds are not thoroughly tested and may contain bugs.
+
+                Auto-updates are disabled for development builds.
+
+                Click SEE RELEASES if you want to download a stable release instead.
+                """,
             [nameof(SeeReleasesButton)] = "SEE RELEASES",
-            [nameof(FfmpegMissingTitle)] = "FFmpeg is missing",
-            [nameof(FfmpegMissingMessage)] =
-                "FFmpeg is required for {0} to work. Please download it and make it available in the application directory or on the system PATH.\n\nAlternatively, you can also download a version of {0} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.\n\nClick DOWNLOAD to go to the FFmpeg download page.",
-            [nameof(DownloadButton2)] = "DOWNLOAD",
+            [nameof(FFmpegMissingTitle)] = "FFmpeg is missing",
+            [nameof(FFmpegMissingMessage)] = """
+                FFmpeg is required for {0} to work. Please download it and make it available in the application directory or on the system PATH.
+
+                Alternatively, you can also download a version of {0} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
+
+                Click DOWNLOAD to go to the FFmpeg download page.
+                """,
+            [nameof(FFmpegDownloadButton)] = "DOWNLOAD",
             [nameof(NothingFoundTitle)] = "Nothing found",
             [nameof(NothingFoundMessage)] =
                 "Couldn't find any videos based on the query or URL you provided",
@@ -263,13 +265,13 @@ public class Lang : INotifyPropertyChanged
             [nameof(ProcessQueryTooltip)] = "Виконати запит (Enter)",
             [nameof(AuthTooltip)] = "Автентифікація",
             [nameof(SettingsTooltip)] = "Налаштування",
-            [nameof(DashboardUrlLabel)] = "URL",
             [nameof(DashboardSearchQueryLabel)] = "пошуковий запит",
-            [nameof(DashboardPlaceholderLine1)] =
-                "Вставте URL або введіть пошуковий запит для завантаження",
-            [nameof(DashboardPlaceholderLine2)] =
-                "Натисніть Shift+Enter, щоб додати декілька елементів",
             [nameof(DashboardShiftEnterLabel)] = "Shift+Enter",
+            [nameof(DashboardPlaceholderCopyPasteA)] = "Вставте ",
+            [nameof(DashboardPlaceholderOrEnterA)] = " або введіть ",
+            [nameof(DashboardPlaceholderToStartDownloading)] = " для завантаження",
+            [nameof(DashboardPlaceholderPress)] = "Натисніть ",
+            [nameof(DashboardPlaceholderToAddMultiple)] = ", щоб додати декілька елементів",
             [nameof(DownloadsFileColumnHeader)] = "Файл",
             [nameof(DownloadsStatusColumnHeader)] = "Статус",
             [nameof(ContextMenuRemoveSuccessful)] = "Видалити успішні завантаження",
@@ -291,8 +293,10 @@ public class Lang : INotifyPropertyChanged
             [nameof(ThemeTooltip)] = "Бажана тема інтерфейсу",
             [nameof(LanguageLabel)] = "Мова",
             [nameof(AutoUpdateLabel)] = "Автооновлення",
-            [nameof(AutoUpdateTooltip)] =
-                "Виконувати автоматичні оновлення при кожному запуску.\nУвага: рекомендується залишити цю опцію увімкненою для сумісності з останньою версією YouTube.",
+            [nameof(AutoUpdateTooltip)] = """
+                Виконувати автоматичні оновлення при кожному запуску.
+                Увага: рекомендується залишити цю опцію увімкненою для сумісності з останньою версією YouTube.
+                """,
             [nameof(PersistAuthLabel)] = "Зберігати автентифікацію",
             [nameof(PersistAuthTooltip)] =
                 "Зберігати файли cookie у файлі для збереження між сеансами",
@@ -310,13 +314,9 @@ public class Lang : INotifyPropertyChanged
             [nameof(FileNameTemplateLabel)] = "Шаблон імені файлу",
             [nameof(FileNameTemplateTooltip)] =
                 "Шаблон для генерації імен файлів завантажених відео.",
-            [nameof(FileNameTemplateTokenNum)] = "$num",
             [nameof(FileNameTemplateTokenNumDesc)] = "— позиція відео у списку (якщо застосовно)",
-            [nameof(FileNameTemplateTokenId)] = "$id",
             [nameof(FileNameTemplateTokenIdDesc)] = "— ідентифікатор відео",
-            [nameof(FileNameTemplateTokenTitle)] = "$title",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— назва відео",
-            [nameof(FileNameTemplateTokenAuthor)] = "$author",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— автор відео",
             [nameof(ParallelLimitLabel)] = "Паралельний ліміт",
             [nameof(ParallelLimitTooltip)] = "Скільки завантажень може бути активними одночасно",
@@ -339,17 +339,30 @@ public class Lang : INotifyPropertyChanged
             [nameof(CancelButton)] = "СКАСУВАТИ",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Дякуємо за підтримку України!",
-            [nameof(UkraineSupportMessage)] =
-                "Поки Росія веде геноцидну війну проти моєї країни, я вдячний кожному, хто продовжує підтримувати Україну у нашій боротьбі за свободу.\n\nНатисніть ДІЗНАТИСЬ БІЛЬШЕ, щоб знайти способи допомогти.",
+            [nameof(UkraineSupportMessage)] = """
+                Поки Росія веде геноцидну війну проти моєї країни, я вдячний кожному, хто продовжує підтримувати Україну у нашій боротьбі за свободу.
+
+                Натисніть ДІЗНАТИСЬ БІЛЬШЕ, щоб знайти способи допомогти.
+                """,
             [nameof(LearnMoreButton)] = "ДІЗНАТИСЬ БІЛЬШЕ",
             [nameof(UnstableBuildTitle)] = "Попередження про нестабільну збірку",
-            [nameof(UnstableBuildMessage)] =
-                "Ви використовуєте збірку розробки {0}. Ці збірки не пройшли ретельного тестування та можуть містити помилки.\n\nАвтооновлення вимкнено для збірок розробки.\n\nНатисніть ПЕРЕГЛЯНУТИ РЕЛІЗИ, щоб завантажити стабільний реліз.",
+            [nameof(UnstableBuildMessage)] = """
+                Ви використовуєте збірку розробки {0}. Ці збірки не пройшли ретельного тестування та можуть містити помилки.
+
+                Автооновлення вимкнено для збірок розробки.
+
+                Натисніть ПЕРЕГЛЯНУТИ РЕЛІЗИ, щоб завантажити стабільний реліз.
+                """,
             [nameof(SeeReleasesButton)] = "ПЕРЕГЛЯНУТИ РЕЛІЗИ",
-            [nameof(FfmpegMissingTitle)] = "FFmpeg відсутній",
-            [nameof(FfmpegMissingMessage)] =
-                "FFmpeg потрібен для роботи {0}. Завантажте його та зробіть доступним у каталозі програми або у системному PATH.\n\nАльтернативно, ви можете завантажити версію {0} з вбудованим FFmpeg. Шукайте ресурси релізу, які НЕ позначені як *.Bare.\n\nНатисніть ЗАВАНТАЖИТИ, щоб перейти на сторінку завантаження FFmpeg.",
-            [nameof(DownloadButton2)] = "ЗАВАНТАЖИТИ",
+            [nameof(FFmpegMissingTitle)] = "FFmpeg відсутній",
+            [nameof(FFmpegMissingMessage)] = """
+                FFmpeg потрібен для роботи {0}. Завантажте його та зробіть доступним у каталозі програми або у системному PATH.
+
+                Альтернативно, ви можете завантажити версію {0} з вбудованим FFmpeg. Шукайте ресурси релізу, які НЕ позначені як *.Bare.
+
+                Натисніть ЗАВАНТАЖИТИ, щоб перейти на сторінку завантаження FFmpeg.
+                """,
+            [nameof(FFmpegDownloadButton)] = "ЗАВАНТАЖИТИ",
             [nameof(NothingFoundTitle)] = "Нічого не знайдено",
             [nameof(NothingFoundMessage)] = "Не вдалося знайти відео за вказаним запитом або URL",
             [nameof(ErrorTitle)] = "Помилка",
@@ -367,13 +380,14 @@ public class Lang : INotifyPropertyChanged
             [nameof(ProcessQueryTooltip)] = "Anfrage verarbeiten (Enter)",
             [nameof(AuthTooltip)] = "Authentifizierung",
             [nameof(SettingsTooltip)] = "Einstellungen",
-            [nameof(DashboardUrlLabel)] = "URL",
             [nameof(DashboardSearchQueryLabel)] = "Suchanfrage",
-            [nameof(DashboardPlaceholderLine1)] =
-                "URL einfügen oder Suchanfrage eingeben um den Download zu starten",
-            [nameof(DashboardPlaceholderLine2)] =
-                "Shift+Enter drücken um mehrere Einträge hinzuzufügen",
             [nameof(DashboardShiftEnterLabel)] = "Shift+Enter",
+            [nameof(DashboardPlaceholderCopyPasteA)] = "",
+            [nameof(DashboardPlaceholderOrEnterA)] = " einfügen oder ",
+            [nameof(DashboardPlaceholderToStartDownloading)] =
+                " eingeben um den Download zu starten",
+            [nameof(DashboardPlaceholderPress)] = "Drücken Sie ",
+            [nameof(DashboardPlaceholderToAddMultiple)] = " um mehrere Einträge hinzuzufügen",
             [nameof(DownloadsFileColumnHeader)] = "Datei",
             [nameof(DownloadsStatusColumnHeader)] = "Status",
             [nameof(ContextMenuRemoveSuccessful)] = "Erfolgreiche Downloads entfernen",
@@ -395,8 +409,10 @@ public class Lang : INotifyPropertyChanged
             [nameof(ThemeTooltip)] = "Bevorzugtes Oberflächendesign",
             [nameof(LanguageLabel)] = "Sprache",
             [nameof(AutoUpdateLabel)] = "Automatische Updates",
-            [nameof(AutoUpdateTooltip)] =
-                "Automatische Updates bei jedem Start durchführen.\nHinweis: Es wird empfohlen, diese Option aktiviert zu lassen, um die Kompatibilität mit der neuesten YouTube-Version zu gewährleisten.",
+            [nameof(AutoUpdateTooltip)] = """
+                Automatische Updates bei jedem Start durchführen.
+                Hinweis: Es wird empfohlen, diese Option aktiviert zu lassen, um die Kompatibilität mit der neuesten YouTube-Version zu gewährleisten.
+                """,
             [nameof(PersistAuthLabel)] = "Authentifizierung speichern",
             [nameof(PersistAuthTooltip)] =
                 "Authentifizierungs-Cookies in einer Datei speichern für sitzungsübergreifende Persistenz",
@@ -415,14 +431,10 @@ public class Lang : INotifyPropertyChanged
             [nameof(FileNameTemplateLabel)] = "Dateinamen-Vorlage",
             [nameof(FileNameTemplateTooltip)] =
                 "Vorlage für die Generierung von Dateinamen heruntergeladener Videos.",
-            [nameof(FileNameTemplateTokenNum)] = "$num",
             [nameof(FileNameTemplateTokenNumDesc)] =
                 "— Position des Videos in der Liste (falls zutreffend)",
-            [nameof(FileNameTemplateTokenId)] = "$id",
             [nameof(FileNameTemplateTokenIdDesc)] = "— Video-ID",
-            [nameof(FileNameTemplateTokenTitle)] = "$title",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— Videotitel",
-            [nameof(FileNameTemplateTokenAuthor)] = "$author",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— Videoautor",
             [nameof(ParallelLimitLabel)] = "Paralleles Limit",
             [nameof(ParallelLimitTooltip)] = "Wie viele Downloads gleichzeitig aktiv sein können",
@@ -445,17 +457,30 @@ public class Lang : INotifyPropertyChanged
             [nameof(CancelButton)] = "ABBRECHEN",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Danke für Ihre Unterstützung der Ukraine!",
-            [nameof(UkraineSupportMessage)] =
-                "Während Russland einen Vernichtungskrieg gegen mein Land führt, bin ich jedem dankbar, der weiterhin zur Ukraine in unserem Kampf für die Freiheit steht.\n\nKlicken Sie auf MEHR ERFAHREN um Wege zu finden, wie Sie helfen können.",
+            [nameof(UkraineSupportMessage)] = """
+                Während Russland einen Vernichtungskrieg gegen mein Land führt, bin ich jedem dankbar, der weiterhin zur Ukraine in unserem Kampf für die Freiheit steht.
+
+                Klicken Sie auf MEHR ERFAHREN um Wege zu finden, wie Sie helfen können.
+                """,
             [nameof(LearnMoreButton)] = "MEHR ERFAHREN",
             [nameof(UnstableBuildTitle)] = "Warnung: Instabiler Build",
-            [nameof(UnstableBuildMessage)] =
-                "Sie verwenden einen Entwicklungs-Build von {0}. Diese Builds wurden nicht gründlich getestet und können Fehler enthalten.\n\nAutomatische Updates sind für Entwicklungs-Builds deaktiviert.\n\nKlicken Sie auf RELEASES ANZEIGEN um stattdessen einen stabilen Release herunterzuladen.",
+            [nameof(UnstableBuildMessage)] = """
+                Sie verwenden einen Entwicklungs-Build von {0}. Diese Builds wurden nicht gründlich getestet und können Fehler enthalten.
+
+                Automatische Updates sind für Entwicklungs-Builds deaktiviert.
+
+                Klicken Sie auf RELEASES ANZEIGEN um stattdessen einen stabilen Release herunterzuladen.
+                """,
             [nameof(SeeReleasesButton)] = "RELEASES ANZEIGEN",
-            [nameof(FfmpegMissingTitle)] = "FFmpeg fehlt",
-            [nameof(FfmpegMissingMessage)] =
-                "FFmpeg wird benötigt damit {0} funktioniert. Bitte laden Sie es herunter und machen Sie es im Anwendungsverzeichnis oder im System-PATH verfügbar.\n\nAlternativ können Sie auch eine Version von {0} herunterladen, die FFmpeg enthält. Suchen Sie nach Release-Dateien, die NICHT mit *.Bare markiert sind.\n\nKlicken Sie auf HERUNTERLADEN um zur FFmpeg-Downloadseite zu gelangen.",
-            [nameof(DownloadButton2)] = "HERUNTERLADEN",
+            [nameof(FFmpegMissingTitle)] = "FFmpeg fehlt",
+            [nameof(FFmpegMissingMessage)] = """
+                FFmpeg wird benötigt damit {0} funktioniert. Bitte laden Sie es herunter und machen Sie es im Anwendungsverzeichnis oder im System-PATH verfügbar.
+
+                Alternativ können Sie auch eine Version von {0} herunterladen, die FFmpeg enthält. Suchen Sie nach Release-Dateien, die NICHT mit *.Bare markiert sind.
+
+                Klicken Sie auf HERUNTERLADEN um zur FFmpeg-Downloadseite zu gelangen.
+                """,
+            [nameof(FFmpegDownloadButton)] = "HERUNTERLADEN",
             [nameof(NothingFoundTitle)] = "Nichts gefunden",
             [nameof(NothingFoundMessage)] =
                 "Es konnten keine Videos basierend auf der angegebenen Anfrage oder URL gefunden werden",
@@ -475,13 +500,13 @@ public class Lang : INotifyPropertyChanged
             [nameof(ProcessQueryTooltip)] = "Traiter la requête (Entrée)",
             [nameof(AuthTooltip)] = "Authentification",
             [nameof(SettingsTooltip)] = "Paramètres",
-            [nameof(DashboardUrlLabel)] = "URL",
             [nameof(DashboardSearchQueryLabel)] = "requête de recherche",
-            [nameof(DashboardPlaceholderLine1)] =
-                "Collez une URL ou entrez une requête de recherche pour commencer",
-            [nameof(DashboardPlaceholderLine2)] =
-                "Appuyez sur Shift+Entrée pour ajouter plusieurs éléments",
             [nameof(DashboardShiftEnterLabel)] = "Shift+Entrée",
+            [nameof(DashboardPlaceholderCopyPasteA)] = "Collez une ",
+            [nameof(DashboardPlaceholderOrEnterA)] = " ou entrez une ",
+            [nameof(DashboardPlaceholderToStartDownloading)] = " pour commencer",
+            [nameof(DashboardPlaceholderPress)] = "Appuyez sur ",
+            [nameof(DashboardPlaceholderToAddMultiple)] = " pour ajouter plusieurs éléments",
             [nameof(DownloadsFileColumnHeader)] = "Fichier",
             [nameof(DownloadsStatusColumnHeader)] = "Statut",
             [nameof(ContextMenuRemoveSuccessful)] = "Supprimer les téléchargements réussis",
@@ -503,8 +528,10 @@ public class Lang : INotifyPropertyChanged
             [nameof(ThemeTooltip)] = "Thème d'interface préféré",
             [nameof(LanguageLabel)] = "Langue",
             [nameof(AutoUpdateLabel)] = "Mise à jour automatique",
-            [nameof(AutoUpdateTooltip)] =
-                "Effectuer des mises à jour automatiques à chaque démarrage.\nAvertissement : il est recommandé de laisser cette option activée pour assurer la compatibilité avec la dernière version de YouTube.",
+            [nameof(AutoUpdateTooltip)] = """
+                Effectuer des mises à jour automatiques à chaque démarrage.
+                Avertissement : il est recommandé de laisser cette option activée pour assurer la compatibilité avec la dernière version de YouTube.
+                """,
             [nameof(PersistAuthLabel)] = "Conserver l'authentification",
             [nameof(PersistAuthTooltip)] =
                 "Enregistrer les cookies d'authentification dans un fichier pour les conserver entre les sessions",
@@ -523,14 +550,10 @@ public class Lang : INotifyPropertyChanged
             [nameof(FileNameTemplateLabel)] = "Modèle de nom de fichier",
             [nameof(FileNameTemplateTooltip)] =
                 "Modèle utilisé pour générer les noms de fichiers des vidéos téléchargées.",
-            [nameof(FileNameTemplateTokenNum)] = "$num",
             [nameof(FileNameTemplateTokenNumDesc)] =
                 "— position de la vidéo dans la liste (si applicable)",
-            [nameof(FileNameTemplateTokenId)] = "$id",
             [nameof(FileNameTemplateTokenIdDesc)] = "— ID de la vidéo",
-            [nameof(FileNameTemplateTokenTitle)] = "$title",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— titre de la vidéo",
-            [nameof(FileNameTemplateTokenAuthor)] = "$author",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— auteur de la vidéo",
             [nameof(ParallelLimitLabel)] = "Limite parallèle",
             [nameof(ParallelLimitTooltip)] =
@@ -554,17 +577,30 @@ public class Lang : INotifyPropertyChanged
             [nameof(CancelButton)] = "ANNULER",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Merci de soutenir l'Ukraine !",
-            [nameof(UkraineSupportMessage)] =
-                "Alors que la Russie mène une guerre génocidaire contre mon pays, je suis reconnaissant envers tous ceux qui continuent à soutenir l'Ukraine dans notre combat pour la liberté.\n\nCliquez sur EN SAVOIR PLUS pour trouver des moyens d'aider.",
+            [nameof(UkraineSupportMessage)] = """
+                Alors que la Russie mène une guerre génocidaire contre mon pays, je suis reconnaissant envers tous ceux qui continuent à soutenir l'Ukraine dans notre combat pour la liberté.
+
+                Cliquez sur EN SAVOIR PLUS pour trouver des moyens d'aider.
+                """,
             [nameof(LearnMoreButton)] = "EN SAVOIR PLUS",
             [nameof(UnstableBuildTitle)] = "Avertissement : build instable",
-            [nameof(UnstableBuildMessage)] =
-                "Vous utilisez une version de développement de {0}. Ces versions ne sont pas rigoureusement testées et peuvent contenir des bugs.\n\nLes mises à jour automatiques sont désactivées pour les versions de développement.\n\nCliquez sur VOIR LES VERSIONS pour télécharger une version stable.",
+            [nameof(UnstableBuildMessage)] = """
+                Vous utilisez une version de développement de {0}. Ces versions ne sont pas rigoureusement testées et peuvent contenir des bugs.
+
+                Les mises à jour automatiques sont désactivées pour les versions de développement.
+
+                Cliquez sur VOIR LES VERSIONS pour télécharger une version stable.
+                """,
             [nameof(SeeReleasesButton)] = "VOIR LES VERSIONS",
-            [nameof(FfmpegMissingTitle)] = "FFmpeg est manquant",
-            [nameof(FfmpegMissingMessage)] =
-                "FFmpeg est requis pour que {0} fonctionne. Veuillez le télécharger et le rendre disponible dans le répertoire de l'application ou dans le PATH système.\n\nAlternativement, vous pouvez télécharger une version de {0} avec FFmpeg intégré. Cherchez les fichiers de version qui ne sont PAS marqués *.Bare.\n\nCliquez sur TÉLÉCHARGER pour accéder à la page de téléchargement de FFmpeg.",
-            [nameof(DownloadButton2)] = "TÉLÉCHARGER",
+            [nameof(FFmpegMissingTitle)] = "FFmpeg est manquant",
+            [nameof(FFmpegMissingMessage)] = """
+                FFmpeg est requis pour que {0} fonctionne. Veuillez le télécharger et le rendre disponible dans le répertoire de l'application ou dans le PATH système.
+
+                Alternativement, vous pouvez télécharger une version de {0} avec FFmpeg intégré. Cherchez les fichiers de version qui ne sont PAS marqués *.Bare.
+
+                Cliquez sur TÉLÉCHARGER pour accéder à la page de téléchargement de FFmpeg.
+                """,
+            [nameof(FFmpegDownloadButton)] = "TÉLÉCHARGER",
             [nameof(NothingFoundTitle)] = "Rien trouvé",
             [nameof(NothingFoundMessage)] =
                 "Impossible de trouver des vidéos correspondant à la requête ou l'URL fournie",
@@ -584,13 +620,13 @@ public class Lang : INotifyPropertyChanged
             [nameof(ProcessQueryTooltip)] = "Procesar consulta (Enter)",
             [nameof(AuthTooltip)] = "Autenticación",
             [nameof(SettingsTooltip)] = "Configuración",
-            [nameof(DashboardUrlLabel)] = "URL",
             [nameof(DashboardSearchQueryLabel)] = "consulta de búsqueda",
-            [nameof(DashboardPlaceholderLine1)] =
-                "Pega una URL o ingresa una consulta de búsqueda para comenzar",
-            [nameof(DashboardPlaceholderLine2)] =
-                "Presiona Shift+Enter para agregar múltiples elementos",
             [nameof(DashboardShiftEnterLabel)] = "Shift+Enter",
+            [nameof(DashboardPlaceholderCopyPasteA)] = "Pega una ",
+            [nameof(DashboardPlaceholderOrEnterA)] = " o ingresa una ",
+            [nameof(DashboardPlaceholderToStartDownloading)] = " para comenzar",
+            [nameof(DashboardPlaceholderPress)] = "Presiona ",
+            [nameof(DashboardPlaceholderToAddMultiple)] = " para agregar múltiples elementos",
             [nameof(DownloadsFileColumnHeader)] = "Archivo",
             [nameof(DownloadsStatusColumnHeader)] = "Estado",
             [nameof(ContextMenuRemoveSuccessful)] = "Eliminar descargas exitosas",
@@ -612,8 +648,10 @@ public class Lang : INotifyPropertyChanged
             [nameof(ThemeTooltip)] = "Tema de interfaz preferido",
             [nameof(LanguageLabel)] = "Idioma",
             [nameof(AutoUpdateLabel)] = "Actualización automática",
-            [nameof(AutoUpdateTooltip)] =
-                "Realizar actualizaciones automáticas en cada inicio.\nAdvertencia: se recomienda dejar esta opción habilitada para asegurar la compatibilidad con la última versión de YouTube.",
+            [nameof(AutoUpdateTooltip)] = """
+                Realizar actualizaciones automáticas en cada inicio.
+                Advertencia: se recomienda dejar esta opción habilitada para asegurar la compatibilidad con la última versión de YouTube.
+                """,
             [nameof(PersistAuthLabel)] = "Conservar autenticación",
             [nameof(PersistAuthTooltip)] =
                 "Guardar las cookies de autenticación en un archivo para persistirlas entre sesiones",
@@ -632,13 +670,9 @@ public class Lang : INotifyPropertyChanged
             [nameof(FileNameTemplateLabel)] = "Plantilla de nombre de archivo",
             [nameof(FileNameTemplateTooltip)] =
                 "Plantilla para generar nombres de archivo de los videos descargados.",
-            [nameof(FileNameTemplateTokenNum)] = "$num",
             [nameof(FileNameTemplateTokenNumDesc)] = "— posición del video en la lista (si aplica)",
-            [nameof(FileNameTemplateTokenId)] = "$id",
             [nameof(FileNameTemplateTokenIdDesc)] = "— ID del video",
-            [nameof(FileNameTemplateTokenTitle)] = "$title",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— título del video",
-            [nameof(FileNameTemplateTokenAuthor)] = "$author",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— autor del video",
             [nameof(ParallelLimitLabel)] = "Límite paralelo",
             [nameof(ParallelLimitTooltip)] =
@@ -662,17 +696,30 @@ public class Lang : INotifyPropertyChanged
             [nameof(CancelButton)] = "CANCELAR",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "¡Gracias por apoyar a Ucrania!",
-            [nameof(UkraineSupportMessage)] =
-                "Mientras Rusia libra una guerra genocida contra mi país, estoy agradecido con todos los que continúan apoyando a Ucrania en nuestra lucha por la libertad.\n\nHaz clic en MÁS INFORMACIÓN para encontrar formas en que puedes ayudar.",
+            [nameof(UkraineSupportMessage)] = """
+                Mientras Rusia libra una guerra genocida contra mi país, estoy agradecido con todos los que continúan apoyando a Ucrania en nuestra lucha por la libertad.
+
+                Haz clic en MÁS INFORMACIÓN para encontrar formas en que puedes ayudar.
+                """,
             [nameof(LearnMoreButton)] = "MÁS INFORMACIÓN",
             [nameof(UnstableBuildTitle)] = "Advertencia: versión inestable",
-            [nameof(UnstableBuildMessage)] =
-                "Estás usando una versión de desarrollo de {0}. Estas versiones no han sido probadas exhaustivamente y pueden contener errores.\n\nLas actualizaciones automáticas están desactivadas para versiones de desarrollo.\n\nHaz clic en VER LANZAMIENTOS para descargar una versión estable.",
+            [nameof(UnstableBuildMessage)] = """
+                Estás usando una versión de desarrollo de {0}. Estas versiones no han sido probadas exhaustivamente y pueden contener errores.
+
+                Las actualizaciones automáticas están desactivadas para versiones de desarrollo.
+
+                Haz clic en VER LANZAMIENTOS para descargar una versión estable.
+                """,
             [nameof(SeeReleasesButton)] = "VER LANZAMIENTOS",
-            [nameof(FfmpegMissingTitle)] = "Falta FFmpeg",
-            [nameof(FfmpegMissingMessage)] =
-                "FFmpeg es necesario para que {0} funcione. Descárgalo y ponlo disponible en el directorio de la aplicación o en el PATH del sistema.\n\nAlternativamente, puedes descargar una versión de {0} que incluye FFmpeg. Busca los archivos de lanzamiento que NO estén marcados como *.Bare.\n\nHaz clic en DESCARGAR para ir a la página de descarga de FFmpeg.",
-            [nameof(DownloadButton2)] = "DESCARGAR",
+            [nameof(FFmpegMissingTitle)] = "Falta FFmpeg",
+            [nameof(FFmpegMissingMessage)] = """
+                FFmpeg es necesario para que {0} funcione. Descárgalo y ponlo disponible en el directorio de la aplicación o en el PATH del sistema.
+
+                Alternativamente, puedes descargar una versión de {0} que incluye FFmpeg. Busca los archivos de lanzamiento que NO estén marcados como *.Bare.
+
+                Haz clic en DESCARGAR para ir a la página de descarga de FFmpeg.
+                """,
+            [nameof(FFmpegDownloadButton)] = "DESCARGAR",
             [nameof(NothingFoundTitle)] = "Nada encontrado",
             [nameof(NothingFoundMessage)] =
                 "No se encontraron videos basados en la consulta o URL proporcionada",

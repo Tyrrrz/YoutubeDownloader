@@ -21,7 +21,7 @@
             TextTrimming="CharacterEllipsis">
             <TextBlock.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding CopyTitleCommand}" Header="{Binding Lang.CopyMenuItem}" />
+                    <MenuItem Command="{Binding CopyTitleCommand}" Header="{Binding Localization.CopyMenuItem}" />
                 </ContextMenu>
             </TextBlock.ContextMenu>
         </TextBlock>
@@ -118,7 +118,7 @@
             <!--  Container preference  -->
             <ComboBox
                 Margin="0,0,8,0"
-                materialAssists:ComboBoxAssist.Label="{Binding Lang.ContainerLabel}"
+                materialAssists:ComboBoxAssist.Label="{Binding Localization.ContainerLabel}"
                 ItemsSource="{Binding AvailableContainers}"
                 SelectedItem="{Binding SelectedContainer}"
                 Theme="{DynamicResource MaterialFilledComboBox}" />
@@ -126,7 +126,7 @@
             <!--  Video quality preference  -->
             <ComboBox
                 Margin="8,0,0,0"
-                materialAssists:ComboBoxAssist.Label="{Binding Lang.VideoQualityLabel}"
+                materialAssists:ComboBoxAssist.Label="{Binding Localization.VideoQualityLabel}"
                 IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
                 ItemsSource="{Binding AvailableVideoQualityPreferences}"
                 SelectedItem="{Binding SelectedVideoQualityPreference}"
@@ -153,7 +153,7 @@
                 Theme="{DynamicResource MaterialOutlineButton}">
                 <Button.Content>
                     <TextBlock>
-                        <Run Text="{Binding Lang.DownloadButton}" />
+                        <Run Text="{Binding Localization.DownloadButton}" />
                         <Run Text="(" /><Run Text="{Binding SelectedVideos.Count, FallbackValue=0, Mode=OneWay}" /><Run Text=")" />
                     </TextBlock>
                 </Button.Content>
@@ -163,7 +163,7 @@
             <Button
                 Margin="8,0,0,0"
                 Command="{Binding CloseCommand}"
-                Content="{Binding Lang.CancelButton}"
+                Content="{Binding Localization.CancelButton}"
                 IsCancel="True"
                 Theme="{DynamicResource MaterialOutlineButton}" />
         </StackPanel>

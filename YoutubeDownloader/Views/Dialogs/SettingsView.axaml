@@ -11,7 +11,7 @@
             Margin="16"
             FontSize="19"
             FontWeight="Light"
-            Text="{Binding Lang.SettingsTitle}" />
+            Text="{Binding Localization.SettingsTitle}" />
 
         <Border
             Grid.Row="1"
@@ -24,8 +24,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="{Binding Lang.ThemeTooltip}">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.ThemeLabel}" />
+                        ToolTip.Tip="{Binding Localization.ThemeTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.ThemeLabel}" />
                         <ComboBox
                             Width="150"
                             DockPanel.Dock="Right"
@@ -37,7 +37,7 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.LanguageLabel}" />
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.LanguageLabel}" />
                         <ComboBox
                             Width="150"
                             DockPanel.Dock="Right"
@@ -51,8 +51,8 @@
                         IsVisible="{OnPlatform False,
                                                Windows=True}"
                         LastChildFill="False"
-                        ToolTip.Tip="{Binding Lang.AutoUpdateTooltip}">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.AutoUpdateLabel}" />
+                        ToolTip.Tip="{Binding Localization.AutoUpdateTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.AutoUpdateLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding IsAutoUpdateEnabled}" />
                     </DockPanel>
 
@@ -61,11 +61,11 @@
                         IsVisible="{OnPlatform False,
                                                Windows=True}"
                         LastChildFill="False"
-                        ToolTip.Tip="{Binding Lang.PersistAuthTooltip}">
+                        ToolTip.Tip="{Binding Localization.PersistAuthTooltip}">
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"
-                            Text="{Binding Lang.PersistAuthLabel}" />
+                            Text="{Binding Localization.PersistAuthLabel}" />
                         <ToggleSwitch
                             Margin="16,8"
                             DockPanel.Dock="Right"
@@ -76,8 +76,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="{Binding Lang.InjectAltLanguagesTooltip}">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.InjectAltLanguagesLabel}" />
+                        ToolTip.Tip="{Binding Localization.InjectAltLanguagesTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.InjectAltLanguagesLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectLanguageSpecificAudioStreams}" />
                     </DockPanel>
 
@@ -85,8 +85,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="{Binding Lang.InjectSubtitlesTooltip}">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.InjectSubtitlesLabel}" />
+                        ToolTip.Tip="{Binding Localization.InjectSubtitlesTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.InjectSubtitlesLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectSubtitles}" />
                     </DockPanel>
 
@@ -94,8 +94,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="{Binding Lang.InjectTagsTooltip}">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.InjectTagsLabel}" />
+                        ToolTip.Tip="{Binding Localization.InjectTagsTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.InjectTagsLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldInjectTags}" />
                     </DockPanel>
 
@@ -103,8 +103,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="{Binding Lang.SkipExistingFilesTooltip}">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.SkipExistingFilesLabel}" />
+                        ToolTip.Tip="{Binding Localization.SkipExistingFilesTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.SkipExistingFilesLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ShouldSkipExistingFiles}" />
                     </DockPanel>
 
@@ -112,29 +112,29 @@
                     <DockPanel Margin="16,8" LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock>
-                                <Run Text="{Binding Lang.FileNameTemplateTooltip}" />
+                                <Run Text="{Binding Localization.FileNameTemplateTooltip}" />
                                 <LineBreak />
                                 <LineBreak />
                                 <Run Text="Available tokens:" />
                                 <LineBreak />
                                 <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="{Binding Lang.FileNameTemplateTokenNum}" />
-                                <Run Text="{Binding Lang.FileNameTemplateTokenNumDesc}" />
+                                <Run FontWeight="SemiBold" Text="$num" />
+                                <Run Text="{Binding Localization.FileNameTemplateTokenNumDesc}" />
                                 <LineBreak />
                                 <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="{Binding Lang.FileNameTemplateTokenId}" />
-                                <Run Text="{Binding Lang.FileNameTemplateTokenIdDesc}" />
+                                <Run FontWeight="SemiBold" Text="$id" />
+                                <Run Text="{Binding Localization.FileNameTemplateTokenIdDesc}" />
                                 <LineBreak />
                                 <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="{Binding Lang.FileNameTemplateTokenTitle}" />
-                                <Run Text="{Binding Lang.FileNameTemplateTokenTitleDesc}" />
+                                <Run FontWeight="SemiBold" Text="$title" />
+                                <Run Text="{Binding Localization.FileNameTemplateTokenTitleDesc}" />
                                 <LineBreak />
                                 <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="{Binding Lang.FileNameTemplateTokenAuthor}" />
-                                <Run Text="{Binding Lang.FileNameTemplateTokenAuthorDesc}" />
+                                <Run FontWeight="SemiBold" Text="$author" />
+                                <Run Text="{Binding Localization.FileNameTemplateTokenAuthorDesc}" />
                             </TextBlock>
                         </ToolTip.Tip>
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.FileNameTemplateLabel}" />
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.FileNameTemplateLabel}" />
                         <TextBox
                             Width="150"
                             Height="20"
@@ -148,8 +148,8 @@
                     <DockPanel
                         Margin="16,8"
                         LastChildFill="False"
-                        ToolTip.Tip="{Binding Lang.ParallelLimitTooltip}">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Lang.ParallelLimitLabel}" />
+                        ToolTip.Tip="{Binding Localization.ParallelLimitTooltip}">
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Localization.ParallelLimitLabel}" />
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                             <TextBlock Margin="10,0" Text="{Binding ParallelLimit}" />
                             <Slider
@@ -171,7 +171,7 @@
             Margin="16"
             HorizontalAlignment="Stretch"
             Command="{Binding CloseCommand}"
-            Content="{Binding Lang.CloseButton}"
+            Content="{Binding Localization.CloseButton}"
             IsCancel="True"
             IsDefault="True"
             Theme="{DynamicResource MaterialOutlineButton}" />
