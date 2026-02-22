@@ -9,7 +9,6 @@ using AvaloniaWebView;
 using Material.Styles.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Framework;
-using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
@@ -109,7 +108,7 @@ public class App : Application, IDisposable
 
     private void InitializeLanguage()
     {
-        LocalizedStrings.Current.Language =
+        Localization.Current.Language =
             _settingsService.Language != Language.System
                 ? _settingsService.Language
                 : CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch

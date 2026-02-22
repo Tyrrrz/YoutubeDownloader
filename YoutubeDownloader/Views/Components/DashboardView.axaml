@@ -5,7 +5,7 @@
     xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
     xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
-    xmlns:loc="clr-namespace:YoutubeDownloader.Localization"
+    xmlns:loc="clr-namespace:YoutubeDownloader"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     x:Name="UserControl"
@@ -165,7 +165,7 @@
                     <!--  File name  -->
                     <DataGridTemplateColumn
                         Width="*"
-                        Header="{Binding DownloadsFileColumnHeader, Source={x:Static loc:LocalizedStrings.Current}}"
+                        Header="{Binding DownloadsFileColumnHeader, Source={x:Static loc:Localization.Current}}"
                         SortMemberPath="FileName">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -182,7 +182,7 @@
                     <!--  Status  -->
                     <DataGridTemplateColumn
                         MinWidth="100"
-                        Header="{Binding DownloadsStatusColumnHeader, Source={x:Static loc:LocalizedStrings.Current}}"
+                        Header="{Binding DownloadsStatusColumnHeader, Source={x:Static loc:Localization.Current}}"
                         SortMemberPath="Progress.Current.Fraction">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

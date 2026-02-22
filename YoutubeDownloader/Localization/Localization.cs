@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace YoutubeDownloader.Localization;
+namespace YoutubeDownloader;
 
-public partial class LocalizedStrings : ObservableObject
+public partial class Localization : ObservableObject
 {
-    public static LocalizedStrings Current { get; } = new();
+    public static Localization Current { get; } = new();
 
     [ObservableProperty]
     public partial Language Language { get; set; } = Language.English;
