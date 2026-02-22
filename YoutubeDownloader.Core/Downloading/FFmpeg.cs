@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace YoutubeDownloader.Core.Downloading;
 
 public static class FFmpeg
 {
-    private static string CliFileName { get; } =
+    public static string CliFileName { get; } =
         OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg";
 
     public static IEnumerable<string> GetProbeDirectoryPaths()
@@ -65,33 +64,4 @@ public static class FFmpeg
         File.Exists(Path.Combine(AppContext.BaseDirectory, CliFileName));
 
     public static bool IsAvailable() => !string.IsNullOrWhiteSpace(TryGetCliFilePath());
-
-    public static string GetDiagnosticsReport()
-    {
-        var sb = new StringBuilder();
-
-        sb.AppendLine($"Expected file name: {CliFileName}");
-        sb.AppendLine($"Application directory: {AppContext.BaseDirectory}");
-        sb.AppendLine($"Working directory: {Directory.GetCurrentDirectory()}");
-
-        var processPathEntries =
-            Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator) ?? [];
-        sb.AppendLine(
-            processPathEntries.Length > 0
-                ? $"Process PATH ({processPathEntries.Length} entries):"
-                : "Process PATH: (not set)"
-        );
-        foreach (var entry in processPathEntries)
-            sb.AppendLine($"  {entry}");
-
-        sb.AppendLine("Probe directories:");
-        foreach (var dir in GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal))
-        {
-            var filePath = Path.Combine(dir, CliFileName);
-            var found = File.Exists(filePath);
-            sb.AppendLine($"  {filePath}: {(found ? "found" : "not found")}");
-        }
-
-        return sb.ToString().TrimEnd();
-    }
 }

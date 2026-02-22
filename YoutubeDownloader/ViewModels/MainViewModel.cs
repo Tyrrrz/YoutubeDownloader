@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
@@ -78,7 +79,11 @@ public partial class MainViewModel(
         if (FFmpeg.IsAvailable())
             return;
 
-        var diagnostics = FFmpeg.GetDiagnosticsReport();
+        var probeDirectoriesFormatted = string.Join(
+            Environment.NewLine,
+            FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d => $"- {d}")
+        );
+
         var dialog = viewModelManager.CreateMessageBoxViewModel(
             "FFmpeg is missing",
             $"""
@@ -88,8 +93,8 @@ public partial class MainViewModel(
 
             Click DOWNLOAD to go to the FFmpeg download page.
 
-            Diagnostics:
-            {diagnostics}
+            Searched for '{FFmpeg.CliFileName}' in the following directories:
+            {probeDirectoriesFormatted}
             """,
             "DOWNLOAD",
             "CLOSE"
