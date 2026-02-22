@@ -71,6 +71,48 @@
                             IsChecked="{Binding IsAuthPersisted}" />
                     </DockPanel>
 
+                    <!--  FFmpeg path  -->
+                    <DockPanel
+                        Margin="16,8"
+                        LastChildFill="False"
+                        ToolTip.Tip="Path to the FFmpeg executable. Leave empty to use auto-detection.">
+                        <TextBlock DockPanel.Dock="Left" Text="FFmpeg path" />
+                        <TextBox
+                            Width="150"
+                            Height="20"
+                            DockPanel.Dock="Right"
+                            FontSize="13"
+                            Text="{Binding FFmpegPath}"
+                            Theme="{DynamicResource CompactTextBox}"
+                            Watermark="Auto-detect">
+                            <TextBox.InnerRightContent>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding ResetFFmpegPathCommand}"
+                                        IsVisible="{Binding FFmpegPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="Reset to auto-detection">
+                                        <materialIcons:MaterialIcon
+                                            Width="14"
+                                            Height="14"
+                                            Kind="Close" />
+                                    </Button>
+                                    <Button
+                                        Padding="4"
+                                        Command="{Binding BrowseFFmpegPathCommand}"
+                                        Theme="{DynamicResource MaterialFlatButton}"
+                                        ToolTip.Tip="Browse for FFmpeg executable">
+                                        <materialIcons:MaterialIcon
+                                            Width="14"
+                                            Height="14"
+                                            Kind="FolderOpen" />
+                                    </Button>
+                                </StackPanel>
+                            </TextBox.InnerRightContent>
+                        </TextBox>
+                    </DockPanel>
+
                     <!--  Inject language-specific audio streams  -->
                     <DockPanel
                         Margin="16,8"
@@ -159,48 +201,6 @@
                                 TickFrequency="1"
                                 Value="{Binding ParallelLimit}" />
                         </StackPanel>
-                    </DockPanel>
-
-                    <!--  FFmpeg path  -->
-                    <DockPanel
-                        Margin="16,8"
-                        LastChildFill="False"
-                        ToolTip.Tip="Path to the FFmpeg executable. Leave empty to use auto-detection.">
-                        <TextBlock DockPanel.Dock="Left" Text="FFmpeg path" />
-                        <TextBox
-                            Width="150"
-                            Height="20"
-                            DockPanel.Dock="Right"
-                            FontSize="13"
-                            Text="{Binding FFmpegPath}"
-                            Theme="{DynamicResource CompactTextBox}"
-                            Watermark="Auto-detect">
-                            <TextBox.InnerRightContent>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button
-                                        Padding="4"
-                                        Command="{Binding ResetFFmpegPathCommand}"
-                                        IsVisible="{Binding FFmpegPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                        Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="Reset to auto-detection">
-                                        <materialIcons:MaterialIcon
-                                            Width="14"
-                                            Height="14"
-                                            Kind="Close" />
-                                    </Button>
-                                    <Button
-                                        Padding="4"
-                                        Command="{Binding BrowseFFmpegPathCommand}"
-                                        Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="Browse for FFmpeg executable">
-                                        <materialIcons:MaterialIcon
-                                            Width="14"
-                                            Height="14"
-                                            Kind="FolderOpen" />
-                                    </Button>
-                                </StackPanel>
-                            </TextBox.InnerRightContent>
-                        </TextBox>
                     </DockPanel>
                 </StackPanel>
             </ScrollViewer>
