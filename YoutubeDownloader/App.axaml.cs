@@ -9,6 +9,7 @@ using AvaloniaWebView;
 using Material.Styles.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
@@ -16,8 +17,6 @@ using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
 using YoutubeDownloader.Views;
-using Language = YoutubeDownloader.Localization.Language;
-using LocalizedStrings = YoutubeDownloader.Localization.LocalizedStrings;
 
 namespace YoutubeDownloader;
 
