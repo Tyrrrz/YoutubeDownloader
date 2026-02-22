@@ -22,7 +22,8 @@ public static class FFmpeg
         )
         {
             foreach (var path in processPaths)
-                yield return path;
+                if (!string.IsNullOrWhiteSpace(path))
+                    yield return path;
         }
 
         // Registry-based PATH variables
@@ -37,7 +38,8 @@ public static class FFmpeg
             )
             {
                 foreach (var path in userPaths)
-                    yield return path;
+                    if (!string.IsNullOrWhiteSpace(path))
+                        yield return path;
             }
 
             // System PATH
@@ -49,7 +51,8 @@ public static class FFmpeg
             )
             {
                 foreach (var path in systemPaths)
-                    yield return path;
+                    if (!string.IsNullOrWhiteSpace(path))
+                        yield return path;
             }
         }
     }
