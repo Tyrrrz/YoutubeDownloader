@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -9,20 +10,34 @@ public partial class Localization : ObservableObject
     public static Localization Current { get; } = new();
 
     [ObservableProperty]
-    public partial Language Language { get; set; } = Language.English;
+    public partial Language Language { get; set; } = Language.System;
 
     partial void OnLanguageChanged(Language value) =>
         // Notify all string properties so the UI refreshes
         OnPropertyChanged(string.Empty);
+
+    private static Language Resolve(Language language) =>
+        language != Language.System
+            ? language
+            : CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
+            {
+                "ukr" => Language.Ukrainian,
+                "deu" => Language.German,
+                "fra" => Language.French,
+                "spa" => Language.Spanish,
+                _ => Language.English,
+            };
 
     private string Get([CallerMemberName] string? key = null)
     {
         if (key is null)
             return string.Empty;
 
+        var language = Resolve(this.Language);
+
         if (
-            this.Language != Language.English
-            && Translations.TryGetValue(this.Language, out var dict)
+            language != Language.English
+            && Translations.TryGetValue(language, out var dict)
             && dict.TryGetValue(key, out var translated)
         )
             return translated;

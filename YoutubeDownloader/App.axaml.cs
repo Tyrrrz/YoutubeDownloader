@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -106,20 +105,7 @@ public class App : Application, IDisposable
                 : Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
     }
 
-    private void InitializeLanguage()
-    {
-        Localization.Current.Language =
-            _settingsService.Language != Language.System
-                ? _settingsService.Language
-                : CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
-                {
-                    "ukr" => Language.Ukrainian,
-                    "deu" => Language.German,
-                    "fra" => Language.French,
-                    "spa" => Language.Spanish,
-                    _ => Language.English,
-                };
-    }
+    private void InitializeLanguage() => Localization.Current.Language = _settingsService.Language;
 
     public override void OnFrameworkInitializationCompleted()
     {
