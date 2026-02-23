@@ -120,15 +120,8 @@
                     LineSpacing="8"
                     TextAlignment="Center"
                     TextWrapping="Wrap">
-                    <Run Text="{Binding Localization.DashboardPlaceholderCopyPasteA}" />
-                    <Run FontWeight="SemiBold" Text="URL" />
-                    <Run Text="{Binding Localization.DashboardPlaceholderOrEnterA}" />
-                    <Run FontWeight="SemiBold" Text="{Binding Localization.DashboardSearchQueryLabel}" />
-                    <Run Text="{Binding Localization.DashboardPlaceholderToStartDownloading}" />
-                    <LineBreak />
-                    <Run Text="{Binding Localization.DashboardPlaceholderPress}" />
-                    <Run FontWeight="SemiBold" Text="{Binding Localization.DashboardShiftEnterLabel}" />
-                    <Run Text="{Binding Localization.DashboardPlaceholderToAddMultiple}" />
+                    <Run Text="{Binding Localization.DashboardPlaceholderCopyPasteA}" /><Run FontWeight="SemiBold" Text="URL" /><Run Text="{Binding Localization.DashboardPlaceholderOrEnterA}" /><Run FontWeight="SemiBold" Text="{Binding Localization.DashboardSearchQueryLabel}" /><Run Text="{Binding Localization.DashboardPlaceholderToStartDownloading}" /><LineBreak />
+                    <Run Text="{Binding Localization.DashboardPlaceholderPress}" /><Run FontWeight="SemiBold" Text="{Binding Localization.DashboardShiftEnterLabel}" /><Run Text="{Binding Localization.DashboardPlaceholderToAddMultiple}" />
                 </TextBlock>
             </StackPanel>
 
