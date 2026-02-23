@@ -4,7 +4,7 @@ namespace YoutubeDownloader;
 
 public partial class Localization
 {
-    private static readonly IReadOnlyDictionary<string, string> German = new Dictionary<
+    private static readonly IReadOnlyDictionary<string, string> GermanTranslations = new Dictionary<
         string,
         string
     >

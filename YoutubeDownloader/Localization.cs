@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -33,15 +32,19 @@ public partial class Localization : ObservableObject
                     _ => Language.English,
                 };
 
-        if (
-            Translations.TryGetValue(language, out var dict) && dict.TryGetValue(key, out var value)
-        )
+        var dict = language switch
+        {
+            Language.Ukrainian => UkrainianTranslations,
+            Language.German => GermanTranslations,
+            Language.French => FrenchTranslations,
+            Language.Spanish => SpanishTranslations,
+            _ => EnglishTranslations,
+        };
+
+        if (dict.TryGetValue(key, out var value))
             return value;
 
-        if (
-            Translations.TryGetValue(Language.English, out var englishDict)
-            && englishDict.TryGetValue(key, out var english)
-        )
+        if (dict != EnglishTranslations && EnglishTranslations.TryGetValue(key, out var english))
             return english;
 
         return key;
@@ -155,23 +158,4 @@ public partial class Localization : ObservableObject
     public string UpdateReadyMessage => Get();
     public string UpdateInstallNowButton => Get();
     public string UpdateFailedMessage => Get();
-
-    // ---- Translations ----
-
-    private static readonly IReadOnlyDictionary<
-        Language,
-        IReadOnlyDictionary<string, string>
-    > Translations;
-
-    static Localization()
-    {
-        Translations = new Dictionary<Language, IReadOnlyDictionary<string, string>>
-        {
-            [Language.English] = English,
-            [Language.Ukrainian] = Ukrainian,
-            [Language.German] = German,
-            [Language.French] = French,
-            [Language.Spanish] = Spanish,
-        };
-    }
 }
