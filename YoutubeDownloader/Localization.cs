@@ -20,19 +20,17 @@ public partial class Localization : ObservableObject
         if (string.IsNullOrWhiteSpace(key))
             return string.Empty;
 
-        var dict = (
-            Language != Language.System
-                ? Language
-                : CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
-                {
-                    "ukr" => Language.Ukrainian,
-                    "deu" => Language.German,
-                    "fra" => Language.French,
-                    "spa" => Language.Spanish,
-                    _ => Language.English,
-                }
-        ) switch
+        var dict = Language switch
         {
+            Language.System =>
+                CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
+                {
+                    "ukr" => UkrainianTranslations,
+                    "deu" => GermanTranslations,
+                    "fra" => FrenchTranslations,
+                    "spa" => SpanishTranslations,
+                    _ => EnglishTranslations,
+                },
             Language.Ukrainian => UkrainianTranslations,
             Language.German => GermanTranslations,
             Language.French => FrenchTranslations,
@@ -53,13 +51,7 @@ public partial class Localization : ObservableObject
     public string ProcessQueryTooltip => Get();
     public string AuthTooltip => Get();
     public string SettingsTooltip => Get();
-    public string DashboardSearchQueryLabel => Get();
-    public string DashboardShiftEnterLabel => Get();
-    public string DashboardPlaceholderCopyPasteA => Get();
-    public string DashboardPlaceholderOrEnterA => Get();
-    public string DashboardPlaceholderToStartDownloading => Get();
-    public string DashboardPlaceholderPress => Get();
-    public string DashboardPlaceholderToAddMultiple => Get();
+    public string DashboardPlaceholder => Get();
     public string DownloadsFileColumnHeader => Get();
     public string DownloadsStatusColumnHeader => Get();
     public string ContextMenuRemoveSuccessful => Get();

@@ -114,15 +114,13 @@
                     Kind="Youtube" />
 
                 <TextBlock
+                    converters:BoldMarkup.Text="{Binding Localization.DashboardPlaceholder}"
                     HorizontalAlignment="Center"
                     FontSize="18"
                     FontWeight="Light"
                     LineSpacing="8"
                     TextAlignment="Center"
-                    TextWrapping="Wrap">
-                    <Run Text="{Binding Localization.DashboardPlaceholderCopyPasteA}" /><Run FontWeight="SemiBold" Text="URL" /><Run Text="{Binding Localization.DashboardPlaceholderOrEnterA}" /><Run FontWeight="SemiBold" Text="{Binding Localization.DashboardSearchQueryLabel}" /><Run Text="{Binding Localization.DashboardPlaceholderToStartDownloading}" /><LineBreak />
-                    <Run Text="{Binding Localization.DashboardPlaceholderPress}" /><Run FontWeight="SemiBold" Text="{Binding Localization.DashboardShiftEnterLabel}" /><Run Text="{Binding Localization.DashboardPlaceholderToAddMultiple}" />
-                </TextBlock>
+                    TextWrapping="Wrap" />
             </StackPanel>
 
             <!--  Downloads  -->
