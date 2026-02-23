@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Gress;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeExplode.Videos;
@@ -24,6 +25,26 @@ public partial class DownloadViewModel : ViewModelBase
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     private bool _isDisposed;
+
+    public DownloadViewModel(
+        ViewModelManager viewModelManager,
+        DialogManager dialogManager,
+        LocalizationManager localizationManager
+    )
+    {
+        _viewModelManager = viewModelManager;
+        _dialogManager = dialogManager;
+        LocalizationManager = localizationManager;
+
+        _eventRoot.Add(
+            Progress.WatchProperty(
+                o => o.Current,
+                () => OnPropertyChanged(nameof(IsProgressIndeterminate))
+            )
+        );
+    }
+
+    public LocalizationManager LocalizationManager { get; }
 
     [ObservableProperty]
     public partial IVideo? Video { get; set; }
@@ -48,19 +69,6 @@ public partial class DownloadViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CopyErrorMessageCommand))]
     public partial string? ErrorMessage { get; set; }
-
-    public DownloadViewModel(ViewModelManager viewModelManager, DialogManager dialogManager)
-    {
-        _viewModelManager = viewModelManager;
-        _dialogManager = dialogManager;
-
-        _eventRoot.Add(
-            Progress.WatchProperty(
-                o => o.Current,
-                () => OnPropertyChanged(nameof(IsProgressIndeterminate))
-            )
-        );
-    }
 
     public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
@@ -102,7 +110,10 @@ public partial class DownloadViewModel : ViewModelBase
         catch (Exception ex)
         {
             await _dialogManager.ShowDialogAsync(
-                _viewModelManager.CreateMessageBoxViewModel(Localization.ErrorTitle, ex.Message)
+                _viewModelManager.CreateMessageBoxViewModel(
+                    LocalizationManager.ErrorTitle,
+                    ex.Message
+                )
             );
         }
     }
@@ -122,7 +133,10 @@ public partial class DownloadViewModel : ViewModelBase
         catch (Exception ex)
         {
             await _dialogManager.ShowDialogAsync(
-                _viewModelManager.CreateMessageBoxViewModel(Localization.ErrorTitle, ex.Message)
+                _viewModelManager.CreateMessageBoxViewModel(
+                    LocalizationManager.ErrorTitle,
+                    ex.Message
+                )
             );
         }
     }

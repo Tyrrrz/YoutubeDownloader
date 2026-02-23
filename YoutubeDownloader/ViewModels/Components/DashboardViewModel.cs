@@ -12,6 +12,7 @@ using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
@@ -34,12 +35,14 @@ public partial class DashboardViewModel : ViewModelBase
         ViewModelManager viewModelManager,
         SnackbarManager snackbarManager,
         DialogManager dialogManager,
+        LocalizationManager localizationManager,
         SettingsService settingsService
     )
     {
         _viewModelManager = viewModelManager;
         _snackbarManager = snackbarManager;
         _dialogManager = dialogManager;
+        LocalizationManager = localizationManager;
         _settingsService = settingsService;
 
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
@@ -59,6 +62,8 @@ public partial class DashboardViewModel : ViewModelBase
             )
         );
     }
+
+    public LocalizationManager LocalizationManager { get; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsProgressIndeterminate))]
@@ -264,8 +269,8 @@ public partial class DashboardViewModel : ViewModelBase
             {
                 await _dialogManager.ShowDialogAsync(
                     _viewModelManager.CreateMessageBoxViewModel(
-                        Localization.NothingFoundTitle,
-                        Localization.NothingFoundMessage
+                        LocalizationManager.NothingFoundTitle,
+                        LocalizationManager.NothingFoundMessage
                     )
                 );
             }
@@ -274,7 +279,7 @@ public partial class DashboardViewModel : ViewModelBase
         {
             await _dialogManager.ShowDialogAsync(
                 _viewModelManager.CreateMessageBoxViewModel(
-                    Localization.ErrorTitle,
+                    LocalizationManager.ErrorTitle,
                     // Short error message for YouTube-related errors, full for others
                     ex is YoutubeExplodeException
                         ? ex.Message

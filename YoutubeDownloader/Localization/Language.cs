@@ -1,4 +1,4 @@
-namespace YoutubeDownloader;
+namespace YoutubeDownloader.Localization;
 
 public enum Language
 {

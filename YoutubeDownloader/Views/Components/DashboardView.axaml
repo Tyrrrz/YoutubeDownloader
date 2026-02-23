@@ -5,7 +5,6 @@
     xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
     xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
-    xmlns:loc="clr-namespace:YoutubeDownloader"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     x:Name="UserControl"
@@ -28,8 +27,8 @@
                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                         Text="{Binding Query}"
                         Theme="{DynamicResource SoloTextBox}"
-                        ToolTip.Tip="{Binding Localization.QueryTooltip}"
-                        Watermark="{Binding Localization.QueryWatermark}">
+                        ToolTip.Tip="{Binding LocalizationManager.QueryTooltip}"
+                        Watermark="{Binding LocalizationManager.QueryWatermark}">
                         <TextBox.InnerLeftContent>
                             <materialIcons:MaterialIcon
                                 Width="24"
@@ -45,7 +44,7 @@
                                 Command="{Binding ProcessQueryCommand}"
                                 IsDefault="True"
                                 Theme="{DynamicResource MaterialFlatButton}"
-                                ToolTip.Tip="{Binding Localization.ProcessQueryTooltip}">
+                                ToolTip.Tip="{Binding LocalizationManager.ProcessQueryTooltip}">
                                 <materialIcons:MaterialIcon
                                     Width="24"
                                     Height="24"
@@ -66,7 +65,7 @@
                     IsVisible="{OnPlatform False,
                                            Windows=True}"
                     Theme="{DynamicResource MaterialFlatButton}"
-                    ToolTip.Tip="{Binding Localization.AuthTooltip}">
+                    ToolTip.Tip="{Binding LocalizationManager.AuthTooltip}">
                     <materialIcons:MaterialIcon
                         Width="24"
                         Height="24"
@@ -82,7 +81,7 @@
                     Command="{Binding ShowSettingsCommand}"
                     Foreground="{DynamicResource MaterialDarkForegroundBrush}"
                     Theme="{DynamicResource MaterialFlatButton}"
-                    ToolTip.Tip="{Binding Localization.SettingsTooltip}">
+                    ToolTip.Tip="{Binding LocalizationManager.SettingsTooltip}">
                     <materialIcons:MaterialIcon
                         Width="24"
                         Height="24"
@@ -114,7 +113,7 @@
                     Kind="Youtube" />
 
                 <TextBlock
-                    Inlines="{Binding Localization.DashboardPlaceholder, Converter={x:Static converters:InlineMarkup.Instance}}"
+                    Inlines="{Binding LocalizationManager.DashboardPlaceholder, Converter={x:Static converters:InlineMarkup.Instance}}"
                     HorizontalAlignment="Center"
                     FontSize="18"
                     FontWeight="Light"
@@ -132,12 +131,12 @@
                 VerticalScrollBarVisibility="Visible">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{Binding RemoveSuccessfulDownloadsCommand}" Header="{Binding Localization.ContextMenuRemoveSuccessful}" />
-                        <MenuItem Command="{Binding RemoveInactiveDownloadsCommand}" Header="{Binding Localization.ContextMenuRemoveInactive}" />
+                        <MenuItem Command="{Binding RemoveSuccessfulDownloadsCommand}" Header="{Binding LocalizationManager.ContextMenuRemoveSuccessful}" />
+                        <MenuItem Command="{Binding RemoveInactiveDownloadsCommand}" Header="{Binding LocalizationManager.ContextMenuRemoveInactive}" />
                         <Separator />
-                        <MenuItem Command="{Binding RestartFailedDownloadsCommand}" Header="{Binding Localization.ContextMenuRestartFailed}" />
+                        <MenuItem Command="{Binding RestartFailedDownloadsCommand}" Header="{Binding LocalizationManager.ContextMenuRestartFailed}" />
                         <Separator />
-                        <MenuItem Command="{Binding CancelAllDownloadsCommand}" Header="{Binding Localization.ContextMenuCancelAll}" />
+                        <MenuItem Command="{Binding CancelAllDownloadsCommand}" Header="{Binding LocalizationManager.ContextMenuCancelAll}" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
@@ -156,7 +155,7 @@
                     <!--  File name  -->
                     <DataGridTemplateColumn
                         Width="*"
-                        Header="{Binding DownloadsFileColumnHeader, Source={x:Static loc:Localization.Current}}"
+                        Header="{Binding DataContext.LocalizationManager.DownloadsFileColumnHeader, ElementName=UserControl}"
                         SortMemberPath="FileName">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -173,7 +172,7 @@
                     <!--  Status  -->
                     <DataGridTemplateColumn
                         MinWidth="100"
-                        Header="{Binding DownloadsStatusColumnHeader, Source={x:Static loc:Localization.Current}}"
+                        Header="{Binding DataContext.LocalizationManager.DownloadsStatusColumnHeader, ElementName=UserControl}"
                         SortMemberPath="Progress.Current.Fraction">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -183,7 +182,7 @@
                                         Grid.Column="0"
                                         Margin="0,0,6,0"
                                         IsIndeterminate="{Binding IsProgressIndeterminate}"
-                                        IsVisible="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
+                                        IsVisible="{Binding Status, Converter={x:Static converters:EqualityConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
                                         Theme="{DynamicResource MaterialCircularProgressBar}"
                                         Value="{Binding Progress.Current.Fraction, Mode=OneWay}" />
 
@@ -191,11 +190,11 @@
                                     <TextBlock
                                         x:Name="StatusTextBlock"
                                         Grid.Column="1"
-                                        Classes.canceled="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
-                                        Classes.completed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Completed}}"
-                                        Classes.enqueued="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
-                                        Classes.failed="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Failed}}"
-                                        Classes.started="{Binding Status, Converter={x:Static converters:EqualityConverter.Equality}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
+                                        Classes.canceled="{Binding Status, Converter={x:Static converters:EqualityConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Canceled}}"
+                                        Classes.completed="{Binding Status, Converter={x:Static converters:EqualityConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Completed}}"
+                                        Classes.enqueued="{Binding Status, Converter={x:Static converters:EqualityConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Enqueued}}"
+                                        Classes.failed="{Binding Status, Converter={x:Static converters:EqualityConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Failed}}"
+                                        Classes.started="{Binding Status, Converter={x:Static converters:EqualityConverter.IsEqual}, ConverterParameter={x:Static components:DownloadStatus.Started}}"
                                         PointerReleased="StatusTextBlock_OnPointerReleased"
                                         TextTrimming="CharacterEllipsis">
                                         <TextBlock.Resources>
@@ -218,26 +217,26 @@
                                             <Style Selector="TextBlock">
                                                 <Style Selector="^.enqueued">
                                                     <Setter Property="Opacity" Value="0.7" />
-                                                    <Setter Property="Text" Value="{Binding Localization.DownloadStatusEnqueued}" />
+                                                    <Setter Property="Text" Value="{Binding LocalizationManager.DownloadStatusEnqueued}" />
                                                 </Style>
                                                 <Style Selector="^.started">
                                                     <Setter Property="Text" Value="{Binding Progress.Current}" />
                                                 </Style>
                                                 <Style Selector="^.completed">
                                                     <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
-                                                    <Setter Property="Text" Value="{Binding Localization.DownloadStatusCompleted}" />
+                                                    <Setter Property="Text" Value="{Binding LocalizationManager.DownloadStatusCompleted}" />
                                                 </Style>
                                                 <Style Selector="^.canceled">
                                                     <Setter Property="Foreground" Value="{DynamicResource CanceledBrush}" />
-                                                    <Setter Property="Text" Value="{Binding Localization.DownloadStatusCanceled}" />
+                                                    <Setter Property="Text" Value="{Binding LocalizationManager.DownloadStatusCanceled}" />
                                                 </Style>
                                                 <Style Selector="^.failed">
                                                     <Setter Property="Foreground" Value="{DynamicResource FailedBrush}" />
-                                                    <Setter Property="Text" Value="{Binding Localization.DownloadStatusFailed}" />
+                                                    <Setter Property="Text" Value="{Binding LocalizationManager.DownloadStatusFailed}" />
                                                     <Setter Property="ToolTip.Tip">
                                                         <Template>
                                                             <TextBlock>
-                                                                <Run FontWeight="SemiBold" Text="{Binding Localization.ClickToCopyErrorTooltip}" />
+                                                                <Run FontWeight="SemiBold" Text="{Binding LocalizationManager.ClickToCopyErrorTooltip}" />
                                                                 <LineBreak />
                                                                 <LineBreak />
                                                                 <Run Text="{Binding ErrorMessage}" />
@@ -266,7 +265,7 @@
                                         Command="{Binding ShowFileCommand}"
                                         IsVisible="{Binding $self.IsEffectivelyEnabled}"
                                         Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="{Binding Localization.ShowFileTooltip}">
+                                        ToolTip.Tip="{Binding LocalizationManager.ShowFileTooltip}">
                                         <materialIcons:MaterialIcon
                                             Width="24"
                                             Height="24"
@@ -280,7 +279,7 @@
                                         Command="{Binding OpenFileCommand}"
                                         IsVisible="{Binding $self.IsEffectivelyEnabled}"
                                         Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="{Binding Localization.PlayTooltip}">
+                                        ToolTip.Tip="{Binding LocalizationManager.PlayTooltip}">
                                         <materialIcons:MaterialIcon
                                             Width="24"
                                             Height="24"
@@ -294,7 +293,7 @@
                                         Command="{Binding CancelCommand}"
                                         IsVisible="{Binding $self.IsEffectivelyEnabled}"
                                         Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="{Binding Localization.CancelDownloadTooltip}">
+                                        ToolTip.Tip="{Binding LocalizationManager.CancelDownloadTooltip}">
                                         <materialIcons:MaterialIcon
                                             Width="24"
                                             Height="24"
@@ -309,7 +308,7 @@
                                         CommandParameter="{Binding}"
                                         IsVisible="{Binding IsCanceledOrFailed}"
                                         Theme="{DynamicResource MaterialFlatButton}"
-                                        ToolTip.Tip="{Binding Localization.RestartDownloadTooltip}">
+                                        ToolTip.Tip="{Binding LocalizationManager.RestartDownloadTooltip}">
                                         <materialIcons:MaterialIcon
                                             Width="24"
                                             Height="24"

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-namespace YoutubeDownloader;
+namespace YoutubeDownloader.Localization;
 
-public partial class Localization
+public partial class LocalizationManager
 {
-    private static readonly IReadOnlyDictionary<string, string> UkrainianTranslations =
+    private static readonly IReadOnlyDictionary<string, string> UkrainianLocalization =
         new Dictionary<string, string>
         {
             // Dashboard
@@ -14,8 +14,10 @@ public partial class Localization
             [nameof(ProcessQueryTooltip)] = "Виконати запит (Enter)",
             [nameof(AuthTooltip)] = "Автентифікація",
             [nameof(SettingsTooltip)] = "Налаштування",
-            [nameof(DashboardPlaceholder)] =
-                "Вставте **URL** або введіть **пошуковий запит** для завантаження\nНатисніть **Shift+Enter**, щоб додати декілька елементів",
+            [nameof(DashboardPlaceholder)] = """
+                Вставте **URL** або введіть **пошуковий запит** для завантаження
+                Натисніть **Shift+Enter**, щоб додати декілька елементів
+                """,
             [nameof(DownloadsFileColumnHeader)] = "Файл",
             [nameof(DownloadsStatusColumnHeader)] = "Статус",
             [nameof(ContextMenuRemoveSuccessful)] = "Видалити успішні завантаження",
@@ -36,7 +38,7 @@ public partial class Localization
             [nameof(ThemeLabel)] = "Тема",
             [nameof(ThemeTooltip)] = "Бажана тема інтерфейсу",
             [nameof(LanguageLabel)] = "Мова",
-            [nameof(AutoUpdateLabel)] = "Автооновлення",
+            [nameof(AutoUpdateLabel)] = "Авто-оновлення",
             [nameof(AutoUpdateTooltip)] = """
                 Виконувати автоматичні оновлення при кожному запуску.
                 Увага: рекомендується залишити цю опцію увімкненою для сумісності з останньою версією YouTube.
@@ -101,7 +103,7 @@ public partial class Localization
             [nameof(UnstableBuildMessage)] = """
                 Ви використовуєте збірку розробки {0}. Ці збірки не пройшли ретельного тестування та можуть містити помилки.
 
-                Автооновлення вимкнено для збірок розробки.
+                Авто-оновлення вимкнено для збірок розробки.
 
                 Натисніть ПЕРЕГЛЯНУТИ РЕЛІЗИ, щоб завантажити стабільний реліз.
                 """,

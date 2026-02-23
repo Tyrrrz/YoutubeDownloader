@@ -7,6 +7,7 @@ using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
@@ -17,6 +18,7 @@ public partial class MainViewModel(
     ViewModelManager viewModelManager,
     DialogManager dialogManager,
     SnackbarManager snackbarManager,
+    LocalizationManager localizationManager,
     SettingsService settingsService,
     UpdateService updateService
 ) : ViewModelBase
@@ -31,10 +33,10 @@ public partial class MainViewModel(
             return;
 
         var dialog = viewModelManager.CreateMessageBoxViewModel(
-            Localization.UkraineSupportTitle,
-            Localization.UkraineSupportMessage,
-            Localization.LearnMoreButton,
-            Localization.CloseButton
+            localizationManager.UkraineSupportTitle,
+            localizationManager.UkraineSupportMessage,
+            localizationManager.LearnMoreButton,
+            localizationManager.CloseButton
         );
 
         // Disable this message in the future
@@ -55,10 +57,10 @@ public partial class MainViewModel(
             return;
 
         var dialog = viewModelManager.CreateMessageBoxViewModel(
-            Localization.UnstableBuildTitle,
-            string.Format(Localization.UnstableBuildMessage, Program.Name),
-            Localization.SeeReleasesButton,
-            Localization.CloseButton
+            localizationManager.UnstableBuildTitle,
+            string.Format(localizationManager.UnstableBuildMessage, Program.Name),
+            localizationManager.SeeReleasesButton,
+            localizationManager.CloseButton
         );
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
@@ -74,10 +76,10 @@ public partial class MainViewModel(
                 return;
 
             var dialog = viewModelManager.CreateMessageBoxViewModel(
-                Localization.FFmpegMissingTitle,
-                string.Format(Localization.FFmpegPathMissingMessage, ffmpegFilePath),
-                Localization.SettingsButton,
-                Localization.CloseButton
+                localizationManager.FFmpegMissingTitle,
+                string.Format(localizationManager.FFmpegPathMissingMessage, ffmpegFilePath),
+                localizationManager.SettingsButton,
+                localizationManager.CloseButton
             );
 
             if (await dialogManager.ShowDialogAsync(dialog) == true)
@@ -90,13 +92,13 @@ public partial class MainViewModel(
                 return;
 
             var dialog = viewModelManager.CreateMessageBoxViewModel(
-                Localization.FFmpegMissingTitle,
+                localizationManager.FFmpegMissingTitle,
                 $"""
-                {string.Format(Localization.FFmpegMissingMessage, Program.Name)}
+                {string.Format(localizationManager.FFmpegMissingMessage, Program.Name)}
 
                 ――――――――――――――――――――――――――――――――――――――――――
 
-                {string.Format(Localization.FFmpegMissingSearchedLabel, FFmpeg.CliFileName)}
+                {string.Format(localizationManager.FFmpegMissingSearchedLabel, FFmpeg.CliFileName)}
                 {string.Join(
                     Environment.NewLine,
                     FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d =>
@@ -104,8 +106,8 @@ public partial class MainViewModel(
                     )
                 )}
                 """,
-                Localization.DownloadButton,
-                Localization.CloseButton
+                localizationManager.DownloadButton,
+                localizationManager.CloseButton
             );
 
             if (await dialogManager.ShowDialogAsync(dialog) == true)
@@ -125,13 +127,17 @@ public partial class MainViewModel(
                 return;
 
             snackbarManager.Notify(
-                string.Format(Localization.UpdateDownloadingMessage, Program.Name, updateVersion)
+                string.Format(
+                    localizationManager.UpdateDownloadingMessage,
+                    Program.Name,
+                    updateVersion
+                )
             );
             await updateService.PrepareUpdateAsync(updateVersion);
 
             snackbarManager.Notify(
-                Localization.UpdateReadyMessage,
-                Localization.UpdateInstallNowButton,
+                localizationManager.UpdateReadyMessage,
+                localizationManager.UpdateInstallNowButton,
                 () =>
                 {
                     updateService.FinalizeUpdate(true);
@@ -144,7 +150,7 @@ public partial class MainViewModel(
         catch
         {
             // Failure to update shouldn't crash the application
-            snackbarManager.Notify(Localization.UpdateFailedMessage);
+            snackbarManager.Notify(localizationManager.UpdateFailedMessage);
         }
     }
 

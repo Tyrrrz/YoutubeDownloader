@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
@@ -18,9 +19,12 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public partial class DownloadSingleSetupViewModel(
     ViewModelManager viewModelManager,
     DialogManager dialogManager,
+    LocalizationManager localizationManager,
     SettingsService settingsService
 ) : DialogViewModelBase<DownloadViewModel>
 {
+    public LocalizationManager LocalizationManager { get; } = localizationManager;
+
     [ObservableProperty]
     public partial IVideo? Video { get; set; }
 

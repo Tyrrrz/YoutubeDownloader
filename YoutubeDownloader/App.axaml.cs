@@ -8,6 +8,7 @@ using AvaloniaWebView;
 using Material.Styles.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
@@ -35,6 +36,9 @@ public class App : Application, IDisposable
         services.AddSingleton<SnackbarManager>();
         services.AddSingleton<ViewManager>();
         services.AddSingleton<ViewModelManager>();
+
+        // Localization
+        services.AddSingleton<LocalizationManager>();
 
         // Services
         services.AddSingleton<SettingsService>();
@@ -69,14 +73,6 @@ public class App : Application, IDisposable
 
                     InitializeTheme();
                 }
-            )
-        );
-
-        // Apply the selected language when the user changes it
-        _eventRoot.Add(
-            _settingsService.WatchProperty(
-                o => o.Language,
-                () => Localization.Current.Language = _settingsService.Language
             )
         );
     }
@@ -117,7 +113,7 @@ public class App : Application, IDisposable
 
         base.OnFrameworkInitializationCompleted();
 
-        // Set up custom theme colors
+        // Set up initial custom theme colors
         InitializeTheme();
 
         // Load settings

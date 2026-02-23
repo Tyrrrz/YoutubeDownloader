@@ -8,6 +8,7 @@ using Cogwheel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using Container = YoutubeExplode.Videos.Streams.Container;
 
 namespace YoutubeDownloader.Services;

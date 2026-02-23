@@ -1,52 +1,82 @@
+using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
+using YoutubeDownloader.Services;
+using YoutubeDownloader.Utils;
+using YoutubeDownloader.Utils.Extensions;
 
-namespace YoutubeDownloader;
+namespace YoutubeDownloader.Localization;
 
-public partial class Localization : ObservableObject
+public partial class LocalizationManager : ObservableObject, IDisposable
 {
-    public static Localization Current { get; } = new();
+    private readonly DisposableCollector _eventRoot = new();
+
+    public LocalizationManager(SettingsService settingsService)
+    {
+        _eventRoot.Add(
+            settingsService.WatchProperty(
+                o => o.Language,
+                () => Language = settingsService.Language,
+                true
+            )
+        );
+
+        _eventRoot.Add(
+            this.WatchProperty(
+                o => o.Language,
+                () =>
+                {
+                    foreach (var propertyName in EnglishLocalization.Keys)
+                        OnPropertyChanged(propertyName);
+                }
+            )
+        );
+    }
 
     [ObservableProperty]
     public partial Language Language { get; set; } = Language.System;
-
-    private partial void OnLanguageChanged(Language value) =>
-        // Notify all string properties so the UI refreshes
-        OnPropertyChanged(string.Empty);
 
     private string Get([CallerMemberName] string? key = null)
     {
         if (string.IsNullOrWhiteSpace(key))
             return string.Empty;
 
-        var translations = Language switch
+        var localization = Language switch
         {
             Language.System =>
                 CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
                 {
-                    "ukr" => UkrainianTranslations,
-                    "deu" => GermanTranslations,
-                    "fra" => FrenchTranslations,
-                    "spa" => SpanishTranslations,
-                    _ => EnglishTranslations,
+                    "ukr" => UkrainianLocalization,
+                    "deu" => GermanLocalization,
+                    "fra" => FrenchLocalization,
+                    "spa" => SpanishLocalization,
+                    _ => EnglishLocalization,
                 },
-            Language.Ukrainian => UkrainianTranslations,
-            Language.German => GermanTranslations,
-            Language.French => FrenchTranslations,
-            Language.Spanish => SpanishTranslations,
-            _ => EnglishTranslations,
+            Language.Ukrainian => UkrainianLocalization,
+            Language.German => GermanLocalization,
+            Language.French => FrenchLocalization,
+            Language.Spanish => SpanishLocalization,
+            _ => EnglishLocalization,
         };
 
         if (
-            translations.TryGetValue(key, out var value)
-            || EnglishTranslations.TryGetValue(key, out value)
+            localization.TryGetValue(key, out var value)
+            // English is used as a fallback
+            || EnglishLocalization.TryGetValue(key, out value)
         )
+        {
             return value;
+        }
 
-        return $"Missing translation for '{key}'";
+        return $"Missing localization for '{key}'";
     }
 
+    public void Dispose() => _eventRoot.Dispose();
+}
+
+public partial class LocalizationManager
+{
     // ---- Dashboard ----
 
     public string QueryWatermark => Get();

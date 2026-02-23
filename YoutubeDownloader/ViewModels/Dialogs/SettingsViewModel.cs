@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
 using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
@@ -17,13 +18,20 @@ public partial class SettingsViewModel : DialogViewModelBase
 
     private readonly DisposableCollector _eventRoot = new();
 
-    public SettingsViewModel(DialogManager dialogManager, SettingsService settingsService)
+    public SettingsViewModel(
+        DialogManager dialogManager,
+        LocalizationManager localizationManager,
+        SettingsService settingsService
+    )
     {
         _dialogManager = dialogManager;
+        LocalizationManager = localizationManager;
         _settingsService = settingsService;
 
         _eventRoot.Add(_settingsService.WatchAllProperties(OnAllPropertiesChanged));
     }
+
+    public LocalizationManager LocalizationManager { get; }
 
     public IReadOnlyList<ThemeVariant> AvailableThemes { get; } = Enum.GetValues<ThemeVariant>();
 

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-namespace YoutubeDownloader;
+namespace YoutubeDownloader.Localization;
 
-public partial class Localization
+public partial class LocalizationManager
 {
-    private static readonly IReadOnlyDictionary<string, string> EnglishTranslations =
+    private static readonly IReadOnlyDictionary<string, string> EnglishLocalization =
         new Dictionary<string, string>
         {
             // Dashboard
@@ -14,8 +14,10 @@ public partial class Localization
             [nameof(ProcessQueryTooltip)] = "Process query (Enter)",
             [nameof(AuthTooltip)] = "Authentication",
             [nameof(SettingsTooltip)] = "Settings",
-            [nameof(DashboardPlaceholder)] =
-                "Copy-paste a **URL** or enter a **search query** to start downloading\nPress **Shift+Enter** to add multiple items",
+            [nameof(DashboardPlaceholder)] = """
+                Copy-paste a **URL** or enter a **search query** to start downloading
+                Press **Shift+Enter** to add multiple items
+                """,
             [nameof(DownloadsFileColumnHeader)] = "File",
             [nameof(DownloadsStatusColumnHeader)] = "Status",
             [nameof(ContextMenuRemoveSuccessful)] = "Remove successful downloads",

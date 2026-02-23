@@ -18,20 +18,88 @@ public class InlineMarkup : IValueConverter
         .UseEmphasisExtras()
         .Build();
 
+    private static void ProcessInline(
+        InlineCollection inlines,
+        MarkdownInline markdownInline,
+        FontWeight? fontWeight = null,
+        FontStyle? fontStyle = null,
+        TextDecorationCollection? textDecorations = null
+    )
+    {
+        switch (markdownInline)
+        {
+            case LiteralInline literal:
+            {
+                var run = new Run(literal.Content.ToString());
+
+                if (fontWeight is not null)
+                    run.FontWeight = fontWeight.Value;
+                if (fontStyle is not null)
+                    run.FontStyle = fontStyle.Value;
+                if (textDecorations is not null)
+                    run.TextDecorations = textDecorations;
+
+                inlines.Add(run);
+                break;
+            }
+
+            case LineBreakInline:
+            {
+                inlines.Add(new LineBreak());
+                break;
+            }
+
+            case EmphasisInline emphasis:
+            {
+                var newWeight = fontWeight;
+                var newStyle = fontStyle;
+                var newDecorations = textDecorations;
+
+                switch (emphasis.DelimiterChar)
+                {
+                    case '*' or '_' when emphasis.DelimiterCount == 2:
+                        newWeight = FontWeight.SemiBold;
+                        break;
+                    case '*' or '_':
+                        newStyle = FontStyle.Italic;
+                        break;
+                    case '~':
+                        newDecorations = TextDecorations.Strikethrough;
+                        break;
+                    case '+':
+                        newDecorations = TextDecorations.Underline;
+                        break;
+                }
+
+                foreach (var child in emphasis)
+                    ProcessInline(inlines, child, newWeight, newStyle, newDecorations);
+
+                break;
+            }
+
+            case ContainerInline container:
+            {
+                foreach (var child in container)
+                    ProcessInline(inlines, child, fontWeight, fontStyle, textDecorations);
+
+                break;
+            }
+        }
+    }
+
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         var inlines = new InlineCollection();
         if (value is not string { Length: > 0 } text)
             return inlines;
 
-        var document = Markdown.Parse(text, MarkdownPipeline);
-        foreach (var block in document)
+        foreach (var block in Markdown.Parse(text, MarkdownPipeline))
         {
-            if (block is ParagraphBlock para && para.Inline is not null)
-            {
-                foreach (var markdownInline in para.Inline)
-                    AddInlines(inlines, markdownInline);
-            }
+            if (block is not ParagraphBlock { Inline: not null } paragraph)
+                continue;
+
+            foreach (var markdownInline in paragraph.Inline)
+                ProcessInline(inlines, markdownInline);
         }
 
         return inlines;
@@ -43,58 +111,4 @@ public class InlineMarkup : IValueConverter
         object? parameter,
         CultureInfo culture
     ) => throw new NotSupportedException();
-
-    // Nullable FontWeight/FontStyle so that non-styled runs inherit properties
-    // (e.g. FontWeight="Light") from the parent TextBlock rather than being
-    // overridden with FontWeight.Normal, which would make space characters appear
-    // heavier and visually wider than the surrounding text.
-    private static void AddInlines(
-        InlineCollection inlines,
-        MarkdownInline markdownInline,
-        FontWeight? fontWeight = null,
-        FontStyle? fontStyle = null,
-        TextDecorationCollection? textDecorations = null
-    )
-    {
-        switch (markdownInline)
-        {
-            case LiteralInline literal:
-                var run = new Run(literal.Content.ToString());
-                if (fontWeight is not null)
-                    run.FontWeight = fontWeight.Value;
-                if (fontStyle is not null)
-                    run.FontStyle = fontStyle.Value;
-                if (textDecorations is not null)
-                    run.TextDecorations = textDecorations;
-                inlines.Add(run);
-                break;
-
-            case LineBreakInline:
-                inlines.Add(new LineBreak());
-                break;
-
-            case EmphasisInline emphasis:
-                var newWeight = fontWeight;
-                var newStyle = fontStyle;
-                var newDecorations = textDecorations;
-
-                if (emphasis.DelimiterChar is '*' or '_' && emphasis.DelimiterCount == 2)
-                    newWeight = FontWeight.SemiBold;
-                else if (emphasis.DelimiterChar is '*' or '_')
-                    newStyle = FontStyle.Italic;
-                else if (emphasis.DelimiterChar == '~')
-                    newDecorations = TextDecorations.Strikethrough;
-                else if (emphasis.DelimiterChar == '+')
-                    newDecorations = TextDecorations.Underline;
-
-                foreach (var child in emphasis)
-                    AddInlines(inlines, child, newWeight, newStyle, newDecorations);
-                break;
-
-            case ContainerInline container:
-                foreach (var child in container)
-                    AddInlines(inlines, child, fontWeight, fontStyle, textDecorations);
-                break;
-        }
-    }
 }

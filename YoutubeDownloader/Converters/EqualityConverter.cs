@@ -7,7 +7,7 @@ namespace YoutubeDownloader.Converters;
 
 public class EqualityConverter(bool isInverted) : IValueConverter
 {
-    public static EqualityConverter Equality { get; } = new(false);
+    public static EqualityConverter IsEqual { get; } = new(false);
     public static EqualityConverter IsNotEqual { get; } = new(true);
 
     public object? Convert(

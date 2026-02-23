@@ -14,7 +14,7 @@
             Margin="16"
             FontSize="19"
             FontWeight="Light"
-            Text="{Binding Localization.AuthenticationTitle}" />
+            Text="{Binding LocalizationManager.AuthenticationTitle}" />
 
         <!--  Content  -->
         <Border
@@ -41,7 +41,7 @@
                         FontSize="18"
                         TextAlignment="Center"
                         TextWrapping="Wrap">
-                        <Run FontWeight="Light" Text="{Binding Localization.AuthenticatedText}" />
+                        <Run FontWeight="Light" Text="{Binding LocalizationManager.AuthenticatedText}" />
                     </TextBlock>
 
                     <!--  Log out  -->
@@ -50,7 +50,7 @@
                         Margin="16"
                         HorizontalAlignment="Center"
                         Click="LogOutButton_OnClick"
-                        Content="{Binding Localization.LogOutButton}"
+                        Content="{Binding LocalizationManager.LogOutButton}"
                         FontSize="18"
                         Foreground="{DynamicResource MaterialSecondaryMidBrush}"
                         Theme="{DynamicResource MaterialFlatButton}" />
@@ -63,7 +63,7 @@
                     VerticalAlignment="Center"
                     FontSize="18"
                     IsVisible="{Binding !IsAuthenticated}"
-                    Text="{Binding Localization.LoadingText}" />
+                    Text="{Binding LocalizationManager.LoadingText}" />
 
                 <!--  Browser  -->
                 <WebView
@@ -81,7 +81,7 @@
             Margin="16"
             HorizontalAlignment="Stretch"
             Command="{Binding CloseCommand}"
-            Content="{Binding Localization.CloseButton}"
+            Content="{Binding LocalizationManager.CloseButton}"
             IsCancel="True"
             IsDefault="True"
             Theme="{DynamicResource MaterialOutlineButton}" />
