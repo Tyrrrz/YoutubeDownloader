@@ -20,7 +20,7 @@ public partial class Localization : ObservableObject
         if (string.IsNullOrWhiteSpace(key))
             return string.Empty;
 
-        var language =
+        var dict = (
             Language != Language.System
                 ? Language
                 : CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
@@ -30,9 +30,8 @@ public partial class Localization : ObservableObject
                     "fra" => Language.French,
                     "spa" => Language.Spanish,
                     _ => Language.English,
-                };
-
-        var dict = language switch
+                }
+        ) switch
         {
             Language.Ukrainian => UkrainianTranslations,
             Language.German => GermanTranslations,
@@ -41,13 +40,10 @@ public partial class Localization : ObservableObject
             _ => EnglishTranslations,
         };
 
-        if (dict.TryGetValue(key, out var value))
+        if (dict.TryGetValue(key, out var value) || EnglishTranslations.TryGetValue(key, out value))
             return value;
 
-        if (dict != EnglishTranslations && EnglishTranslations.TryGetValue(key, out var english))
-            return english;
-
-        return key;
+        return $"Missing translation for '{key}'";
     }
 
     // ---- Dashboard ----
