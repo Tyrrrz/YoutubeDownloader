@@ -1,6 +1,7 @@
-using Avalonia;
-using Avalonia.Controls;
+using System;
+using System.Globalization;
 using Avalonia.Controls.Documents;
+using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Markdig;
 using Markdig.Syntax;
@@ -9,45 +10,39 @@ using MarkdownInline = Markdig.Syntax.Inlines.Inline;
 
 namespace YoutubeDownloader.Converters;
 
-public class InlineMarkup
+public class InlineMarkup : IValueConverter
 {
-    private InlineMarkup() { }
+    public static readonly InlineMarkup Instance = new();
 
     private static readonly MarkdownPipeline Pipeline = new MarkdownPipelineBuilder()
         .UseEmphasisExtras()
         .Build();
 
-    public static readonly AttachedProperty<string?> TextProperty =
-        AvaloniaProperty.RegisterAttached<InlineMarkup, TextBlock, string?>("Text");
-
-    static InlineMarkup()
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        TextProperty.Changed.AddClassHandler<TextBlock>(OnTextChanged);
-    }
+        if (value is not string { Length: > 0 } text)
+            return null;
 
-    public static string? GetText(TextBlock element) => element.GetValue(TextProperty);
-
-    public static void SetText(TextBlock element, string? value) =>
-        element.SetValue(TextProperty, value);
-
-    private static void OnTextChanged(TextBlock textBlock, AvaloniaPropertyChangedEventArgs e)
-    {
-        textBlock.Inlines ??= [];
-        textBlock.Inlines.Clear();
-
-        if (e.NewValue is not string { Length: > 0 } text)
-            return;
-
+        var inlines = new InlineCollection();
         var document = Markdown.Parse(text, Pipeline);
         foreach (var block in document)
         {
             if (block is ParagraphBlock para && para.Inline is not null)
             {
                 foreach (var inline in para.Inline)
-                    AddInlines(textBlock.Inlines, inline);
+                    AddInlines(inlines, inline);
             }
         }
+
+        return inlines;
     }
+
+    public object? ConvertBack(
+        object? value,
+        Type targetType,
+        object? parameter,
+        CultureInfo culture
+    ) => throw new NotSupportedException();
 
     private static void AddInlines(
         InlineCollection inlines,
