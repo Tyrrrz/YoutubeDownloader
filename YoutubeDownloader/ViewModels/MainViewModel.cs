@@ -96,7 +96,7 @@ public partial class MainViewModel(
 
                 ――――――――――――――――――――――――――――――――――――――――――
 
-                Searched for '{FFmpeg.CliFileName}' in the following directories:
+                {string.Format(Localization.FFmpegMissingSearchedLabel, FFmpeg.CliFileName)}
                 {string.Join(
                     Environment.NewLine,
                     FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d =>

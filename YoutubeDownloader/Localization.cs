@@ -42,7 +42,13 @@ public partial class Localization : ObservableObject
         )
             return translated;
 
-        return Translations[Language.English][key];
+        if (
+            Translations.TryGetValue(Language.English, out var englishDict)
+            && englishDict.TryGetValue(key, out var english)
+        )
+            return english;
+
+        return key;
     }
 
     // ---- Dashboard ----
@@ -99,6 +105,7 @@ public partial class Localization : ObservableObject
     public string FileNameTemplateTokenIdDesc => Get();
     public string FileNameTemplateTokenTitleDesc => Get();
     public string FileNameTemplateTokenAuthorDesc => Get();
+    public string FileNameTemplateAvailableTokensLabel => Get();
     public string ParallelLimitLabel => Get();
     public string ParallelLimitTooltip => Get();
     public string FFmpegPathLabel => Get();
@@ -144,6 +151,7 @@ public partial class Localization : ObservableObject
     public string FFmpegMissingTitle => Get();
     public string FFmpegMissingMessage => Get();
     public string FFmpegPathMissingMessage => Get();
+    public string FFmpegMissingSearchedLabel => Get();
     public string NothingFoundTitle => Get();
     public string NothingFoundMessage => Get();
     public string ErrorTitle => Get();
@@ -222,6 +230,7 @@ public partial class Localization : ObservableObject
             [nameof(FileNameTemplateTokenIdDesc)] = "— video ID",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— video title",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— video author",
+            [nameof(FileNameTemplateAvailableTokensLabel)] = "Available tokens:",
             [nameof(ParallelLimitLabel)] = "Parallel limit",
             [nameof(ParallelLimitTooltip)] = "How many downloads can be active at the same time",
             [nameof(FFmpegPathLabel)] = "FFmpeg path",
@@ -279,6 +288,8 @@ public partial class Localization : ObservableObject
 
                 Please update the FFmpeg path in settings or clear it to use auto-detection.
                 """,
+            [nameof(FFmpegMissingSearchedLabel)] =
+                "Searched for '{0}' in the following directories:",
             [nameof(NothingFoundTitle)] = "Nothing found",
             [nameof(NothingFoundMessage)] =
                 "Couldn't find any videos based on the query or URL you provided",
@@ -351,6 +362,7 @@ public partial class Localization : ObservableObject
             [nameof(FileNameTemplateTokenIdDesc)] = "— ідентифікатор відео",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— назва відео",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— автор відео",
+            [nameof(FileNameTemplateAvailableTokensLabel)] = "Доступні токени:",
             [nameof(ParallelLimitLabel)] = "Паралельний ліміт",
             [nameof(ParallelLimitTooltip)] = "Скільки завантажень може бути активними одночасно",
             [nameof(FFmpegPathLabel)] = "Шлях FFmpeg",
@@ -408,6 +420,7 @@ public partial class Localization : ObservableObject
 
                 Будь ласка, оновіть шлях FFmpeg у налаштуваннях або очистіть його для автовизначення.
                 """,
+            [nameof(FFmpegMissingSearchedLabel)] = "Шукали '{0}' у таких директоріях:",
             [nameof(NothingFoundTitle)] = "Нічого не знайдено",
             [nameof(NothingFoundMessage)] = "Не вдалося знайти відео за вказаним запитом або URL",
             [nameof(ErrorTitle)] = "Помилка",
@@ -481,6 +494,7 @@ public partial class Localization : ObservableObject
             [nameof(FileNameTemplateTokenIdDesc)] = "— Video-ID",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— Videotitel",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— Videoautor",
+            [nameof(FileNameTemplateAvailableTokensLabel)] = "Verfügbare Token:",
             [nameof(ParallelLimitLabel)] = "Paralleles Limit",
             [nameof(ParallelLimitTooltip)] = "Wie viele Downloads gleichzeitig aktiv sein können",
             [nameof(FFmpegPathLabel)] = "FFmpeg-Pfad",
@@ -538,6 +552,8 @@ public partial class Localization : ObservableObject
 
                 Bitte aktualisieren Sie den FFmpeg-Pfad in den Einstellungen oder löschen Sie ihn zur automatischen Erkennung.
                 """,
+            [nameof(FFmpegMissingSearchedLabel)] =
+                "'{0}' wurde in folgenden Verzeichnissen gesucht:",
             [nameof(NothingFoundTitle)] = "Nichts gefunden",
             [nameof(NothingFoundMessage)] =
                 "Es konnten keine Videos basierend auf der angegebenen Anfrage oder URL gefunden werden",
@@ -612,6 +628,7 @@ public partial class Localization : ObservableObject
             [nameof(FileNameTemplateTokenIdDesc)] = "— ID de la vidéo",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— titre de la vidéo",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— auteur de la vidéo",
+            [nameof(FileNameTemplateAvailableTokensLabel)] = "Jetons disponibles :",
             [nameof(ParallelLimitLabel)] = "Limite parallèle",
             [nameof(ParallelLimitTooltip)] =
                 "Combien de téléchargements peuvent être actifs en même temps",
@@ -670,6 +687,8 @@ public partial class Localization : ObservableObject
 
                 Veuillez mettre à jour le chemin FFmpeg dans les paramètres ou le vider pour utiliser la détection automatique.
                 """,
+            [nameof(FFmpegMissingSearchedLabel)] =
+                "'{0}' recherché dans les répertoires suivants :",
             [nameof(NothingFoundTitle)] = "Rien trouvé",
             [nameof(NothingFoundMessage)] =
                 "Impossible de trouver des vidéos correspondant à la requête ou l'URL fournie",
@@ -743,6 +762,7 @@ public partial class Localization : ObservableObject
             [nameof(FileNameTemplateTokenIdDesc)] = "— ID del video",
             [nameof(FileNameTemplateTokenTitleDesc)] = "— título del video",
             [nameof(FileNameTemplateTokenAuthorDesc)] = "— autor del video",
+            [nameof(FileNameTemplateAvailableTokensLabel)] = "Tokens disponibles:",
             [nameof(ParallelLimitLabel)] = "Límite paralelo",
             [nameof(ParallelLimitTooltip)] =
                 "Cuántas descargas pueden estar activas al mismo tiempo",
@@ -801,6 +821,7 @@ public partial class Localization : ObservableObject
 
                 Por favor, actualiza la ruta de FFmpeg en los ajustes o bórrala para usar la detección automática.
                 """,
+            [nameof(FFmpegMissingSearchedLabel)] = "Se buscó '{0}' en los siguientes directorios:",
             [nameof(NothingFoundTitle)] = "Nada encontrado",
             [nameof(NothingFoundMessage)] =
                 "No se encontraron videos basados en la consulta o URL proporcionada",

@@ -5,7 +5,7 @@ namespace YoutubeDownloader.Framework;
 
 public abstract class ViewModelBase : ObservableObject, IDisposable
 {
-    public Localization Localization => Localization.Current;
+    public Localization Localization => YoutubeDownloader.Localization.Current;
 
     ~ViewModelBase() => Dispose(false);
 

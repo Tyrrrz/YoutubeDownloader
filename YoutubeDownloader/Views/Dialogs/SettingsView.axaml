@@ -158,7 +158,7 @@
                                 <Run Text="{Binding Localization.FileNameTemplateTooltip}" />
                                 <LineBreak />
                                 <LineBreak />
-                                <Run Text="Available tokens:" />
+                                <Run Text="{Binding Localization.FileNameTemplateAvailableTokensLabel}" />
                                 <LineBreak />
                                 <Run Text=" " />
                                 <Run FontWeight="SemiBold" Text="$num" />
