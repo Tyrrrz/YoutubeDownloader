@@ -78,7 +78,7 @@ public class InlineMarkup : IValueConverter
                 var newStyle = fontStyle;
                 var newDecorations = textDecorations;
 
-                if (emphasis.DelimiterChar is '*' or '_' && emphasis.DelimiterCount >= 2)
+                if (emphasis.DelimiterChar is '*' or '_' && emphasis.DelimiterCount == 2)
                     newWeight = FontWeight.SemiBold;
                 else if (emphasis.DelimiterChar is '*' or '_')
                     newStyle = FontStyle.Italic;
