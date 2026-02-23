@@ -11,7 +11,7 @@ public partial class Localization : ObservableObject
     [ObservableProperty]
     public partial Language Language { get; set; } = Language.System;
 
-    partial void OnLanguageChanged(Language value) =>
+    private partial void OnLanguageChanged(Language value) =>
         // Notify all string properties so the UI refreshes
         OnPropertyChanged(string.Empty);
 
