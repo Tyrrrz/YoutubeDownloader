@@ -62,7 +62,7 @@ public class InlineMarkup : IValueConverter
                 var run = new Run(literal.Content.ToString());
                 if (fontWeight is not null)
                     run.FontWeight = fontWeight.Value;
-                if (fontStyle.HasValue)
+                if (fontStyle is not null)
                     run.FontStyle = fontStyle.Value;
                 if (textDecorations is not null)
                     run.TextDecorations = textDecorations;
