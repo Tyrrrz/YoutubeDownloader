@@ -27,13 +27,13 @@ public partial class SettingsViewModel : DialogViewModelBase
 
     public IReadOnlyList<ThemeVariant> AvailableThemes { get; } = Enum.GetValues<ThemeVariant>();
 
-    public IReadOnlyList<Language> AvailableLanguages { get; } = Enum.GetValues<Language>();
-
     public ThemeVariant Theme
     {
         get => _settingsService.Theme;
         set => _settingsService.Theme = value;
     }
+
+    public IReadOnlyList<Language> AvailableLanguages { get; } = Enum.GetValues<Language>();
 
     public Language Language
     {

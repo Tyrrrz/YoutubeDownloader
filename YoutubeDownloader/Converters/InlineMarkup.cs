@@ -60,7 +60,7 @@ public class InlineMarkup : IValueConverter
         {
             case LiteralInline literal:
                 var run = new Run(literal.Content.ToString());
-                if (fontWeight.HasValue)
+                if (fontWeight is not null)
                     run.FontWeight = fontWeight.Value;
                 if (fontStyle.HasValue)
                     run.FontStyle = fontStyle.Value;
@@ -74,18 +74,19 @@ public class InlineMarkup : IValueConverter
                 break;
 
             case EmphasisInline emphasis:
-                var (newWeight, newStyle, newDecorations) = emphasis.DelimiterChar switch
-                {
-                    '*' or '_' when emphasis.DelimiterCount >= 2 => (
-                        (FontWeight?)FontWeight.SemiBold,
-                        fontStyle,
-                        textDecorations
-                    ),
-                    '*' or '_' => (fontWeight, (FontStyle?)FontStyle.Italic, textDecorations),
-                    '~' => (fontWeight, fontStyle, TextDecorations.Strikethrough),
-                    '+' => (fontWeight, fontStyle, TextDecorations.Underline),
-                    _ => (fontWeight, fontStyle, textDecorations),
-                };
+                var newWeight = fontWeight;
+                var newStyle = fontStyle;
+                var newDecorations = textDecorations;
+
+                if (emphasis.DelimiterChar is '*' or '_' && emphasis.DelimiterCount >= 2)
+                    newWeight = FontWeight.SemiBold;
+                else if (emphasis.DelimiterChar is '*' or '_')
+                    newStyle = FontStyle.Italic;
+                else if (emphasis.DelimiterChar == '~')
+                    newDecorations = TextDecorations.Strikethrough;
+                else if (emphasis.DelimiterChar == '+')
+                    newDecorations = TextDecorations.Underline;
+
                 foreach (var child in emphasis)
                     AddInlines(inlines, child, newWeight, newStyle, newDecorations);
                 break;

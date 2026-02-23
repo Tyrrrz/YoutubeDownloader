@@ -73,7 +73,12 @@ public class App : Application, IDisposable
         );
 
         // Apply the selected language when the user changes it
-        _eventRoot.Add(_settingsService.WatchProperty(o => o.Language, () => InitializeLanguage()));
+        _eventRoot.Add(
+            _settingsService.WatchProperty(
+                o => o.Language,
+                () => Localization.Current.Language = _settingsService.Language
+            )
+        );
     }
 
     public override void Initialize()
@@ -105,8 +110,6 @@ public class App : Application, IDisposable
                 : Theme.Create(Theme.Dark, Color.Parse("#E8E8E8"), Color.Parse("#F9A825"));
     }
 
-    private void InitializeLanguage() => Localization.Current.Language = _settingsService.Language;
-
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -116,9 +119,6 @@ public class App : Application, IDisposable
 
         // Set up custom theme colors
         InitializeTheme();
-
-        // Apply the initial language
-        InitializeLanguage();
 
         // Load settings
         _settingsService.Load();
