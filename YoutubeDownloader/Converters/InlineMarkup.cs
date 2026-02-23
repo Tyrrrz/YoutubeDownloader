@@ -1,45 +1,28 @@
-using Avalonia;
-using Avalonia.Controls;
+using System;
+using System.Globalization;
 using Avalonia.Controls.Documents;
+using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using MarkdownInline = Markdig.Syntax.Inlines.Inline;
 
-namespace YoutubeDownloader.AttachedProperties;
+namespace YoutubeDownloader.Converters;
 
-// TextBlock.Inlines is a mutable collection — setting it via a regular IValueConverter
-// replaces the collection object but does not reliably flush old Run/LineBreak elements
-// on re-evaluation (e.g. on language switch).  An attached property's change handler
-// lets us imperatively call Inlines.Clear() + re-populate on every change, which
-// guarantees the displayed text is always in sync with the bound localization string.
-public class InlineMarkup
+public class InlineMarkup : IValueConverter
 {
-    public static readonly AttachedProperty<string?> TextProperty =
-        AvaloniaProperty.RegisterAttached<InlineMarkup, TextBlock, string?>("Text");
+    public static readonly InlineMarkup Instance = new();
 
     private static readonly MarkdownPipeline MarkdownPipeline = new MarkdownPipelineBuilder()
         .UseEmphasisExtras()
         .Build();
 
-    static InlineMarkup()
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        TextProperty.Changed.AddClassHandler<TextBlock>(OnTextChanged);
-    }
-
-    public static string? GetText(TextBlock element) => element.GetValue(TextProperty);
-
-    public static void SetText(TextBlock element, string? value) =>
-        element.SetValue(TextProperty, value);
-
-    private static void OnTextChanged(TextBlock textBlock, AvaloniaPropertyChangedEventArgs args)
-    {
-        textBlock.Inlines ??= [];
-        textBlock.Inlines.Clear();
-
-        if (args.NewValue is not string { Length: > 0 } text)
-            return;
+        var inlines = new InlineCollection();
+        if (value is not string { Length: > 0 } text)
+            return inlines;
 
         var document = Markdown.Parse(text, MarkdownPipeline);
         foreach (var block in document)
@@ -47,30 +30,43 @@ public class InlineMarkup
             if (block is ParagraphBlock para && para.Inline is not null)
             {
                 foreach (var markdownInline in para.Inline)
-                    AddInlines(textBlock.Inlines, markdownInline);
+                    AddInlines(inlines, markdownInline);
             }
         }
+
+        return inlines;
     }
 
+    public object? ConvertBack(
+        object? value,
+        Type targetType,
+        object? parameter,
+        CultureInfo culture
+    ) => throw new NotSupportedException();
+
+    // Nullable FontWeight/FontStyle so that non-styled runs inherit properties
+    // (e.g. FontWeight="Light") from the parent TextBlock rather than being
+    // overridden with FontWeight.Normal, which would make space characters appear
+    // heavier and visually wider than the surrounding text.
     private static void AddInlines(
         InlineCollection inlines,
         MarkdownInline markdownInline,
-        FontWeight fontWeight = FontWeight.Normal,
-        FontStyle fontStyle = FontStyle.Normal,
+        FontWeight? fontWeight = null,
+        FontStyle? fontStyle = null,
         TextDecorationCollection? textDecorations = null
     )
     {
         switch (markdownInline)
         {
             case LiteralInline literal:
-                inlines.Add(
-                    new Run(literal.Content.ToString())
-                    {
-                        FontWeight = fontWeight,
-                        FontStyle = fontStyle,
-                        TextDecorations = textDecorations,
-                    }
-                );
+                var run = new Run(literal.Content.ToString());
+                if (fontWeight.HasValue)
+                    run.FontWeight = fontWeight.Value;
+                if (fontStyle.HasValue)
+                    run.FontStyle = fontStyle.Value;
+                if (textDecorations is not null)
+                    run.TextDecorations = textDecorations;
+                inlines.Add(run);
                 break;
 
             case LineBreakInline:
@@ -81,11 +77,11 @@ public class InlineMarkup
                 var (newWeight, newStyle, newDecorations) = emphasis.DelimiterChar switch
                 {
                     '*' or '_' when emphasis.DelimiterCount >= 2 => (
-                        FontWeight.SemiBold,
+                        (FontWeight?)FontWeight.SemiBold,
                         fontStyle,
                         textDecorations
                     ),
-                    '*' or '_' => (fontWeight, FontStyle.Italic, textDecorations),
+                    '*' or '_' => (fontWeight, (FontStyle?)FontStyle.Italic, textDecorations),
                     '~' => (fontWeight, fontStyle, TextDecorations.Strikethrough),
                     '+' => (fontWeight, fontStyle, TextDecorations.Underline),
                     _ => (fontWeight, fontStyle, textDecorations),

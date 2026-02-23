@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
     xmlns:components="clr-namespace:YoutubeDownloader.ViewModels.Components"
-    xmlns:attachedProperties="clr-namespace:YoutubeDownloader.AttachedProperties"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:loc="clr-namespace:YoutubeDownloader"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
@@ -115,7 +114,7 @@
                     Kind="Youtube" />
 
                 <TextBlock
-                    attachedProperties:InlineMarkup.Text="{Binding Localization.DashboardPlaceholder}"
+                    Inlines="{Binding Localization.DashboardPlaceholder, Converter={x:Static converters:InlineMarkup.Instance}}"
                     HorizontalAlignment="Center"
                     FontSize="18"
                     FontWeight="Light"
