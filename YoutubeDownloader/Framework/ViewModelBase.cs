@@ -5,6 +5,8 @@ namespace YoutubeDownloader.Framework;
 
 public abstract class ViewModelBase : ObservableObject, IDisposable
 {
+    public Localization Localization => Localization.Current;
+
     ~ViewModelBase() => Dispose(false);
 
     protected void OnAllPropertiesChanged() => OnPropertyChanged(string.Empty);

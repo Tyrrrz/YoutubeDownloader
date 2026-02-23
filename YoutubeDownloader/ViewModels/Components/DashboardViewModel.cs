@@ -264,8 +264,8 @@ public partial class DashboardViewModel : ViewModelBase
             {
                 await _dialogManager.ShowDialogAsync(
                     _viewModelManager.CreateMessageBoxViewModel(
-                        "Nothing found",
-                        "Couldn't find any videos based on the query or URL you provided"
+                        Localization.NothingFoundTitle,
+                        Localization.NothingFoundMessage
                     )
                 );
             }
@@ -274,7 +274,7 @@ public partial class DashboardViewModel : ViewModelBase
         {
             await _dialogManager.ShowDialogAsync(
                 _viewModelManager.CreateMessageBoxViewModel(
-                    "Error",
+                    Localization.ErrorTitle,
                     // Short error message for YouTube-related errors, full for others
                     ex is YoutubeExplodeException
                         ? ex.Message

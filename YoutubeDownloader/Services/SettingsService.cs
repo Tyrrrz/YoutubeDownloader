@@ -26,6 +26,9 @@ public partial class SettingsService()
     public partial ThemeVariant Theme { get; set; }
 
     [ObservableProperty]
+    public partial Language Language { get; set; }
+
+    [ObservableProperty]
     public partial bool IsAutoUpdateEnabled { get; set; } = true;
 
     [ObservableProperty]

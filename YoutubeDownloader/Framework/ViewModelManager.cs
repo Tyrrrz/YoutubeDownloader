@@ -98,7 +98,7 @@ public class ViewModelManager(IServiceProvider services)
     }
 
     public MessageBoxViewModel CreateMessageBoxViewModel(string title, string message) =>
-        CreateMessageBoxViewModel(title, message, "CLOSE", null);
+        CreateMessageBoxViewModel(title, message, Localization.Current.CloseButton, null);
 
     public SettingsViewModel CreateSettingsViewModel() =>
         services.GetRequiredService<SettingsViewModel>();

@@ -33,6 +33,14 @@ public partial class SettingsViewModel : DialogViewModelBase
         set => _settingsService.Theme = value;
     }
 
+    public IReadOnlyList<Language> AvailableLanguages { get; } = Enum.GetValues<Language>();
+
+    public Language Language
+    {
+        get => _settingsService.Language;
+        set => _settingsService.Language = value;
+    }
+
     public bool IsAutoUpdateEnabled
     {
         get => _settingsService.IsAutoUpdateEnabled;

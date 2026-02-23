@@ -71,6 +71,14 @@ public class App : Application, IDisposable
                 }
             )
         );
+
+        // Apply the selected language when the user changes it
+        _eventRoot.Add(
+            _settingsService.WatchProperty(
+                o => o.Language,
+                () => Localization.Current.Language = _settingsService.Language
+            )
+        );
     }
 
     public override void Initialize()
