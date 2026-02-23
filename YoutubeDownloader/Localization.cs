@@ -20,7 +20,7 @@ public partial class Localization : ObservableObject
         if (string.IsNullOrWhiteSpace(key))
             return string.Empty;
 
-        var dict = Language switch
+        var translations = Language switch
         {
             Language.System =>
                 CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
@@ -38,7 +38,10 @@ public partial class Localization : ObservableObject
             _ => EnglishTranslations,
         };
 
-        if (dict.TryGetValue(key, out var value) || EnglishTranslations.TryGetValue(key, out value))
+        if (
+            translations.TryGetValue(key, out var value)
+            || EnglishTranslations.TryGetValue(key, out value)
+        )
             return value;
 
         return $"Missing translation for '{key}'";
