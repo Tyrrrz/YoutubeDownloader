@@ -1,58 +1,66 @@
-using System;
-using System.Globalization;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Documents;
-using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using MarkdownInline = Markdig.Syntax.Inlines.Inline;
 
-namespace YoutubeDownloader.Converters;
+namespace YoutubeDownloader.AttachedProperties;
 
-public class InlineMarkup : IValueConverter
+// TextBlock.Inlines is a mutable collection — setting it via a regular IValueConverter
+// replaces the collection object but does not reliably flush old Run/LineBreak elements
+// on re-evaluation (e.g. on language switch).  An attached property's change handler
+// lets us imperatively call Inlines.Clear() + re-populate on every change, which
+// guarantees the displayed text is always in sync with the bound localization string.
+public class InlineMarkup
 {
-    public static readonly InlineMarkup Instance = new();
+    public static readonly AttachedProperty<string?> TextProperty =
+        AvaloniaProperty.RegisterAttached<InlineMarkup, TextBlock, string?>("Text");
 
-    private static readonly MarkdownPipeline Pipeline = new MarkdownPipelineBuilder()
+    private static readonly MarkdownPipeline MarkdownPipeline = new MarkdownPipelineBuilder()
         .UseEmphasisExtras()
         .Build();
 
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    static InlineMarkup()
     {
-        if (value is not string { Length: > 0 } text)
-            return null;
+        TextProperty.Changed.AddClassHandler<TextBlock>(OnTextChanged);
+    }
 
-        var inlines = new InlineCollection();
-        var document = Markdown.Parse(text, Pipeline);
+    public static string? GetText(TextBlock element) => element.GetValue(TextProperty);
+
+    public static void SetText(TextBlock element, string? value) =>
+        element.SetValue(TextProperty, value);
+
+    private static void OnTextChanged(TextBlock textBlock, AvaloniaPropertyChangedEventArgs args)
+    {
+        textBlock.Inlines ??= [];
+        textBlock.Inlines.Clear();
+
+        if (args.NewValue is not string { Length: > 0 } text)
+            return;
+
+        var document = Markdown.Parse(text, MarkdownPipeline);
         foreach (var block in document)
         {
             if (block is ParagraphBlock para && para.Inline is not null)
             {
-                foreach (var inline in para.Inline)
-                    AddInlines(inlines, inline);
+                foreach (var markdownInline in para.Inline)
+                    AddInlines(textBlock.Inlines, markdownInline);
             }
         }
-
-        return inlines;
     }
-
-    public object? ConvertBack(
-        object? value,
-        Type targetType,
-        object? parameter,
-        CultureInfo culture
-    ) => throw new NotSupportedException();
 
     private static void AddInlines(
         InlineCollection inlines,
-        MarkdownInline inline,
+        MarkdownInline markdownInline,
         FontWeight fontWeight = FontWeight.Normal,
         FontStyle fontStyle = FontStyle.Normal,
         TextDecorationCollection? textDecorations = null
     )
     {
-        switch (inline)
+        switch (markdownInline)
         {
             case LiteralInline literal:
                 inlines.Add(
