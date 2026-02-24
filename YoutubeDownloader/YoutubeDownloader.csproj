@@ -10,13 +10,16 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
+
   <PropertyGroup>
     <DownloadFFmpeg>true</DownloadFFmpeg>
     <PublishMacOSBundle>false</PublishMacOSBundle>
   </PropertyGroup>
+
   <ItemGroup>
     <AvaloniaResource Include="..\favicon.ico" Link="favicon.ico" />
   </ItemGroup>
+
   <ItemGroup>
     <None
       Include="ffmpeg.exe"
@@ -25,6 +28,7 @@
     />
     <None Include="ffmpeg" CopyToOutputDirectory="PreserveNewest" Condition="Exists('ffmpeg')" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.6.0" />
     <PackageReference Include="Avalonia" Version="11.3.0" />
@@ -37,7 +41,7 @@
     />
     <PackageReference Include="Cogwheel" Version="2.1.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="CSharpier.MsBuild" Version="1.1.2" PrivateAssets="all" />
+    <PackageReference Include="CSharpier.MsBuild" Version="1.2.6" PrivateAssets="all" />
     <PackageReference Include="Deorcify" Version="1.1.0" PrivateAssets="all" />
     <PackageReference Include="DialogHost.Avalonia" Version="0.10.4" />
     <PackageReference Include="Gress" Version="2.1.1" />
@@ -50,9 +54,11 @@
     <PackageReference Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageReference Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
   </ItemGroup>
+
   <!-- Avalonia.WebView is completely incompatible with trimming -->
   <ItemGroup>
     <TrimmerRootAssembly Include="Avalonia.WebView" />
@@ -66,6 +72,7 @@
     <TrimmerRootAssembly Include="WebView.Avalonia" />
     <TrimmerRootAssembly Include="WebView.Core" />
   </ItemGroup>
+
   <!-- Download FFmpeg -->
   <Target
     Name="DownloadFFmpeg"
@@ -82,6 +89,7 @@
       LogStandardErrorAsError="true"
       Condition="'$(RuntimeIdentifier)' == ''"
     />
+
     <!-- Update FFmpeg references so that the files get copied to the output within the same build sequence -->
     <ItemGroup>
       <None
@@ -92,6 +100,7 @@
       <None Include="ffmpeg" CopyToOutputDirectory="PreserveNewest" Condition="Exists('ffmpeg')" />
     </ItemGroup>
   </Target>
+
   <!-- Publish macOS bundle -->
   <Target Name="PublishMacOSBundle" AfterTargets="Publish" Condition="$(PublishMacOSBundle)">
     <Exec
