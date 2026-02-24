@@ -59,14 +59,15 @@ public partial class LocalizationManager
             [nameof(SkipExistingFilesTooltip)] =
                 "When downloading multiple videos, skip those that already have matching files in the output directory",
             [nameof(FileNameTemplateLabel)] = "File name template",
-            [nameof(FileNameTemplateTooltip)] =
-                "Template used for generating file names for downloaded videos.",
-            [nameof(FileNameTemplateTokenNumDesc)] =
-                "— video's position in the list (if applicable)",
-            [nameof(FileNameTemplateTokenIdDesc)] = "— video ID",
-            [nameof(FileNameTemplateTokenTitleDesc)] = "— video title",
-            [nameof(FileNameTemplateTokenAuthorDesc)] = "— video author",
-            [nameof(FileNameTemplateAvailableTokensLabel)] = "Available tokens:",
+            [nameof(FileNameTemplateTooltip)] = """
+                Template used for generating file names for downloaded videos.
+
+                Available tokens:
+                **$num** — video's position in the list (if applicable)
+                **$id** — video ID
+                **$title** — video title
+                **$author** — video author
+                """,
             [nameof(ParallelLimitLabel)] = "Parallel limit",
             [nameof(ParallelLimitTooltip)] = "How many downloads can be active at the same time",
             [nameof(FFmpegPathLabel)] = "FFmpeg path",

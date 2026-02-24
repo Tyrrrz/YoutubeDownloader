@@ -59,13 +59,15 @@ public partial class LocalizationManager
             [nameof(SkipExistingFilesTooltip)] =
                 "При завантаженні кількох відео пропускати ті, для яких вже є відповідні файли",
             [nameof(FileNameTemplateLabel)] = "Шаблон імені файлу",
-            [nameof(FileNameTemplateTooltip)] =
-                "Шаблон для генерації імен файлів завантажених відео.",
-            [nameof(FileNameTemplateTokenNumDesc)] = "— позиція відео у списку (якщо застосовно)",
-            [nameof(FileNameTemplateTokenIdDesc)] = "— ідентифікатор відео",
-            [nameof(FileNameTemplateTokenTitleDesc)] = "— назва відео",
-            [nameof(FileNameTemplateTokenAuthorDesc)] = "— автор відео",
-            [nameof(FileNameTemplateAvailableTokensLabel)] = "Доступні токени:",
+            [nameof(FileNameTemplateTooltip)] = """
+                Шаблон для генерації імен файлів завантажених відео.
+
+                Доступні токени:
+                **$num** — позиція відео у списку (якщо застосовно)
+                **$id** — ідентифікатор відео
+                **$title** — назва відео
+                **$author** — автор відео
+                """,
             [nameof(ParallelLimitLabel)] = "Паралельний ліміт",
             [nameof(ParallelLimitTooltip)] = "Скільки завантажень може бути активними одночасно",
             [nameof(FFmpegPathLabel)] = "Шлях FFmpeg",

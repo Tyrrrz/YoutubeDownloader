@@ -62,14 +62,15 @@ public partial class LocalizationManager
         [nameof(SkipExistingFilesTooltip)] =
             "Beim Herunterladen mehrerer Videos solche überspringen, für die bereits passende Dateien im Ausgabeverzeichnis vorhanden sind",
         [nameof(FileNameTemplateLabel)] = "Dateinamen-Vorlage",
-        [nameof(FileNameTemplateTooltip)] =
-            "Vorlage für die Generierung von Dateinamen heruntergeladener Videos.",
-        [nameof(FileNameTemplateTokenNumDesc)] =
-            "— Position des Videos in der Liste (falls zutreffend)",
-        [nameof(FileNameTemplateTokenIdDesc)] = "— Video-ID",
-        [nameof(FileNameTemplateTokenTitleDesc)] = "— Videotitel",
-        [nameof(FileNameTemplateTokenAuthorDesc)] = "— Videoautor",
-        [nameof(FileNameTemplateAvailableTokensLabel)] = "Verfügbare Token:",
+        [nameof(FileNameTemplateTooltip)] = """
+            Vorlage für die Generierung von Dateinamen heruntergeladener Videos.
+
+            Verfügbare Token:
+            **$num** — Position des Videos in der Liste (falls zutreffend)
+            **$id** — Video-ID
+            **$title** — Videotitel
+            **$author** — Videoautor
+            """,
         [nameof(ParallelLimitLabel)] = "Paralleles Limit",
         [nameof(ParallelLimitTooltip)] = "Wie viele Downloads gleichzeitig aktiv sein können",
         [nameof(FFmpegPathLabel)] = "FFmpeg-Pfad",

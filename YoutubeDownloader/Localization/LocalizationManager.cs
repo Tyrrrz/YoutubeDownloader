@@ -122,11 +122,6 @@ public partial class LocalizationManager
     public string SkipExistingFilesTooltip => Get();
     public string FileNameTemplateLabel => Get();
     public string FileNameTemplateTooltip => Get();
-    public string FileNameTemplateTokenNumDesc => Get();
-    public string FileNameTemplateTokenIdDesc => Get();
-    public string FileNameTemplateTokenTitleDesc => Get();
-    public string FileNameTemplateTokenAuthorDesc => Get();
-    public string FileNameTemplateAvailableTokensLabel => Get();
     public string ParallelLimitLabel => Get();
     public string ParallelLimitTooltip => Get();
     public string FFmpegPathLabel => Get();

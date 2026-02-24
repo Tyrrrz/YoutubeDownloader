@@ -2,6 +2,7 @@
     x:Class="YoutubeDownloader.Views.Dialogs.SettingsView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Width="380"
@@ -155,28 +156,7 @@
                     <!--  File name template  -->
                     <DockPanel Margin="16,8" LastChildFill="False">
                         <ToolTip.Tip>
-                            <TextBlock>
-                                <Run Text="{Binding LocalizationManager.FileNameTemplateTooltip}" />
-                                <LineBreak />
-                                <LineBreak />
-                                <Run Text="{Binding LocalizationManager.FileNameTemplateAvailableTokensLabel}" />
-                                <LineBreak />
-                                <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="$num" />
-                                <Run Text="{Binding LocalizationManager.FileNameTemplateTokenNumDesc}" />
-                                <LineBreak />
-                                <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="$id" />
-                                <Run Text="{Binding LocalizationManager.FileNameTemplateTokenIdDesc}" />
-                                <LineBreak />
-                                <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="$title" />
-                                <Run Text="{Binding LocalizationManager.FileNameTemplateTokenTitleDesc}" />
-                                <LineBreak />
-                                <Run Text=" " />
-                                <Run FontWeight="SemiBold" Text="$author" />
-                                <Run Text="{Binding LocalizationManager.FileNameTemplateTokenAuthorDesc}" />
-                            </TextBlock>
+                            <TextBlock Inlines="{Binding LocalizationManager.FileNameTemplateTooltip, Converter={x:Static converters:InlineMarkup.Instance}}" />
                         </ToolTip.Tip>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.FileNameTemplateLabel}" />
                         <TextBox

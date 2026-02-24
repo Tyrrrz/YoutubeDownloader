@@ -61,13 +61,15 @@ public partial class LocalizationManager
             [nameof(SkipExistingFilesTooltip)] =
                 "Al descargar múltiples videos, omitir los que ya tengan archivos correspondientes en el directorio de salida",
             [nameof(FileNameTemplateLabel)] = "Plantilla de nombre de archivo",
-            [nameof(FileNameTemplateTooltip)] =
-                "Plantilla para generar nombres de archivo de los videos descargados.",
-            [nameof(FileNameTemplateTokenNumDesc)] = "— posición del video en la lista (si aplica)",
-            [nameof(FileNameTemplateTokenIdDesc)] = "— ID del video",
-            [nameof(FileNameTemplateTokenTitleDesc)] = "— título del video",
-            [nameof(FileNameTemplateTokenAuthorDesc)] = "— autor del video",
-            [nameof(FileNameTemplateAvailableTokensLabel)] = "Tokens disponibles:",
+            [nameof(FileNameTemplateTooltip)] = """
+                Plantilla para generar nombres de archivo de los videos descargados.
+
+                Tokens disponibles:
+                **$num** — posición del video en la lista (si aplica)
+                **$id** — ID del video
+                **$title** — título del video
+                **$author** — autor del video
+                """,
             [nameof(ParallelLimitLabel)] = "Límite paralelo",
             [nameof(ParallelLimitTooltip)] =
                 "Cuántas descargas pueden estar activas al mismo tiempo",
