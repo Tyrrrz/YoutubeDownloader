@@ -10,9 +10,9 @@ using MarkdownInline = Markdig.Syntax.Inlines.Inline;
 
 namespace YoutubeDownloader.Converters;
 
-public class InlineMarkup : IValueConverter
+public class MarkdownToInlinesConverter : IValueConverter
 {
-    public static readonly InlineMarkup Instance = new();
+    public static readonly MarkdownToInlinesConverter Instance = new();
 
     private static readonly MarkdownPipeline MarkdownPipeline = new MarkdownPipelineBuilder()
         .UseEmphasisExtras()
