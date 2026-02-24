@@ -93,6 +93,7 @@ public class InlineMarkup : IValueConverter
         if (value is not string { Length: > 0 } text)
             return inlines;
 
+        // Insert a blank line between paragraphs (but not before the first one)
         var isFirstParagraph = true;
         foreach (var block in Markdown.Parse(text, MarkdownPipeline))
         {
