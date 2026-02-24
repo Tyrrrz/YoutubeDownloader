@@ -30,7 +30,10 @@ public class MarkdownToInlinesConverter : IValueConverter
         {
             case LiteralInline literal:
             {
-                var run = new Run(literal.Content.ToString());
+                var run = new Run(literal.Content.ToString())
+                {
+                    BaselineAlignment = BaselineAlignment.Center,
+                };
 
                 if (fontWeight is not null)
                     run.FontWeight = fontWeight.Value;
