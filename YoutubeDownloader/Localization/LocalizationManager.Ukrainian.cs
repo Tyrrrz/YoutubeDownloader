@@ -68,7 +68,7 @@ public partial class LocalizationManager
                 **$title** — назва відео
                 **$author** — автор відео
                 """,
-            [nameof(ParallelLimitLabel)] = "Паралельний ліміт",
+            [nameof(ParallelLimitLabel)] = "Ліміт паралелізації",
             [nameof(ParallelLimitTooltip)] = "Скільки завантажень може бути активними одночасно",
             [nameof(FFmpegPathLabel)] = "Шлях FFmpeg",
             [nameof(FFmpegPathTooltip)] =
