@@ -93,10 +93,19 @@ public class InlineMarkup : IValueConverter
         if (value is not string { Length: > 0 } text)
             return inlines;
 
+        var isFirstParagraph = true;
         foreach (var block in Markdown.Parse(text, MarkdownPipeline))
         {
             if (block is not ParagraphBlock { Inline: not null } paragraph)
                 continue;
+
+            if (!isFirstParagraph)
+            {
+                inlines.Add(new LineBreak());
+                inlines.Add(new LineBreak());
+            }
+
+            isFirstParagraph = false;
 
             foreach (var markdownInline in paragraph.Inline)
                 ProcessInline(inlines, markdownInline);

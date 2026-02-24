@@ -61,14 +61,15 @@ public partial class LocalizationManager
         [nameof(SkipExistingFilesTooltip)] =
             "Lors du téléchargement de plusieurs vidéos, ignorer celles qui ont déjà des fichiers correspondants dans le répertoire de sortie",
         [nameof(FileNameTemplateLabel)] = "Modèle de nom de fichier",
-        [nameof(FileNameTemplateTooltip)] =
-            "Modèle utilisé pour générer les noms de fichiers des vidéos téléchargées.",
-        [nameof(FileNameTemplateTokenNumDesc)] =
-            "— position de la vidéo dans la liste (si applicable)",
-        [nameof(FileNameTemplateTokenIdDesc)] = "— ID de la vidéo",
-        [nameof(FileNameTemplateTokenTitleDesc)] = "— titre de la vidéo",
-        [nameof(FileNameTemplateTokenAuthorDesc)] = "— auteur de la vidéo",
-        [nameof(FileNameTemplateAvailableTokensLabel)] = "Jetons disponibles :",
+        [nameof(FileNameTemplateTooltip)] = """
+            Modèle utilisé pour générer les noms de fichiers des vidéos téléchargées.
+
+            Jetons disponibles :
+            **$num** — position de la vidéo dans la liste (si applicable)
+            **$id** — ID de la vidéo
+            **$title** — titre de la vidéo
+            **$author** — auteur de la vidéo
+            """,
         [nameof(ParallelLimitLabel)] = "Limite parallèle",
         [nameof(ParallelLimitTooltip)] =
             "Combien de téléchargements peuvent être actifs en même temps",
