@@ -38,6 +38,7 @@ public partial class LocalizationManager
             [nameof(ThemeLabel)] = "Тема",
             [nameof(ThemeTooltip)] = "Бажана тема інтерфейсу",
             [nameof(LanguageLabel)] = "Мова",
+            [nameof(LanguageTooltip)] = "Бажана мова відображення інтерфейсу користувача",
             [nameof(AutoUpdateLabel)] = "Авто-оновлення",
             [nameof(AutoUpdateTooltip)] = """
                 Виконувати автоматичні оновлення при кожному запуску.
