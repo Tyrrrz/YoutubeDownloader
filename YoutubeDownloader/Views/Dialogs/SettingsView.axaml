@@ -37,7 +37,8 @@
                     <!--  Language  -->
                     <DockPanel
                         Margin="16,8"
-                        LastChildFill="False">
+                        LastChildFill="False"
+                        ToolTip.Tip="{Binding LocalizationManager.LanguageTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.LanguageLabel}" />
                         <ComboBox
                             Width="150"

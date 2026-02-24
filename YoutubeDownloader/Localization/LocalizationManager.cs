@@ -107,6 +107,7 @@ public partial class LocalizationManager
     public string ThemeLabel => Get();
     public string ThemeTooltip => Get();
     public string LanguageLabel => Get();
+    public string LanguageTooltip => Get();
     public string AutoUpdateLabel => Get();
     public string AutoUpdateTooltip => Get();
     public string PersistAuthLabel => Get();

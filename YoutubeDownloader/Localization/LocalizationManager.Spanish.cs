@@ -38,6 +38,8 @@ public partial class LocalizationManager
             [nameof(ThemeLabel)] = "Tema",
             [nameof(ThemeTooltip)] = "Tema de interfaz preferido",
             [nameof(LanguageLabel)] = "Idioma",
+            [nameof(LanguageTooltip)] =
+                "Idioma de visualización preferido para la interfaz de usuario",
             [nameof(AutoUpdateLabel)] = "Actualización automática",
             [nameof(AutoUpdateTooltip)] = """
                 Realizar actualizaciones automáticas en cada inicio.
