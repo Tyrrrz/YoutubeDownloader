@@ -113,7 +113,7 @@
                     Kind="Youtube" />
 
                 <TextBlock
-                    Inlines="{Binding LocalizationManager.DashboardPlaceholder, Converter={x:Static converters:InlineMarkup.Instance}}"
+                    Inlines="{Binding LocalizationManager.DashboardPlaceholder, Converter={x:Static converters:MarkdownToInlinesConveter.Instance}}"
                     HorizontalAlignment="Center"
                     FontSize="18"
                     FontWeight="Light"

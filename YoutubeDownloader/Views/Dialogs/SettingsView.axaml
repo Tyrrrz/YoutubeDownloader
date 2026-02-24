@@ -156,7 +156,7 @@
                     <!--  File name template  -->
                     <DockPanel Margin="16,8" LastChildFill="False">
                         <ToolTip.Tip>
-                            <TextBlock Inlines="{Binding LocalizationManager.FileNameTemplateTooltip, Converter={x:Static converters:InlineMarkup.Instance}}" />
+                            <TextBlock Inlines="{Binding LocalizationManager.FileNameTemplateTooltip, Converter={x:Static converters:MarkdownToInlinesConveter.Instance}}" />
                         </ToolTip.Tip>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.FileNameTemplateLabel}" />
                         <TextBox
