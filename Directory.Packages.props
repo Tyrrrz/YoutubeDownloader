@@ -1,0 +1,31 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.6.0" />
+    <PackageVersion Include="Avalonia" Version="11.3.0" />
+    <PackageVersion Include="Avalonia.Controls.DataGrid" Version="11.3.0" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.0" />
+    <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.0" />
+    <PackageVersion Include="Cogwheel" Version="2.1.0" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageVersion Include="CSharpier.MsBuild" Version="1.2.6" />
+    <PackageVersion Include="Deorcify" Version="1.1.0" />
+    <PackageVersion Include="DialogHost.Avalonia" Version="0.10.4" />
+    <PackageVersion Include="Gress" Version="2.1.1" />
+    <PackageVersion Include="JsonExtensions" Version="1.2.0" />
+    <PackageVersion Include="Markdig" Version="1.0.0" />
+    <PackageVersion Include="Material.Avalonia" Version="3.9.2" />
+    <PackageVersion Include="Material.Avalonia.DataGrid" Version="3.9.2" />
+    <PackageVersion Include="Material.Icons.Avalonia" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+    <PackageVersion Include="Onova" Version="2.6.13" />
+    <PackageVersion Include="TagLibSharp" Version="2.3.0" />
+    <PackageVersion Include="WebView.Avalonia" Version="11.0.0.1" />
+    <PackageVersion Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
+    <PackageVersion Include="YoutubeExplode" Version="6.5.7" />
+    <PackageVersion Include="YoutubeExplode.Converter" Version="6.5.7" />
+  </ItemGroup>
+</Project>
