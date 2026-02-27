@@ -146,6 +146,11 @@
             </Style>
         </Style>
 
+        <!--  Run  -->
+        <Style Selector="Run">
+            <Setter Property="BaselineAlignment" Value="Center" />
+        </Style>
+
         <!--  Text box  -->
         <Style Selector="TextBox">
             <Setter Property="FontSize" Value="14" />
