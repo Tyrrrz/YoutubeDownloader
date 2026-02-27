@@ -16,16 +16,13 @@ public partial class SettingsService
     {
         private const string Prefix = "enc:";
 
-        // Exclusive upper bound for the random padding length range [1, MaxPaddingLength)
-        private const int MaxPaddingLength = 17;
-
         private static readonly Lazy<byte[]> Key = new(() =>
             Rfc2898DeriveBytes.Pbkdf2(
                 Encoding.UTF8.GetBytes(Environment.TryGetMachineId() ?? string.Empty),
                 Encoding.UTF8.GetBytes(ThisAssembly.Project.EncryptionSalt),
-                iterations: 10_000,
+                600_000,
                 HashAlgorithmName.SHA256,
-                outputLength: 16
+                16
             )
         );
 
@@ -48,20 +45,20 @@ public partial class SettingsService
 
             try
             {
-                var data = Convert.FromHexString(value[Prefix.Length..]);
+                var encryptedData = Convert.FromHexString(value[Prefix.Length..]);
+                var cookieData = new byte[encryptedData.AsSpan(28).Length];
 
-                // Layout: nonce (12 bytes) | paddingLength (1 byte) | tag (16 bytes) | cipher
-                var nonce = data.AsSpan(0, 12);
-                var paddingLength = data[12];
-                var tag = data.AsSpan(13, 16);
-                var cipher = data.AsSpan(29);
-
-                var decrypted = new byte[cipher.Length];
+                // Layout: nonce (12 bytes) | tag (16 bytes) | cipher
                 using var aes = new AesGcm(Key.Value, 16);
-                aes.Decrypt(nonce, cipher, tag, decrypted);
+                aes.Decrypt(
+                    encryptedData.AsSpan(0, 12),
+                    encryptedData.AsSpan(28),
+                    encryptedData.AsSpan(12, 16),
+                    cookieData
+                );
 
                 return JsonSerializer
-                    .Deserialize<IReadOnlyList<CookieData>>(decrypted.AsSpan(paddingLength))
+                    .Deserialize<IReadOnlyList<CookieData>>(cookieData)
                     ?.Select(c => new Cookie(c.Name, c.Value, c.Path, c.Domain))
                     .ToArray();
             }
@@ -94,28 +91,21 @@ public partial class SettingsService
                 value.Select(c => new CookieData(c.Name, c.Value, c.Path, c.Domain))
             );
             var cookieData = Encoding.UTF8.GetBytes(json);
-
-            var paddingLength = RandomNumberGenerator.GetInt32(1, MaxPaddingLength);
-
-            // Layout: nonce (12 bytes) | paddingLength (1 byte) | tag (16 bytes) | cipher (paddingLength + cookieData.Length)
-            var data = new byte[29 + paddingLength + cookieData.Length];
+            var encryptedData = new byte[28 + cookieData.Length];
 
             // Nonce
-            RandomNumberGenerator.Fill(data.AsSpan(0, 12));
+            RandomNumberGenerator.Fill(encryptedData.AsSpan(0, 12));
 
-            // Padding length
-            data[12] = (byte)paddingLength;
-
-            // Padding
-            RandomNumberGenerator.Fill(data.AsSpan(29, paddingLength));
-
-            // Cookie data
-            cookieData.CopyTo(data.AsSpan(29 + paddingLength));
-
+            // Layout: nonce (12 bytes) | tag (16 bytes) | cipher
             using var aes = new AesGcm(Key.Value, 16);
-            aes.Encrypt(data.AsSpan(0, 12), data.AsSpan(29), data.AsSpan(29), data.AsSpan(13, 16));
+            aes.Encrypt(
+                encryptedData.AsSpan(0, 12),
+                cookieData,
+                encryptedData.AsSpan(28),
+                encryptedData.AsSpan(12, 16)
+            );
 
-            writer.WriteStringValue(Prefix + Convert.ToHexStringLower(data));
+            writer.WriteStringValue(Prefix + Convert.ToHexStringLower(encryptedData));
         }
 
         private record CookieData(string Name, string Value, string Path, string Domain);
