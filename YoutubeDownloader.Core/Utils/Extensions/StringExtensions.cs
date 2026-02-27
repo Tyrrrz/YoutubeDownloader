@@ -4,6 +4,6 @@ public static class StringExtensions
 {
     extension(string str)
     {
-        public string? NullIfEmptyOrWhiteSpace() => !string.IsNullOrEmpty(str.Trim()) ? str : null;
+        public string? NullIfWhiteSpace() => !string.IsNullOrWhiteSpace(str) ? str : null;
     }
 }
