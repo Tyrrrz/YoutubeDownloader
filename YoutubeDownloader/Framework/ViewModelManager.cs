@@ -106,6 +106,7 @@ public class ViewModelManager(IServiceProvider services)
 
         return viewModel;
     }
+
     public SettingsViewModel CreateSettingsViewModel() =>
         services.GetRequiredService<SettingsViewModel>();
 }
