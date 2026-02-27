@@ -45,8 +45,10 @@ public partial class LocalizationManager
                 **Увага:** рекомендується залишити цю опцію увімкненою для сумісності з останньою версією YouTube.
                 """,
             [nameof(PersistAuthLabel)] = "Зберігати автентифікацію",
-            [nameof(PersistAuthTooltip)] =
-                "Зберігати файли cookie у файлі для збереження між сеансами",
+            [nameof(PersistAuthTooltip)] = """
+                Зберігати файли cookie у файлі для збереження між сеансами.
+                **Увага**: хоча cookies зберігаються із шифруванням, зловмисник з доступом до вашої системи може їх відновити.
+                """,
             [nameof(InjectAltLanguagesLabel)] = "Вставляти альтернативні мови",
             [nameof(InjectAltLanguagesTooltip)] =
                 "Вставляти аудіодоріжки альтернативними мовами (якщо доступні) у завантажені файли",

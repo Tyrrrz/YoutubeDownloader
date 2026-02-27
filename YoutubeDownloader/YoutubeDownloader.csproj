@@ -16,6 +16,15 @@
     <PublishMacOSBundle>false</PublishMacOSBundle>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <EncryptionSalt>HimalayanPinkSalt</EncryptionSalt>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Expose this property in code -->
+    <ProjectProperty Include="EncryptionSalt" />
+  </ItemGroup>
+
   <ItemGroup>
     <AvaloniaResource Include="..\favicon.ico" Link="favicon.ico" />
   </ItemGroup>
@@ -47,6 +56,7 @@
     <PackageReference Include="Material.Icons.Avalonia" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Onova" />
+    <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
     <PackageReference Include="WebView.Avalonia" />
     <PackageReference Include="WebView.Avalonia.Desktop" />
   </ItemGroup>
