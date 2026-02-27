@@ -30,6 +30,9 @@ public partial class SettingsService
             JsonSerializerOptions options
         )
         {
+            if (reader.TokenType != JsonTokenType.String)
+                return null;
+
             var value = reader.GetString();
             if (string.IsNullOrWhiteSpace(value))
                 return null;
