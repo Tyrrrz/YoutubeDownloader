@@ -113,10 +113,10 @@
                     Kind="Youtube" />
 
                 <TextBlock
-                    Inlines="{Binding LocalizationManager.DashboardPlaceholder, Converter={x:Static converters:MarkdownToInlinesConverter.Instance}}"
                     HorizontalAlignment="Center"
                     FontSize="18"
                     FontWeight="Light"
+                    Inlines="{Binding LocalizationManager.DashboardPlaceholder, Converter={x:Static converters:MarkdownToInlinesConverter.Instance}}"
                     LineSpacing="8"
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
@@ -155,7 +155,7 @@
                     <!--  File name  -->
                     <DataGridTemplateColumn
                         Width="*"
-                        Header="{Binding DataContext.LocalizationManager.DownloadsFileColumnHeader, ElementName=UserControl}"
+                        Header="{Binding #UserControl.DataContext.LocalizationManager.DownloadsFileColumnHeader}"
                         SortMemberPath="FileName">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -172,7 +172,7 @@
                     <!--  Status  -->
                     <DataGridTemplateColumn
                         MinWidth="100"
-                        Header="{Binding DataContext.LocalizationManager.DownloadsStatusColumnHeader, ElementName=UserControl}"
+                        Header="{Binding #UserControl.DataContext.LocalizationManager.DownloadsStatusColumnHeader}"
                         SortMemberPath="Progress.Current.Fraction">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
