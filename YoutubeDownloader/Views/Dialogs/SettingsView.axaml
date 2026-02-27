@@ -53,8 +53,10 @@
                         Margin="16,8"
                         IsVisible="{OnPlatform False,
                                                Windows=True}"
-                        LastChildFill="False"
-                        ToolTip.Tip="{Binding LocalizationManager.AutoUpdateTooltip}">
+                        LastChildFill="False">
+                        <ToolTip.Tip>
+                            <TextBlock Inlines="{Binding LocalizationManager.AutoUpdateTooltip, Converter={x:Static converters:MarkdownToInlinesConverter.Instance}}" />
+                        </ToolTip.Tip>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.AutoUpdateLabel}" />
                         <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding IsAutoUpdateEnabled}" />
                     </DockPanel>
