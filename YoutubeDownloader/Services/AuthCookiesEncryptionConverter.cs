@@ -33,97 +33,47 @@ internal class AuthCookiesEncryptionConverter : JsonConverter<IReadOnlyList<Cook
         JsonSerializerOptions options
     )
     {
-        // Null value
         if (reader.TokenType == JsonTokenType.Null)
             return null;
 
-        // Plain JSON array: legacy format (unencrypted), load as-is
-        if (reader.TokenType == JsonTokenType.StartArray)
+        if (reader.TokenType != JsonTokenType.String)
+            return null;
+
+        var value = reader.GetString();
+
+        if (string.IsNullOrWhiteSpace(value) || !value.StartsWith(Prefix, StringComparison.Ordinal))
+            return null;
+
+        try
         {
-            var cookies = new List<Cookie>();
+            var data = Convert.FromHexString(value[Prefix.Length..]);
 
-            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-            {
-                if (reader.TokenType == JsonTokenType.StartObject)
-                {
-                    string? name = null;
-                    string? value = null;
-                    string? domain = null;
-                    string? path = null;
+            // Layout: nonce (12 bytes) | paddingLength (1 byte) | tag (16 bytes) | cipher
+            var nonce = data.AsSpan(0, 12);
+            var paddingLength = data[12];
+            var tag = data.AsSpan(13, 16);
+            var cipher = data.AsSpan(29);
 
-                    while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
-                    {
-                        if (reader.TokenType != JsonTokenType.PropertyName)
-                            continue;
+            var decrypted = new byte[cipher.Length];
+            using var aes = new AesGcm(Key.Value, 16);
+            aes.Decrypt(nonce, cipher, tag, decrypted);
 
-                        var propName = reader.GetString();
-                        reader.Read();
-
-                        if (propName == nameof(Cookie.Name))
-                            name = reader.GetString();
-                        else if (propName == nameof(Cookie.Value))
-                            value = reader.GetString();
-                        else if (propName == nameof(Cookie.Domain))
-                            domain = reader.GetString();
-                        else if (propName == nameof(Cookie.Path))
-                            path = reader.GetString();
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(name))
-                    {
-                        cookies.Add(new Cookie(name, value ?? "", path ?? "/", domain ?? ""));
-                    }
-                }
-            }
-
-            return cookies;
+            return JsonSerializer
+                .Deserialize<IReadOnlyList<CookieData>>(decrypted.AsSpan(paddingLength))
+                ?.Select(c => new Cookie(c.Name, c.Value, c.Path, c.Domain))
+                .ToList();
         }
-
-        // Encrypted string
-        if (reader.TokenType == JsonTokenType.String)
-        {
-            var value = reader.GetString();
-
-            // Plain text string without the prefix (unexpected, skip gracefully)
-            if (
-                string.IsNullOrWhiteSpace(value)
-                || !value.StartsWith(Prefix, StringComparison.Ordinal)
+        catch (Exception ex)
+            when (ex
+                    is FormatException
+                        or CryptographicException
+                        or ArgumentException
+                        or IndexOutOfRangeException
+                        or JsonException
             )
-                return null;
-
-            try
-            {
-                var data = Convert.FromHexString(value[Prefix.Length..]);
-
-                // Layout: nonce (12 bytes) | paddingLength (1 byte) | tag (16 bytes) | cipher
-                var nonce = data.AsSpan(0, 12);
-                var paddingLength = data[12];
-                var tag = data.AsSpan(13, 16);
-                var cipher = data.AsSpan(29);
-
-                var decrypted = new byte[cipher.Length];
-                using var aes = new AesGcm(Key.Value, 16);
-                aes.Decrypt(nonce, cipher, tag, decrypted);
-
-                var json = Encoding.UTF8.GetString(decrypted.AsSpan(paddingLength));
-                return JsonSerializer
-                    .Deserialize<List<CookieData>>(json)
-                    ?.ConvertAll(c => new Cookie(c.Name, c.Value, c.Path, c.Domain));
-            }
-            catch (Exception ex)
-                when (ex
-                        is FormatException
-                            or CryptographicException
-                            or ArgumentException
-                            or IndexOutOfRangeException
-                            or JsonException
-                )
-            {
-                return null;
-            }
+        {
+            return null;
         }
-
-        return null;
     }
 
     public override void Write(
@@ -138,8 +88,9 @@ internal class AuthCookiesEncryptionConverter : JsonConverter<IReadOnlyList<Cook
             return;
         }
 
-        var cookieDataList = value.Select(c => new CookieData(c.Name, c.Value, c.Path, c.Domain));
-        var json = JsonSerializer.Serialize(cookieDataList);
+        var json = JsonSerializer.Serialize(
+            value.Select(c => new CookieData(c.Name, c.Value, c.Path, c.Domain))
+        );
         var cookieData = Encoding.UTF8.GetBytes(json);
 
         var paddingLength = RandomNumberGenerator.GetInt32(1, MaxPaddingLength);
