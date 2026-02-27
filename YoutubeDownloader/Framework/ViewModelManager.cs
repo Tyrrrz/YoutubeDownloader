@@ -97,15 +97,8 @@ public class ViewModelManager(IServiceProvider services)
         return viewModel;
     }
 
-    public MessageBoxViewModel CreateMessageBoxViewModel(string title, string message)
-    {
-        var viewModel = services.GetRequiredService<MessageBoxViewModel>();
-
-        viewModel.Title = title;
-        viewModel.Message = message;
-
-        return viewModel;
-    }
+    public MessageBoxViewModel CreateMessageBoxViewModel(string title, string message) =>
+        CreateMessageBoxViewModel(title, message, null, null);
 
     public SettingsViewModel CreateSettingsViewModel() =>
         services.GetRequiredService<SettingsViewModel>();
