@@ -43,7 +43,7 @@ public partial class LocalizationManager
             [nameof(AutoUpdateLabel)] = "Actualización automática",
             [nameof(AutoUpdateTooltip)] = """
                 Realizar actualizaciones automáticas en cada inicio.
-                Advertencia: se recomienda dejar esta opción habilitada para asegurar la compatibilidad con la última versión de YouTube.
+                **Advertencia:** se recomienda dejar esta opción habilitada para asegurar la compatibilidad con la última versión de YouTube.
                 """,
             [nameof(PersistAuthLabel)] = "Conservar autenticación",
             [nameof(PersistAuthTooltip)] =
