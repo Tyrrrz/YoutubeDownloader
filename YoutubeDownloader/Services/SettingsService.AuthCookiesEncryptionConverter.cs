@@ -99,14 +99,21 @@ public partial class SettingsService
 
             // Layout: nonce (12 bytes) | paddingLength (1 byte) | tag (16 bytes) | cipher (paddingLength + cookieData.Length)
             var data = new byte[29 + paddingLength + cookieData.Length];
-            RandomNumberGenerator.Fill(data.AsSpan(0, 12)); // nonce
+
+            // Nonce
+            RandomNumberGenerator.Fill(data.AsSpan(0, 12));
+
+            // Padding length
             data[12] = (byte)paddingLength;
-            var cipherSource = data.AsSpan(29);
-            RandomNumberGenerator.Fill(cipherSource[..paddingLength]); // random padding
-            cookieData.CopyTo(cipherSource[paddingLength..]); // payload
+
+            // Padding
+            RandomNumberGenerator.Fill(data.AsSpan(29, paddingLength));
+
+            // Cookie data
+            cookieData.CopyTo(data.AsSpan(29 + paddingLength));
 
             using var aes = new AesGcm(Key.Value, 16);
-            aes.Encrypt(data.AsSpan(0, 12), cipherSource, cipherSource, data.AsSpan(13, 16));
+            aes.Encrypt(data.AsSpan(0, 12), data.AsSpan(29), data.AsSpan(29), data.AsSpan(13, 16));
 
             writer.WriteStringValue(Prefix + Convert.ToHexStringLower(data));
         }
