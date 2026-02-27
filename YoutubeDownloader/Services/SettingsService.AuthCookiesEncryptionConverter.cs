@@ -37,7 +37,6 @@ public partial class SettingsService
                 return null;
 
             var value = reader.GetString();
-
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
