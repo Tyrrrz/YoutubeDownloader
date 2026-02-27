@@ -81,10 +81,11 @@ public partial class SettingsService
                 return;
             }
 
-            var json = JsonSerializer.Serialize(
-                value.Select(c => new CookieData(c.Name, c.Value, c.Path, c.Domain))
+            var cookieData = Encoding.UTF8.GetBytes(
+                JsonSerializer.Serialize(
+                    value.Select(c => new CookieData(c.Name, c.Value, c.Path, c.Domain))
+                )
             );
-            var cookieData = Encoding.UTF8.GetBytes(json);
             var encryptedData = new byte[28 + cookieData.Length];
 
             // Nonce
