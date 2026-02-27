@@ -14,8 +14,6 @@ public partial class SettingsService
 {
     private class AuthCookiesEncryptionConverter : JsonConverter<IReadOnlyList<Cookie>?>
     {
-        private const string Prefix = "enc:";
-
         private static readonly Lazy<byte[]> Key = new(() =>
             Rfc2898DeriveBytes.Pbkdf2(
                 Encoding.UTF8.GetBytes(Environment.TryGetMachineId() ?? string.Empty),
@@ -40,12 +38,12 @@ public partial class SettingsService
 
             var value = reader.GetString();
 
-            if (string.IsNullOrWhiteSpace(value) || !value.StartsWith(Prefix, StringComparison.Ordinal))
+            if (string.IsNullOrWhiteSpace(value))
                 return null;
 
             try
             {
-                var encryptedData = Convert.FromHexString(value[Prefix.Length..]);
+                var encryptedData = Convert.FromHexString(value);
                 var cookieData = new byte[encryptedData.AsSpan(28).Length];
 
                 // Layout: nonce (12 bytes) | tag (16 bytes) | cipher
@@ -105,7 +103,7 @@ public partial class SettingsService
                 encryptedData.AsSpan(12, 16)
             );
 
-            writer.WriteStringValue(Prefix + Convert.ToHexStringLower(encryptedData));
+            writer.WriteStringValue(Convert.ToHexStringLower(encryptedData));
         }
 
         private record CookieData(string Name, string Value, string Path, string Domain);
