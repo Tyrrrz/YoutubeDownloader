@@ -13,6 +13,7 @@
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="CSharpier.MsBuild" Version="1.2.6" />
     <PackageVersion Include="Deorcify" Version="1.1.0" />
+    <PackageVersion Include="ThisAssembly.Project" Version="2.1.2" />
     <PackageVersion Include="DialogHost.Avalonia" Version="0.10.4" />
     <PackageVersion Include="Gress" Version="2.1.1" />
     <PackageVersion Include="JsonExtensions" Version="1.2.0" />

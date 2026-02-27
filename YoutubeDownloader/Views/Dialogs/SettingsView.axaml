@@ -65,8 +65,10 @@
                     <DockPanel
                         IsVisible="{OnPlatform False,
                                                Windows=True}"
-                        LastChildFill="False"
-                        ToolTip.Tip="{Binding LocalizationManager.PersistAuthTooltip}">
+                        LastChildFill="False">
+                        <ToolTip.Tip>
+                            <TextBlock Inlines="{Binding LocalizationManager.PersistAuthTooltip, Converter={x:Static converters:MarkdownToInlinesConverter.Instance}}" />
+                        </ToolTip.Tip>
                         <TextBlock
                             Margin="16,8"
                             DockPanel.Dock="Left"

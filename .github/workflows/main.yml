@@ -91,6 +91,7 @@ jobs:
           dotnet publish YoutubeDownloader
           -p:Version=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
           -p:CSharpier_Bypass=true
+          -p:EncryptionSalt=${{ secrets.ENCRYPTION_SALT || 'HimalayanPinkSalt' }}
           -p:DownloadFFmpeg=${{ matrix.bundle-ffmpeg }}
           -p:PublishMacOSBundle=${{ startsWith(matrix.rid, 'osx-') }}
           --output YoutubeDownloader/bin/publish

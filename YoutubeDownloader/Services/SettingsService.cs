@@ -57,6 +57,7 @@ public partial class SettingsService()
     public partial int ParallelLimit { get; set; } = 2;
 
     [ObservableProperty]
+    [JsonConverter(typeof(AuthCookiesEncryptionConverter))]
     public partial IReadOnlyList<Cookie>? LastAuthCookies { get; set; }
 
     [ObservableProperty]
