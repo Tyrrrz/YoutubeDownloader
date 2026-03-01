@@ -162,18 +162,4 @@ public partial class MainViewModel(
         await ShowFFmpegMissingMessageAsync();
         await CheckForUpdatesAsync();
     }
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            // Save settings
-            settingsService.Save();
-
-            // Finalize pending updates
-            updateService.FinalizeUpdate(false);
-        }
-
-        base.Dispose(disposing);
-    }
 }
