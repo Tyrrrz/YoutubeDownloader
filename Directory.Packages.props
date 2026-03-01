@@ -17,7 +17,7 @@
     <PackageVersion Include="DialogHost.Avalonia" Version="0.10.4" />
     <PackageVersion Include="Gress" Version="2.1.1" />
     <PackageVersion Include="JsonExtensions" Version="1.2.0" />
-    <PackageVersion Include="Markdig" Version="1.0.0" />
+    <PackageVersion Include="Markdig" Version="1.1.0" />
     <PackageVersion Include="Material.Avalonia" Version="3.9.2" />
     <PackageVersion Include="Material.Avalonia.DataGrid" Version="3.9.2" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="2.2.0" />
