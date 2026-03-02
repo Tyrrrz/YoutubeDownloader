@@ -27,6 +27,8 @@ public class App : Application, IDisposable
     private readonly SettingsService _settingsService;
     private readonly MainViewModel _mainViewModel;
 
+    private bool _isDisposed;
+
     public App()
     {
         var services = new ServiceCollection();
@@ -109,7 +111,15 @@ public class App : Application, IDisposable
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
+
+            // Although `App.Dispose()` is invoked from `Program.Main(...)`, on some platforms
+            // it may be called too late in the shutdown lifecycle. Attach an exit
+            // handler to ensure timely disposal as a safeguard.
+            // https://github.com/Tyrrrz/YoutubeDownloader/issues/795
+            desktop.Exit += Desktop_OnExit;
+        }
 
         base.OnFrameworkInitializationCompleted();
 
@@ -120,12 +130,25 @@ public class App : Application, IDisposable
         _settingsService.Load();
     }
 
+    private void Desktop_OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        if (sender is IControlledApplicationLifetime lifetime)
+            lifetime.Exit -= Desktop_OnExit;
+
+        Dispose();
+    }
+
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
         // Re-initialize the theme when the system theme changes
         InitializeTheme();
 
     public void Dispose()
     {
+        if (_isDisposed)
+            return;
+
+        _isDisposed = true;
+
         _eventRoot.Dispose();
         _services.Dispose();
     }
