@@ -127,10 +127,10 @@ public class App : Application, IDisposable
 
     private void Desktop_OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
-        Dispose();
-
         if (sender is IControlledApplicationLifetime lifetime)
             lifetime.Exit -= Desktop_OnExit;
+
+        Dispose();
     }
 
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
