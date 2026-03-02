@@ -113,6 +113,10 @@ public class App : Application, IDisposable
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
+
+            // App's `Dispose()` method may not be called on some systems,
+            // so we add this handlers as a fallback.
+            // https://github.com/Tyrrrz/YoutubeDownloader/issues/795
             desktop.Exit += Desktop_OnExit;
         }
 
