@@ -111,7 +111,7 @@ public class App : Application, IDisposable
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
-            desktop.Exit += DesktopOnExit;
+            desktop.Exit += Desktop_OnExit;
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -123,9 +123,10 @@ public class App : Application, IDisposable
         _settingsService.Load();
     }
 
-    private void DesktopOnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    private void Desktop_OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
         _mainViewModel.Dispose();
+        desktop.Exit -= Desktop_OnExit;
     }
 
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
