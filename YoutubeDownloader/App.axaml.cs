@@ -126,7 +126,9 @@ public class App : Application, IDisposable
     private void Desktop_OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
         _mainViewModel.Dispose();
-        desktop.Exit -= Desktop_OnExit;
+
+        if (sender is IControlledApplicationLifetime lifetime)
+            lifetime.Exit -= Desktop_OnExit;
     }
 
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
