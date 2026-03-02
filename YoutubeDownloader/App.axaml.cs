@@ -27,6 +27,8 @@ public class App : Application, IDisposable
     private readonly SettingsService _settingsService;
     private readonly MainViewModel _mainViewModel;
 
+    private bool _isDisposed;
+
     public App()
     {
         var services = new ServiceCollection();
@@ -125,7 +127,7 @@ public class App : Application, IDisposable
 
     private void Desktop_OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
-        _mainViewModel.Dispose();
+        Dispose();
 
         if (sender is IControlledApplicationLifetime lifetime)
             lifetime.Exit -= Desktop_OnExit;
@@ -137,7 +139,12 @@ public class App : Application, IDisposable
 
     public void Dispose()
     {
+        if (_isDisposed)
+            return;
+
         _eventRoot.Dispose();
         _services.Dispose();
+
+        _isDisposed = true;
     }
 }
