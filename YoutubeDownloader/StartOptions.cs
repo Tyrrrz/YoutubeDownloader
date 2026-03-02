@@ -44,21 +44,26 @@ public partial class StartOptions
     }
 
     private static bool TryMakeValidPath(
-        [NotNullWhen(true)] string? pathToDirectory,
+        string pathToDirectory,
         [NotNullWhen(true)] out string? result
     )
     {
-        result = null;
+        try
+        {
+            // Normalize the directory path and ensure it is a valid filesystem path.
+            var fullDirectoryPath = Path.GetFullPath(pathToDirectory);
 
-        if (pathToDirectory is null)
+            // Combine with the settings file name and normalize the full file path.
+            var pathToFile = Path.Combine(fullDirectoryPath, SettingsFileName);
+            var fullFilePath = Path.GetFullPath(pathToFile);
+            result = fullFilePath;
+            return true;
+        }
+        catch (Exception)
+        {
+            // Any exception indicates an invalid path.
+            result = null;
             return false;
-
-        var pathToFile = Path.Combine(pathToDirectory, SettingsFileName);
-
-        // Check if the path is a valid URI.
-        if (Uri.TryCreate(pathToFile, UriKind.RelativeOrAbsolute, out var uri))
-            result = uri.ToString();
-
-        return result is not null;
+        }
     }
 }
