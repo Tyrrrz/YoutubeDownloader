@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -15,10 +14,7 @@ namespace YoutubeDownloader.Services;
 
 [ObservableObject]
 public partial class SettingsService()
-    : SettingsBase(
-        Path.Combine(AppContext.BaseDirectory, "Settings.dat"),
-        SerializerContext.Default
-    )
+    : SettingsBase(StartOptions.Current.SettingsPath, SerializerContext.Default)
 {
     [ObservableProperty]
     public partial bool IsUkraineSupportMessageEnabled { get; set; } = true;
