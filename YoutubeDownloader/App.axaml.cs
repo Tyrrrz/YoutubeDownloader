@@ -114,11 +114,19 @@ public class App : Application, IDisposable
         {
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
 
+            void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs args)
+            {
+                if (sender is IControlledApplicationLifetime lifetime)
+                    lifetime.Exit -= OnExit;
+
+                Dispose();
+            }
+            
             // Although `App.Dispose()` is invoked from `Program.Main(...)`, on some platforms
             // it may be called too late in the shutdown lifecycle. Attach an exit
             // handler to ensure timely disposal as a safeguard.
             // https://github.com/Tyrrrz/YoutubeDownloader/issues/795
-            desktop.Exit += Desktop_OnExit;
+            desktop.Exit += OnExit;
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -128,14 +136,6 @@ public class App : Application, IDisposable
 
         // Load settings
         _settingsService.Load();
-    }
-
-    private void Desktop_OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
-    {
-        if (sender is IControlledApplicationLifetime lifetime)
-            lifetime.Exit -= Desktop_OnExit;
-
-        Dispose();
     }
 
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
