@@ -28,10 +28,11 @@ public partial class StartOptions
 
     private static string GetSettingsPath(IDictionary environmentVars)
     {
-        if (
-            !environmentVars.Contains(SettingsPathVariable)
-            || environmentVars[SettingsPathVariable] is not string pathFromEnv
-        )
+        if (!environmentVars.Contains(SettingsPathVariable))
+            return DefaultSettingsPath;
+
+        var pathFromEnv = environmentVars[SettingsPathVariable] as string;
+        if (string.IsNullOrWhiteSpace(pathFromEnv))
             return DefaultSettingsPath;
 
         // Check Environment Variables first.
