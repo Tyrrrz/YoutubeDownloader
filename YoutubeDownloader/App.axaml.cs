@@ -114,8 +114,9 @@ public class App : Application, IDisposable
         {
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
 
-            // App's `Dispose()` method may not be called on some systems,
-            // so we add this handler as a fallback.
+            // Although `App.Dispose()` is invoked from `Program.Main(...)`, on some platforms
+            // it may be called too late in the shutdown lifecycle. Attach an exit
+            // handler to ensure timely disposal as a safeguard.
             // https://github.com/Tyrrrz/YoutubeDownloader/issues/795
             desktop.Exit += Desktop_OnExit;
         }
