@@ -14,7 +14,7 @@ public partial class StartOptions
 {
     private static readonly string SettingsFileName = "Settings.dat";
 
-    private static readonly string SettingsPathVariable = "SETTINGS_PATH";
+    private static readonly string SettingsPathVariable = "YOUTUBEDOWNLOADER_SETTINGS_DIR";
 
     private static readonly string DefaultSettingsPath = Path.Combine(
         AppContext.BaseDirectory,
