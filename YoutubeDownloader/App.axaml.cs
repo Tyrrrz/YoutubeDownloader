@@ -121,7 +121,7 @@ public class App : Application, IDisposable
 
                 Dispose();
             }
-            
+
             // Although `App.Dispose()` is invoked from `Program.Main(...)`, on some platforms
             // it may be called too late in the shutdown lifecycle. Attach an exit
             // handler to ensure timely disposal as a safeguard.
