@@ -25,7 +25,6 @@ public class App : Application, IDisposable
 
     private readonly ServiceProvider _services;
     private readonly SettingsService _settingsService;
-    private readonly UpdateService _updateService;
     private readonly MainViewModel _mainViewModel;
 
     public App()
@@ -57,7 +56,6 @@ public class App : Application, IDisposable
 
         _services = services.BuildServiceProvider(true);
         _settingsService = _services.GetRequiredService<SettingsService>();
-        _updateService = _services.GetRequiredService<UpdateService>();
         _mainViewModel = _services.GetRequiredService<ViewModelManager>().CreateMainViewModel();
 
         // Re-initialize the theme when the user changes it
@@ -111,10 +109,7 @@ public class App : Application, IDisposable
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
             desktop.MainWindow = new MainView { DataContext = _mainViewModel };
-            desktop.Exit += DesktopOnExit;
-        }
 
         base.OnFrameworkInitializationCompleted();
 
@@ -123,15 +118,6 @@ public class App : Application, IDisposable
 
         // Load settings
         _settingsService.Load();
-    }
-
-    private void DesktopOnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
-    {
-        // Save settings
-        _settingsService.Save();
-
-        // Finalize pending updates
-        _updateService.FinalizeUpdate(false);
     }
 
     private void Application_OnActualThemeVariantChanged(object? sender, EventArgs args) =>
