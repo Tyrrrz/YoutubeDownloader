@@ -142,9 +142,9 @@ public class App : Application, IDisposable
         if (_isDisposed)
             return;
 
-        _eventRoot.Dispose();
-        _services.Dispose();
-
         _isDisposed = true;
+
+_eventRoot.Dispose();
+_services.Dispose();
     }
 }
