@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - prime
     tags:
       - "*"
   pull_request:
     branches:
-      - master
+      - prime
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
