@@ -51,8 +51,7 @@
                     <!--  Auto-updates  -->
                     <DockPanel
                         Margin="16,8"
-                        IsVisible="{OnPlatform False,
-                                               Windows=True}"
+                        IsVisible="{Binding IsAutoUpdateAvailable}"
                         LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock Inlines="{Binding LocalizationManager.AutoUpdateTooltip, Converter={x:Static converters:MarkdownToInlinesConverter.Instance}}" />

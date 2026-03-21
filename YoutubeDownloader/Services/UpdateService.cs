@@ -10,23 +10,24 @@ namespace YoutubeDownloader.Services;
 
 public class UpdateService(SettingsService settingsService) : IDisposable
 {
-    private readonly IUpdateManager? _updateManager = OperatingSystem.IsWindows()
-        ? new UpdateManager(
-            new GithubPackageResolver(
-                "Tyrrrz",
-                "YoutubeDownloader",
-                // Examples:
-                // YoutubeDownloader.win-arm64.zip
-                // YoutubeDownloader.win-x64.zip
-                // YoutubeDownloader.linux-x64.zip
-                // YoutubeDownloader.Bare.linux-x64.zip
-                FFmpeg.IsBundled()
-                    ? $"YoutubeDownloader.{RuntimeInformation.RuntimeIdentifier}.zip"
-                    : $"YoutubeDownloader.Bare.{RuntimeInformation.RuntimeIdentifier}.zip"
-            ),
-            new ZipPackageExtractor()
-        )
-        : null;
+    private readonly IUpdateManager? _updateManager =
+        OperatingSystem.IsWindows() && StartOptions.Current.IsAutoUpdateAllowed
+            ? new UpdateManager(
+                new GithubPackageResolver(
+                    "Tyrrrz",
+                    "YoutubeDownloader",
+                    // Examples:
+                    // YoutubeDownloader.win-arm64.zip
+                    // YoutubeDownloader.win-x64.zip
+                    // YoutubeDownloader.linux-x64.zip
+                    // YoutubeDownloader.Bare.linux-x64.zip
+                    FFmpeg.IsBundled()
+                        ? $"YoutubeDownloader.{RuntimeInformation.RuntimeIdentifier}.zip"
+                        : $"YoutubeDownloader.Bare.{RuntimeInformation.RuntimeIdentifier}.zip"
+                ),
+                new ZipPackageExtractor()
+            )
+            : null;
 
     private Version? _updateVersion;
     private bool _updatePrepared;
