@@ -49,7 +49,7 @@ public partial class LocalizationManager
                 将身份验证 Cookie 保存到文件中，以便在不同会话之间持久化。
                 **警告：** 尽管 Cookie 是加密存储的，但拥有系统访问权限的攻击者仍可能恢复它们。
                 """,
-            [nameof(InjectAltLanguagesLabel)] = "注入替代语言",
+            [nameof(InjectAltLanguagesLabel)] = "注入多音轨",
             [nameof(InjectAltLanguagesTooltip)] =
                 "将替代语言的音频轨道（如果可用）注入到下载的文件中",
             [nameof(InjectSubtitlesLabel)] = "注入字幕",
