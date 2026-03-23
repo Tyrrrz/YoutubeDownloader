@@ -22,6 +22,9 @@ public class DownloadFFmpegCommand : ICommand
     [CommandOption("platform", Description = "Target platform identifier (e.g. 'windows-x64').")]
     public string? Platform { get; init; }
 
+    [CommandOption("ffmpeg-version", Description = "FFmpeg version to download.")]
+    public string FFmpegVersion { get; init; } = "8.0.1";
+
     public async ValueTask ExecuteAsync(IConsole console)
     {
         var platform = Platform;
@@ -62,7 +65,7 @@ public class DownloadFFmpegCommand : ICommand
         using var http = new HttpClient();
         var archiveFilePath = outputPath + ".zip";
         using var responseStream = await http.GetStreamAsync(
-            $"https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.2/ffmpeg-{platform}.zip",
+            $"https://github.com/Tyrrrz/FFmpegBin/releases/download/{FFmpegVersion}/ffmpeg-{platform}.zip",
             console.CancellationToken
         );
         await using (var archiveFile = File.Create(archiveFilePath))
