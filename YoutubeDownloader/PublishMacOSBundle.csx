@@ -92,7 +92,7 @@ public class PublishMacOSBundleCommand : ICommand
                 </plist>
                 """;
 
-            await File.WriteAllTextAsync(Path.Combine(contentsDirPath, "Info.plist"), plistContent, console.CancellationToken);
+            await File.WriteAllTextAsync(Path.Combine(contentsDirPath, "Info.plist"), plistContent);
 
             // Delete the previous bundle if it exists
             var existingBundlePath = Path.Combine(publishDirPath, BundleName);
