@@ -67,7 +67,7 @@ public class DownloadFFmpegCommand : ICommand
         {
             using var http = new HttpClient();
             using var responseStream = await http.GetStreamAsync(
-                $"https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.2/ffmpeg-{platform}.zip",
+                $"https://github.com/Tyrrrz/FFmpegBin/releases/download/{FFmpegVersion}/ffmpeg-{platform}.zip",
                 console.CancellationToken
             );
 
