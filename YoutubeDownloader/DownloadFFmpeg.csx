@@ -78,7 +78,7 @@ public class DownloadFFmpegCommand : ICommand
             using var zip = ZipFile.OpenRead(archiveFilePath);
             var entry =
                 zip.GetEntry(fileName)
-                ?? throw new Exception($"Entry '{fileName}' not found in the downloaded archive.");
+                ?? throw new CommandException($"Entry '{fileName}' not found in the downloaded archive.");
             entry.ExtractToFile(outputPath, overwrite: true);
 
             console.Output.WriteLine("Done downloading FFmpeg.");
