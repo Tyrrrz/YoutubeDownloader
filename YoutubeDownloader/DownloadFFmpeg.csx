@@ -73,7 +73,8 @@ public class DownloadFFmpegCommand : ICommand
 
             await using (var archiveFile = File.Create(archiveFilePath))
             {
-                await responseStream.CopyToAsync(archiveFile, console.CancellationToken);
+                var cancellationToken = console.RegisterCancellationHandler();
+                await responseStream.CopyToAsync(archiveFile, cancellationToken);
             }
 
             // Extract FFmpeg
