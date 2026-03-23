@@ -86,13 +86,13 @@
     Condition="$(DownloadFFmpeg) AND !Exists('ffmpeg.exe') AND !Exists('ffmpeg')"
   >
     <Exec
-      Command="dotnet run --file $(ProjectDir)Download-FFmpeg.csx -- --platform $(RuntimeIdentifier) --output-path $(ProjectDir)"
+      Command="dotnet run --file &quot;$(ProjectDir)DownloadFFmpeg.csx&quot; -- --platform $(RuntimeIdentifier) --output &quot;$(ProjectDir)&quot;"
       WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
       Condition="'$(RuntimeIdentifier)' != ''"
     />
     <Exec
-      Command="dotnet run --file $(ProjectDir)Download-FFmpeg.csx -- --output-path $(ProjectDir)"
+      Command="dotnet run --file &quot;$(ProjectDir)DownloadFFmpeg.csx&quot; -- --output &quot;$(ProjectDir)&quot;"
       WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
       Condition="'$(RuntimeIdentifier)' == ''"

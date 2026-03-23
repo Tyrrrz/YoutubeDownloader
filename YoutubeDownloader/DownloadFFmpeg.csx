@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Runtime.InteropServices;
 using CliFx;
 using CliFx.Attributes;
+using CliFx.Exceptions;
 using CliFx.Infrastructure;
 
 return await new CliApplicationBuilder()
@@ -15,18 +16,18 @@ return await new CliApplicationBuilder()
 [Command(Description = "Downloads FFmpeg.")]
 public class DownloadFFmpegCommand : ICommand
 {
+    [CommandOption("output", Description = "Output path for the downloaded FFmpeg binary.")]
+    public string OutputPath { get; init; } = Directory.GetCurrentDirectory();
+
     [CommandOption("platform", Description = "Target platform identifier (e.g. 'windows-x64').")]
     public string? Platform { get; init; }
-
-    [CommandOption("output-path", Description = "Output path for the downloaded FFmpeg binary.")]
-    public string OutputPath { get; init; } = Directory.GetCurrentDirectory();
 
     public async ValueTask ExecuteAsync(IConsole console)
     {
         var platform = Platform;
 
         // If the platform is not specified, use the current OS/arch
-        if (platform is null)
+        if (string.IsNullOrWhiteSpace(platform))
         {
             var arch = RuntimeInformation.OSArchitecture.ToString().ToLower();
 
@@ -37,7 +38,7 @@ public class DownloadFFmpegCommand : ICommand
             else if (OperatingSystem.IsMacOS())
                 platform = $"osx-{arch}";
             else
-                throw new Exception("Unsupported platform");
+                throw new CommandException("Unsupported platform.");
         }
 
         // Normalize platform identifier
@@ -60,10 +61,12 @@ public class DownloadFFmpegCommand : ICommand
         console.Output.WriteLine($"Downloading FFmpeg for {platform}...");
         using var http = new HttpClient();
         var archivePath = outputPath + ".zip";
-        var archiveBytes = await http.GetByteArrayAsync(
-            $"https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.2/ffmpeg-{platform}.zip"
+        using var responseStream = await http.GetStreamAsync(
+            $"https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.2/ffmpeg-{platform}.zip",
+            console.CancellationToken
         );
-        await File.WriteAllBytesAsync(archivePath, archiveBytes);
+        await using (var archiveFile = File.Create(archivePath))
+            await responseStream.CopyToAsync(archiveFile, console.CancellationToken);
 
         try
         {
