@@ -112,7 +112,7 @@
   <!-- Publish macOS bundle -->
   <Target Name="PublishMacOSBundle" AfterTargets="Publish" Condition="$(PublishMacOSBundle)">
     <Exec
-      Command="dotnet run --file &quot;$(ProjectDir)Publish-MacOSBundle.csx&quot; -- --publish-dir &quot;$(PublishDir)&quot; --icons-file &quot;$(ProjectDir)../favicon.icns&quot; --full-version $(Version) --short-version $(AssemblyVersion)"
+      Command="dotnet run --file &quot;$(ProjectDir)PublishMacOSBundle.csx&quot; -- --publish-dir &quot;$(PublishDir)&quot; --icons-file &quot;$(ProjectDir)../favicon.icns&quot; --full-version $(Version) --short-version $(AssemblyVersion)"
       WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
     />
