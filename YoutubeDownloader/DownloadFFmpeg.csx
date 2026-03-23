@@ -60,18 +60,18 @@ public class DownloadFFmpegCommand : ICommand
         // Download the archive
         console.Output.WriteLine($"Downloading FFmpeg for {platform}...");
         using var http = new HttpClient();
-        var archivePath = outputPath + ".zip";
+        var archiveFilePath = outputPath + ".zip";
         using var responseStream = await http.GetStreamAsync(
             $"https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.2/ffmpeg-{platform}.zip",
             console.CancellationToken
         );
-        await using (var archiveFile = File.Create(archivePath))
+        await using (var archiveFile = File.Create(archiveFilePath))
             await responseStream.CopyToAsync(archiveFile, console.CancellationToken);
 
         try
         {
             // Extract FFmpeg
-            using var zip = ZipFile.OpenRead(archivePath);
+            using var zip = ZipFile.OpenRead(archiveFilePath);
             var entry =
                 zip.GetEntry(fileName)
                 ?? throw new Exception($"Entry '{fileName}' not found in the downloaded archive.");
@@ -82,7 +82,7 @@ public class DownloadFFmpegCommand : ICommand
         finally
         {
             // Clean up
-            File.Delete(archivePath);
+            File.Delete(archiveFilePath);
         }
     }
 }
