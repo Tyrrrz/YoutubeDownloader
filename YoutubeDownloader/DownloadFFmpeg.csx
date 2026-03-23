@@ -8,10 +8,7 @@ using CliFx.Attributes;
 using CliFx.Exceptions;
 using CliFx.Infrastructure;
 
-return await new CliApplicationBuilder()
-    .AddCommand<DownloadFFmpegCommand>()
-    .Build()
-    .RunAsync(args);
+return await new CliApplicationBuilder().AddCommand<DownloadFFmpegCommand>().Build().RunAsync(args);
 
 [Command(Description = "Downloads FFmpeg.")]
 public class DownloadFFmpegCommand : ICommand
@@ -82,7 +79,9 @@ public class DownloadFFmpegCommand : ICommand
 
             var entry =
                 zip.GetEntry(fileName)
-                ?? throw new CommandException($"Entry '{fileName}' not found in the downloaded archive.");
+                ?? throw new CommandException(
+                    $"Entry '{fileName}' not found in the downloaded archive."
+                );
 
             entry.ExtractToFile(outputPath, true);
 
