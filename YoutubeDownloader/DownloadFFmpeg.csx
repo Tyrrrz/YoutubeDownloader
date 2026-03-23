@@ -70,10 +70,12 @@ public class DownloadFFmpegCommand : ICommand
                 $"https://github.com/Tyrrrz/FFmpegBin/releases/download/7.1.2/ffmpeg-{platform}.zip",
                 console.CancellationToken
             );
+
             await using (var archiveFile = File.Create(archiveFilePath))
             {
                 await responseStream.CopyToAsync(archiveFile, console.CancellationToken);
             }
+
             // Extract FFmpeg
             using var zip = ZipFile.OpenRead(archiveFilePath);
             var entry =
