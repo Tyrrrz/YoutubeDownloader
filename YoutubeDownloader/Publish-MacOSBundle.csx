@@ -1,105 +1,128 @@
-string? publishDirPath = null;
-string? iconsFilePath = null;
-string? fullVersion = null;
-string? shortVersion = null;
+#!/usr/bin/env -S dotnet run --
+#:package CliFx
 
-for (var i = 0; i < args.Length; i++)
+using CliFx;
+using CliFx.Attributes;
+using CliFx.Infrastructure;
+
+return await new CliApplicationBuilder()
+    .AddCommand<PublishMacOSBundleCommand>()
+    .Build()
+    .RunAsync(args);
+
+[Command(Description = "Publishes the GUI app as a macOS .app bundle.")]
+public class PublishMacOSBundleCommand : ICommand
 {
-    if (args[i] == "--publish-dir-path" && i + 1 < args.Length)
-        publishDirPath = args[++i];
-    else if (args[i] == "--icons-file-path" && i + 1 < args.Length)
-        iconsFilePath = args[++i];
-    else if (args[i] == "--full-version" && i + 1 < args.Length)
-        fullVersion = args[++i];
-    else if (args[i] == "--short-version" && i + 1 < args.Length)
-        shortVersion = args[++i];
-}
+    private const string BundleName = "YoutubeDownloader.app";
+    private const string AppName = "YoutubeDownloader";
+    private const string AppCopyright = "© Oleksii Holub";
+    private const string AppIdentifier = "me.Tyrrrz.YoutubeDownloader";
+    private const string AppSpokenName = "YoutubeDownloader";
+    private const string AppIconName = "AppIcon";
 
-if (publishDirPath is null)
-    throw new Exception("--publish-dir-path is required");
-if (iconsFilePath is null)
-    throw new Exception("--icons-file-path is required");
-if (fullVersion is null)
-    throw new Exception("--full-version is required");
-if (shortVersion is null)
-    throw new Exception("--short-version is required");
+    [CommandOption("publish-dir", Description = "Path to the publish output directory.")]
+    public required string PublishDirPath { get; init; }
 
-// Setup paths
-var tempDirPath = Path.GetFullPath(Path.Combine(publishDirPath, "../publish-macos-app-temp"));
-var bundleName = "YoutubeDownloader.app";
-var bundleDirPath = Path.Combine(tempDirPath, bundleName);
-var contentsDirPath = Path.Combine(bundleDirPath, "Contents");
-var macosDirPath = Path.Combine(contentsDirPath, "MacOS");
-var resourcesDirPath = Path.Combine(contentsDirPath, "Resources");
+    [CommandOption("icons-file", Description = "Path to the .icns icons file.")]
+    public required string IconsFilePath { get; init; }
 
-try
-{
-    // Initialize the bundle's directory structure
-    Directory.CreateDirectory(bundleDirPath);
-    Directory.CreateDirectory(contentsDirPath);
-    Directory.CreateDirectory(macosDirPath);
-    Directory.CreateDirectory(resourcesDirPath);
+    [CommandOption("full-version", Description = "Full version string (e.g. '1.2.3.4').")]
+    public required string FullVersion { get; init; }
 
-    // Copy icons into the .app's Resources folder
-    File.Copy(iconsFilePath, Path.Combine(resourcesDirPath, "AppIcon.icns"), overwrite: true);
+    [CommandOption("short-version", Description = "Short version string (e.g. '1.2.3').")]
+    public required string ShortVersion { get; init; }
 
-    // Generate the Info.plist metadata file with the app information
-    var plistContent = $"""
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-          <dict>
-            <key>CFBundleDisplayName</key>
-            <string>YoutubeDownloader</string>
-            <key>CFBundleName</key>
-            <string>YoutubeDownloader</string>
-            <key>CFBundleExecutable</key>
-            <string>YoutubeDownloader</string>
-            <key>NSHumanReadableCopyright</key>
-            <string>© Oleksii Holub</string>
-            <key>CFBundleIdentifier</key>
-            <string>me.Tyrrrz.YoutubeDownloader</string>
-            <key>CFBundleSpokenName</key>
-            <string>YoutubeDownloader</string>
-            <key>CFBundleIconFile</key>
-            <string>AppIcon</string>
-            <key>CFBundleIconName</key>
-            <string>AppIcon</string>
-            <key>CFBundleVersion</key>
-            <string>{fullVersion}</string>
-            <key>CFBundleShortVersionString</key>
-            <string>{shortVersion}</string>
-            <key>NSHighResolutionCapable</key>
-            <true />
-            <key>CFBundlePackageType</key>
-            <string>APPL</string>
-          </dict>
-        </plist>
-        """;
-
-    File.WriteAllText(Path.Combine(contentsDirPath, "Info.plist"), plistContent);
-
-    // Delete the previous bundle if it exists
-    var existingBundlePath = Path.Combine(publishDirPath, bundleName);
-    if (Directory.Exists(existingBundlePath))
-        Directory.Delete(existingBundlePath, recursive: true);
-
-    // Move all files from the publish directory into the MacOS directory
-    foreach (var entry in Directory.GetFileSystemEntries(publishDirPath))
+    public async ValueTask ExecuteAsync(IConsole console)
     {
-        var destination = Path.Combine(macosDirPath, Path.GetFileName(entry));
-        if (File.Exists(entry))
-            File.Move(entry, destination, overwrite: true);
-        else if (Directory.Exists(entry))
-            Directory.Move(entry, destination);
-    }
+        // Set up paths
+        var publishDirPath = Path.GetFullPath(PublishDirPath);
+        var tempDirPath = Path.GetFullPath(
+            Path.Combine(publishDirPath, "../publish-macos-app-temp")
+        );
 
-    // Move the final bundle into the publish directory for upload
-    Directory.Move(bundleDirPath, Path.Combine(publishDirPath, bundleName));
-}
-finally
-{
-    // Clean up the temporary directory
-    if (Directory.Exists(tempDirPath))
-        Directory.Delete(tempDirPath, recursive: true);
+        // Ensure the temporary directory is clean before use in case a previous run crashed
+        if (Directory.Exists(tempDirPath))
+            Directory.Delete(tempDirPath, true);
+
+        var bundleDirPath = Path.Combine(tempDirPath, BundleName);
+        var contentsDirPath = Path.Combine(bundleDirPath, "Contents");
+
+        try
+        {
+            // Copy icons into the .app's Resources folder
+            Directory.CreateDirectory(Path.Combine(contentsDirPath, "Resources"));
+            File.Copy(
+                IconsFilePath,
+                Path.Combine(contentsDirPath, "Resources", "AppIcon.icns"),
+                true
+            );
+
+            // Generate the Info.plist metadata file with the app information
+            // lang=xml
+            var plistContent = $"""
+                <?xml version="1.0" encoding="UTF-8"?>
+                <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+                <plist version="1.0">
+                  <dict>
+                    <key>CFBundleDisplayName</key>
+                    <string>{AppName}</string>
+                    <key>CFBundleName</key>
+                    <string>{AppName}</string>
+                    <key>CFBundleExecutable</key>
+                    <string>{AppName}</string>
+                    <key>NSHumanReadableCopyright</key>
+                    <string>{AppCopyright}</string>
+                    <key>CFBundleIdentifier</key>
+                    <string>{AppIdentifier}</string>
+                    <key>CFBundleSpokenName</key>
+                    <string>{AppSpokenName}</string>
+                    <key>CFBundleIconFile</key>
+                    <string>{AppIconName}</string>
+                    <key>CFBundleIconName</key>
+                    <string>{AppIconName}</string>
+                    <key>CFBundleVersion</key>
+                    <string>{FullVersion}</string>
+                    <key>CFBundleShortVersionString</key>
+                    <string>{ShortVersion}</string>
+                    <key>NSHighResolutionCapable</key>
+                    <true />
+                    <key>CFBundlePackageType</key>
+                    <string>APPL</string>
+                  </dict>
+                </plist>
+                """;
+
+            await File.WriteAllTextAsync(Path.Combine(contentsDirPath, "Info.plist"), plistContent);
+
+            // Delete the previous bundle if it exists
+            var existingBundlePath = Path.Combine(publishDirPath, BundleName);
+            if (Directory.Exists(existingBundlePath))
+                Directory.Delete(existingBundlePath, true);
+
+            // Move all files from the publish directory into the MacOS directory
+            Directory.CreateDirectory(Path.Combine(contentsDirPath, "MacOS"));
+            foreach (var entryPath in Directory.GetFileSystemEntries(publishDirPath))
+            {
+                var destinationPath = Path.Combine(
+                    contentsDirPath,
+                    "MacOS",
+                    Path.GetFileName(entryPath)
+                );
+
+                if (Directory.Exists(entryPath))
+                    Directory.Move(entryPath, destinationPath);
+                else
+                    File.Move(entryPath, destinationPath);
+            }
+
+            // Move the final bundle into the publish directory for upload
+            Directory.Move(bundleDirPath, Path.Combine(publishDirPath, BundleName));
+        }
+        finally
+        {
+            // Clean up the temporary directory
+            if (Directory.Exists(tempDirPath))
+                Directory.Delete(tempDirPath, true);
+        }
+    }
 }
