@@ -87,11 +87,13 @@
   >
     <Exec
       Command="dotnet run --file $(ProjectDir)Download-FFmpeg.csx -- --platform $(RuntimeIdentifier) --output-path $(ProjectDir)"
+      WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
       Condition="'$(RuntimeIdentifier)' != ''"
     />
     <Exec
       Command="dotnet run --file $(ProjectDir)Download-FFmpeg.csx -- --output-path $(ProjectDir)"
+      WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
       Condition="'$(RuntimeIdentifier)' == ''"
     />
@@ -111,6 +113,7 @@
   <Target Name="PublishMacOSBundle" AfterTargets="Publish" Condition="$(PublishMacOSBundle)">
     <Exec
       Command="dotnet run --file $(ProjectDir)Publish-MacOSBundle.csx -- --publish-dir-path $(PublishDir) --icons-file-path $(ProjectDir)../favicon.icns --full-version $(Version) --short-version $(AssemblyVersion)"
+      WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
     />
   </Target>
