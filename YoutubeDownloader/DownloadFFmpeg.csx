@@ -63,17 +63,17 @@ public class DownloadFFmpegCommand : ICommand
         // Download the archive
         console.Output.WriteLine($"Downloading FFmpeg for {platform}...");
         var archiveFilePath = outputPath + ".zip";
+        var cancellationToken = console.RegisterCancellationHandler();
         try
         {
             using var http = new HttpClient();
             using var responseStream = await http.GetStreamAsync(
                 $"https://github.com/Tyrrrz/FFmpegBin/releases/download/{FFmpegVersion}/ffmpeg-{platform}.zip",
-                console.CancellationToken
+                cancellationToken
             );
 
             await using (var archiveFile = File.Create(archiveFilePath))
             {
-                var cancellationToken = console.RegisterCancellationHandler();
                 await responseStream.CopyToAsync(archiveFile, cancellationToken);
             }
 
