@@ -9,6 +9,7 @@
     <PackageVersion Include="Avalonia.Controls.DataGrid" Version="11.3.0" />
     <PackageVersion Include="Avalonia.Desktop" Version="11.3.0" />
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.0" />
+    <PackageVersion Include="CliFx" Version="2.3.6" />
     <PackageVersion Include="Cogwheel" Version="2.1.0" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="CSharpier.MsBuild" Version="1.2.6" />

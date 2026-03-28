@@ -86,12 +86,14 @@
     Condition="$(DownloadFFmpeg) AND !Exists('ffmpeg.exe') AND !Exists('ffmpeg')"
   >
     <Exec
-      Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Download-FFmpeg.ps1 -Platform $(RuntimeIdentifier) -OutputPath $(ProjectDir)"
+      Command="dotnet run --file &quot;$(ProjectDir)DownloadFFmpeg.csx&quot; -- --platform $(RuntimeIdentifier) --output &quot;$(ProjectDir)/&quot;"
+      WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
       Condition="'$(RuntimeIdentifier)' != ''"
     />
     <Exec
-      Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Download-FFmpeg.ps1 -OutputPath $(ProjectDir)"
+      Command="dotnet run --file &quot;$(ProjectDir)DownloadFFmpeg.csx&quot; -- --output &quot;$(ProjectDir)/&quot;"
+      WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
       Condition="'$(RuntimeIdentifier)' == ''"
     />
@@ -110,7 +112,8 @@
   <!-- Publish macOS bundle -->
   <Target Name="PublishMacOSBundle" AfterTargets="Publish" Condition="$(PublishMacOSBundle)">
     <Exec
-      Command="pwsh -ExecutionPolicy Bypass -File $(ProjectDir)/Publish-MacOSBundle.ps1 -PublishDirPath $(PublishDir) -IconsFilePath $(ProjectDir)/../favicon.icns -FullVersion $(Version) -ShortVersion $(AssemblyVersion)"
+      Command="dotnet run --file &quot;$(ProjectDir)PublishMacOSBundle.csx&quot; -- --publish-dir &quot;$(PublishDir)&quot; --icons-file &quot;$(ProjectDir)../favicon.icns&quot; --full-version $(Version) --short-version $(AssemblyVersion)"
+      WorkingDirectory="$([System.IO.Path]::GetTempPath())"
       LogStandardErrorAsError="true"
     />
   </Target>

@@ -74,10 +74,8 @@ public partial class DownloadMultipleSetupViewModel(
             return;
 
         var downloads = new List<DownloadViewModel>();
-        for (var i = 0; i < SelectedVideos.Count; i++)
+        foreach (var (i, video) in SelectedVideos.Index())
         {
-            var video = SelectedVideos[i];
-
             var baseFilePath = Path.Combine(
                 dirPath,
                 FileNameTemplate.Apply(
