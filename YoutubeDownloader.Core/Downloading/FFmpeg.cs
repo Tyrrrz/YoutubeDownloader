@@ -72,9 +72,6 @@ public static class FFmpeg
             .Select(dirPath => Path.Combine(dirPath, CliFileName))
             .FirstOrDefault(File.Exists);
 
-    public static bool IsBundled() =>
-        File.Exists(Path.Combine(AppContext.BaseDirectory, CliFileName));
-
     private static string GetDownloadUrl()
     {
         static string GetSystemMoniker()
