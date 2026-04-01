@@ -113,14 +113,14 @@ public partial class DashboardViewModel : ViewModelBase
                 return;
 
             // Ask the user before downloading
-            var promptDialog = _viewModelManager.CreateMessageBoxViewModel(
+            var dialog = _viewModelManager.CreateMessageBoxViewModel(
                 _localizationManager.FFmpegMissingTitle,
                 string.Format(_localizationManager.FFmpegMissingMessage, Program.Name),
                 _localizationManager.DownloadButton,
                 _localizationManager.CloseButton
             );
 
-            if (await _dialogManager.ShowDialogAsync(promptDialog) != true)
+            if (await _dialogManager.ShowDialogAsync(dialog) != true)
             {
                 if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
                     Environment.Exit(3);
