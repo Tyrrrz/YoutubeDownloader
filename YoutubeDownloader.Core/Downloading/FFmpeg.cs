@@ -13,7 +13,7 @@ namespace YoutubeDownloader.Core.Downloading;
 
 public static class FFmpeg
 {
-    private const string Version = "8.0.1"; // Keep in sync with DownloadFFmpeg.csx
+    private const string Version = "8.1.0";
 
     public static string CliFileName { get; } =
         OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg";
@@ -74,43 +74,58 @@ public static class FFmpeg
     public static bool IsBundled() =>
         File.Exists(Path.Combine(AppContext.BaseDirectory, CliFileName));
 
+    private static string GetDownloadUrl()
+    {
+        static string GetSystemMoniker()
+        {
+            if (OperatingSystem.IsWindows())
+                return "windows";
+
+            if (OperatingSystem.IsLinux())
+                return "linux";
+
+            if (OperatingSystem.IsMacOS())
+                return "osx";
+
+            throw new PlatformNotSupportedException("Unsupported operating system.");
+        }
+
+        static string GetArchitectureMoniker()
+        {
+            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+                return "x64";
+
+            if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
+                return "x86";
+
+            if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+                return "arm64";
+
+            throw new PlatformNotSupportedException(
+                $"Unsupported architecture: {RuntimeInformation.ProcessArchitecture}."
+            );
+        }
+
+        var sys = GetSystemMoniker();
+        var arch = GetArchitectureMoniker();
+
+        return $"https://github.com/Tyrrrz/FFmpegBin/releases/download/{Version}/ffmpeg-{sys}-{arch}.zip";
+    }
+
     public static async Task DownloadAsync(
-        string outputDirPath,
+        string outputFilePath,
         IProgress<Percentage>? progress = null,
         CancellationToken cancellationToken = default
     )
     {
-        var arch = RuntimeInformation.OSArchitecture switch
-        {
-            Architecture.X64 => "x64",
-            Architecture.X86 => "x86",
-            Architecture.Arm64 => "arm64",
-            var other => throw new PlatformNotSupportedException(
-                $"Unsupported architecture: {other}."
-            ),
-        };
-
-        string platform;
-        if (OperatingSystem.IsWindows())
-            platform = $"windows-{arch}";
-        else if (OperatingSystem.IsLinux())
-            platform = $"linux-{arch}";
-        else if (OperatingSystem.IsMacOS())
-            platform = $"osx-{arch}";
-        else
-            throw new PlatformNotSupportedException("Unsupported operating system.");
-
-        var outputFilePath = Path.Combine(outputDirPath, CliFileName);
-        var archiveFilePath = outputFilePath + ".zip";
+        var archiveFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".zip");
 
         try
         {
             using var http = new HttpClient();
-            var url =
-                $"https://github.com/Tyrrrz/FFmpegBin/releases/download/{Version}/ffmpeg-{platform}.zip";
 
             using var response = await http.GetAsync(
-                url,
+                GetDownloadUrl(),
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken
             );
@@ -161,10 +176,7 @@ public static class FFmpeg
             {
                 File.SetUnixFileMode(
                     outputFilePath,
-                    File.GetUnixFileMode(outputFilePath)
-                        | UnixFileMode.UserExecute
-                        | UnixFileMode.GroupExecute
-                        | UnixFileMode.OtherExecute
+                    File.GetUnixFileMode(outputFilePath) | UnixFileMode.UserExecute
                 );
             }
         }

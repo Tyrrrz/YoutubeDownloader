@@ -96,7 +96,12 @@ public partial class MainViewModel(
             await dialogManager.ShowDialogAsync(
                 viewModelManager.CreateProgressDialogViewModel(
                     localizationManager.FFmpegDownloadingTitle,
-                    (progress, ct) => FFmpeg.DownloadAsync(AppContext.BaseDirectory, progress, ct)
+                    (progress, ct) =>
+                        FFmpeg.DownloadAsync(
+                            Path.Combine(AppContext.BaseDirectory, FFmpeg.CliFileName),
+                            progress,
+                            ct
+                        )
                 )
             );
 
