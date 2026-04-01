@@ -1,11 +1,11 @@
 ﻿<UserControl
-    x:Class="YoutubeDownloader.Views.Dialogs.MessageBoxDialogView"
+    x:Class="YoutubeDownloader.Views.Dialogs.MessageBoxView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     Width="500"
-    x:DataType="dialogs:MessageBoxDialogViewModel">
+    x:DataType="dialogs:MessageBoxViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Title  -->
         <TextBlock

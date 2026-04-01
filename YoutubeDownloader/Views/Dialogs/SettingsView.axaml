@@ -1,12 +1,12 @@
 <UserControl
-    x:Class="YoutubeDownloader.Views.Dialogs.SettingsDialogView"
+    x:Class="YoutubeDownloader.Views.Dialogs.SettingsView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Width="380"
-    x:DataType="dialogs:SettingsDialogViewModel">
+    x:DataType="dialogs:SettingsViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
         <TextBlock
             Grid.Row="0"

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
-using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
@@ -31,7 +29,7 @@ public partial class MainViewModel(
         if (!settingsService.IsUkraineSupportMessageEnabled)
             return;
 
-        var dialog = viewModelManager.CreateMessageBoxDialogViewModel(
+        var dialog = viewModelManager.CreateMessageBoxViewModel(
             localizationManager.UkraineSupportTitle,
             localizationManager.UkraineSupportMessage,
             localizationManager.LearnMoreButton,
@@ -55,7 +53,7 @@ public partial class MainViewModel(
         if (Debugger.IsAttached)
             return;
 
-        var dialog = viewModelManager.CreateMessageBoxDialogViewModel(
+        var dialog = viewModelManager.CreateMessageBoxViewModel(
             localizationManager.UnstableBuildTitle,
             string.Format(localizationManager.UnstableBuildMessage, Program.Name),
             localizationManager.SeeReleasesButton,
@@ -64,54 +62,6 @@ public partial class MainViewModel(
 
         if (await dialogManager.ShowDialogAsync(dialog) == true)
             Process.StartShellExecute(Program.ProjectReleasesUrl);
-    }
-
-    private async Task EnsureFFmpegAsync()
-    {
-        if (settingsService.FFmpegFilePath is { } ffmpegFilePath)
-        {
-            // Explicit path set — only show the dialog if the file is missing
-            if (File.Exists(ffmpegFilePath))
-                return;
-
-            var dialog = viewModelManager.CreateMessageBoxDialogViewModel(
-                localizationManager.FFmpegMissingTitle,
-                string.Format(localizationManager.FFmpegPathMissingMessage, ffmpegFilePath),
-                localizationManager.SettingsButton,
-                localizationManager.CloseButton
-            );
-
-            if (await dialogManager.ShowDialogAsync(dialog) == true)
-                await dialogManager.ShowDialogAsync(
-                    viewModelManager.CreateSettingsDialogViewModel()
-                );
-        }
-        else
-        {
-            // No explicit path — fall back to auto-detection check
-            if (FFmpeg.TryGetCliFilePath() is not null)
-                return;
-
-            // Auto-download FFmpeg
-            await dialogManager.ShowDialogAsync(
-                viewModelManager.CreateProgressDialogViewModel(
-                    localizationManager.FFmpegDownloadingTitle,
-                    (progress, ct) =>
-                        FFmpeg.DownloadAsync(
-                            Path.Combine(AppContext.BaseDirectory, FFmpeg.CliFileName),
-                            progress,
-                            ct
-                        )
-                )
-            );
-
-            // Check if FFmpeg is available after the download attempt
-            if (FFmpeg.TryGetCliFilePath() is not null)
-                return;
-        }
-
-        if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
-            Environment.Exit(3);
     }
 
     private async Task CheckForUpdatesAsync()
@@ -155,7 +105,7 @@ public partial class MainViewModel(
     {
         await ShowUkraineSupportMessageAsync();
         await ShowDevelopmentBuildMessageAsync();
-        await EnsureFFmpegAsync();
+        await Dashboard.EnsureFFmpegAsync();
         await CheckForUpdatesAsync();
     }
 

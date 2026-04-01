@@ -118,6 +118,8 @@ public partial class LocalizationManager
             """,
         [nameof(SeeReleasesButton)] = "VOIR LES VERSIONS",
         [nameof(FFmpegMissingTitle)] = "FFmpeg est manquant",
+        [nameof(FFmpegMissingMessage)] =
+            "FFmpeg est introuvable sur votre système. Il est requis pour que {0} fonctionne. Voulez-vous le télécharger maintenant ?",
         [nameof(FFmpegDownloadingTitle)] = "Téléchargement de FFmpeg...",
         [nameof(FFmpegPathMissingMessage)] = """
             FFmpeg est requis pour cette application, mais le chemin configuré n'existe pas :

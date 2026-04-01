@@ -16,7 +16,7 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public partial class DownloadSingleSetupDialogViewModel(
+public partial class DownloadSingleSetupViewModel(
     ViewModelManager viewModelManager,
     DialogManager dialogManager,
     LocalizationManager localizationManager,

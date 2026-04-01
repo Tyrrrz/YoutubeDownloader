@@ -16,12 +16,11 @@ public partial class ViewManager
         {
             MainViewModel => new MainView(),
             DashboardViewModel => new DashboardView(),
-            AuthSetupDialogViewModel => new AuthSetupDialogView(),
-            DownloadMultipleSetupDialogViewModel => new DownloadMultipleSetupDialogView(),
-            DownloadSingleSetupDialogViewModel => new DownloadSingleSetupDialogView(),
-            MessageBoxDialogViewModel => new MessageBoxDialogView(),
-            ProgressDialogViewModel => new ProgressDialogView(),
-            SettingsDialogViewModel => new SettingsDialogView(),
+            AuthSetupViewModel => new AuthSetupView(),
+            DownloadMultipleSetupViewModel => new DownloadMultipleSetupView(),
+            DownloadSingleSetupViewModel => new DownloadSingleSetupView(),
+            MessageBoxViewModel => new MessageBoxView(),
+            SettingsViewModel => new SettingsView(),
             _ => null,
         };
 

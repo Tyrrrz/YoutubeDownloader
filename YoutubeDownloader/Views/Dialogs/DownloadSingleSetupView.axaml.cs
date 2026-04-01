@@ -4,9 +4,9 @@ using YoutubeDownloader.ViewModels.Dialogs;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class DownloadMultipleSetupDialogView : UserControl<DownloadMultipleSetupDialogViewModel>
+public partial class DownloadSingleSetupView : UserControl<DownloadSingleSetupViewModel>
 {
-    public DownloadMultipleSetupDialogView() => InitializeComponent();
+    public DownloadSingleSetupView() => InitializeComponent();
 
     private void UserControl_OnLoaded(object? sender, RoutedEventArgs args) =>
         DataContext.InitializeCommand.Execute(null);

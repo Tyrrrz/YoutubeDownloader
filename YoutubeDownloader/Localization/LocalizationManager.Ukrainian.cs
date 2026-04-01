@@ -114,6 +114,8 @@ public partial class LocalizationManager
                 """,
             [nameof(SeeReleasesButton)] = "ПЕРЕГЛЯНУТИ РЕЛІЗИ",
             [nameof(FFmpegMissingTitle)] = "FFmpeg відсутній",
+            [nameof(FFmpegMissingMessage)] =
+                "FFmpeg не знайдено на вашому пристрої. Він потрібен для роботи {0}. Бажаєте завантажити його зараз?",
             [nameof(FFmpegDownloadingTitle)] = "Завантаження FFmpeg...",
             [nameof(FFmpegPathMissingMessage)] = """
                 FFmpeg потрібен для роботи програми, але вказаний шлях не існує:

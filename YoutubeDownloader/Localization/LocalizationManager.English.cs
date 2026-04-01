@@ -114,6 +114,8 @@ public partial class LocalizationManager
                 """,
             [nameof(SeeReleasesButton)] = "SEE RELEASES",
             [nameof(FFmpegMissingTitle)] = "FFmpeg is missing",
+            [nameof(FFmpegMissingMessage)] =
+                "FFmpeg was not found on your system. It is required for {0} to work. Would you like to download it now?",
             [nameof(FFmpegDownloadingTitle)] = "Downloading FFmpeg...",
             [nameof(FFmpegPathMissingMessage)] = """
                 FFmpeg is required for this app to work, but the configured path does not exist:

@@ -165,6 +165,7 @@ public partial class LocalizationManager
     public string UnstableBuildMessage => Get();
     public string SeeReleasesButton => Get();
     public string FFmpegMissingTitle => Get();
+    public string FFmpegMissingMessage => Get();
     public string FFmpegDownloadingTitle => Get();
     public string FFmpegPathMissingMessage => Get();
     public string NothingFoundTitle => Get();

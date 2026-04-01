@@ -11,14 +11,14 @@ using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public partial class SettingsDialogViewModel : DialogViewModelBase
+public partial class SettingsViewModel : DialogViewModelBase
 {
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
     private readonly DisposableCollector _eventRoot = new();
 
-    public SettingsDialogViewModel(
+    public SettingsViewModel(
         DialogManager dialogManager,
         LocalizationManager localizationManager,
         SettingsService settingsService

@@ -1,12 +1,12 @@
 <UserControl
-    x:Class="YoutubeDownloader.Views.Dialogs.AuthSetupDialogView"
+    x:Class="YoutubeDownloader.Views.Dialogs.AuthSetupView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Height="450"
     MinWidth="450"
-    x:DataType="dialogs:AuthSetupDialogViewModel">
+    x:DataType="dialogs:AuthSetupViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Title  -->
         <TextBlock

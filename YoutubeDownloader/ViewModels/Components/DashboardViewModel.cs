@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
@@ -25,6 +26,7 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly ViewModelManager _viewModelManager;
     private readonly SnackbarManager _snackbarManager;
     private readonly DialogManager _dialogManager;
+    private readonly LocalizationManager _localizationManager;
     private readonly SettingsService _settingsService;
 
     private readonly DisposableCollector _eventRoot = new();
@@ -42,6 +44,7 @@ public partial class DashboardViewModel : ViewModelBase
         _viewModelManager = viewModelManager;
         _snackbarManager = snackbarManager;
         _dialogManager = dialogManager;
+        _localizationManager = localizationManager;
         LocalizationManager = localizationManager;
         _settingsService = settingsService;
 
@@ -82,19 +85,92 @@ public partial class DashboardViewModel : ViewModelBase
 
     public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
+    public async Task EnsureFFmpegAsync()
+    {
+        if (_settingsService.FFmpegFilePath is { } ffmpegFilePath)
+        {
+            // Explicit path set — only show the dialog if the file is missing
+            if (File.Exists(ffmpegFilePath))
+                return;
+
+            var dialog = _viewModelManager.CreateMessageBoxViewModel(
+                _localizationManager.FFmpegMissingTitle,
+                string.Format(_localizationManager.FFmpegPathMissingMessage, ffmpegFilePath),
+                _localizationManager.SettingsButton,
+                _localizationManager.CloseButton
+            );
+
+            if (await _dialogManager.ShowDialogAsync(dialog) == true)
+                await _dialogManager.ShowDialogAsync(
+                    _viewModelManager.CreateSettingsViewModel()
+                );
+        }
+        else
+        {
+            // No explicit path — fall back to auto-detection check
+            if (FFmpeg.TryGetCliFilePath() is not null)
+                return;
+
+            // Ask the user before downloading
+            var promptDialog = _viewModelManager.CreateMessageBoxViewModel(
+                _localizationManager.FFmpegMissingTitle,
+                string.Format(_localizationManager.FFmpegMissingMessage, Program.Name),
+                _localizationManager.DownloadButton,
+                _localizationManager.CloseButton
+            );
+
+            if (await _dialogManager.ShowDialogAsync(promptDialog) != true)
+            {
+                if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
+                    Environment.Exit(3);
+                return;
+            }
+
+            // Download FFmpeg using the dashboard's progress bar
+            IsBusy = true;
+            var progress = _progressMuxer.CreateInput();
+            _snackbarManager.Notify(_localizationManager.FFmpegDownloadingTitle);
+
+            try
+            {
+                await FFmpeg.DownloadAsync(
+                    Path.Combine(AppContext.BaseDirectory, FFmpeg.CliFileName),
+                    progress,
+                    default
+                );
+            }
+            catch
+            {
+                // Download failed; fall through to exit below
+            }
+            finally
+            {
+                progress.ReportCompletion();
+                IsBusy = false;
+            }
+
+            // Check if FFmpeg is available after the download attempt
+            if (FFmpeg.TryGetCliFilePath() is not null)
+                return;
+        }
+
+        if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
+            Environment.Exit(3);
+    }
+
     private bool CanShowAuthSetup() => !IsBusy;
 
     [RelayCommand(CanExecute = nameof(CanShowAuthSetup))]
     private async Task ShowAuthSetupAsync() =>
         await _dialogManager.ShowDialogAsync(
-            _viewModelManager.CreateAuthSetupDialogViewModel()
+            _viewModelManager.CreateAuthSetupViewModel()
         );
 
     private bool CanShowSettings() => !IsBusy;
 
     [RelayCommand(CanExecute = nameof(CanShowSettings))]
     private async Task ShowSettingsAsync() =>
-        await _dialogManager.ShowDialogAsync(_viewModelManager.CreateSettingsDialogViewModel());
+        await _dialogManager.ShowDialogAsync(_viewModelManager.CreateSettingsViewModel());
 
     private async void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
@@ -234,7 +310,7 @@ public partial class DashboardViewModel : ViewModelBase
                 );
 
                 var download = await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateDownloadSingleSetupDialogViewModel(video, downloadOptions)
+                    _viewModelManager.CreateDownloadSingleSetupViewModel(video, downloadOptions)
                 );
 
                 if (download is null)
@@ -248,7 +324,7 @@ public partial class DashboardViewModel : ViewModelBase
             else if (queryResult.Videos.Count > 1)
             {
                 var downloads = await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateDownloadMultipleSetupDialogViewModel(
+                    _viewModelManager.CreateDownloadMultipleSetupViewModel(
                         queryResult.Title,
                         queryResult.Videos,
                         // Pre-select videos if they come from a single query and not from search
@@ -270,7 +346,7 @@ public partial class DashboardViewModel : ViewModelBase
             else
             {
                 await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateMessageBoxDialogViewModel(
+                    _viewModelManager.CreateMessageBoxViewModel(
                         LocalizationManager.NothingFoundTitle,
                         LocalizationManager.NothingFoundMessage
                     )
@@ -280,7 +356,7 @@ public partial class DashboardViewModel : ViewModelBase
         catch (Exception ex)
         {
             await _dialogManager.ShowDialogAsync(
-                _viewModelManager.CreateMessageBoxDialogViewModel(
+                _viewModelManager.CreateMessageBoxViewModel(
                     LocalizationManager.ErrorTitle,
                     // Short error message for YouTube-related errors, full for others
                     ex is YoutubeExplodeException
