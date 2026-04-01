@@ -86,7 +86,7 @@ public partial class DashboardViewModel : ViewModelBase
     public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
     [RelayCommand]
-    private Task InitializeAsync() => EnsureFFmpegAsync();
+    private async Task InitializeAsync() => await EnsureFFmpegAsync();
 
     private async Task EnsureFFmpegAsync()
     {
