@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
@@ -32,7 +31,7 @@ public partial class MainViewModel(
         if (!settingsService.IsUkraineSupportMessageEnabled)
             return;
 
-        var dialog = viewModelManager.CreateMessageBoxViewModel(
+        var dialog = viewModelManager.CreateMessageBoxDialogViewModel(
             localizationManager.UkraineSupportTitle,
             localizationManager.UkraineSupportMessage,
             localizationManager.LearnMoreButton,
@@ -56,7 +55,7 @@ public partial class MainViewModel(
         if (Debugger.IsAttached)
             return;
 
-        var dialog = viewModelManager.CreateMessageBoxViewModel(
+        var dialog = viewModelManager.CreateMessageBoxDialogViewModel(
             localizationManager.UnstableBuildTitle,
             string.Format(localizationManager.UnstableBuildMessage, Program.Name),
             localizationManager.SeeReleasesButton,
@@ -67,7 +66,7 @@ public partial class MainViewModel(
             Process.StartShellExecute(Program.ProjectReleasesUrl);
     }
 
-    private async Task ShowFFmpegMissingMessageAsync()
+    private async Task EnsureFFmpegAsync()
     {
         if (settingsService.FFmpegFilePath is { } ffmpegFilePath)
         {
@@ -75,7 +74,7 @@ public partial class MainViewModel(
             if (File.Exists(ffmpegFilePath))
                 return;
 
-            var dialog = viewModelManager.CreateMessageBoxViewModel(
+            var dialog = viewModelManager.CreateMessageBoxDialogViewModel(
                 localizationManager.FFmpegMissingTitle,
                 string.Format(localizationManager.FFmpegPathMissingMessage, ffmpegFilePath),
                 localizationManager.SettingsButton,
@@ -83,7 +82,9 @@ public partial class MainViewModel(
             );
 
             if (await dialogManager.ShowDialogAsync(dialog) == true)
-                await dialogManager.ShowDialogAsync(viewModelManager.CreateSettingsViewModel());
+                await dialogManager.ShowDialogAsync(
+                    viewModelManager.CreateSettingsDialogViewModel()
+                );
         }
         else
         {
@@ -91,27 +92,17 @@ public partial class MainViewModel(
             if (FFmpeg.TryGetCliFilePath() is not null)
                 return;
 
-            var dialog = viewModelManager.CreateMessageBoxViewModel(
-                localizationManager.FFmpegMissingTitle,
-                $"""
-                {string.Format(localizationManager.FFmpegMissingMessage, Program.Name)}
-
-                ――――――――――――――――――――――――――――――――――――――――――
-
-                {string.Format(localizationManager.FFmpegMissingSearchedLabel, FFmpeg.CliFileName)}
-                {string.Join(
-                    Environment.NewLine,
-                    FFmpeg.GetProbeDirectoryPaths().Distinct(StringComparer.Ordinal).Select(d =>
-                        $"- {d}"
-                    )
-                )}
-                """,
-                localizationManager.DownloadButton,
-                localizationManager.CloseButton
+            // Auto-download FFmpeg
+            await dialogManager.ShowDialogAsync(
+                viewModelManager.CreateProgressDialogViewModel(
+                    localizationManager.FFmpegDownloadingTitle,
+                    (progress, ct) => FFmpeg.DownloadAsync(AppContext.BaseDirectory, progress, ct)
+                )
             );
 
-            if (await dialogManager.ShowDialogAsync(dialog) == true)
-                Process.StartShellExecute("https://ffmpeg.org/download.html");
+            // Check if FFmpeg is available after the download attempt
+            if (FFmpeg.TryGetCliFilePath() is not null)
+                return;
         }
 
         if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
@@ -159,7 +150,7 @@ public partial class MainViewModel(
     {
         await ShowUkraineSupportMessageAsync();
         await ShowDevelopmentBuildMessageAsync();
-        await ShowFFmpegMissingMessageAsync();
+        await EnsureFFmpegAsync();
         await CheckForUpdatesAsync();
     }
 

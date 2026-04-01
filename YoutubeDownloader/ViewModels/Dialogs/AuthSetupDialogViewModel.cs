@@ -10,12 +10,12 @@ using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class AuthSetupViewModel : DialogViewModelBase
+public class AuthSetupDialogViewModel : DialogViewModelBase
 {
     private readonly SettingsService _settingsService;
     private readonly DisposableCollector _eventRoot = new();
 
-    public AuthSetupViewModel(
+    public AuthSetupDialogViewModel(
         LocalizationManager localizationManager,
         SettingsService settingsService
     )

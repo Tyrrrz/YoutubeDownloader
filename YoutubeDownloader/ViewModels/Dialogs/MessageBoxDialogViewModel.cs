@@ -4,9 +4,9 @@ using YoutubeDownloader.Localization;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public partial class MessageBoxViewModel : DialogViewModelBase
+public partial class MessageBoxDialogViewModel : DialogViewModelBase
 {
-    public MessageBoxViewModel(LocalizationManager localizationManager)
+    public MessageBoxDialogViewModel(LocalizationManager localizationManager)
     {
         LocalizationManager = localizationManager;
 

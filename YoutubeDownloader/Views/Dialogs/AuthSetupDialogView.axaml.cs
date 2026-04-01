@@ -9,7 +9,7 @@ using YoutubeDownloader.ViewModels.Dialogs;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class AuthSetupView : UserControl<AuthSetupViewModel>
+public partial class AuthSetupDialogView : UserControl<AuthSetupDialogViewModel>
 {
     private const string HomePageUrl = "https://www.youtube.com";
     private static readonly string LoginPageUrl =
@@ -17,7 +17,7 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
 
     private CoreWebView2? _coreWebView2;
 
-    public AuthSetupView() => InitializeComponent();
+    public AuthSetupDialogView() => InitializeComponent();
 
     private void NavigateToLoginPage() => WebBrowser.Url = new Uri(LoginPageUrl);
 

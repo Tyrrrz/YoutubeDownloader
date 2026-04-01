@@ -1,0 +1,44 @@
+<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.ProgressDialogView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    Width="500"
+    x:DataType="dialogs:ProgressDialogViewModel"
+    Loaded="UserControl_OnLoaded">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="16"
+            FontSize="19"
+            FontWeight="Light"
+            Text="{Binding Title}"
+            TextTrimming="CharacterEllipsis"
+            ToolTip.Tip="{Binding Title}" />
+
+        <!--  Progress  -->
+        <Border
+            Grid.Row="1"
+            Padding="16,8"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
+            BorderThickness="0,1">
+            <ProgressBar
+                Height="4"
+                IsIndeterminate="{Binding IsProgressIndeterminate}"
+                Maximum="1"
+                Minimum="0"
+                Value="{Binding Progress.Current.Fraction}" />
+        </Border>
+
+        <!--  Cancel button  -->
+        <Button
+            Grid.Row="2"
+            Margin="16"
+            HorizontalAlignment="Stretch"
+            Command="{Binding CancelCommand}"
+            Content="{Binding LocalizationManager.CancelButton}"
+            IsCancel="True"
+            Theme="{DynamicResource MaterialOutlineButton}" />
+    </Grid>
+</UserControl>

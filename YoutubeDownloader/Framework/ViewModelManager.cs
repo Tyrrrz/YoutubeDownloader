@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Gress;
 using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Utils.Extensions;
@@ -17,8 +20,8 @@ public class ViewModelManager(IServiceProvider services)
     public DashboardViewModel CreateDashboardViewModel() =>
         services.GetRequiredService<DashboardViewModel>();
 
-    public AuthSetupViewModel CreateAuthSetupViewModel() =>
-        services.GetRequiredService<AuthSetupViewModel>();
+    public AuthSetupDialogViewModel CreateAuthSetupDialogViewModel() =>
+        services.GetRequiredService<AuthSetupDialogViewModel>();
 
     public DownloadViewModel CreateDownloadViewModel(
         IVideo video,
@@ -50,13 +53,13 @@ public class ViewModelManager(IServiceProvider services)
         return viewModel;
     }
 
-    public DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel(
+    public DownloadMultipleSetupDialogViewModel CreateDownloadMultipleSetupDialogViewModel(
         string title,
         IReadOnlyList<IVideo> availableVideos,
         bool preselectVideos = true
     )
     {
-        var viewModel = services.GetRequiredService<DownloadMultipleSetupViewModel>();
+        var viewModel = services.GetRequiredService<DownloadMultipleSetupDialogViewModel>();
 
         viewModel.Title = title;
         viewModel.AvailableVideos = availableVideos;
@@ -67,12 +70,12 @@ public class ViewModelManager(IServiceProvider services)
         return viewModel;
     }
 
-    public DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
+    public DownloadSingleSetupDialogViewModel CreateDownloadSingleSetupDialogViewModel(
         IVideo video,
         IReadOnlyList<VideoDownloadOption> availableDownloadOptions
     )
     {
-        var viewModel = services.GetRequiredService<DownloadSingleSetupViewModel>();
+        var viewModel = services.GetRequiredService<DownloadSingleSetupDialogViewModel>();
 
         viewModel.Video = video;
         viewModel.AvailableDownloadOptions = availableDownloadOptions;
@@ -80,14 +83,14 @@ public class ViewModelManager(IServiceProvider services)
         return viewModel;
     }
 
-    public MessageBoxViewModel CreateMessageBoxViewModel(
+    public MessageBoxDialogViewModel CreateMessageBoxDialogViewModel(
         string title,
         string message,
         string? okButtonText,
         string? cancelButtonText
     )
     {
-        var viewModel = services.GetRequiredService<MessageBoxViewModel>();
+        var viewModel = services.GetRequiredService<MessageBoxDialogViewModel>();
 
         viewModel.Title = title;
         viewModel.Message = message;
@@ -97,9 +100,9 @@ public class ViewModelManager(IServiceProvider services)
         return viewModel;
     }
 
-    public MessageBoxViewModel CreateMessageBoxViewModel(string title, string message)
+    public MessageBoxDialogViewModel CreateMessageBoxDialogViewModel(string title, string message)
     {
-        var viewModel = services.GetRequiredService<MessageBoxViewModel>();
+        var viewModel = services.GetRequiredService<MessageBoxDialogViewModel>();
 
         viewModel.Title = title;
         viewModel.Message = message;
@@ -107,6 +110,19 @@ public class ViewModelManager(IServiceProvider services)
         return viewModel;
     }
 
-    public SettingsViewModel CreateSettingsViewModel() =>
-        services.GetRequiredService<SettingsViewModel>();
+    public ProgressDialogViewModel CreateProgressDialogViewModel(
+        string title,
+        Func<IProgress<Percentage>, CancellationToken, Task> operation
+    )
+    {
+        var viewModel = services.GetRequiredService<ProgressDialogViewModel>();
+
+        viewModel.Title = title;
+        viewModel.Operation = operation;
+
+        return viewModel;
+    }
+
+    public SettingsDialogViewModel CreateSettingsDialogViewModel() =>
+        services.GetRequiredService<SettingsDialogViewModel>();
 }

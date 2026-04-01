@@ -4,10 +4,10 @@ using YoutubeDownloader.ViewModels.Dialogs;
 
 namespace YoutubeDownloader.Views.Dialogs;
 
-public partial class DownloadMultipleSetupView : UserControl<DownloadMultipleSetupViewModel>
+public partial class ProgressDialogView : UserControl<ProgressDialogViewModel>
 {
-    public DownloadMultipleSetupView() => InitializeComponent();
+    public ProgressDialogView() => InitializeComponent();
 
     private void UserControl_OnLoaded(object? sender, RoutedEventArgs args) =>
-        DataContext.InitializeCommand.Execute(null);
+        DataContext.RunOperationCommand.Execute(null);
 }

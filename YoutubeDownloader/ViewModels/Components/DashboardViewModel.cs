@@ -86,13 +86,15 @@ public partial class DashboardViewModel : ViewModelBase
 
     [RelayCommand(CanExecute = nameof(CanShowAuthSetup))]
     private async Task ShowAuthSetupAsync() =>
-        await _dialogManager.ShowDialogAsync(_viewModelManager.CreateAuthSetupViewModel());
+        await _dialogManager.ShowDialogAsync(
+            _viewModelManager.CreateAuthSetupDialogViewModel()
+        );
 
     private bool CanShowSettings() => !IsBusy;
 
     [RelayCommand(CanExecute = nameof(CanShowSettings))]
     private async Task ShowSettingsAsync() =>
-        await _dialogManager.ShowDialogAsync(_viewModelManager.CreateSettingsViewModel());
+        await _dialogManager.ShowDialogAsync(_viewModelManager.CreateSettingsDialogViewModel());
 
     private async void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
@@ -232,7 +234,7 @@ public partial class DashboardViewModel : ViewModelBase
                 );
 
                 var download = await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateDownloadSingleSetupViewModel(video, downloadOptions)
+                    _viewModelManager.CreateDownloadSingleSetupDialogViewModel(video, downloadOptions)
                 );
 
                 if (download is null)
@@ -246,7 +248,7 @@ public partial class DashboardViewModel : ViewModelBase
             else if (queryResult.Videos.Count > 1)
             {
                 var downloads = await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateDownloadMultipleSetupViewModel(
+                    _viewModelManager.CreateDownloadMultipleSetupDialogViewModel(
                         queryResult.Title,
                         queryResult.Videos,
                         // Pre-select videos if they come from a single query and not from search
@@ -268,7 +270,7 @@ public partial class DashboardViewModel : ViewModelBase
             else
             {
                 await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateMessageBoxViewModel(
+                    _viewModelManager.CreateMessageBoxDialogViewModel(
                         LocalizationManager.NothingFoundTitle,
                         LocalizationManager.NothingFoundMessage
                     )
@@ -278,7 +280,7 @@ public partial class DashboardViewModel : ViewModelBase
         catch (Exception ex)
         {
             await _dialogManager.ShowDialogAsync(
-                _viewModelManager.CreateMessageBoxViewModel(
+                _viewModelManager.CreateMessageBoxDialogViewModel(
                     LocalizationManager.ErrorTitle,
                     // Short error message for YouTube-related errors, full for others
                     ex is YoutubeExplodeException

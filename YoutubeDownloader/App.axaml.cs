@@ -50,11 +50,12 @@ public class App : Application, IDisposable
         services.AddTransient<MainViewModel>();
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<DownloadViewModel>();
-        services.AddTransient<AuthSetupViewModel>();
-        services.AddTransient<DownloadMultipleSetupViewModel>();
-        services.AddTransient<DownloadSingleSetupViewModel>();
-        services.AddTransient<MessageBoxViewModel>();
-        services.AddTransient<SettingsViewModel>();
+        services.AddTransient<AuthSetupDialogViewModel>();
+        services.AddTransient<DownloadMultipleSetupDialogViewModel>();
+        services.AddTransient<DownloadSingleSetupDialogViewModel>();
+        services.AddTransient<MessageBoxDialogViewModel>();
+        services.AddTransient<ProgressDialogViewModel>();
+        services.AddTransient<SettingsDialogViewModel>();
 
         _services = services.BuildServiceProvider(true);
         _settingsService = _services.GetRequiredService<SettingsService>();
