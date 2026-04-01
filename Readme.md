@@ -53,11 +53,6 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 > [!NOTE]
 > If you're unsure which build is right for your system, consult with [this page](https://useragent.cc) to determine your OS and CPU architecture.
 
-> [!NOTE]
-> **YoutubeDownloader** requires [FFmpeg](https://ffmpeg.org) for processing videos.
-> If FFmpeg is not found on your system, the app will offer to download it automatically on first launch.
-> You can also provide a custom FFmpeg installation by specifying its path in the settings.
-
 ## Features
 
 - Cross-platform graphical user interface
