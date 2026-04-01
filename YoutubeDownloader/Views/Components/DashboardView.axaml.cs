@@ -16,7 +16,11 @@ public partial class DashboardView : UserControl<DashboardViewModel>
         QueryTextBox.AddHandler(KeyDownEvent, QueryTextBox_OnKeyDown, RoutingStrategies.Tunnel);
     }
 
-    private void UserControl_OnLoaded(object? sender, RoutedEventArgs args) => QueryTextBox.Focus();
+    private void UserControl_OnLoaded(object? sender, RoutedEventArgs args)
+    {
+        DataContext.InitializeCommand.Execute(null);
+        QueryTextBox.Focus();
+    }
 
     private void QueryTextBox_OnKeyDown(object? sender, KeyEventArgs args)
     {

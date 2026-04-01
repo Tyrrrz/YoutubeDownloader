@@ -85,7 +85,10 @@ public partial class DashboardViewModel : ViewModelBase
 
     public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
-    public async Task EnsureFFmpegAsync()
+    [RelayCommand]
+    private Task InitializeAsync() => EnsureFFmpegAsync();
+
+    private async Task EnsureFFmpegAsync()
     {
         if (_settingsService.FFmpegFilePath is { } ffmpegFilePath)
         {
@@ -101,9 +104,7 @@ public partial class DashboardViewModel : ViewModelBase
             );
 
             if (await _dialogManager.ShowDialogAsync(dialog) == true)
-                await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateSettingsViewModel()
-                );
+                await _dialogManager.ShowDialogAsync(_viewModelManager.CreateSettingsViewModel());
         }
         else
         {
@@ -135,13 +136,17 @@ public partial class DashboardViewModel : ViewModelBase
             {
                 await FFmpeg.DownloadAsync(
                     Path.Combine(AppContext.BaseDirectory, FFmpeg.CliFileName),
-                    progress,
-                    default
+                    progress
                 );
             }
-            catch
+            catch (Exception ex)
             {
-                // Download failed; fall through to exit below
+                await _dialogManager.ShowDialogAsync(
+                    _viewModelManager.CreateMessageBoxViewModel(
+                        _localizationManager.ErrorTitle,
+                        ex.Message
+                    )
+                );
             }
             finally
             {
@@ -162,9 +167,7 @@ public partial class DashboardViewModel : ViewModelBase
 
     [RelayCommand(CanExecute = nameof(CanShowAuthSetup))]
     private async Task ShowAuthSetupAsync() =>
-        await _dialogManager.ShowDialogAsync(
-            _viewModelManager.CreateAuthSetupViewModel()
-        );
+        await _dialogManager.ShowDialogAsync(_viewModelManager.CreateAuthSetupViewModel());
 
     private bool CanShowSettings() => !IsBusy;
 

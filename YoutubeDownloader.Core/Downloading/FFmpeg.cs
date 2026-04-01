@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
+using YoutubeDownloader.Core.Utils;
 
 namespace YoutubeDownloader.Core.Downloading;
 
@@ -122,9 +123,7 @@ public static class FFmpeg
 
         try
         {
-            using var http = new HttpClient();
-
-            using var response = await http.GetAsync(
+            using var response = await Http.Client.GetAsync(
                 GetDownloadUrl(),
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken
@@ -141,14 +140,7 @@ public static class FFmpeg
             await using (var archiveFile = File.Create(archiveFilePath))
             {
                 int bytesRead;
-                while (
-                    (
-                        bytesRead = await responseStream.ReadAsync(
-                            buffer,
-                            cancellationToken
-                        )
-                    ) > 0
-                )
+                while ((bytesRead = await responseStream.ReadAsync(buffer, cancellationToken)) > 0)
                 {
                     await archiveFile.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                     downloadedSize += bytesRead;

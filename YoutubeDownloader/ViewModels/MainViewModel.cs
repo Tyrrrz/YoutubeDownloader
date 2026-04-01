@@ -105,7 +105,6 @@ public partial class MainViewModel(
     {
         await ShowUkraineSupportMessageAsync();
         await ShowDevelopmentBuildMessageAsync();
-        await Dashboard.EnsureFFmpegAsync();
         await CheckForUpdatesAsync();
     }
 
