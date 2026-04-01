@@ -90,74 +90,59 @@ public partial class DashboardViewModel : ViewModelBase
 
     private async Task EnsureFFmpegAsync()
     {
-        if (_settingsService.FFmpegFilePath is { } ffmpegFilePath)
+        // If a custom path is set, trust that the user knows what they're doing
+        if (_settingsService.FFmpegFilePath is not null)
+            return;
+
+        // No explicit path — fall back to auto-detection check
+        if (FFmpeg.TryGetCliFilePath() is not null)
+            return;
+
+        // Ask the user before downloading
+        var dialog = _viewModelManager.CreateMessageBoxViewModel(
+            _localizationManager.FFmpegMissingTitle,
+            string.Format(_localizationManager.FFmpegMissingMessage, Program.Name),
+            _localizationManager.DownloadButton,
+            _localizationManager.CloseButton
+        );
+
+        if (await _dialogManager.ShowDialogAsync(dialog) != true)
         {
-            // Explicit path set — only show the dialog if the file is missing
-            if (File.Exists(ffmpegFilePath))
-                return;
-
-            var dialog = _viewModelManager.CreateMessageBoxViewModel(
-                _localizationManager.FFmpegMissingTitle,
-                string.Format(_localizationManager.FFmpegPathMissingMessage, ffmpegFilePath),
-                _localizationManager.SettingsButton,
-                _localizationManager.CloseButton
-            );
-
-            if (await _dialogManager.ShowDialogAsync(dialog) == true)
-                await _dialogManager.ShowDialogAsync(_viewModelManager.CreateSettingsViewModel());
+            if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
+                Environment.Exit(3);
+            return;
         }
-        else
+
+        // Download FFmpeg using the dashboard's progress bar
+        IsBusy = true;
+        var progress = _progressMuxer.CreateInput();
+        _snackbarManager.Notify(_localizationManager.FFmpegDownloadingTitle);
+
+        try
         {
-            // No explicit path — fall back to auto-detection check
-            if (FFmpeg.TryGetCliFilePath() is not null)
-                return;
-
-            // Ask the user before downloading
-            var dialog = _viewModelManager.CreateMessageBoxViewModel(
-                _localizationManager.FFmpegMissingTitle,
-                string.Format(_localizationManager.FFmpegMissingMessage, Program.Name),
-                _localizationManager.DownloadButton,
-                _localizationManager.CloseButton
+            await FFmpeg.DownloadAsync(
+                Path.Combine(AppContext.BaseDirectory, FFmpeg.CliFileName),
+                progress
             );
-
-            if (await _dialogManager.ShowDialogAsync(dialog) != true)
-            {
-                if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
-                    Environment.Exit(3);
-                return;
-            }
-
-            // Download FFmpeg using the dashboard's progress bar
-            IsBusy = true;
-            var progress = _progressMuxer.CreateInput();
-            _snackbarManager.Notify(_localizationManager.FFmpegDownloadingTitle);
-
-            try
-            {
-                await FFmpeg.DownloadAsync(
-                    Path.Combine(AppContext.BaseDirectory, FFmpeg.CliFileName),
-                    progress
-                );
-            }
-            catch (Exception ex)
-            {
-                await _dialogManager.ShowDialogAsync(
-                    _viewModelManager.CreateMessageBoxViewModel(
-                        _localizationManager.ErrorTitle,
-                        ex.Message
-                    )
-                );
-            }
-            finally
-            {
-                progress.ReportCompletion();
-                IsBusy = false;
-            }
-
-            // Check if FFmpeg is available after the download attempt
-            if (FFmpeg.TryGetCliFilePath() is not null)
-                return;
         }
+        catch (Exception ex)
+        {
+            await _dialogManager.ShowDialogAsync(
+                _viewModelManager.CreateMessageBoxViewModel(
+                    _localizationManager.ErrorTitle,
+                    ex.Message
+                )
+            );
+        }
+        finally
+        {
+            progress.ReportCompletion();
+            IsBusy = false;
+        }
+
+        // Check if FFmpeg is available after the download attempt
+        if (FFmpeg.TryGetCliFilePath() is not null)
+            return;
 
         if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
             Environment.Exit(3);

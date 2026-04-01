@@ -99,7 +99,6 @@ public partial class LocalizationManager
         [nameof(CloseButton)] = "FERMER",
         [nameof(DownloadButton)] = "TÉLÉCHARGER",
         [nameof(CancelButton)] = "ANNULER",
-        [nameof(SettingsButton)] = "PARAMÈTRES",
         // Dialog messages
         [nameof(UkraineSupportTitle)] = "Merci de soutenir l'Ukraine !",
         [nameof(UkraineSupportMessage)] = """
@@ -121,12 +120,6 @@ public partial class LocalizationManager
         [nameof(FFmpegMissingMessage)] =
             "FFmpeg est introuvable sur votre système. Il est requis pour que {0} fonctionne. Voulez-vous le télécharger maintenant ?",
         [nameof(FFmpegDownloadingTitle)] = "Téléchargement de FFmpeg...",
-        [nameof(FFmpegPathMissingMessage)] = """
-            FFmpeg est requis pour cette application, mais le chemin configuré n'existe pas :
-            {0}
-
-            Veuillez mettre à jour le chemin FFmpeg dans les paramètres ou le vider pour utiliser la détection automatique.
-            """,
         [nameof(NothingFoundTitle)] = "Rien trouvé",
         [nameof(NothingFoundMessage)] =
             "Impossible de trouver des vidéos correspondant à la requête ou l'URL fournie",

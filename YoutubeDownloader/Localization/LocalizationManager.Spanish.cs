@@ -98,7 +98,6 @@ public partial class LocalizationManager
             [nameof(CloseButton)] = "CERRAR",
             [nameof(DownloadButton)] = "DESCARGAR",
             [nameof(CancelButton)] = "CANCELAR",
-            [nameof(SettingsButton)] = "AJUSTES",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "¡Gracias por apoyar a Ucrania!",
             [nameof(UkraineSupportMessage)] = """
@@ -120,12 +119,6 @@ public partial class LocalizationManager
             [nameof(FFmpegMissingMessage)] =
                 "FFmpeg no se encontró en tu sistema. Es necesario para que {0} funcione. ¿Te gustaría descargarlo ahora?",
             [nameof(FFmpegDownloadingTitle)] = "Descargando FFmpeg...",
-            [nameof(FFmpegPathMissingMessage)] = """
-                FFmpeg es necesario para esta aplicación, pero la ruta configurada no existe:
-                {0}
-
-                Por favor, actualiza la ruta de FFmpeg en los ajustes o bórrala para usar la detección automática.
-                """,
             [nameof(NothingFoundTitle)] = "Nada encontrado",
             [nameof(NothingFoundMessage)] =
                 "No se encontraron videos basados en la consulta o URL proporcionada",

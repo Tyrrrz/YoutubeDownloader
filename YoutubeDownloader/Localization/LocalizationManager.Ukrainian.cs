@@ -95,7 +95,6 @@ public partial class LocalizationManager
             [nameof(CloseButton)] = "ЗАКРИТИ",
             [nameof(DownloadButton)] = "ЗАВАНТАЖИТИ",
             [nameof(CancelButton)] = "СКАСУВАТИ",
-            [nameof(SettingsButton)] = "НАЛАШТУВАННЯ",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Дякуємо за підтримку України!",
             [nameof(UkraineSupportMessage)] = """
@@ -117,12 +116,6 @@ public partial class LocalizationManager
             [nameof(FFmpegMissingMessage)] =
                 "FFmpeg не знайдено на вашому пристрої. Він потрібен для роботи {0}. Бажаєте завантажити його зараз?",
             [nameof(FFmpegDownloadingTitle)] = "Завантаження FFmpeg...",
-            [nameof(FFmpegPathMissingMessage)] = """
-                FFmpeg потрібен для роботи програми, але вказаний шлях не існує:
-                {0}
-
-                Будь ласка, оновіть шлях FFmpeg у налаштуваннях або очистіть його для автовизначення.
-                """,
             [nameof(NothingFoundTitle)] = "Нічого не знайдено",
             [nameof(NothingFoundMessage)] = "Не вдалося знайти відео за вказаним запитом або URL",
             [nameof(ErrorTitle)] = "Помилка",

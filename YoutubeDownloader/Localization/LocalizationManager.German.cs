@@ -98,7 +98,6 @@ public partial class LocalizationManager
         [nameof(CloseButton)] = "SCHLIESSEN",
         [nameof(DownloadButton)] = "HERUNTERLADEN",
         [nameof(CancelButton)] = "ABBRECHEN",
-        [nameof(SettingsButton)] = "EINSTELLUNGEN",
         // Dialog messages
         [nameof(UkraineSupportTitle)] = "Danke für Ihre Unterstützung der Ukraine!",
         [nameof(UkraineSupportMessage)] = """
@@ -120,12 +119,6 @@ public partial class LocalizationManager
         [nameof(FFmpegMissingMessage)] =
             "FFmpeg wurde auf Ihrem System nicht gefunden. Es wird benötigt damit {0} funktioniert. Möchten Sie es jetzt herunterladen?",
         [nameof(FFmpegDownloadingTitle)] = "FFmpeg wird heruntergeladen...",
-        [nameof(FFmpegPathMissingMessage)] = """
-            FFmpeg wird für diese App benötigt, aber der konfigurierte Pfad existiert nicht:
-            {0}
-
-            Bitte aktualisieren Sie den FFmpeg-Pfad in den Einstellungen oder löschen Sie ihn zur automatischen Erkennung.
-            """,
         [nameof(NothingFoundTitle)] = "Nichts gefunden",
         [nameof(NothingFoundMessage)] =
             "Es konnten keine Videos basierend auf der angegebenen Anfrage oder URL gefunden werden",

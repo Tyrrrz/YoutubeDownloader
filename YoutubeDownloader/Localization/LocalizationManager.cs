@@ -154,7 +154,6 @@ public partial class LocalizationManager
     public string CloseButton => Get();
     public string DownloadButton => Get();
     public string CancelButton => Get();
-    public string SettingsButton => Get();
 
     // ---- Dialog messages ----
 
@@ -167,7 +166,6 @@ public partial class LocalizationManager
     public string FFmpegMissingTitle => Get();
     public string FFmpegMissingMessage => Get();
     public string FFmpegDownloadingTitle => Get();
-    public string FFmpegPathMissingMessage => Get();
     public string NothingFoundTitle => Get();
     public string NothingFoundMessage => Get();
     public string ErrorTitle => Get();
