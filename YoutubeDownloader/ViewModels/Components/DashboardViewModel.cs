@@ -85,20 +85,17 @@ public partial class DashboardViewModel : ViewModelBase
 
     public ObservableCollection<DownloadViewModel> Downloads { get; } = [];
 
-    [RelayCommand]
-    private async Task InitializeAsync() => await EnsureFFmpegAsync();
-
     private async Task EnsureFFmpegAsync()
     {
         // If a custom path is set, trust that the user knows what they're doing
         if (_settingsService.FFmpegFilePath is not null)
             return;
 
-        // No explicit path — fall back to auto-detection check
+        // If FFmpeg can be auto-detected, all good
         if (FFmpeg.TryGetCliFilePath() is not null)
             return;
 
-        // Ask the user before downloading
+        // Otherwise, prompt the user to download FFmpeg
         var dialog = _viewModelManager.CreateMessageBoxViewModel(
             _localizationManager.FFmpegMissingTitle,
             string.Format(_localizationManager.FFmpegMissingMessage, Program.Name),
@@ -113,7 +110,6 @@ public partial class DashboardViewModel : ViewModelBase
             return;
         }
 
-        // Download FFmpeg using the dashboard's progress bar
         IsBusy = true;
         var progress = _progressMuxer.CreateInput();
         _snackbarManager.Notify(_localizationManager.FFmpegDownloadingTitle);
@@ -139,14 +135,10 @@ public partial class DashboardViewModel : ViewModelBase
             progress.ReportCompletion();
             IsBusy = false;
         }
-
-        // Check if FFmpeg is available after the download attempt
-        if (FFmpeg.TryGetCliFilePath() is not null)
-            return;
-
-        if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
-            Environment.Exit(3);
     }
+
+    [RelayCommand]
+    private async Task InitializeAsync() => await EnsureFFmpegAsync();    
 
     private bool CanShowAuthSetup() => !IsBusy;
 
