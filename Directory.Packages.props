@@ -4,21 +4,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.6.0" />
+    <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.7.0" />
     <PackageVersion Include="Avalonia" Version="11.3.0" />
     <PackageVersion Include="Avalonia.Controls.DataGrid" Version="11.3.0" />
     <PackageVersion Include="Avalonia.Desktop" Version="11.3.0" />
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.0" />
     <PackageVersion Include="CliFx" Version="2.3.6" />
-    <PackageVersion Include="Cogwheel" Version="2.1.0" />
-    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageVersion Include="Cogwheel" Version="2.1.1" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageVersion Include="CSharpier.MsBuild" Version="1.2.6" />
     <PackageVersion Include="Deorcify" Version="1.1.0" />
     <PackageVersion Include="ThisAssembly.Project" Version="2.1.2" />
-    <PackageVersion Include="DialogHost.Avalonia" Version="0.10.4" />
+    <PackageVersion Include="DialogHost.Avalonia" Version="0.11.0" />
     <PackageVersion Include="Gress" Version="2.1.1" />
     <PackageVersion Include="JsonExtensions" Version="1.2.0" />
-    <PackageVersion Include="Markdig" Version="1.1.0" />
+    <PackageVersion Include="Markdig" Version="1.1.2" />
     <PackageVersion Include="Material.Avalonia" Version="3.9.2" />
     <PackageVersion Include="Material.Avalonia.DataGrid" Version="3.9.2" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="2.2.0" />
