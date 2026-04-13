@@ -99,7 +99,6 @@ public partial class LocalizationManager
         [nameof(CloseButton)] = "FERMER",
         [nameof(DownloadButton)] = "TÉLÉCHARGER",
         [nameof(CancelButton)] = "ANNULER",
-        [nameof(SettingsButton)] = "PARAMÈTRES",
         // Dialog messages
         [nameof(UkraineSupportTitle)] = "Merci de soutenir l'Ukraine !",
         [nameof(UkraineSupportMessage)] = """
@@ -118,20 +117,10 @@ public partial class LocalizationManager
             """,
         [nameof(SeeReleasesButton)] = "VOIR LES VERSIONS",
         [nameof(FFmpegMissingTitle)] = "FFmpeg est manquant",
-        [nameof(FFmpegMissingMessage)] = """
-            FFmpeg est requis pour que {0} fonctionne. Veuillez le télécharger et le rendre disponible dans le répertoire de l'application ou dans le PATH système, ou configurer son emplacement dans les paramètres.
-
-            Alternativement, vous pouvez télécharger une version de {0} avec FFmpeg intégré. Cherchez les fichiers de version qui ne sont PAS marqués *.Bare.
-
-            Cliquez sur TÉLÉCHARGER pour accéder à la page de téléchargement de FFmpeg.
-            """,
-        [nameof(FFmpegPathMissingMessage)] = """
-            FFmpeg est requis pour cette application, mais le chemin configuré n'existe pas :
-            {0}
-
-            Veuillez mettre à jour le chemin FFmpeg dans les paramètres ou le vider pour utiliser la détection automatique.
-            """,
-        [nameof(FFmpegMissingSearchedLabel)] = "'{0}' recherché dans les répertoires suivants :",
+        [nameof(FFmpegMissingMessage)] =
+            "FFmpeg est introuvable sur votre système. Il est requis pour que {0} fonctionne. Voulez-vous le télécharger maintenant ?",
+        [nameof(FFmpegDownloadingTitle)] = "Téléchargement de FFmpeg...",
+        [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg téléchargé",
         [nameof(NothingFoundTitle)] = "Rien trouvé",
         [nameof(NothingFoundMessage)] =
             "Impossible de trouver des vidéos correspondant à la requête ou l'URL fournie",

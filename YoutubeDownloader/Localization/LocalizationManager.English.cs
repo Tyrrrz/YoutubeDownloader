@@ -95,7 +95,6 @@ public partial class LocalizationManager
             [nameof(CloseButton)] = "CLOSE",
             [nameof(DownloadButton)] = "DOWNLOAD",
             [nameof(CancelButton)] = "CANCEL",
-            [nameof(SettingsButton)] = "SETTINGS",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Thank you for supporting Ukraine!",
             [nameof(UkraineSupportMessage)] = """
@@ -114,21 +113,10 @@ public partial class LocalizationManager
                 """,
             [nameof(SeeReleasesButton)] = "SEE RELEASES",
             [nameof(FFmpegMissingTitle)] = "FFmpeg is missing",
-            [nameof(FFmpegMissingMessage)] = """
-                FFmpeg is required for {0} to work. Please download it and make it available in the application directory or on the system PATH, or configure the location in settings.
-
-                Alternatively, you can also download a version of {0} that has FFmpeg bundled with it. Look for release assets that are NOT marked as *.Bare.
-
-                Click DOWNLOAD to go to the FFmpeg download page.
-                """,
-            [nameof(FFmpegPathMissingMessage)] = """
-                FFmpeg is required for this app to work, but the configured path does not exist:
-                {0}
-
-                Please update the FFmpeg path in settings or clear it to use auto-detection.
-                """,
-            [nameof(FFmpegMissingSearchedLabel)] =
-                "Searched for '{0}' in the following directories:",
+            [nameof(FFmpegMissingMessage)] =
+                "FFmpeg was not found on your system. It is required for {0} to work. Would you like to download it now?",
+            [nameof(FFmpegDownloadingTitle)] = "Downloading FFmpeg...",
+            [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg downloaded",
             [nameof(NothingFoundTitle)] = "Nothing found",
             [nameof(NothingFoundMessage)] =
                 "Couldn't find any videos based on the query or URL you provided",

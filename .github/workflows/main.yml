@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
 
       - name: Build
         run: >
@@ -58,14 +58,6 @@ jobs:
           - linux-x64
           - osx-arm64
           - osx-x64
-        bundle-ffmpeg:
-          - true
-          - false
-        include:
-          - bundle-ffmpeg: true
-            artifact-name-base: YoutubeDownloader
-          - bundle-ffmpeg: false
-            artifact-name-base: YoutubeDownloader.Bare
 
     runs-on: ${{ startsWith(matrix.rid, 'win-') && 'windows-latest' || startsWith(matrix.rid, 'osx-') && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: 10
@@ -78,18 +70,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install .NET
-        uses: actions/setup-dotnet@v4
-
-      - name: Parse version
-        id: version
-        shell: bash
-        run: |
-          if [ "${{ github.ref_type }}" = "tag" ]; then
-            CLEAN_VERSION=${GITHUB_REF_NAME#v}
-          else
-            CLEAN_VERSION="999.9.9-ci-${{ github.sha }}"
-          fi
-          echo "clean_version=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
 
       - name: Publish app
         run: >
@@ -97,7 +78,6 @@ jobs:
           -p:Version=${{ steps.version.outputs.clean_version }}
           -p:CSharpier_Bypass=true
           -p:EncryptionSalt=${{ secrets.ENCRYPTION_SALT || 'HimalayanPinkSalt' }}
-          -p:DownloadFFmpeg=${{ matrix.bundle-ffmpeg }}
           -p:PublishMacOSBundle=${{ startsWith(matrix.rid, 'osx-') }}
           --output YoutubeDownloader/bin/publish
           --configuration Release
@@ -107,7 +87,7 @@ jobs:
       - name: Upload app binaries
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact-name-base }}.${{ matrix.rid }}
+          name: YoutubeDownloader.${{ matrix.rid }}
           path: YoutubeDownloader/bin/publish
           if-no-files-found: error
 
@@ -132,21 +112,25 @@ jobs:
     needs: release
     strategy:
       matrix:
-        rid: [win-arm64, win-x86, win-x64, linux-arm64, linux-x64, osx-arm64, osx-x64]
-        bundle-ffmpeg: [true, false]
-        include:
-          - bundle-ffmpeg: true
-            artifact-name-base: YoutubeDownloader
-          - bundle-ffmpeg: false
-            artifact-name-base: YoutubeDownloader.Bare
+        rid:
+          - win-arm64
+          - win-x86
+          - win-x64
+          - linux-arm64
+          # Linux x86 is not supported by .NET
+          # - linux-x86
+          - linux-x64
+          - osx-arm64
+          - osx-x64
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Download app binaries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: ${{ matrix.artifact-name-base }}.${{ matrix.rid }}
+          name: YoutubeDownloader.${{ matrix.rid }}
           path: YoutubeDownloader/
 
       - name: Set permissions
@@ -157,24 +141,30 @@ jobs:
 
       - name: Create package
         working-directory: YoutubeDownloader/
-        run: zip -r ../${{ matrix.artifact-name-base }}.${{ matrix.rid }}.zip .
+        run: zip -r ../YoutubeDownloader.${{ matrix.rid }}.zip .
 
       - name: Upload release asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.ref_name }} ${{ matrix.artifact-name-base }}.${{ matrix.rid }}.zip --repo ${{ github.event.repository.full_name }}
+        run: >
+          gh release upload ${{ github.ref_name }}
+          YoutubeDownloader.${{ matrix.rid }}.zip
+          --repo ${{ github.event.repository.full_name }}
 
   notify:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Notify KOOK (Card Message)
-        run: |
-          curl -X POST 'https://www.kookapp.cn/api/v3/message/create' \
-          -H 'Authorization: Bot 1/NDYwMDk=/Ke6i+yW7hWkixTOmIj2NzQ==' \
-          -H 'Content-Type: application/json' \
-          -d '{
-            "type": 10,
-            "target_id": "5809850356867094",
-            "content": "[{\"type\":\"card\",\"theme\":\"success\",\"size\":\"lg\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"🚀 CodePivot 构建报告\"}},{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"**项目：** ${{ github.event.repository.name }}\\n**版本：** `${{ github.ref_name }}`\\n\\n新版本已成功发布至 GitHub Release。所有平台（Windows/Linux/macOS）的二进制文件已就绪。\"}},{\"type\":\"divider\"},{\"type\":\"action-group\",\"elements\":[{\"type\":\"button\",\"theme\":\"primary\",\"text\":{\"type\":\"plain-text\",\"content\":\"📦 立即下载\"},\"click\":\"link\",\"value\":\"${{ github.event.repository.html_url }}/releases/tag/${{ github.ref_name }}\"}]}]}]"
-          }'
+      - name: Notify Discord
+        uses: tyrrrz/action-http-request@25f132e48dea89c0f6b7955398270b506e1d51cb # 1.1.4
+        with:
+          url: ${{ secrets.DISCORD_WEBHOOK }}
+          method: POST
+          headers: |
+            Content-Type: application/json; charset=UTF-8
+          body: |
+            {
+              "avatar_url": "https://raw.githubusercontent.com/${{ github.event.repository.full_name }}/${{ github.ref_name }}/favicon.png",
+              "content": "[**${{ github.event.repository.name }}**](<${{ github.event.repository.html_url }}>) v${{ github.ref_name }} has been released!"
+            }
+          retry-count: 5

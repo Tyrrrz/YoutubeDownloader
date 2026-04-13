@@ -98,7 +98,6 @@ public partial class LocalizationManager
         [nameof(CloseButton)] = "SCHLIESSEN",
         [nameof(DownloadButton)] = "HERUNTERLADEN",
         [nameof(CancelButton)] = "ABBRECHEN",
-        [nameof(SettingsButton)] = "EINSTELLUNGEN",
         // Dialog messages
         [nameof(UkraineSupportTitle)] = "Danke für Ihre Unterstützung der Ukraine!",
         [nameof(UkraineSupportMessage)] = """
@@ -117,20 +116,10 @@ public partial class LocalizationManager
             """,
         [nameof(SeeReleasesButton)] = "RELEASES ANZEIGEN",
         [nameof(FFmpegMissingTitle)] = "FFmpeg fehlt",
-        [nameof(FFmpegMissingMessage)] = """
-            FFmpeg wird benötigt damit {0} funktioniert. Bitte laden Sie es herunter und machen Sie es im Anwendungsverzeichnis oder im System-PATH verfügbar, oder konfigurieren Sie den Speicherort in den Einstellungen.
-
-            Alternativ können Sie auch eine Version von {0} herunterladen, die FFmpeg enthält. Suchen Sie nach Release-Dateien, die NICHT mit *.Bare markiert sind.
-
-            Klicken Sie auf HERUNTERLADEN um zur FFmpeg-Downloadseite zu gelangen.
-            """,
-        [nameof(FFmpegPathMissingMessage)] = """
-            FFmpeg wird für diese App benötigt, aber der konfigurierte Pfad existiert nicht:
-            {0}
-
-            Bitte aktualisieren Sie den FFmpeg-Pfad in den Einstellungen oder löschen Sie ihn zur automatischen Erkennung.
-            """,
-        [nameof(FFmpegMissingSearchedLabel)] = "'{0}' wurde in folgenden Verzeichnissen gesucht:",
+        [nameof(FFmpegMissingMessage)] =
+            "FFmpeg wurde auf Ihrem System nicht gefunden. Es wird benötigt damit {0} funktioniert. Möchten Sie es jetzt herunterladen?",
+        [nameof(FFmpegDownloadingTitle)] = "FFmpeg wird heruntergeladen...",
+        [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg heruntergeladen",
         [nameof(NothingFoundTitle)] = "Nichts gefunden",
         [nameof(NothingFoundMessage)] =
             "Es konnten keine Videos basierend auf der angegebenen Anfrage oder URL gefunden werden",

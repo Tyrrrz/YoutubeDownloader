@@ -34,12 +34,13 @@ public partial class DownloadSingleSetupViewModel(
     [ObservableProperty]
     public partial VideoDownloadOption? SelectedDownloadOption { get; set; }
 
-    [RelayCommand]
-    private void Initialize()
+    public override Task InitializeAsync()
     {
         SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(o =>
             o.Container == settingsService.LastContainer
         );
+
+        return Task.CompletedTask;
     }
 
     [RelayCommand]
@@ -76,6 +77,6 @@ public partial class DownloadSingleSetupViewModel(
 
         settingsService.LastContainer = container;
 
-        Close(viewModelManager.CreateDownloadViewModel(Video, SelectedDownloadOption, filePath));
+        Close(viewModelManager.GetDownloadViewModel(Video, SelectedDownloadOption, filePath));
     }
 }

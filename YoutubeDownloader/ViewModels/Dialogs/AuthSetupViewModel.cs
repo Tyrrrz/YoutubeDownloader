@@ -26,7 +26,7 @@ public class AuthSetupViewModel : DialogViewModelBase
         _eventRoot.Add(
             _settingsService.WatchProperty(
                 o => o.LastAuthCookies,
-                () =>
+                _ =>
                 {
                     OnPropertyChanged(nameof(Cookies));
                     OnPropertyChanged(nameof(IsAuthenticated));

@@ -12,13 +12,15 @@ internal static class NotifyPropertyChangedExtensions
     {
         public IDisposable WatchProperty<TProperty>(
             Expression<Func<TOwner, TProperty>> propertyExpression,
-            Action callback,
+            Action<TProperty> callback,
             bool watchInitialValue = false
         )
         {
             var memberExpression = propertyExpression.Body as MemberExpression;
             if (memberExpression?.Member is not PropertyInfo property)
                 throw new ArgumentException("Provided expression must reference a property.");
+
+            var getValue = propertyExpression.Compile();
 
             void OnPropertyChanged(object? sender, PropertyChangedEventArgs args)
             {
@@ -27,14 +29,14 @@ internal static class NotifyPropertyChangedExtensions
                     || string.Equals(args.PropertyName, property.Name, StringComparison.Ordinal)
                 )
                 {
-                    callback();
+                    callback(getValue(owner));
                 }
             }
 
             owner.PropertyChanged += OnPropertyChanged;
 
             if (watchInitialValue)
-                callback();
+                callback(getValue(owner));
 
             return Disposable.Create(() => owner.PropertyChanged -= OnPropertyChanged);
         }

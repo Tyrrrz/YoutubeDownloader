@@ -42,6 +42,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 - 🟢 **[Stable release](https://github.com/Tyrrrz/YoutubeDownloader/releases/latest)**
 - 🟠 [CI build](https://github.com/Tyrrrz/YoutubeDownloader/actions/workflows/main.yml)
 - 📦 [Scoop](https://scoop.sh/#/apps?q=YoutubeDownloader&p=1&id=2c0182d9ff5edefc525a57d50ead470d8f02184f): `scoop install extras/youtubedownloader` (community-maintained)
+- 📦 [AUR](https://aur.archlinux.org/packages/youtubedownloader): `yay -S youtubedownloader` (community-maintained)
 
 > [!IMPORTANT]
 > To launch the app on MacOS, you may need to first remove the downloaded file from quarantine.
@@ -52,10 +53,6 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 > [!NOTE]
 > If you're unsure which build is right for your system, consult with [this page](https://useragent.cc) to determine your OS and CPU architecture.
-
-> [!NOTE]
-> **YoutubeDownloader** comes bundled with [FFmpeg](https://ffmpeg.org) which is used for processing videos.
-> You can also download a version of **YoutubeDownloader** that doesn't include FFmpeg (`YoutubeDownloader.Bare.*` builds) if you prefer to use your own installation.
 
 ## Features
 

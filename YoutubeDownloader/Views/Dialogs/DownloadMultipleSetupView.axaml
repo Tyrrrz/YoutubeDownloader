@@ -9,8 +9,7 @@
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     x:Name="UserControl"
     Width="500"
-    x:DataType="dialogs:DownloadMultipleSetupViewModel"
-    Loaded="UserControl_OnLoaded">
+    x:DataType="dialogs:DownloadMultipleSetupViewModel">
     <Grid RowDefinitions="Auto,*,Auto,Auto">
         <!--  Title  -->
         <TextBlock

@@ -49,12 +49,13 @@ public partial class DownloadMultipleSetupViewModel(
         // Without .AsEnumerable(), the below line throws a compile-time error starting with .NET SDK v9.0.200
         Enum.GetValues<VideoQualityPreference>().AsEnumerable().Reverse().ToArray();
 
-    [RelayCommand]
-    private void Initialize()
+    public override Task InitializeAsync()
     {
         SelectedContainer = settingsService.LastContainer;
         SelectedVideoQualityPreference = settingsService.LastVideoQualityPreference;
         SelectedVideos.CollectionChanged += (_, _) => ConfirmCommand.NotifyCanExecuteChanged();
+
+        return Task.CompletedTask;
     }
 
     [RelayCommand]
@@ -96,7 +97,7 @@ public partial class DownloadMultipleSetupViewModel(
             await File.WriteAllBytesAsync(filePath, []);
 
             downloads.Add(
-                viewModelManager.CreateDownloadViewModel(
+                viewModelManager.GetDownloadViewModel(
                     video,
                     new VideoDownloadPreference(SelectedContainer, SelectedVideoQualityPreference),
                     filePath

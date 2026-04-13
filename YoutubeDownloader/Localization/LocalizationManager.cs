@@ -14,18 +14,12 @@ public partial class LocalizationManager : ObservableObject, IDisposable
 
     public LocalizationManager(SettingsService settingsService)
     {
-        _eventRoot.Add(
-            settingsService.WatchProperty(
-                o => o.Language,
-                () => Language = settingsService.Language,
-                true
-            )
-        );
+        _eventRoot.Add(settingsService.WatchProperty(o => o.Language, v => Language = v, true));
 
         _eventRoot.Add(
             this.WatchProperty(
                 o => o.Language,
-                () =>
+                _ =>
                 {
                     foreach (var propertyName in EnglishLocalization.Keys)
                         OnPropertyChanged(propertyName);
@@ -156,7 +150,6 @@ public partial class LocalizationManager
     public string CloseButton => Get();
     public string DownloadButton => Get();
     public string CancelButton => Get();
-    public string SettingsButton => Get();
 
     // ---- Dialog messages ----
 
@@ -168,8 +161,8 @@ public partial class LocalizationManager
     public string SeeReleasesButton => Get();
     public string FFmpegMissingTitle => Get();
     public string FFmpegMissingMessage => Get();
-    public string FFmpegPathMissingMessage => Get();
-    public string FFmpegMissingSearchedLabel => Get();
+    public string FFmpegDownloadingTitle => Get();
+    public string FFmpegDownloadCompletedTitle => Get();
     public string NothingFoundTitle => Get();
     public string NothingFoundMessage => Get();
     public string ErrorTitle => Get();

@@ -95,7 +95,6 @@ public partial class LocalizationManager
             [nameof(CloseButton)] = "ЗАКРИТИ",
             [nameof(DownloadButton)] = "ЗАВАНТАЖИТИ",
             [nameof(CancelButton)] = "СКАСУВАТИ",
-            [nameof(SettingsButton)] = "НАЛАШТУВАННЯ",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Дякуємо за підтримку України!",
             [nameof(UkraineSupportMessage)] = """
@@ -114,20 +113,10 @@ public partial class LocalizationManager
                 """,
             [nameof(SeeReleasesButton)] = "ПЕРЕГЛЯНУТИ РЕЛІЗИ",
             [nameof(FFmpegMissingTitle)] = "FFmpeg відсутній",
-            [nameof(FFmpegMissingMessage)] = """
-                FFmpeg потрібен для роботи {0}. Завантажте його та зробіть доступним у каталозі програми або у системному PATH, або вкажіть розташування у налаштуваннях.
-
-                Альтернативно, ви можете завантажити версію {0} з вбудованим FFmpeg. Шукайте ресурси релізу, які НЕ позначені як *.Bare.
-
-                Натисніть ЗАВАНТАЖИТИ, щоб перейти на сторінку завантаження FFmpeg.
-                """,
-            [nameof(FFmpegPathMissingMessage)] = """
-                FFmpeg потрібен для роботи програми, але вказаний шлях не існує:
-                {0}
-
-                Будь ласка, оновіть шлях FFmpeg у налаштуваннях або очистіть його для автовизначення.
-                """,
-            [nameof(FFmpegMissingSearchedLabel)] = "Шукали '{0}' у таких директоріях:",
+            [nameof(FFmpegMissingMessage)] =
+                "FFmpeg не знайдено на вашому пристрої. Він потрібен для роботи {0}. Бажаєте завантажити його зараз?",
+            [nameof(FFmpegDownloadingTitle)] = "Завантаження FFmpeg...",
+            [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg завантажено",
             [nameof(NothingFoundTitle)] = "Нічого не знайдено",
             [nameof(NothingFoundMessage)] = "Не вдалося знайти відео за вказаним запитом або URL",
             [nameof(ErrorTitle)] = "Помилка",

@@ -98,7 +98,6 @@ public partial class LocalizationManager
             [nameof(CloseButton)] = "CERRAR",
             [nameof(DownloadButton)] = "DESCARGAR",
             [nameof(CancelButton)] = "CANCELAR",
-            [nameof(SettingsButton)] = "AJUSTES",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "¡Gracias por apoyar a Ucrania!",
             [nameof(UkraineSupportMessage)] = """
@@ -117,20 +116,10 @@ public partial class LocalizationManager
                 """,
             [nameof(SeeReleasesButton)] = "VER LANZAMIENTOS",
             [nameof(FFmpegMissingTitle)] = "Falta FFmpeg",
-            [nameof(FFmpegMissingMessage)] = """
-                FFmpeg es necesario para que {0} funcione. Descárgalo y ponlo disponible en el directorio de la aplicación o en el PATH del sistema, o configura la ubicación en los ajustes.
-
-                Alternativamente, puedes descargar una versión de {0} que incluye FFmpeg. Busca los archivos de lanzamiento que NO estén marcados como *.Bare.
-
-                Haz clic en DESCARGAR para ir a la página de descarga de FFmpeg.
-                """,
-            [nameof(FFmpegPathMissingMessage)] = """
-                FFmpeg es necesario para esta aplicación, pero la ruta configurada no existe:
-                {0}
-
-                Por favor, actualiza la ruta de FFmpeg en los ajustes o bórrala para usar la detección automática.
-                """,
-            [nameof(FFmpegMissingSearchedLabel)] = "Se buscó '{0}' en los siguientes directorios:",
+            [nameof(FFmpegMissingMessage)] =
+                "FFmpeg no se encontró en tu sistema. Es necesario para que {0} funcione. ¿Te gustaría descargarlo ahora?",
+            [nameof(FFmpegDownloadingTitle)] = "Descargando FFmpeg...",
+            [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg descargado",
             [nameof(NothingFoundTitle)] = "Nada encontrado",
             [nameof(NothingFoundMessage)] =
                 "No se encontraron videos basados en la consulta o URL proporcionada",
