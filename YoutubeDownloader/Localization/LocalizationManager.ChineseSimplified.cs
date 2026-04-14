@@ -93,7 +93,6 @@ public partial class LocalizationManager
             [nameof(CloseButton)] = "关闭",
             [nameof(DownloadButton)] = "下载",
             [nameof(CancelButton)] = "取消",
-            [nameof(SettingsButton)] = "设置",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "感谢你支持乌克兰！",
             [nameof(UkraineSupportMessage)] = """
@@ -112,20 +111,10 @@ public partial class LocalizationManager
                 """,
             [nameof(SeeReleasesButton)] = "查看发布版本",
             [nameof(FFmpegMissingTitle)] = "缺少 FFmpeg",
-            [nameof(FFmpegMissingMessage)] = """
-                {0} 需要 FFmpeg 才能工作。请下载它并将其放在应用程序目录中或系统 PATH 变量中，或者在设置中配置其位置。
-
-                或者，你也可以下载集成了 FFmpeg 的 {0} 版本。请寻找未标记为 *.Bare 的发布资源。
-
-                点击“下载”跳转到 FFmpeg 下载页面。
-                """,
-            [nameof(FFmpegPathMissingMessage)] = """
-                此应用需要 FFmpeg 才能运行，但配置的路径不存在：
-                {0}
-
-                请在设置中更新 FFmpeg 路径，或将其清空以使用自动检测。
-                """,
-            [nameof(FFmpegMissingSearchedLabel)] = "在以下目录中搜索了 '{0}'：",
+            [nameof(FFmpegMissingMessage)] =
+                "系统中未找到 FFmpeg。{0} 需要它才能正常工作。是否立即下载？",
+            [nameof(FFmpegDownloadingTitle)] = "正在下载 FFmpeg...",
+            [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg 下载完成",
             [nameof(NothingFoundTitle)] = "未找到内容",
             [nameof(NothingFoundMessage)] = "无法根据你提供的查询或 URL 找到任何视频",
             [nameof(ErrorTitle)] = "错误",
