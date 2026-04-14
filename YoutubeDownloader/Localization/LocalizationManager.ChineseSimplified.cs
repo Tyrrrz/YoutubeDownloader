@@ -37,7 +37,7 @@ public partial class LocalizationManager
             [nameof(SettingsTitle)] = "设置",
             [nameof(ThemeLabel)] = "主题",
             [nameof(ThemeTooltip)] = "首选的用户界面主题",
-            [nameof(LanguageLabel)] = "语言Language",
+            [nameof(LanguageLabel)] = "语言",
             [nameof(LanguageTooltip)] = "首选的用户界面显示语言",
             [nameof(AutoUpdateLabel)] = "自动更新",
             [nameof(AutoUpdateTooltip)] = """
