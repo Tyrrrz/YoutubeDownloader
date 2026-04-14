@@ -36,18 +36,25 @@ public partial class LocalizationManager : ObservableObject, IDisposable
         if (string.IsNullOrWhiteSpace(key))
             return string.Empty;
 
+        var currentUiCulture = CultureInfo.CurrentUICulture;
+
         var localization = Language switch
         {
             Language.System =>
-                CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
-                {
-                    "ukr" => UkrainianLocalization,
-                    "deu" => GermanLocalization,
-                    "fra" => FrenchLocalization,
-                    "spa" => SpanishLocalization,
-                    "chs" => ChineseSimplifiedLocalization,
-                    _ => EnglishLocalization,
-                },
+                currentUiCulture.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase)
+                && (
+                    currentUiCulture.Name.StartsWith("zh-Hans", StringComparison.OrdinalIgnoreCase)
+                    || currentUiCulture.Name.StartsWith("zh-CN", StringComparison.OrdinalIgnoreCase)
+                )
+                    ? ChineseSimplifiedLocalization
+                    : currentUiCulture.ThreeLetterISOLanguageName.ToLowerInvariant() switch
+                    {
+                        "ukr" => UkrainianLocalization,
+                        "deu" => GermanLocalization,
+                        "fra" => FrenchLocalization,
+                        "spa" => SpanishLocalization,
+                        _ => EnglishLocalization,
+                    },
             Language.Ukrainian => UkrainianLocalization,
             Language.German => GermanLocalization,
             Language.French => FrenchLocalization,
