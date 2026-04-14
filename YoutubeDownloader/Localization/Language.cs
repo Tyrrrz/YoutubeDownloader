@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace YoutubeDownloader.Localization;
 
 public enum Language
