@@ -5,7 +5,6 @@ using System.Net;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
@@ -13,7 +12,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public class AuthSetupViewModel : DialogViewModelBase
 {
     private readonly SettingsService _settingsService;
-    private readonly DisposableCollector _eventRoot = new();
+    private readonly IDisposable _eventRoot;
 
     public AuthSetupViewModel(
         LocalizationManager localizationManager,
@@ -23,15 +22,13 @@ public class AuthSetupViewModel : DialogViewModelBase
         LocalizationManager = localizationManager;
         _settingsService = settingsService;
 
-        _eventRoot.Add(
-            _settingsService.WatchProperty(
-                o => o.LastAuthCookies,
-                _ =>
-                {
-                    OnPropertyChanged(nameof(Cookies));
-                    OnPropertyChanged(nameof(IsAuthenticated));
-                }
-            )
+        _eventRoot = _settingsService.WatchProperty(
+            o => o.LastAuthCookies,
+            _ =>
+            {
+                OnPropertyChanged(nameof(Cookies));
+                OnPropertyChanged(nameof(IsAuthenticated));
+            }
         );
     }
 

@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
@@ -23,7 +22,7 @@ public class App : Application, IDisposable
     private readonly ServiceProvider _services;
     private readonly SettingsService _settingsService;
 
-    private readonly DisposableCollector _eventRoot = new();
+    private readonly IDisposable _eventRoot;
 
     private bool _isDisposed;
 
@@ -58,21 +57,19 @@ public class App : Application, IDisposable
         _settingsService = _services.GetRequiredService<SettingsService>();
 
         // Re-initialize the theme when the user changes it
-        _eventRoot.Add(
-            _settingsService.WatchProperty(
-                o => o.Theme,
-                v =>
+        _eventRoot = _settingsService.WatchProperty(
+            o => o.Theme,
+            v =>
+            {
+                RequestedThemeVariant = v switch
                 {
-                    RequestedThemeVariant = v switch
-                    {
-                        ThemeVariant.Light => Avalonia.Styling.ThemeVariant.Light,
-                        ThemeVariant.Dark => Avalonia.Styling.ThemeVariant.Dark,
-                        _ => Avalonia.Styling.ThemeVariant.Default,
-                    };
+                    ThemeVariant.Light => Avalonia.Styling.ThemeVariant.Light,
+                    ThemeVariant.Dark => Avalonia.Styling.ThemeVariant.Dark,
+                    _ => Avalonia.Styling.ThemeVariant.Default,
+                };
 
-                    InitializeTheme();
-                }
-            )
+                InitializeTheme();
+            }
         );
     }
 

@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
 using Gress.Completable;
+using PowerKit;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
@@ -29,7 +30,7 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly LocalizationManager _localizationManager;
     private readonly SettingsService _settingsService;
 
-    private readonly DisposableCollector _eventRoot = new();
+    private readonly IDisposable _eventRoot;
     private readonly ResizableSemaphore _downloadSemaphore = new();
     private readonly AutoResetProgressMuxer _progressMuxer;
 
@@ -50,15 +51,12 @@ public partial class DashboardViewModel : ViewModelBase
 
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
 
-        _eventRoot.Add(
+        _eventRoot = Disposable.Merge(
             _settingsService.WatchProperty(
                 o => o.ParallelLimit,
                 v => _downloadSemaphore.MaxCount = v,
                 true
-            )
-        );
-
-        _eventRoot.Add(
+            ),
             Progress.WatchProperty(
                 o => o.Current,
                 _ => OnPropertyChanged(nameof(IsProgressIndeterminate))

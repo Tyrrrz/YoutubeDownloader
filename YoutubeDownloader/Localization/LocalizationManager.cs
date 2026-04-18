@@ -2,21 +2,20 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
+using PowerKit;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.Localization;
 
 public partial class LocalizationManager : ObservableObject, IDisposable
 {
-    private readonly DisposableCollector _eventRoot = new();
+    private readonly IDisposable _eventRoot;
 
     public LocalizationManager(SettingsService settingsService)
     {
-        _eventRoot.Add(settingsService.WatchProperty(o => o.Language, v => Language = v, true));
-
-        _eventRoot.Add(
+        _eventRoot = Disposable.Merge(
+            settingsService.WatchProperty(o => o.Language, v => Language = v, true),
             this.WatchProperty(
                 o => o.Language,
                 _ =>

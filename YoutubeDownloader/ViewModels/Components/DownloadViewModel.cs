@@ -10,7 +10,6 @@ using Gress;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
-using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeExplode.Videos;
 
@@ -21,7 +20,7 @@ public partial class DownloadViewModel : ViewModelBase
     private readonly ViewModelManager _viewModelManager;
     private readonly DialogManager _dialogManager;
 
-    private readonly DisposableCollector _eventRoot = new();
+    private readonly IDisposable _eventRoot;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     private bool _isDisposed;
@@ -36,11 +35,9 @@ public partial class DownloadViewModel : ViewModelBase
         _dialogManager = dialogManager;
         LocalizationManager = localizationManager;
 
-        _eventRoot.Add(
-            Progress.WatchProperty(
-                o => o.Current,
-                _ => OnPropertyChanged(nameof(IsProgressIndeterminate))
-            )
+        _eventRoot = Progress.WatchProperty(
+            o => o.Current,
+            _ => OnPropertyChanged(nameof(IsProgressIndeterminate))
         );
     }
 

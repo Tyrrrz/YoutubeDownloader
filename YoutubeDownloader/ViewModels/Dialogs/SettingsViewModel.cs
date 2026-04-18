@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
@@ -16,7 +15,7 @@ public partial class SettingsViewModel : DialogViewModelBase
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
 
-    private readonly DisposableCollector _eventRoot = new();
+    private readonly IDisposable _eventRoot;
 
     public SettingsViewModel(
         DialogManager dialogManager,
@@ -28,7 +27,7 @@ public partial class SettingsViewModel : DialogViewModelBase
         LocalizationManager = localizationManager;
         _settingsService = settingsService;
 
-        _eventRoot.Add(_settingsService.WatchAllProperties(OnAllPropertiesChanged));
+        _eventRoot = _settingsService.WatchAllProperties(OnAllPropertiesChanged);
     }
 
     public LocalizationManager LocalizationManager { get; }
