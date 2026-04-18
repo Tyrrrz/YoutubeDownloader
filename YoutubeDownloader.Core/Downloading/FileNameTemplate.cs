@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using YoutubeDownloader.Core.Utils.Extensions;
+using PowerKit.Extensions;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 

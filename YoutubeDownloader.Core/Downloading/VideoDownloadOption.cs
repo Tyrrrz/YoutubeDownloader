@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using YoutubeDownloader.Core.Utils.Extensions;
+using PowerKit.Extensions;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core.Downloading;

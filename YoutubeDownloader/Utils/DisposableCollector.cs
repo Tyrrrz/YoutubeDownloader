@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using YoutubeDownloader.Utils.Extensions;
+using PowerKit;
 
 namespace YoutubeDownloader.Utils;
 
@@ -21,7 +21,7 @@ internal class DisposableCollector : IDisposable
     {
         lock (_lock)
         {
-            _items.DisposeAll();
+            Disposable.Merge(_items).Dispose();
             _items.Clear();
         }
     }
