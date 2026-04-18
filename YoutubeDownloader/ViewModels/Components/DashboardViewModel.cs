@@ -30,7 +30,7 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly LocalizationManager _localizationManager;
     private readonly SettingsService _settingsService;
 
-    private readonly IDisposable _eventRoot;
+    private readonly IDisposable _eventSubscription;
     private readonly ResizableSemaphore _downloadSemaphore = new();
     private readonly AutoResetProgressMuxer _progressMuxer;
 
@@ -51,7 +51,7 @@ public partial class DashboardViewModel : ViewModelBase
 
         _progressMuxer = Progress.CreateMuxer().WithAutoReset();
 
-        _eventRoot = Disposable.Merge(
+        _eventSubscription = Disposable.Merge(
             _settingsService.WatchProperty(
                 o => o.ParallelLimit,
                 v => _downloadSemaphore.MaxCount = v,
@@ -427,7 +427,7 @@ public partial class DashboardViewModel : ViewModelBase
         {
             CancelAllDownloads();
 
-            _eventRoot.Dispose();
+            _eventSubscription.Dispose();
             _downloadSemaphore.Dispose();
         }
 

@@ -22,7 +22,7 @@ public class App : Application, IDisposable
     private readonly ServiceProvider _services;
     private readonly SettingsService _settingsService;
 
-    private readonly IDisposable _eventRoot;
+    private readonly IDisposable _eventSubscription;
 
     private bool _isDisposed;
 
@@ -57,7 +57,7 @@ public class App : Application, IDisposable
         _settingsService = _services.GetRequiredService<SettingsService>();
 
         // Re-initialize the theme when the user changes it
-        _eventRoot = _settingsService.WatchProperty(
+        _eventSubscription = _settingsService.WatchProperty(
             o => o.Theme,
             v =>
             {
@@ -139,7 +139,7 @@ public class App : Application, IDisposable
 
         _isDisposed = true;
 
-        _eventRoot.Dispose();
+        _eventSubscription.Dispose();
         _services.Dispose();
     }
 }

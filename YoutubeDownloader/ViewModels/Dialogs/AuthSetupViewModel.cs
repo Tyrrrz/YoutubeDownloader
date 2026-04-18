@@ -12,7 +12,7 @@ namespace YoutubeDownloader.ViewModels.Dialogs;
 public class AuthSetupViewModel : DialogViewModelBase
 {
     private readonly SettingsService _settingsService;
-    private readonly IDisposable _eventRoot;
+    private readonly IDisposable _eventSubscription;
 
     public AuthSetupViewModel(
         LocalizationManager localizationManager,
@@ -22,7 +22,7 @@ public class AuthSetupViewModel : DialogViewModelBase
         LocalizationManager = localizationManager;
         _settingsService = settingsService;
 
-        _eventRoot = _settingsService.WatchProperty(
+        _eventSubscription = _settingsService.WatchProperty(
             o => o.LastAuthCookies,
             _ =>
             {
@@ -52,7 +52,7 @@ public class AuthSetupViewModel : DialogViewModelBase
     {
         if (disposing)
         {
-            _eventRoot.Dispose();
+            _eventSubscription.Dispose();
         }
 
         base.Dispose(disposing);

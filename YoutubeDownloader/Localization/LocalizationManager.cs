@@ -10,11 +10,11 @@ namespace YoutubeDownloader.Localization;
 
 public partial class LocalizationManager : ObservableObject, IDisposable
 {
-    private readonly IDisposable _eventRoot;
+    private readonly IDisposable _eventSubscription;
 
     public LocalizationManager(SettingsService settingsService)
     {
-        _eventRoot = Disposable.Merge(
+        _eventSubscription = Disposable.Merge(
             settingsService.WatchProperty(o => o.Language, v => Language = v, true),
             this.WatchProperty(
                 o => o.Language,
@@ -65,7 +65,7 @@ public partial class LocalizationManager : ObservableObject, IDisposable
         return $"Missing localization for '{key}'";
     }
 
-    public void Dispose() => _eventRoot.Dispose();
+    public void Dispose() => _eventSubscription.Dispose();
 }
 
 public partial class LocalizationManager
