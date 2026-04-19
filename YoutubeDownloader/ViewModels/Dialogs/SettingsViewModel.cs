@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
+using PowerKit.Extensions;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using PowerKit.Extensions;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 

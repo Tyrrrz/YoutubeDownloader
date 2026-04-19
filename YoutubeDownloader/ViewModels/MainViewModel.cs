@@ -2,10 +2,11 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia;
+using PowerKit.Extensions;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
 
 namespace YoutubeDownloader.ViewModels;

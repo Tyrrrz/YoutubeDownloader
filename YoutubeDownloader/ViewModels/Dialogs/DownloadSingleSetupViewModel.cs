@@ -6,11 +6,12 @@ using Avalonia;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PowerKit.Extensions;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeExplode.Videos;
 
@@ -72,7 +73,7 @@ public partial class DownloadSingleSetupViewModel(
             return;
 
         // Download does not start immediately, so lock in the file path to avoid conflicts
-        Directory.CreateDirectoryForFile(filePath);
+        Directory.CreateForFile(filePath);
         await File.WriteAllBytesAsync(filePath, []);
 
         settingsService.LastContainer = container;

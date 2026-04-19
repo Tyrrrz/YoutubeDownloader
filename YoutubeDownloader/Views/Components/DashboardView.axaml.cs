@@ -1,8 +1,8 @@
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using PowerKit.Extensions;
 using YoutubeDownloader.Framework;
-using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
 
 namespace YoutubeDownloader.Views.Components;

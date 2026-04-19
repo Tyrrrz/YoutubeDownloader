@@ -3,8 +3,8 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using PowerKit;
+using PowerKit.Extensions;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils.Extensions;
 
 namespace YoutubeDownloader.Localization;
 

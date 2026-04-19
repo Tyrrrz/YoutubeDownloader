@@ -10,14 +10,13 @@ using CommunityToolkit.Mvvm.Input;
 using Gress;
 using Gress.Completable;
 using PowerKit;
-using YoutubeDownloader.Core.Downloading;
+using PowerKit.Extensions;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Core.Tagging;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
-using YoutubeDownloader.Utils.Extensions;
 using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader.ViewModels.Components;
