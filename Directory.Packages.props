@@ -23,7 +23,7 @@
     <PackageVersion Include="Material.Icons.Avalonia" Version="2.2.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
     <PackageVersion Include="Onova" Version="2.6.13" />
-    <PackageVersion Include="PowerKit" Version="1.0.0" />
+    <PackageVersion Include="PowerKit" Version="1.1.0-a.1" />
     <PackageVersion Include="TagLibSharp" Version="2.3.0" />
     <PackageVersion Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageVersion Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
