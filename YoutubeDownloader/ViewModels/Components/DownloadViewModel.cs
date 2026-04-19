@@ -8,10 +8,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
 using PowerKit.Extensions;
-using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Components;
