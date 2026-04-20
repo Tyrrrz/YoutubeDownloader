@@ -14,10 +14,7 @@ public static class ThumbnailExtensions
             if (!Uri.TryCreate(thumbnail.Url, UriKind.RelativeOrAbsolute, out var uri))
                 return null;
 
-            return uri
-                .TryGetFileName()
-                ?.Pipe(Path.GetExtension)
-                ?.Trim('.');
+            return uri.TryGetFileName()?.Pipe(Path.GetExtension)?.Trim('.');
         }
     }
 }
