@@ -9,10 +9,15 @@ public static class ThumbnailExtensions
 {
     extension(Thumbnail thumbnail)
     {
-        public string? TryGetImageFormat() =>
-            new Uri(thumbnail.Url, UriKind.RelativeOrAbsolute)
+        public string? TryGetImageFormat()
+        {
+            if (!Uri.TryCreate(thumbnail.Url, UriKind.RelativeOrAbsolute, out var uri))
+                return null;
+
+            return uri
                 .TryGetFileName()
                 ?.Pipe(Path.GetExtension)
                 ?.Trim('.');
+        }
     }
 }
