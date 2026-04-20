@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Gress;
+using Gress.Integrations;
 using YoutubeDownloader.Core.Utils;
-using YoutubeDownloader.Core.Utils.Extensions;
 
 namespace YoutubeDownloader.Core.Downloading;
 

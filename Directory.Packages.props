@@ -15,7 +15,7 @@
     <PackageVersion Include="Deorcify" Version="1.1.0" />
     <PackageVersion Include="ThisAssembly.Project" Version="2.1.2" />
     <PackageVersion Include="DialogHost.Avalonia" Version="0.11.0" />
-    <PackageVersion Include="Gress" Version="2.1.1" />
+    <PackageVersion Include="Gress" Version="2.2.0" />
     <PackageVersion Include="JsonExtensions" Version="1.2.0" />
     <PackageVersion Include="Markdig" Version="1.1.2" />
     <PackageVersion Include="Material.Avalonia" Version="3.9.2" />
