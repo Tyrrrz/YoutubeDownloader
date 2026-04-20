@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using PowerKit.Extensions;
 using YoutubeExplode.Common;
 
@@ -9,6 +10,6 @@ public static class YoutubeExtensions
     extension(Thumbnail thumbnail)
     {
         public string? TryGetImageFormat() =>
-            Url.TryExtractFileName(thumbnail.Url)?.Pipe(Path.GetExtension)?.Trim('.');
+            new Uri(thumbnail.Url).TryGetFileName()?.Pipe(Path.GetExtension)?.Trim('.');
     }
 }
