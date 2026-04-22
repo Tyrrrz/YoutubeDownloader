@@ -143,6 +143,7 @@ public partial class LocalizationManager
     public string CopyMenuItem => Get();
     public string LiveLabel => Get();
     public string AudioLabel => Get();
+    public string UpscaledLabel => Get();
     public string FormatLabel => Get();
 
     // ---- Download Multiple Setup ----

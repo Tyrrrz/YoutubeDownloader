@@ -85,6 +85,7 @@ public partial class LocalizationManager
             [nameof(CopyMenuItem)] = "复制",
             [nameof(LiveLabel)] = "直播",
             [nameof(AudioLabel)] = "音频",
+            [nameof(UpscaledLabel)] = "超分辨率",
             [nameof(FormatLabel)] = "格式",
             // Download Multiple Setup
             [nameof(ContainerLabel)] = "封装格式",

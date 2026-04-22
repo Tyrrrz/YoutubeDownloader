@@ -87,6 +87,7 @@ public partial class LocalizationManager
             [nameof(CopyMenuItem)] = "Копіювати",
             [nameof(LiveLabel)] = "Живе",
             [nameof(AudioLabel)] = "Аудіо",
+            [nameof(UpscaledLabel)] = "Збільшене",
             [nameof(FormatLabel)] = "Формат",
             // Download Multiple Setup
             [nameof(ContainerLabel)] = "Контейнер",

@@ -79,26 +79,38 @@
             Theme="{DynamicResource MaterialFilledComboBox}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock>
-                        <!--  Video quality  -->
-                        <Run Classes.audioOnly="{Binding IsAudioOnly}">
-                            <Run.Styles>
-                                <Style Selector="Run">
-                                    <Setter Property="Text" Value="{Binding VideoQuality, Mode=OneWay}" />
+                    <StackPanel Spacing="2">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <!--  Video quality / audio-only label  -->
+                            <TextBlock Classes.audioOnly="{Binding IsAudioOnly}" FontWeight="SemiBold">
+                                <TextBlock.Styles>
+                                    <Style Selector="TextBlock">
+                                        <Setter Property="Text" Value="{Binding VideoQuality, Mode=OneWay}" />
 
-                                    <Style Selector="^.audioOnly">
-                                        <Setter Property="Text" Value="Audio" />
+                                        <Style Selector="^.audioOnly">
+                                            <Setter Property="Text" Value="{Binding #UserControl.DataContext.LocalizationManager.AudioLabel}" />
+                                        </Style>
                                     </Style>
-                                </Style>
-                            </Run.Styles>
-                        </Run>
+                                </TextBlock.Styles>
+                            </TextBlock>
 
-                        <!--  Separator  -->
-                        <Run Text="—" />
+                            <!--  Upscaled badge  -->
+                            <Border
+                                Padding="6,1"
+                                BorderBrush="{DynamicResource MaterialDividerBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                IsVisible="{Binding IsVideoUpscaled}">
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="Medium"
+                                    Text="{Binding #UserControl.DataContext.LocalizationManager.UpscaledLabel}" />
+                            </Border>
+                        </StackPanel>
 
                         <!--  Container  -->
-                        <Run Text="{Binding Container, Mode=OneWay}" />
-                    </TextBlock>
+                        <TextBlock FontWeight="Light" Text="{Binding Container, Mode=OneWay}" />
+                    </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

@@ -14,6 +14,9 @@ public partial record VideoDownloadOption(
 {
     public VideoQuality? VideoQuality { get; } =
         StreamInfos.OfType<IVideoStreamInfo>().MaxBy(s => s.VideoQuality)?.VideoQuality;
+
+    public bool IsVideoUpscaled { get; } =
+        StreamInfos.OfType<IVideoStreamInfo>().Any(s => s.IsVideoUpscaled);
 }
 
 public partial record VideoDownloadOption
@@ -138,10 +141,13 @@ public partial record VideoDownloadOption
             }
         }
 
-        // Deduplicate download options by video quality and container
+        // Deduplicate download options
         var comparer = EqualityComparer<VideoDownloadOption>.Create(
-            (x, y) => x?.VideoQuality == y?.VideoQuality && x?.Container == y?.Container,
-            x => HashCode.Combine(x.VideoQuality, x.Container)
+            (x, y) =>
+                x?.VideoQuality == y?.VideoQuality
+                && x?.IsVideoUpscaled == y?.IsVideoUpscaled
+                && x?.Container == y?.Container,
+            x => HashCode.Combine(x.VideoQuality, x.IsVideoUpscaled, x.Container)
         );
 
         var options = new HashSet<VideoDownloadOption>(comparer);

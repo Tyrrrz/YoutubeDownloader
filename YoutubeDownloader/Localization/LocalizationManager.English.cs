@@ -87,6 +87,7 @@ public partial class LocalizationManager
             [nameof(CopyMenuItem)] = "Copy",
             [nameof(LiveLabel)] = "Live",
             [nameof(AudioLabel)] = "Audio",
+            [nameof(UpscaledLabel)] = "Upscaled",
             [nameof(FormatLabel)] = "Format",
             // Download Multiple Setup
             [nameof(ContainerLabel)] = "Container",

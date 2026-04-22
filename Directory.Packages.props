@@ -28,7 +28,7 @@
     <PackageVersion Include="TagLibSharp" Version="2.3.0" />
     <PackageVersion Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageVersion Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
-    <PackageVersion Include="YoutubeExplode" Version="6.5.7" />
-    <PackageVersion Include="YoutubeExplode.Converter" Version="6.5.7" />
+    <PackageVersion Include="YoutubeExplode" Version="6.6.0" />
+    <PackageVersion Include="YoutubeExplode.Converter" Version="6.6.0" />
   </ItemGroup>
 </Project>
