@@ -387,19 +387,18 @@ public partial class DashboardViewModel : ViewModelBase
     private void RestartDownload(DownloadViewModel download)
     {
         var position = Math.Max(0, Downloads.IndexOf(download));
+
+        // Copy properties before disposing the original download
+        var video = download.Video!;
+        var filePath = download.FilePath!;
+        var downloadOption = download.DownloadOption;
+        var downloadPreference = download.DownloadPreference;
+
         RemoveDownload(download);
 
-        var newDownload = download.DownloadOption is not null
-            ? _viewModelManager.GetDownloadViewModel(
-                download.Video!,
-                download.DownloadOption,
-                download.FilePath!
-            )
-            : _viewModelManager.GetDownloadViewModel(
-                download.Video!,
-                download.DownloadPreference!,
-                download.FilePath!
-            );
+        var newDownload = downloadOption is not null
+            ? _viewModelManager.GetDownloadViewModel(video, downloadOption, filePath)
+            : _viewModelManager.GetDownloadViewModel(video, downloadPreference!, filePath);
 
         EnqueueDownload(newDownload, position);
     }

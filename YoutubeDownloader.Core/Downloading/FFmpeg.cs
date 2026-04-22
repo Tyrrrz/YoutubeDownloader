@@ -22,7 +22,6 @@ public static class FFmpeg
     public static IEnumerable<string> GetProbeDirectoryPaths()
     {
         yield return AppContext.BaseDirectory;
-        yield return Directory.GetCurrentDirectory();
 
         // Process PATH
         if (

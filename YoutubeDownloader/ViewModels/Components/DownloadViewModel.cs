@@ -147,10 +147,13 @@ public partial class DownloadViewModel : ViewModelBase
     {
         if (disposing)
         {
-            _eventSubscription.Dispose();
-            _cancellationTokenSource.Dispose();
+            if (_isDisposed)
+                return;
 
             _isDisposed = true;
+
+            _eventSubscription.Dispose();
+            _cancellationTokenSource.Dispose();
         }
 
         base.Dispose(disposing);
