@@ -29,7 +29,7 @@
                         ToolTip.Tip="{Binding LocalizationManager.ThemeTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.ThemeLabel}" />
                         <ComboBox
-                            Width="150"
+                            Width="160"
                             DockPanel.Dock="Right"
                             ItemsSource="{Binding AvailableThemes}"
                             SelectedItem="{Binding Theme}" />
@@ -42,10 +42,16 @@
                         ToolTip.Tip="{Binding LocalizationManager.LanguageTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.LanguageLabel}" />
                         <ComboBox
-                            Width="150"
+                            Width="160"
                             DockPanel.Dock="Right"
                             ItemsSource="{Binding AvailableLanguages}"
-                            SelectedItem="{Binding Language}" />
+                            SelectedItem="{Binding Language}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={x:Static converters:LanguageToStringConverter.Instance}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </DockPanel>
 
                     <!--  Auto-updates  -->
