@@ -1,29 +1,28 @@
 using System;
-using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
 using Avalonia.Data.Converters;
-using YoutubeDownloader.Localization;
 
 namespace YoutubeDownloader.Converters;
 
-public class LanguageToStringConverter : IValueConverter
+public class EnumDisplayConverter : IValueConverter
 {
-    public static LanguageToStringConverter Instance { get; } = new();
+    public static EnumDisplayConverter Instance { get; } = new();
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is Language language)
+        if (value is Enum enumValue)
         {
-            var memberInfo = typeof(Language).GetMember(language.ToString());
+            var memberInfo = enumValue.GetType().GetMember(enumValue.ToString());
             if (memberInfo.Length > 0)
             {
-                var descAttr = memberInfo[0].GetCustomAttribute<DescriptionAttribute>();
-                if (descAttr is not null)
-                    return descAttr.Description;
+                var displayAttr = memberInfo[0].GetCustomAttribute<DisplayAttribute>();
+                if (displayAttr?.Name is not null)
+                    return displayAttr.Name;
             }
 
-            return language.ToString();
+            return enumValue.ToString();
         }
 
         return default(string);

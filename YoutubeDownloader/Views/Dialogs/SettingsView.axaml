@@ -48,7 +48,7 @@
                             SelectedItem="{Binding Language}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={x:Static converters:LanguageToStringConverter.Instance}}" />
+                                    <TextBlock Text="{Binding Converter={x:Static converters:EnumDisplayConverter.Instance}}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
