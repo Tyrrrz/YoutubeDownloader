@@ -4,8 +4,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.7.0" />
-    <PackageVersion Include="Avalonia" Version="11.3.14" />
+    <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.8.0" />
+    <PackageVersion Include="Avalonia" Version="12.0.0" />
     <PackageVersion Include="Avalonia.Controls.DataGrid" Version="11.3.13" />
     <PackageVersion Include="Avalonia.Desktop" Version="11.3.14" />
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.14" />
@@ -15,10 +15,10 @@
     <PackageVersion Include="CSharpier.MsBuild" Version="1.2.6" />
     <PackageVersion Include="Deorcify" Version="1.1.0" />
     <PackageVersion Include="ThisAssembly.Project" Version="2.1.2" />
-    <PackageVersion Include="DialogHost.Avalonia" Version="0.11.0" />
+    <PackageVersion Include="DialogHost.Avalonia" Version="0.12.1" />
     <PackageVersion Include="Gress" Version="2.2.0" />
     <PackageVersion Include="JsonExtensions" Version="1.2.0" />
-    <PackageVersion Include="Markdig" Version="1.1.2" />
+    <PackageVersion Include="Markdig" Version="1.1.3" />
     <PackageVersion Include="Material.Avalonia" Version="3.9.2" />
     <PackageVersion Include="Material.Avalonia.DataGrid" Version="3.9.2" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="2.2.0" />
