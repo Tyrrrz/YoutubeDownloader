@@ -64,11 +64,12 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
 
         // Extract the cookies after being redirected to the home page (i.e. after logging in)
         if (
-            args.Url?.AbsoluteUri.StartsWith(HomePageUrl, StringComparison.OrdinalIgnoreCase)
-            == true
+            Uri.TryCreate(args.Url?.AbsoluteUri, UriKind.Absolute, out var navUri)
+            && navUri.Scheme == Uri.UriSchemeHttps
+            && string.Equals(navUri.Host, "www.youtube.com", StringComparison.OrdinalIgnoreCase)
         )
         {
-            var cookies = await _coreWebView2!.CookieManager.GetCookiesAsync(args.Url.AbsoluteUri);
+            var cookies = await _coreWebView2!.CookieManager.GetCookiesAsync(navUri.AbsoluteUri);
             DataContext.Cookies = cookies.Select(c => c.ToSystemNetCookie()).ToArray();
         }
     }
