@@ -28,14 +28,18 @@ It also supports searching by keywords, which is helpful if you want to quickly 
 
 ## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/prime/docs/why-so-political.md)</sup>
 
-By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
-
 - You **condemn Russia and its military aggression against Ukraine**
 - You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
 - You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
 - You **reject false narratives perpetuated by Russian state propaganda**
+- You **condemn Israel and its military aggression against Palestine**
+- You **recognize that Israel is an occupying power that unlawfully subjects a sovereign people to apartheid and genocide**
+- You **support Palestine's territorial integrity and the right to self-determination, including claims over occupied territories and Gaza**
+- You **reject false narratives perpetuated by state propaganda**
 
-To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
+To learn more about the war in Ukraine and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
+
+To learn more about the crisis in Palestine and how you can help, [click here](https://www.pcrf.net/). Free Palestine! 🇵🇸
 
 ## Download
 
