@@ -129,6 +129,9 @@ public partial class DashboardViewModel : ViewModelBase
                     ex.Message
                 )
             );
+
+            if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
+                Environment.Exit(3);
         }
         finally
         {
