@@ -151,10 +151,24 @@ public partial class DashboardViewModel : ViewModelBase
     private async Task ShowSettingsAsync() =>
         await _dialogManager.ShowDialogAsync(_viewModelManager.GetSettingsViewModel());
 
+    private static string GetTempDownloadFilePath(string filePath)
+    {
+        var dirPath = Path.GetDirectoryName(filePath);
+        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+        var extension = Path.GetExtension(filePath);
+        var tempFileName = $".{fileNameWithoutExtension}.{Guid.NewGuid():N}{extension}";
+
+        return !string.IsNullOrWhiteSpace(dirPath)
+            ? Path.Combine(dirPath, tempFileName)
+            : tempFileName;
+    }
+
     private async void EnqueueDownload(DownloadViewModel download, int position = 0)
     {
         Downloads.Insert(position, download);
         var progress = _progressMuxer.CreateInput();
+        var filePath = download.FilePath!;
+        var tempFilePath = GetTempDownloadFilePath(filePath);
 
         try
         {
@@ -175,7 +189,7 @@ public partial class DashboardViewModel : ViewModelBase
                 );
 
             await downloader.DownloadVideoAsync(
-                download.FilePath!,
+                tempFilePath,
                 download.Video!,
                 downloadOption,
                 _settingsService.ShouldInjectSubtitles,
@@ -189,7 +203,7 @@ public partial class DashboardViewModel : ViewModelBase
                 try
                 {
                     await tagInjector.InjectTagsAsync(
-                        download.FilePath!,
+                        tempFilePath,
                         download.Video!,
                         download.CancellationToken
                     );
@@ -200,6 +214,8 @@ public partial class DashboardViewModel : ViewModelBase
                 }
             }
 
+            File.Move(tempFilePath, filePath, true);
+
             download.Status = DownloadStatus.Completed;
         }
         catch (Exception ex)
@@ -207,8 +223,8 @@ public partial class DashboardViewModel : ViewModelBase
             try
             {
                 // Delete the incompletely downloaded file
-                if (!string.IsNullOrWhiteSpace(download.FilePath))
-                    File.Delete(download.FilePath);
+                if (File.Exists(tempFilePath))
+                    File.Delete(tempFilePath);
             }
             catch
             {

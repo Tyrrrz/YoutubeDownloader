@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace YoutubeDownloader.Utils.Extensions;
@@ -6,9 +8,13 @@ internal static class PathExtensions
 {
     extension(Path)
     {
-        public static string EnsureUniqueFilePath(string baseFilePath, int maxRetries = 100)
+        public static string EnsureUniqueFilePath(
+            string baseFilePath,
+            ISet<string>? reservedFilePaths = null,
+            int maxRetries = 100
+        )
         {
-            if (!File.Exists(baseFilePath))
+            if (!File.Exists(baseFilePath) && reservedFilePaths?.Contains(baseFilePath) != true)
                 return baseFilePath;
 
             var baseDirPath = Path.GetDirectoryName(baseFilePath);
@@ -22,11 +28,13 @@ internal static class PathExtensions
                     ? Path.Combine(baseDirPath, fileName)
                     : fileName;
 
-                if (!File.Exists(filePath))
+                if (!File.Exists(filePath) && reservedFilePaths?.Contains(filePath) != true)
                     return filePath;
             }
 
-            return baseFilePath;
+            throw new InvalidOperationException(
+                $"Could not find a unique file path for '{baseFilePath}'."
+            );
         }
     }
 }

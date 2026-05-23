@@ -77,6 +77,10 @@ public partial class DownloadMultipleSetupViewModel(
             return;
 
         var downloads = new List<DownloadViewModel>();
+        var reservedFilePaths = new HashSet<string>(
+            OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal
+        );
+
         foreach (var (i, video) in SelectedVideos.Index())
         {
             var baseFilePath = Path.Combine(
@@ -92,11 +96,8 @@ public partial class DownloadMultipleSetupViewModel(
             if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
                 continue;
 
-            var filePath = Path.EnsureUniqueFilePath(baseFilePath);
-
-            // Download does not start immediately, so lock in the file path to avoid conflicts
-            Directory.CreateForFile(filePath);
-            await File.WriteAllBytesAsync(filePath, []);
+            var filePath = Path.EnsureUniqueFilePath(baseFilePath, reservedFilePaths);
+            reservedFilePaths.Add(filePath);
 
             downloads.Add(
                 viewModelManager.GetDownloadViewModel(
