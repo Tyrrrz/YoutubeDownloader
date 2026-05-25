@@ -102,7 +102,7 @@ public partial class DashboardViewModel : ViewModelBase
 
         if (await _dialogManager.ShowDialogAsync(dialog) != true)
         {
-            App.ShutdownAndExit(3);
+            App.Shutdown(3);
             return;
         }
 
