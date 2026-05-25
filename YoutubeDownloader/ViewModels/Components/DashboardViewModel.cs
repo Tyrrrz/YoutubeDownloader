@@ -128,8 +128,7 @@ public partial class DashboardViewModel : ViewModelBase
                 )
             );
 
-            if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
-                Environment.Exit(3);
+            App.Shutdown(3);
         }
         finally
         {
