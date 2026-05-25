@@ -13,7 +13,7 @@ namespace YoutubeDownloader.Core.Tagging;
 internal class MusicBrainzClient
 {
     // 4 requests per second
-    private readonly ThrottleLock _throttleLock = new(TimeSpan.FromSeconds(1.0 / 4));
+    private static readonly ThrottleLock ThrottleLock = new(TimeSpan.FromSeconds(1.0 / 4));
 
     public async IAsyncEnumerable<MusicBrainzRecording> SearchRecordingsAsync(
         string query,
@@ -28,7 +28,7 @@ internal class MusicBrainzClient
             + "&limit=100"
             + $"&query={Uri.EscapeDataString(query)}";
 
-        await _throttleLock.WaitAsync(cancellationToken);
+        await ThrottleLock.WaitAsync(cancellationToken);
         var json = await Http.Client.GetJsonAsync(url, cancellationToken);
 
         var recordingsJson =

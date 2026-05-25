@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
@@ -103,8 +102,7 @@ public partial class DashboardViewModel : ViewModelBase
 
         if (await _dialogManager.ShowDialogAsync(dialog) != true)
         {
-            if (Application.Current?.ApplicationLifetime?.TryShutdown(3) != true)
-                Environment.Exit(3);
+            App.Shutdown(3);
             return;
         }
 
