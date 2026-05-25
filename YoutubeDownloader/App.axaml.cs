@@ -11,6 +11,7 @@ using PowerKit.Extensions;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -19,6 +20,12 @@ namespace YoutubeDownloader;
 
 public class App : Application, IDisposable
 {
+    public static void ShutdownAndExit(int exitCode)
+    {
+        if (Current?.ApplicationLifetime?.TryShutdown(exitCode) != true)
+            Environment.Exit(exitCode);
+    }
+
     private readonly ServiceProvider _services;
     private readonly SettingsService _settingsService;
 
