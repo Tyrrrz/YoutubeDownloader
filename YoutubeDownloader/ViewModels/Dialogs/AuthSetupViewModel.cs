@@ -40,13 +40,21 @@ public class AuthSetupViewModel : DialogViewModelBase
         set => _settingsService.LastAuthCookies = value;
     }
 
-    public bool IsAuthenticated =>
-        Cookies?.Any() == true
-        &&
-        // None of the '__SECURE' cookies should be expired
-        Cookies
-            .Where(c => c.Name.StartsWith("__SECURE", StringComparison.OrdinalIgnoreCase))
-            .All(c => !c.Expired && c.Expires.ToUniversalTime() > DateTime.UtcNow);
+    public bool IsAuthenticated
+    {
+        get
+        {
+            var secureCookies = Cookies
+                ?.Where(c => c.Name.StartsWith("__SECURE", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            // None of the '__SECURE' cookies should be expired.
+            return secureCookies?.Any() == true
+                && secureCookies.All(c =>
+                    !c.Expired && c.Expires.ToUniversalTime() > DateTime.UtcNow
+                );
+        }
+    }
 
     protected override void Dispose(bool disposing)
     {
