@@ -96,9 +96,13 @@ public partial class DownloadMultipleSetupViewModel(
             if (
                 settingsService.ShouldSkipExistingFiles
                 && File.Exists(baseFilePath)
+                // Don't skip if the existing file is a file created for another download in
+                // the same batch (i.e. two different videos with the same output file name).
                 && !reservedFilePaths.Contains(baseFilePath)
             )
+            {
                 continue;
+            }
 
             var filePath = Path.EnsureUniqueFilePath(baseFilePath);
 
