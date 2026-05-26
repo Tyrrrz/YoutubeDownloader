@@ -48,7 +48,7 @@ public class AuthSetupViewModel : DialogViewModelBase
                 ?.Where(c => c.Name.StartsWith("__SECURE", StringComparison.OrdinalIgnoreCase))
                 .ToArray();
 
-            // None of the '__SECURE' cookies should be expired.
+            // At least one '__SECURE' cookie must exist and none of them should be expired
             return secureCookies?.Any() == true
                 && secureCookies.All(c =>
                     !c.Expired && c.Expires.ToUniversalTime() > DateTime.UtcNow
