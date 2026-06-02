@@ -96,6 +96,7 @@ public partial class LocalizationManager
             [nameof(CloseButton)] = "ЗАКРИТИ",
             [nameof(DownloadButton)] = "ЗАВАНТАЖИТИ",
             [nameof(CancelButton)] = "СКАСУВАТИ",
+            [nameof(BrowseButton)] = "ОГЛЯД",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "Дякуємо за підтримку України!",
             [nameof(UkraineSupportMessage)] = """

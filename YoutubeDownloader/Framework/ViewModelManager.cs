@@ -85,7 +85,8 @@ public class ViewModelManager(IServiceProvider services, LocalizationManager loc
         string title,
         string message,
         string? okButtonText,
-        string? cancelButtonText
+        string? cancelButtonText,
+        string? extraButtonText = null
     )
     {
         var viewModel = services.GetRequiredService<MessageBoxViewModel>();
@@ -94,6 +95,7 @@ public class ViewModelManager(IServiceProvider services, LocalizationManager loc
         viewModel.Message = message;
         viewModel.DefaultButtonText = okButtonText;
         viewModel.CancelButtonText = cancelButtonText;
+        viewModel.ExtraButtonText = extraButtonText;
 
         return viewModel;
     }

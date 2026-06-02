@@ -53,6 +53,23 @@
                     TextTrimming="CharacterEllipsis" />
             </Button>
 
+            <!--  Extra  -->
+            <Button
+                Margin="8"
+                HorizontalContentAlignment="Stretch"
+                Command="{Binding CloseCommand}"
+                IsVisible="{Binding IsExtraButtonVisible}"
+                Theme="{DynamicResource MaterialOutlineButton}"
+                ToolTip.Tip="{Binding ExtraButtonText}">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+                <TextBlock
+                    Text="{Binding ExtraButtonText}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis" />
+            </Button>
+
             <!--  Cancel  -->
             <Button
                 Margin="8"

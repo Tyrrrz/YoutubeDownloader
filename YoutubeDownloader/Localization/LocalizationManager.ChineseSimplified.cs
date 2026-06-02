@@ -94,6 +94,7 @@ public partial class LocalizationManager
             [nameof(CloseButton)] = "关闭",
             [nameof(DownloadButton)] = "下载",
             [nameof(CancelButton)] = "取消",
+            [nameof(BrowseButton)] = "浏览",
             // Dialog messages
             [nameof(UkraineSupportTitle)] = "感谢你支持乌克兰！",
             [nameof(UkraineSupportMessage)] = """

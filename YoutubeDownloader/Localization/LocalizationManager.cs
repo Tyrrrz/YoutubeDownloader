@@ -156,6 +156,7 @@ public partial class LocalizationManager
     public string CloseButton => Get();
     public string DownloadButton => Get();
     public string CancelButton => Get();
+    public string BrowseButton => Get();
 
     // ---- Dialog messages ----
 
