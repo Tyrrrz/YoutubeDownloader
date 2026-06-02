@@ -114,7 +114,7 @@ public partial class LocalizationManager
             [nameof(SeeReleasesButton)] = "查看发布版本",
             [nameof(FFmpegMissingTitle)] = "缺少 FFmpeg",
             [nameof(FFmpegMissingMessage)] =
-                "系统中未找到 FFmpeg。{0} 需要它才能正常工作。是否立即下载？",
+                "系统中未找到 FFmpeg。{0} 需要它才能正常工作。是否立即下载？您也可以在设置中指定自定义路径。",
             [nameof(FFmpegDownloadingTitle)] = "正在下载 FFmpeg...",
             [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg 下载完成",
             [nameof(NothingFoundTitle)] = "未找到内容",

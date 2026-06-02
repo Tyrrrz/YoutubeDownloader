@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gress;
@@ -92,81 +91,49 @@ public partial class DashboardViewModel : ViewModelBase
         if (FFmpeg.TryGetCliFilePath() is not null)
             return;
 
-        // Otherwise, prompt the user to download or locate FFmpeg
-        while (true)
+        // Otherwise, prompt the user to download FFmpeg
+        var dialog = _viewModelManager.GetMessageBoxViewModel(
+            _localizationManager.FFmpegMissingTitle,
+            string.Format(_localizationManager.FFmpegMissingMessage, Program.Name),
+            _localizationManager.DownloadButton,
+            _localizationManager.CloseButton
+        );
+
+        if (await _dialogManager.ShowDialogAsync(dialog) != true)
         {
-            var dialog = _viewModelManager.GetMessageBoxViewModel(
-                _localizationManager.FFmpegMissingTitle,
-                string.Format(_localizationManager.FFmpegMissingMessage, Program.Name),
-                _localizationManager.DownloadButton,
-                _localizationManager.CloseButton,
-                _localizationManager.BrowseButton
+            // Open settings so the user can set a custom FFmpeg path
+            await _dialogManager.ShowDialogAsync(_viewModelManager.GetSettingsViewModel());
+            return;
+        }
+
+        IsBusy = true;
+        var progress = _progressMuxer.CreateInput();
+        _snackbarManager.Notify(_localizationManager.FFmpegDownloadingTitle);
+
+        try
+        {
+            await FFmpeg.DownloadAsync(
+                Path.Combine(AppContext.BaseDirectory, FFmpeg.CliFileName),
+                progress
             );
 
-            var result = await _dialogManager.ShowDialogAsync(dialog);
+            _snackbarManager.Notify(_localizationManager.FFmpegDownloadCompletedTitle);
+        }
+        catch (Exception ex)
+        {
+            await _dialogManager.ShowDialogAsync(
+                _viewModelManager.GetMessageBoxViewModel(
+                    _localizationManager.ErrorTitle,
+                    ex.Message
+                )
+            );
 
-            if (result == true)
-            {
-                // Download FFmpeg
-                IsBusy = true;
-                var progress = _progressMuxer.CreateInput();
-                _snackbarManager.Notify(_localizationManager.FFmpegDownloadingTitle);
-
-                try
-                {
-                    await FFmpeg.DownloadAsync(
-                        Path.Combine(AppContext.BaseDirectory, FFmpeg.CliFileName),
-                        progress
-                    );
-
-                    _snackbarManager.Notify(_localizationManager.FFmpegDownloadCompletedTitle);
-                }
-                catch (Exception ex)
-                {
-                    await _dialogManager.ShowDialogAsync(
-                        _viewModelManager.GetMessageBoxViewModel(
-                            _localizationManager.ErrorTitle,
-                            ex.Message
-                        )
-                    );
-
-                    App.Shutdown(3);
-                }
-                finally
-                {
-                    progress.ReportCompletion();
-                    IsBusy = false;
-                }
-
-                return;
-            }
-            else if (result == false)
-            {
-                // Browse for a custom FFmpeg executable
-                var fileTypes = OperatingSystem.IsWindows()
-                    ? new[]
-                    {
-                        new FilePickerFileType("FFmpeg executable") { Patterns = ["*.exe"] },
-                        FilePickerFileTypes.All,
-                    }
-                    : null;
-
-                var filePath = await _dialogManager.PromptOpenFilePathAsync(fileTypes);
-
-                if (!string.IsNullOrWhiteSpace(filePath))
-                {
-                    _settingsService.FFmpegFilePath = filePath;
-                    return;
-                }
-
-                // User cancelled the file picker — show the dialog again
-            }
-            else
-            {
-                // User closed the dialog without choosing an action
-                App.Shutdown(3);
-                return;
-            }
+            App.Shutdown(3);
+        }
+        finally
+        {
+            progress.ReportCompletion();
+            IsBusy = false;
         }
     }
 
