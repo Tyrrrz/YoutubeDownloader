@@ -117,7 +117,7 @@ public partial class LocalizationManager
             [nameof(FFmpegMissingMessage)] = """
                 FFmpeg не знайдено на вашому пристрої. Він потрібен для роботи {0}. Бажаєте завантажити його зараз?
 
-                Або ви можете натиснути ЗАКРИТИ і вказати власний шлях у Налаштуваннях.
+                Або ви можете закрити це діалогове вікно та вручну вказати власний шлях до FFmpeg у налаштуваннях.
                 """,
             [nameof(FFmpegDownloadingTitle)] = "Завантаження FFmpeg...",
             [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg завантажено",

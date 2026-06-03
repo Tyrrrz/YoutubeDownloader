@@ -121,7 +121,7 @@ public partial class LocalizationManager
         [nameof(FFmpegMissingMessage)] = """
             FFmpeg est introuvable sur votre système. Il est requis pour que {0} fonctionne. Voulez-vous le télécharger maintenant ?
 
-            Sinon, vous pouvez cliquer sur FERMER et définir un chemin personnalisé dans les Paramètres.
+            Sinon, vous pouvez fermer cette boîte de dialogue et définir manuellement un chemin FFmpeg personnalisé dans les paramètres.
             """,
         [nameof(FFmpegDownloadingTitle)] = "Téléchargement de FFmpeg...",
         [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg téléchargé",

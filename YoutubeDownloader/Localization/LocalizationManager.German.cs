@@ -120,7 +120,7 @@ public partial class LocalizationManager
         [nameof(FFmpegMissingMessage)] = """
             FFmpeg wurde auf Ihrem System nicht gefunden. Es wird benötigt damit {0} funktioniert. Möchten Sie es jetzt herunterladen?
 
-            Alternativ können Sie auf SCHLIESSEN klicken und in den Einstellungen einen benutzerdefinierten Pfad festlegen.
+            Alternativ können Sie diesen Dialog schließen und in den Einstellungen manuell einen benutzerdefinierten FFmpeg-Pfad festlegen.
             """,
         [nameof(FFmpegDownloadingTitle)] = "FFmpeg wird heruntergeladen...",
         [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg heruntergeladen",

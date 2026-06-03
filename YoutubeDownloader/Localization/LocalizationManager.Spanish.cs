@@ -120,7 +120,7 @@ public partial class LocalizationManager
             [nameof(FFmpegMissingMessage)] = """
                 FFmpeg no se encontró en tu sistema. Es necesario para que {0} funcione. ¿Te gustaría descargarlo ahora?
 
-                Alternativamente, puedes hacer clic en CERRAR y establecer una ruta personalizada en Configuración.
+                Como alternativa, puedes cerrar este diálogo y establecer manualmente una ruta personalizada de FFmpeg en configuración.
                 """,
             [nameof(FFmpegDownloadingTitle)] = "Descargando FFmpeg...",
             [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg descargado",

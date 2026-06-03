@@ -117,7 +117,7 @@ public partial class LocalizationManager
             [nameof(FFmpegMissingMessage)] = """
                 FFmpeg was not found on your system. It is required for {0} to work. Would you like to download it now?
 
-                Alternatively, you can click on CLOSE and set a custom FFmpeg path in settings.
+                Alternatively, you can close this dialog and manually set a custom FFmpeg path in settings.
                 """,
             [nameof(FFmpegDownloadingTitle)] = "Downloading FFmpeg...",
             [nameof(FFmpegDownloadCompletedTitle)] = "FFmpeg downloaded",
