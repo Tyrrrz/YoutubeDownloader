@@ -99,9 +99,9 @@ public partial class DashboardViewModel : ViewModelBase
             _localizationManager.CloseButton
         );
 
+        // If the user declined, open settings to nudge them to set a custom FFmpeg path
         if (await _dialogManager.ShowDialogAsync(dialog) != true)
         {
-            // Open settings so the user can set a custom FFmpeg path
             await _dialogManager.ShowDialogAsync(_viewModelManager.GetSettingsViewModel());
             return;
         }
