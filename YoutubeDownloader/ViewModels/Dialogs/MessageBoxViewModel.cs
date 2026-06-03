@@ -21,19 +21,9 @@ public partial class MessageBoxViewModel : DialogViewModelBase
     [NotifyPropertyChangedFor(nameof(ButtonsCount))]
     public partial string? CancelButtonText { get; set; }
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsExtraButtonVisible))]
-    [NotifyPropertyChangedFor(nameof(ButtonsCount))]
-    public partial string? ExtraButtonText { get; set; }
-
     public bool IsDefaultButtonVisible => !string.IsNullOrWhiteSpace(DefaultButtonText);
 
     public bool IsCancelButtonVisible => !string.IsNullOrWhiteSpace(CancelButtonText);
 
-    public bool IsExtraButtonVisible => !string.IsNullOrWhiteSpace(ExtraButtonText);
-
-    public int ButtonsCount =>
-        (IsDefaultButtonVisible ? 1 : 0)
-        + (IsExtraButtonVisible ? 1 : 0)
-        + (IsCancelButtonVisible ? 1 : 0);
+    public int ButtonsCount => (IsDefaultButtonVisible ? 1 : 0) + (IsCancelButtonVisible ? 1 : 0);
 }
