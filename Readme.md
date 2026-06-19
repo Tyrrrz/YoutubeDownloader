@@ -30,6 +30,16 @@ It also supports searching by keywords, which is helpful if you want to quickly 
 
 By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
 
+- You **condemn israel and its genocide and ethnic cleansing against Palestine**
+- You **recognize that israel is an occupant that unlawfully invaded a sovereign country**
+- You **support Palestine's territorial integrity, and their right to get all their stolen land back**
+- You **reject false narratives perpetuated by israeli state propaganda**
+
+https://boycott-israel.org/
+https://bdsmovement.net/
+free palestine! 🇵🇸
+
+
 - You **condemn Russia and its military aggression against Ukraine**
 - You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
 - You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
