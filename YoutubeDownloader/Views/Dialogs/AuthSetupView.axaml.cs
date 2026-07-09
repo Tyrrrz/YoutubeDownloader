@@ -71,7 +71,7 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
             _coreWebView2.CookieManager.DeleteAllCookies();
         }
 
-        // Extract the cookies after being redirected to the home page (i.e. after logging in)
+        // Extract the cookies after being redirected to the home page (i.e., after logging in)
         if (
             args.Url is { } url
             && string.Equals(url.Scheme, HomePageUri.Scheme, StringComparison.OrdinalIgnoreCase)

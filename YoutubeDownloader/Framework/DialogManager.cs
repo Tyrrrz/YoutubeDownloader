@@ -40,7 +40,7 @@ public class DialogManager : IDisposable
             );
 
             // Yield to allow DialogHost to fully reset its state before
-            // another dialog is shown (e.g. when dialogs are shown sequentially)
+            // another dialog is shown (e.g., when dialogs are shown sequentially)
             await Task.Yield();
 
             return dialog.DialogResult;
