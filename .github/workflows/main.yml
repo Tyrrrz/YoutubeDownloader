@@ -84,11 +84,14 @@ jobs:
           -p:Version=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
           -p:CSharpier_Bypass=true
           -p:EncryptionSalt=${{ secrets.ENCRYPTION_SALT || 'HimalayanPinkSalt' }}
-          -p:PublishMacOSBundle=${{ startsWith(matrix.rid, 'osx-') }}
           --output YoutubeDownloader/bin/publish
           --configuration Release
           --runtime ${{ matrix.rid }}
           --self-contained
+
+      - name: Rename macOS bundle
+        if: ${{ startsWith(matrix.rid, 'osx-') }}
+        run: mv YoutubeDownloader/bin/publish/YTD.app YoutubeDownloader/bin/publish/YoutubeDownloader.app
 
       - name: Upload app binaries
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

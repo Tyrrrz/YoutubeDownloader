@@ -11,7 +11,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PublishMacOSBundle>false</PublishMacOSBundle>
+    <MacOSBundleIdentifier>me.tyrrrz.youtubedownloader</MacOSBundleIdentifier>
+    <MacOSBundleName>YTD</MacOSBundleName>
+    <MacOSBundleDisplayName>YoutubeDownloader</MacOSBundleDisplayName>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -38,6 +40,7 @@
     <PackageReference Include="Deorcify" />
     <PackageReference Include="DialogHost.Avalonia" />
     <PackageReference Include="Gress" />
+    <PackageReference Include="MacBundle" />
     <PackageReference Include="Markdig" />
     <PackageReference Include="Material.Avalonia" />
     <PackageReference Include="Material.Avalonia.DataGrid" />
