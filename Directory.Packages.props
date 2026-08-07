@@ -27,7 +27,7 @@
     <PackageVersion Include="ThisAssembly.Project" Version="2.1.2" />
     <PackageVersion Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageVersion Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
-    <PackageVersion Include="YoutubeExplode" Version="6.6.0" />
-    <PackageVersion Include="YoutubeExplode.Converter" Version="6.6.0" />
+    <PackageVersion Include="YoutubeExplode" Version="6.6.1" />
+    <PackageVersion Include="YoutubeExplode.Converter" Version="6.6.1" />
   </ItemGroup>
 </Project>
