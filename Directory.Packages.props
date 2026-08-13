@@ -5,7 +5,7 @@
 
   <ItemGroup>
     <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.8.0" />
-    <PackageVersion Include="Avalonia" Version="12.1.1" />
+    <PackageVersion Include="Avalonia" Version="12.0.5" />
     <PackageVersion Include="Avalonia.Controls.DataGrid" Version="12.0.0" />
     <PackageVersion Include="Avalonia.Desktop" Version="12.0.2" />
     <PackageVersion Include="Cogwheel" Version="2.1.1" />
