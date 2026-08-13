@@ -9,6 +9,9 @@
     xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
     x:Name="UserControl"
     x:DataType="components:DashboardViewModel"
+    DragDrop.AllowDrop="True"
+    DragDrop.DragOver="UserControl_OnDragOver"
+    DragDrop.Drop="UserControl_OnDrop"
     Loaded="UserControl_OnLoaded">
     <DockPanel>
         <!--  Header  -->
@@ -22,6 +25,7 @@
                     <TextBox
                         x:Name="QueryTextBox"
                         AcceptsReturn="True"
+                        DragDrop.AllowDrop="True"
                         FontSize="16"
                         MaxLines="4"
                         PlaceholderText="{Binding LocalizationManager.QueryPlaceholderText}"

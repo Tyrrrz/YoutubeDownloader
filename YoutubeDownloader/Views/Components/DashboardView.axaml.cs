@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -18,6 +20,51 @@ public partial class DashboardView : UserControl<DashboardViewModel>
     }
 
     private void UserControl_OnLoaded(object? sender, RoutedEventArgs args) => QueryTextBox.Focus();
+
+    private void UserControl_OnDragOver(object? sender, DragEventArgs args)
+    {
+        if (
+            args.DataTransfer.Contains(DataFormat.Text)
+            || args.DataTransfer.Contains(DataFormat.File)
+        )
+            args.DragEffects = DragDropEffects.Copy | DragDropEffects.Link;
+        else
+            args.DragEffects = DragDropEffects.None;
+    }
+
+    private void UserControl_OnDrop(object? sender, DragEventArgs args)
+    {
+        var text = args.DataTransfer.TryGetText();
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            var files = args.DataTransfer.TryGetFiles();
+            if (files != null && files.Length > 0)
+            {
+                var paths = files
+                    .Select(f => f.Path.ToString())
+                    .Where(p => !string.IsNullOrWhiteSpace(p));
+                text = string.Join(Environment.NewLine, paths);
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
+        if (DataContext is DashboardViewModel viewModel)
+        {
+            var currentQuery = viewModel.Query ?? string.Empty;
+            var trimmedText = text.Trim();
+
+            if (string.IsNullOrWhiteSpace(currentQuery))
+            {
+                viewModel.Query = trimmedText;
+            }
+            else
+            {
+                viewModel.Query = $"{currentQuery.TrimEnd()}{Environment.NewLine}{trimmedText}";
+            }
+        }
+    }
 
     private void QueryTextBox_OnKeyDown(object? sender, KeyEventArgs args)
     {

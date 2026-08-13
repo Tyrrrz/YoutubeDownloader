@@ -116,8 +116,8 @@ public class QueryResolver(IReadOnlyList<Cookie>? initialCookies = null) : IDisp
         if (query.StartsWith('?'))
             return await ResolveSearchAsync(query[1..], cancellationToken);
 
-        return await TryResolvePlaylistAsync(query, cancellationToken)
-            ?? await TryResolveVideoAsync(query, cancellationToken)
+        return await TryResolveVideoAsync(query, cancellationToken)
+            ?? await TryResolvePlaylistAsync(query, cancellationToken)
             ?? await TryResolveChannelAsync(query, cancellationToken)
             ?? await ResolveSearchAsync(query, cancellationToken);
     }
