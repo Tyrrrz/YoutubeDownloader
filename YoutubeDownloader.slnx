@@ -1,13 +1,6 @@
 <Solution>
-  <Folder Name="/Misc/">
-    <File Path="Directory.Build.props" />
-    <File Path="Directory.Packages.props" />
-    <File Path="global.json" />
-    <File Path="License.txt" />
-    <File Path="NuGet.config" />
-    <File Path="Readme.md" />
-  </Folder>
-
   <Project Path="YoutubeDownloader/YoutubeDownloader.csproj" />
   <Project Path="YoutubeDownloader.Core/YoutubeDownloader.Core.csproj" />
+  <Project Path="YoutubeExplode/YoutubeExplode.csproj" />
+  <Project Path="YoutubeExplode.Converter/YoutubeExplode.Converter.csproj" />
 </Solution>

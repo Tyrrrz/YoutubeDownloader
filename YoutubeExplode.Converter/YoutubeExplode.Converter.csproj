@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Binternal" PrivateAssets="all" />
+    <PackageReference Include="CliWrap" />
+    <PackageReference Include="PolyShim" PrivateAssets="all" />
+    <PackageReference Include="Snek" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../YoutubeExplode/YoutubeExplode.csproj" />
+  </ItemGroup>
+</Project>

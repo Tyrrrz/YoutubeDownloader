@@ -5,7 +5,10 @@
     <PackageReference Include="JsonExtensions" />
     <PackageReference Include="PowerKit" />
     <PackageReference Include="TagLibSharp" />
-    <PackageReference Include="YoutubeExplode" />
-    <PackageReference Include="YoutubeExplode.Converter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../YoutubeExplode/YoutubeExplode.csproj" />
+    <ProjectReference Include="../YoutubeExplode.Converter/YoutubeExplode.Converter.csproj" />
   </ItemGroup>
 </Project>
