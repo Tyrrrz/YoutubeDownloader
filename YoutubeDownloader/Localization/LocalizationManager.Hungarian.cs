@@ -72,7 +72,8 @@ public partial class LocalizationManager
             [nameof(ParallelLimitLabel)] = "Egyidejű letöltések",
             [nameof(ParallelLimitTooltip)] = "Hány letöltés futhat egyidejűleg",
             [nameof(FFmpegPathLabel)] = "FFmpeg elérési útja",
-            [nameof(FFmpegPathTooltip)] = "Az FFmpeg futtatható fájljának elérési útja. Az automatikus felismeréshez hagyd üresen",
+            [nameof(FFmpegPathTooltip)] =
+                "Az FFmpeg futtatható fájljának elérési útja. Az automatikus felismeréshez hagyd üresen",
             [nameof(FFmpegPathPlaceholderText)] = "Automatikus felismerés",
             [nameof(FFmpegPathResetTooltip)] = "Visszaállítás automatikus felismerésre",
             [nameof(FFmpegPathBrowseTooltip)] = "FFmpeg tallózása",
