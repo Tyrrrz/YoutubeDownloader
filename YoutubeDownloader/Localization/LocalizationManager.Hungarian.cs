@@ -59,7 +59,7 @@ public partial class LocalizationManager
             [nameof(SkipExistingFilesLabel)] = "Létező fájlok kihagyása",
             [nameof(SkipExistingFilesTooltip)] =
                 "Több videó letöltése esetén azok kihagyása, amik már léteznek a célmappában",
-            [nameof(FileNameTemplateLabel)] = "Fájlnév minta",
+            [nameof(FileNameTemplateLabel)] = "Fájlnévminta",
             [nameof(FileNameTemplateTooltip)] = """
                 A letöltött videók fájlnevének létrehozásához használt minta.
 
