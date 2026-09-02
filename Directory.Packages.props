@@ -24,7 +24,7 @@
     <PackageVersion Include="Onova" Version="2.6.13" />
     <PackageVersion Include="PowerKit" Version="2.3.1" />
     <PackageVersion Include="TagLibSharp" Version="2.3.0" />
-    <PackageVersion Include="ThisAssembly.Project" Version="2.1.2" />
+    <PackageVersion Include="ThisAssembly.Project" Version="2.1.5" />
     <PackageVersion Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageVersion Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />
     <PackageVersion Include="YoutubeExplode" Version="6.6.2" />
