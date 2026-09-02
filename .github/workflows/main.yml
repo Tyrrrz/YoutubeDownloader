@@ -20,10 +20,8 @@ jobs:
   format:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     permissions:
       contents: read
-
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -63,14 +61,11 @@ jobs:
           - linux-x64
           - osx-arm64
           - osx-x64
-
     runs-on: ${{ startsWith(matrix.rid, 'win-') && 'windows-latest' || startsWith(matrix.rid, 'osx-') && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: 10
-
     permissions:
       actions: write
       contents: read
-
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -100,19 +95,64 @@ jobs:
           path: YoutubeDownloader/bin/publish
           if-no-files-found: error
 
+  installer:
+    needs: pack
+    strategy:
+      matrix:
+        rid:
+          - win-x64
+          - win-x86
+    runs-on: windows-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Download app binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: YoutubeDownloader.${{ matrix.rid }}
+          path: YoutubeDownloader/bin/publish
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          $ver = "${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}"
+          echo "value=$ver" >> $env:GITHUB_OUTPUT
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Compile installer
+        shell: pwsh
+        run: >
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          /DMyAppVersion="${{ steps.version.outputs.value }}"
+          /DMyAppArch="${{ matrix.rid }}"
+          /DMyPublishDir="${{ github.workspace }}\YoutubeDownloader\bin\publish"
+          /DMyOutputDir="${{ github.workspace }}\installer-out"
+          .github\workflows\setup.iss
+
+      - name: Upload installer
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: YoutubeDownloader.Setup.${{ matrix.rid }}
+          path: installer-out/*.exe
+          if-no-files-found: error
+
   release:
     if: ${{ github.ref_type == 'tag' }}
-
     needs:
       - format
       - pack
-
+      - installer
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     permissions:
       contents: write
-
     steps:
       - name: Create release
         env:
@@ -126,7 +166,6 @@ jobs:
 
   deploy:
     needs: release
-
     strategy:
       matrix:
         rid:
@@ -139,14 +178,11 @@ jobs:
           - linux-x64
           - osx-arm64
           - osx-x64
-
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     permissions:
       actions: read
       contents: write
-
     steps:
       - name: Download app binaries
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -159,7 +195,6 @@ jobs:
         run: |
           [ -f YoutubeDownloader/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader || true
           [ -f YoutubeDownloader/ffmpeg ] && chmod +x YoutubeDownloader/ffmpeg || true
-
           # macOS bundle
           [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader || true
           [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg || true
@@ -177,14 +212,41 @@ jobs:
           YoutubeDownloader.${{ matrix.rid }}.zip
           --repo ${{ github.event.repository.full_name }}
 
-  notify:
-    needs: deploy
+  deploy-installer:
+    needs: release
+    strategy:
+      matrix:
+        rid:
+          - win-x64
+          - win-x86
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Download installer
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: YoutubeDownloader.Setup.${{ matrix.rid }}
+          path: installer-out/
 
+      - name: Upload release asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release upload ${{ github.ref_name }}
+          installer-out/*.exe
+          --repo ${{ github.event.repository.full_name }}
+
+  notify:
+    needs:
+      - deploy
+      - deploy-installer
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
-
     steps:
       - name: Notify Discord
         uses: tyrrrz/action-http-request@110f1a0f0f7e91c3b2de349539249f4573c243fa # 1.1.5
