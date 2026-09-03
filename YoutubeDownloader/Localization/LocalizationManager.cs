@@ -46,7 +46,12 @@ public partial class LocalizationManager : ObservableObject, IDisposable
                     "fra" => FrenchLocalization,
                     "spa" => SpanishLocalization,
                     "hun" => HungarianLocalization,
-                    "por" => PortugueseLocalization,
+                    "por"
+                        when string.Equals(
+                            CultureInfo.CurrentUICulture.Name,
+                            "pt-BR",
+                            StringComparison.OrdinalIgnoreCase
+                        ) => PortugueseLocalization,
                     "zho"
                         when CultureInfo
                             .CurrentUICulture.GetSelfAndParents()
