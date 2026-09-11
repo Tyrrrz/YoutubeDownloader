@@ -82,7 +82,14 @@ public partial class LocalizationManager
             [nameof(AuthenticationTitle)] = "Автентифікація",
             [nameof(AuthenticatedText)] = "Ви автентифіковані",
             [nameof(LogOutButton)] = "Вийти",
-            [nameof(LoadingText)] = "Завантаження...",
+            [nameof(AuthenticationPlaceholderText)] = """
+                Завантаження...
+
+                Якщо браузер не відображається:
+                - Windows: встановіть Microsoft Edge WebView2 Runtime.
+                - macOS: встановіть останні оновлення системи.
+                - Linux: встановіть GTK 3, WebKitGTK 4.1 і libsoup 3.
+                """,
             // Download Single Setup
             [nameof(CopyMenuItem)] = "Копіювати",
             [nameof(LiveLabel)] = "Живе",

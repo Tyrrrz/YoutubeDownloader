@@ -80,7 +80,14 @@ public partial class LocalizationManager
             [nameof(AuthenticationTitle)] = "身份验证",
             [nameof(AuthenticatedText)] = "你当前已通过身份验证",
             [nameof(LogOutButton)] = "退出登录",
-            [nameof(LoadingText)] = "正在加载...",
+            [nameof(AuthenticationPlaceholderText)] = """
+                正在加载...
+
+                如果浏览器未显示：
+                - Windows：安装 Microsoft Edge WebView2 Runtime。
+                - macOS：安装最新的系统更新。
+                - Linux：安装 GTK 3、WebKitGTK 4.1 和 libsoup 3。
+                """,
             // Download Single Setup
             [nameof(CopyMenuItem)] = "复制",
             [nameof(LiveLabel)] = "直播",

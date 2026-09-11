@@ -82,7 +82,14 @@ public partial class LocalizationManager
             [nameof(AuthenticationTitle)] = "Authentication",
             [nameof(AuthenticatedText)] = "You are currently authenticated",
             [nameof(LogOutButton)] = "Log out",
-            [nameof(LoadingText)] = "Loading...",
+            [nameof(AuthenticationPlaceholderText)] = """
+                Loading...
+
+                If the browser does not appear:
+                - Windows: install Microsoft Edge WebView2 Runtime.
+                - macOS: install the latest system updates.
+                - Linux: install GTK 3, WebKitGTK 4.1, and libsoup 3.
+                """,
             // Download Single Setup
             [nameof(CopyMenuItem)] = "Copy",
             [nameof(LiveLabel)] = "Live",

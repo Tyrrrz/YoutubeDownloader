@@ -63,7 +63,8 @@
                     VerticalAlignment="Center"
                     FontSize="18"
                     IsVisible="{Binding !IsAuthenticated}"
-                    Text="{Binding LocalizationManager.LoadingText}" />
+                    Text="{Binding LocalizationManager.AuthenticationPlaceholderText}"
+                    TextWrapping="Wrap" />
 
                 <!--  Browser  -->
                 <NativeWebView
