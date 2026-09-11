@@ -15,7 +15,6 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
     private static readonly Uri LoginPageUri = new(
         $"https://accounts.google.com/ServiceLogin?continue={Uri.EscapeDataString(HomePageUri.AbsoluteUri)}"
     );
-    private bool _isRetryingLoginNavigation;
 
     public AuthSetupView() => InitializeComponent();
 
@@ -67,22 +66,8 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
             )
         )
         {
-            if (_isRetryingLoginNavigation)
-            {
-                _isRetryingLoginNavigation = false;
-            }
-            else
-            {
-                args.Cancel = true;
-
-                foreach (var cookie in await cookieManager.GetCookiesAsync())
-                    cookieManager.DeleteCookie(cookie);
-
-                _isRetryingLoginNavigation = true;
-                NavigateToLoginPage();
-
-                return;
-            }
+            foreach (var cookie in await cookieManager.GetCookiesAsync())
+                cookieManager.DeleteCookie(cookie);
         }
 
         // Extract the cookies after being redirected to the home page (i.e., after logging in)
