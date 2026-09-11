@@ -33,6 +33,7 @@
     <PackageReference Include="AsyncImageLoader.Avalonia" />
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Controls.DataGrid" />
+    <PackageReference Include="Avalonia.Controls.WebView" />
     <PackageReference Include="Avalonia.Desktop" />
     <PackageReference Include="Cogwheel" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
@@ -49,25 +50,9 @@
     <PackageReference Include="Onova" />
     <PackageReference Include="PowerKit" />
     <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
-    <PackageReference Include="WebView.Avalonia" />
-    <PackageReference Include="WebView.Avalonia.Desktop" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../YoutubeDownloader.Core/YoutubeDownloader.Core.csproj" />
-  </ItemGroup>
-
-  <!-- Avalonia.WebView is completely incompatible with trimming -->
-  <ItemGroup>
-    <TrimmerRootAssembly Include="Avalonia.WebView" />
-    <TrimmerRootAssembly Include="Avalonia.WebView.Desktop" />
-    <TrimmerRootAssembly Include="Avalonia.WebView.Linux" />
-    <TrimmerRootAssembly Include="Avalonia.WebView.MacCatalyst" />
-    <TrimmerRootAssembly Include="Avalonia.WebView.Windows" />
-    <TrimmerRootAssembly Include="AvaloniaWebView.Shared" />
-    <TrimmerRootAssembly Include="Linux.WebView.Core" />
-    <TrimmerRootAssembly Include="Microsoft.Web.WebView2.Core" />
-    <TrimmerRootAssembly Include="WebView.Avalonia" />
-    <TrimmerRootAssembly Include="WebView.Core" />
   </ItemGroup>
 </Project>

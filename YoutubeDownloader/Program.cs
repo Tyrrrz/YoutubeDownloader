@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using Avalonia;
-using Avalonia.WebView.Desktop;
 using YoutubeDownloader.Utils;
 
 namespace YoutubeDownloader;
@@ -23,7 +22,7 @@ public static class Program
     public static string ProjectReleasesUrl { get; } = $"{ProjectUrl}/releases";
 
     public static AppBuilder BuildAvaloniaApp() =>
-        AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace().UseDesktopWebView();
+        AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace();
 
     [STAThread]
     public static int Main(string[] args)

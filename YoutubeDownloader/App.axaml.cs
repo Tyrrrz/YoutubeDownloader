@@ -4,7 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Platform;
-using AvaloniaWebView;
 using Material.Styles.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using PowerKit.Extensions;
@@ -94,13 +93,6 @@ public partial class App : Application, IDisposable
         base.Initialize();
 
         AvaloniaXamlLoader.Load(this);
-    }
-
-    public override void RegisterServices()
-    {
-        base.RegisterServices();
-
-        AvaloniaWebViewBuilder.Initialize(config => config.IsInPrivateModeEnabled = true);
     }
 
     public override void OnFrameworkInitializationCompleted()
