@@ -45,6 +45,7 @@ public partial class LocalizationManager : ObservableObject, IDisposable
                     "deu" => GermanLocalization,
                     "fra" => FrenchLocalization,
                     "spa" => SpanishLocalization,
+                    "kor" => KoreanLocalization,
                     "hun" => HungarianLocalization,
                     "zho"
                         when CultureInfo
@@ -58,6 +59,7 @@ public partial class LocalizationManager : ObservableObject, IDisposable
             Language.German => GermanLocalization,
             Language.French => FrenchLocalization,
             Language.Spanish => SpanishLocalization,
+            Language.Korean => KoreanLocalization,
             Language.ChineseSimplified => ChineseSimplifiedLocalization,
             Language.Hungarian => HungarianLocalization,
             _ => EnglishLocalization,
