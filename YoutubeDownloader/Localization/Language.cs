@@ -10,4 +10,5 @@ public enum Language
     Spanish,
     ChineseSimplified,
     Hungarian,
+    Portuguese,
 }
