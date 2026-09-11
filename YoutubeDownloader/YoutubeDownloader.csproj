@@ -55,9 +55,4 @@
   <ItemGroup>
     <ProjectReference Include="../YoutubeDownloader.Core/YoutubeDownloader.Core.csproj" />
   </ItemGroup>
-
-  <!-- Avalonia.Controls.WebView is completely incompatible with trimming -->
-  <ItemGroup>
-    <TrimmerRootAssembly Include="Avalonia.Controls.WebView" />
-  </ItemGroup>
 </Project>
