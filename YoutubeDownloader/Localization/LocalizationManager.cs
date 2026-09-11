@@ -138,7 +138,7 @@ public partial class LocalizationManager
     public string AuthenticationTitle => Get();
     public string AuthenticatedText => Get();
     public string LogOutButton => Get();
-    public string LoadingText => Get();
+    public string AuthenticationPlaceholderText => Get();
 
     // ---- Download Single Setup ----
 

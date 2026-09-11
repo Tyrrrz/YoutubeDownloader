@@ -81,7 +81,14 @@ public partial class LocalizationManager
             [nameof(AuthenticationTitle)] = "Bejelentkezés",
             [nameof(AuthenticatedText)] = "Be vagy jelentkezve",
             [nameof(LogOutButton)] = "Kijelentkezés",
-            [nameof(LoadingText)] = "Betöltés...",
+            [nameof(AuthenticationPlaceholderText)] = """
+                Betöltés...
+
+                Ha a böngésző nem jelenik meg:
+                - Windows: telepítsd a Microsoft Edge WebView2 Runtime-ot.
+                - macOS: telepítsd a legújabb rendszerfrissítéseket.
+                - Linux: telepítsd a GTK 3-at, a WebKitGTK 4.1-et és a libsoup 3-at.
+                """,
             // Download Single Setup
             [nameof(CopyMenuItem)] = "Másolás",
             [nameof(LiveLabel)] = "Élő",
