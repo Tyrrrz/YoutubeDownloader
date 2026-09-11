@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
-using System.Net;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
 using YoutubeDownloader.Framework;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Dialogs;
 
 namespace YoutubeDownloader.Views.Dialogs;
@@ -19,16 +19,6 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
     public AuthSetupView() => InitializeComponent();
 
     private void NavigateToLoginPage() => WebBrowser.Source = LoginPageUri;
-
-    // Cookie domains may be scoped to a parent domain (e.g. ".youtube.com"), so check
-    // that the home page host matches the cookie's domain exactly or as a subdomain
-    private static bool IsApplicableToHomePage(Cookie cookie)
-    {
-        var domain = cookie.Domain.TrimStart('.');
-
-        return string.Equals(domain, HomePageUri.Host, StringComparison.OrdinalIgnoreCase)
-            || HomePageUri.Host.EndsWith('.' + domain, StringComparison.OrdinalIgnoreCase);
-    }
 
     private void LogOutButton_OnClick(object sender, RoutedEventArgs args)
     {
@@ -90,7 +80,7 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
         )
         {
             var cookies = await cookieManager.GetCookiesAsync();
-            DataContext.Cookies = cookies.Where(IsApplicableToHomePage).ToArray();
+            DataContext.Cookies = cookies.Where(c => c.IsApplicableFor(HomePageUri)).ToArray();
         }
     }
 }
