@@ -32,6 +32,10 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
         WebViewEnvironmentRequestedEventArgs args
     )
     {
+        // Prevent DevTools from being accessible through the default context menu or
+        // keyboard shortcuts, which would otherwise allow inspecting the authentication session
+        args.EnableDevTools = false;
+
         switch (args)
         {
             case WindowsWebView2EnvironmentRequestedEventArgs windowsArgs:
