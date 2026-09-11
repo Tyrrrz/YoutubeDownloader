@@ -62,8 +62,6 @@
                     VerticalAlignment="Center"
                     Command="{Binding ShowAuthSetupCommand}"
                     Foreground="{DynamicResource MaterialDarkForegroundBrush}"
-                    IsVisible="{OnPlatform False,
-                                           Windows=True}"
                     Theme="{DynamicResource MaterialFlatButton}"
                     ToolTip.Tip="{Binding LocalizationManager.AuthTooltip}">
                     <materialIcons:MaterialIcon
