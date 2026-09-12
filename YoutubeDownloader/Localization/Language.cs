@@ -8,7 +8,7 @@ public enum Language
     German,
     French,
     Spanish,
-    Korean
     ChineseSimplified,
     Hungarian,
+    Korean,
 }
