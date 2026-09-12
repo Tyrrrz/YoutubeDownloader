@@ -99,6 +99,7 @@ public partial class LocalizationManager
             // Download Multiple Setup
             [nameof(ContainerLabel)] = "Container",
             [nameof(VideoQualityLabel)] = "Video quality",
+            [nameof(SortByLabel)] = "Sort by",
             // Common buttons
             [nameof(CloseButton)] = "CLOSE",
             [nameof(DownloadButton)] = "DOWNLOAD",
