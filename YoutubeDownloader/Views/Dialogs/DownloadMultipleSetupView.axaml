@@ -9,6 +9,7 @@
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     x:Name="UserControl"
     Width="500"
+    MaxWidth="{Binding $parent[TopLevel].Bounds.Width}"
     x:DataType="dialogs:DownloadMultipleSetupViewModel">
     <Grid RowDefinitions="Auto,*,Auto,Auto">
         <!--  Title  -->
