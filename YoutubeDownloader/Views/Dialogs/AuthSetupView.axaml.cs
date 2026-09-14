@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
@@ -18,6 +19,27 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
     );
 
     public AuthSetupView() => InitializeComponent();
+
+    /// <summary>
+    /// Fills in the domain a cookie was read from, where the platform supplied none.
+    /// </summary>
+    /// <remarks>
+    /// Android's CookieManager answers a URL with the cookie header for that URL and
+    /// nothing else - no domain, no path, no expiry, because the platform API exposes none
+    /// of them. IsApplicableFor compares against Domain, so every captured cookie was
+    /// discarded: signing in appeared to work and then sent nothing, with the failure
+    /// context on a download reading "Auth cookies: 0" right after a successful login.
+    ///
+    /// A cookie read from a page is by definition applicable to that page, so filling in
+    /// the host it came from only states what the platform already implied.
+    /// </remarks>
+    private static Cookie AttributeToHomePage(Cookie cookie)
+    {
+        if (string.IsNullOrEmpty(cookie.Domain))
+            cookie.Domain = HomePageUri.Host;
+
+        return cookie;
+    }
 
     private void NavigateToLoginPage() => WebBrowser.Source = LoginPageUri;
 
@@ -81,7 +103,10 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
             if (hasReachedHomePage)
             {
                 var cookies = await cookieManager.GetCookiesAsync();
-                DataContext.Cookies = cookies.Where(c => c.IsApplicableFor(HomePageUri)).ToArray();
+                DataContext.Cookies = cookies
+                    .Select(AttributeToHomePage)
+                    .Where(c => c.IsApplicableFor(HomePageUri))
+                    .ToArray();
             }
         }
 

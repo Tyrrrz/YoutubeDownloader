@@ -19,7 +19,7 @@ on:
         required: true
       release_tag:
         description: "Tag to publish the built binaries under"
-        default: "ffmpeg-8.1.2-android"
+        default: "ffmpeg-8.1.2-android.2"
         required: true
 
 permissions:
@@ -34,6 +34,7 @@ env:
   OGG_VERSION: "1.3.5"
   VORBIS_VERSION: "1.3.7"
   OPUS_VERSION: "1.5.2"
+  X264_BRANCH: "stable"
 
 jobs:
   build:
@@ -125,6 +126,38 @@ jobs:
             --disable-shared --enable-static --disable-doc --disable-extra-programs
           make -j"$(nproc)" && make install
 
+      # Only here so that "-preset" exists as an option.
+      #
+      # YoutubeExplode.Converter appends "-preset <name>" to every command it builds,
+      # unconditionally, even when every stream is copied rather than encoded. "preset" is
+      # not a global FFmpeg option - it is a private option belonging to encoders such as
+      # x264 - so a build carrying none of them rejects the command outright:
+      #
+      #   Unrecognized option 'preset'. Error splitting the argument list: Option not found
+      #
+      # which failed every download at the muxing step. x264 is also what the FFmpeg the
+      # desktop build uses carries, so this makes the option mean the same on both.
+      #
+      # Assembly is disabled deliberately: x264 is never actually asked to encode anything,
+      # so its speed is irrelevant, and skipping the asm avoids a whole class of
+      # cross-compilation failure for no loss.
+      #
+      # x264 is GPL, which makes the FFmpeg binary GPL rather than LGPL. It is built from
+      # source by this workflow in a public repository, so the corresponding source is
+      # available; FFmpeg is invoked as a separate executable and this does not affect the
+      # licence of the app itself.
+      - name: Build libx264
+        run: |
+          set -eux
+          git clone --depth 1 --branch "$X264_BRANCH" \
+            https://code.videolan.org/videolan/x264.git
+          cd x264
+          ./configure --host=${{ matrix.triple }} \
+            --cross-prefix="$TOOLCHAIN/bin/llvm-" \
+            --prefix="$PREFIX" \
+            --enable-static --enable-pic --disable-cli --disable-asm --disable-opencl
+          make -j"$(nproc)" && make install
+
       - name: Build FFmpeg
         run: |
           set -eux
@@ -134,8 +167,7 @@ jobs:
 
           export PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig"
 
-          # LGPL build: libmp3lame, libvorbis and libopus are all LGPL/BSD, so the GPL
-          # is not needed for the encoders this app actually uses.
+          # GPL because of x264; the step that builds it explains why it has to be here.
           ./configure \
             --prefix="$PREFIX" \
             --target-os=android \
@@ -152,6 +184,8 @@ jobs:
             --enable-static \
             --disable-shared \
             --enable-pic \
+            --enable-gpl \
+            --enable-libx264 \
             --enable-libmp3lame \
             --enable-libvorbis \
             --enable-libopus \
@@ -194,13 +228,34 @@ jobs:
 
           # The encoders are the whole point of building this ourselves - fail loudly if
           # any of them is missing rather than shipping a binary that cannot make an MP3.
-          for enc in libmp3lame libvorbis libopus; do
+          for enc in libmp3lame libvorbis libopus libx264; do
             if ! grep -qa "$enc" ffmpeg; then
               echo "encoder $enc missing from the build" >&2
               exit 1
             fi
           done
-          echo "libmp3lame, libvorbis and libopus are all present"
+
+          # FFmpeg embeds its own configure line, so this asserts what the build was asked
+          # for rather than merely that a name appears somewhere in the binary.
+          for flag in --enable-gpl --enable-libx264; do
+            if ! grep -qa -- "$flag" ffmpeg; then
+              echo "configuration is missing $flag" >&2
+              exit 1
+            fi
+          done
+
+          # x264's preset names only exist if its option table was linked in, and that table
+          # is the thing that actually makes "-preset" a recognised option.
+          for name in ultrafast veryslow placebo; do
+            if ! grep -qa "$name" ffmpeg; then
+              echo "x264 preset name '$name' missing - '-preset' would still be rejected" >&2
+              exit 1
+            fi
+          done
+          echo "encoders present, and -preset is backed by x264's option table"
+
+          # On the limits of this: the binary is built against bionic for Android and cannot
+          # be executed on the runner, so these check its contents rather than its behaviour.
 
       - name: Stage the binary
         run: |

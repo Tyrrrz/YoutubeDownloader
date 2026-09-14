@@ -37,7 +37,7 @@ $ErrorActionPreference = 'Stop'
 
 # Keep in sync with the release the build workflow publishes.
 $Repository = 'leobischof/YoutubeDownloader'
-$ReleaseTag = 'ffmpeg-8.1.2-android'
+$ReleaseTag = 'ffmpeg-8.1.2-android.2'
 
 $Architectures = @('arm64-v8a', 'x86_64')
 
