@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -32,7 +33,16 @@ public partial class DashboardView : UserControl<DashboardViewModel>
 
     private void StatusTextBlock_OnPointerReleased(object sender, PointerReleasedEventArgs args)
     {
-        if (sender is IDataContextProvider { DataContext: DownloadViewModel dataContext })
+        if (sender is not IDataContextProvider { DataContext: DownloadViewModel dataContext })
+            return;
+
+        // Copying is the useful action with a pointer, where the tooltip has already shown
+        // the error and the clipboard is somewhere to put it. On a touch screen there is no
+        // hover and so no tooltip, which left a failed download with no way to see why - so
+        // show the reason instead of silently copying it.
+        if (OperatingSystem.IsAndroid())
+            dataContext.ShowErrorMessageCommand.ExecuteIfCan(null);
+        else
             dataContext.CopyErrorMessageCommand.ExecuteIfCan(null);
     }
 }

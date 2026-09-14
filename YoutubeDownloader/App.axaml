@@ -78,8 +78,17 @@
             <Setter Property="DialogMargin" Value="0" />
         </Style>
 
+        <!--
+            No margin. This element paints the dialog's background but does not constrain
+            the dialog inside it - the content is measured against the window and simply
+            overflows. A margin here therefore made the card narrower than its own content
+            on a phone, with the text spilling out past both edges of the white panel.
+            Every dialog bounds its own size to the window, so with no margin the card and
+            the content agree. On a desktop window, where a dialog is far narrower than the
+            window anyway, this changes nothing.
+        -->
         <Style Selector="dialogHostAvalonia|DialogOverlayPopupHost">
-            <Setter Property="Margin" Value="48" />
+            <Setter Property="Margin" Value="0" />
             <Setter Property="Background" Value="{DynamicResource MaterialPaperBrush}" />
         </Style>
 

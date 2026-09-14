@@ -3,6 +3,7 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
+using PowerKit.Extensions;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Dialogs;
@@ -79,6 +80,13 @@ public partial class AuthSetupView : UserControl<AuthSetupViewModel>
         {
             var cookies = await cookieManager.GetCookiesAsync();
             DataContext.Cookies = cookies.Where(c => c.IsApplicableFor(HomePageUri)).ToArray();
+
+            // Signing in ends by redirecting to the YouTube home page, which the dialog then
+            // renders in its embedded browser. There is nothing to do with it - the cookies
+            // are already captured and that is the only thing this dialog exists for - so
+            // close instead of leaving the user looking at a cramped copy of YouTube.
+            if (DataContext.IsAuthenticated)
+                DataContext.CloseCommand.ExecuteIfCan(true);
         }
     }
 }

@@ -67,6 +67,7 @@ public partial class DownloadViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CopyErrorMessageCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowErrorMessageCommand))]
     public partial string? ErrorMessage { get; set; }
 
     public CancellationToken CancellationToken => _cancellationTokenSource.Token;
@@ -133,6 +134,28 @@ public partial class DownloadViewModel : ViewModelBase
                 _viewModelManager.GetMessageBoxViewModel(LocalizationManager.ErrorTitle, ex.Message)
             );
         }
+    }
+
+    private bool CanShowErrorMessage() => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+    /// <summary>
+    /// Presents the reason a download failed in a dialog.
+    /// </summary>
+    /// <remarks>
+    /// The failure reason is otherwise only reachable through the status cell's tooltip,
+    /// which needs a pointer that hovers. A touch screen has none, so on Android the text
+    /// explaining why a download failed could not be read at all - the row just said
+    /// "Failed" with no way to find out more.
+    /// </remarks>
+    [RelayCommand(CanExecute = nameof(CanShowErrorMessage))]
+    private async Task ShowErrorMessageAsync()
+    {
+        if (string.IsNullOrWhiteSpace(ErrorMessage))
+            return;
+
+        await _dialogManager.ShowDialogAsync(
+            _viewModelManager.GetMessageBoxViewModel(LocalizationManager.ErrorTitle, ErrorMessage)
+        );
     }
 
     [RelayCommand]

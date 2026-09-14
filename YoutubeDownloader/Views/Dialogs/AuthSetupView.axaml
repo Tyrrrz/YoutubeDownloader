@@ -4,11 +4,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-    Height="450"
+    Height="{OnPlatform 450, Android=10000}"
     MaxHeight="{Binding $parent[TopLevel].Bounds.Height}"
     Width="450"
     MaxWidth="{Binding $parent[TopLevel].Bounds.Width}"
     x:DataType="dialogs:AuthSetupViewModel">
+    <!--
+        The Android height above is deliberately larger than any display: MaxHeight clamps
+        it to the window, so the dialog fills the screen on a phone while staying 450 on
+        desktop. Google's sign-in page does not fit in 450 on a phone - the form was cut off
+        below the fold - and the page is hosted in a native web view that does not scroll
+        the surrounding dialog.
+    -->
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Title  -->
         <TextBlock
