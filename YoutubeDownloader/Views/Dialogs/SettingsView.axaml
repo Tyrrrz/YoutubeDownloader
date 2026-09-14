@@ -14,13 +14,6 @@
         type, because a finger is a much blunter instrument than a pointer. The Android width
         is deliberately larger than any display so MaxWidth decides it.
     -->
-    <UserControl.Styles>
-        <Style Selector="DockPanel &gt; TextBlock">
-            <Setter Property="FontSize" Value="{OnPlatform 14, Android=17}" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-        </Style>
-    </UserControl.Styles>
-
     <Grid RowDefinitions="Auto,*,Auto">
         <TextBlock
             Grid.Row="0"

@@ -16,7 +16,17 @@ public partial class MainSingleView : UserControl<MainViewModel>
     // resolves to an intent there and to the default browser everywhere else.
     private async void UkraineButton_OnClick(object? sender, RoutedEventArgs args)
     {
-        if (TopLevel.GetTopLevel(this) is { } topLevel)
-            await topLevel.Launcher.LaunchUriAsync(UkraineUri);
+        // An exception out of an async void handler is unhandled and takes the whole app
+        // down, and a device with nothing registered for https has nothing useful to be
+        // told about it.
+        try
+        {
+            if (TopLevel.GetTopLevel(this) is { } topLevel)
+                await topLevel.Launcher.LaunchUriAsync(UkraineUri);
+        }
+        catch
+        {
+            // Nothing to do - the link simply does not open.
+        }
     }
 }

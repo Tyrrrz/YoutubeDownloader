@@ -94,6 +94,11 @@ public partial class App : Application, IDisposable
         base.Initialize();
 
         AvaloniaXamlLoader.Load(this);
+
+        // Referenced as a type rather than by resource URI, so a rename or a move is a
+        // compile error instead of a crash on a device this cannot be tested on.
+        if (OperatingSystem.IsAndroid())
+            Styles.Add(new TouchStyles());
     }
 
     public override void OnFrameworkInitializationCompleted()

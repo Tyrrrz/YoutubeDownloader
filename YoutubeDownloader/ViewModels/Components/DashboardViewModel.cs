@@ -227,19 +227,33 @@ public partial class DashboardViewModel : ViewModelBase
             download.ErrorMessage =
                 ex is YoutubeExplodeException
                     ? ex.Message
-                    : ex
-                        + Environment.NewLine
-                        + Environment.NewLine
-                        + "--- Context ---"
-                        + Environment.NewLine
-                        + $"Auth cookies: {_settingsService.LastAuthCookies?.Count ?? 0}"
-                        + Environment.NewLine
-                        + $"FFmpeg: {FFmpeg.TryGetCliFilePath() ?? "not found"}";
+                    : ex + Environment.NewLine + Environment.NewLine + DescribeContext();
         }
         finally
         {
             progress.ReportCompletion();
             download.Dispose();
+        }
+    }
+
+    /// <remarks>
+    /// Never throws. This runs inside the failure path of an async void method, so an
+    /// exception raised while describing a failure would take the whole app down instead of
+    /// reporting anything - and probing for FFmpeg touches the file system.
+    /// </remarks>
+    private string DescribeContext()
+    {
+        try
+        {
+            return "--- Context ---"
+                + Environment.NewLine
+                + $"Auth cookies: {_settingsService.LastAuthCookies?.Count ?? 0}"
+                + Environment.NewLine
+                + $"FFmpeg: {FFmpeg.TryGetCliFilePath() ?? "not found"}";
+        }
+        catch (Exception ex)
+        {
+            return $"--- Context unavailable: {ex.Message} ---";
         }
     }
 

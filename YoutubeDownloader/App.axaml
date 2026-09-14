@@ -25,15 +25,14 @@
 
         <!--
             Combo box. The sizes here are deliberately compact - this app packs a lot of
-            settings into a small dialog on a desktop. A finger is not a mouse pointer, so
-            Android gets a taller row and larger text; 22px tall is below every touch-target
-            guideline there is.
+            settings into a small dialog on a desktop. Touch screens get roomier ones from
+            TouchStyles, which App.Initialize loads only there.
         -->
         <Style Selector="ComboBox">
-            <Setter Property="FontSize" Value="{OnPlatform 14, Android=17}" />
+            <Setter Property="FontSize" Value="14" />
 
             <Style Selector="^ /template/ Panel#PART_RootPanel">
-                <Setter Property="Height" Value="{OnPlatform 22, Android=36}" />
+                <Setter Property="Height" Value="22" />
             </Style>
 
             <Style Selector="^ /template/ ToggleButton">
@@ -167,7 +166,7 @@
 
         <!--  Text box  -->
         <Style Selector="TextBox">
-            <Setter Property="FontSize" Value="{OnPlatform 14, Android=17}" />
+            <Setter Property="FontSize" Value="14" />
         </Style>
 
         <!--  Toggle switch  -->
@@ -202,7 +201,7 @@
                 TargetType="{x:Type TextBox}">
                 <Styles>
                     <Style Selector="TextBox">
-                        <Setter Property="Height" Value="{OnPlatform 22, Android=36}" />
+                        <Setter Property="Height" Value="22" />
 
                         <Style Selector="^ /template/ Panel#PART_TextFieldPanel">
                             <Setter Property="MinHeight" Value="0" />
