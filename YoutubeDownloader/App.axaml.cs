@@ -14,6 +14,7 @@ using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeDownloader.ViewModels.Dialogs;
+using YoutubeDownloader.Views;
 
 namespace YoutubeDownloader;
 
@@ -93,6 +94,11 @@ public partial class App : Application, IDisposable
         base.Initialize();
 
         AvaloniaXamlLoader.Load(this);
+
+        // Referenced as a type rather than by resource URI, so a rename or a move is a
+        // compile error instead of a crash on a device this cannot be tested on.
+        if (OperatingSystem.IsAndroid())
+            Styles.Add(new TouchStyles());
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -113,6 +119,19 @@ public partial class App : Application, IDisposable
             // handler to ensure timely disposal as a safeguard.
             // https://github.com/Tyrrrz/YoutubeDownloader/issues/795
             desktop.Exit += (_, _) => Dispose();
+        }
+        // Mobile platforms (Android) host a single windowless root control, so the
+        // window-bound path above does not apply. Bind the same view model to the
+        // chrome-less root and mirror the initialization hook ViewManager attaches.
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+        {
+            var viewModelManager = _services.GetRequiredService<ViewModelManager>();
+            var mainViewModel = viewModelManager.GetMainViewModel();
+
+            var mainView = new MainSingleView { DataContext = mainViewModel };
+            mainView.Loaded += async (_, _) => await mainViewModel.InitializeAsync();
+
+            singleView.MainView = mainView;
         }
 
         // Initialize the theme for the first time; must be done after the main window is created

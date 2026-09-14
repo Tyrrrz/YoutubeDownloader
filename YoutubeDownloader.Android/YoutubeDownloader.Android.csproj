@@ -1,0 +1,114 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <!--
+      Android 6.0. Not arbitrary: the AndroidX lifecycle runtime pulled in by Avalonia
+      declares minSdk 23, and the manifest merger refuses anything lower.
+    -->
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <ApplicationId>me.tyrrrz.youtubedownloader</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <!--
+      Use .NET's own HTTP stack instead of Android's Java one.
+
+      The native handler wraps an OkHttp response in a Java InputStream, and closing that
+      stream drains the rest of the connection - a blocking network read. HttpClient
+      disposes responses on whichever thread the await resumed on, which for work started
+      from a command is the UI thread, and Android's StrictMode kills network I/O there:
+
+        android.os.NetworkOnMainThreadException
+          at Java.IO.InputStream.Close()
+          at System.Net.Http.HttpResponseMessage.Dispose()
+          at YoutubeExplode...StreamClient.TryGetContentLengthAsync
+
+      That made every download fail before it started. SocketsHttpHandler does its I/O on
+      .NET sockets, which StrictMode does not police and which do not block on close, and
+      it is the same stack the desktop build already uses.
+    -->
+    <UseNativeHttpHandler>false</UseNativeHttpHandler>
+    <!--
+      Every APK this project produces is meant to be sideloaded, so the managed
+      assemblies have to be inside it. Fast Deployment - on by default for Debug -
+      leaves them out and pushes them over adb instead, which makes a hand-installed
+      Debug APK abort on launch with "No assemblies found in .../.__override__/...".
+    -->
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidUseFastDeployment>false</AndroidUseFastDeployment>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <AndroidLinkTool>r8</AndroidLinkTool>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AndroidResource Include="Icon.png" Link="Resources\drawable\Icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Android" />
+    <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
+    <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
+    <ProjectReference Include="..\YoutubeDownloader\YoutubeDownloader.csproj" />
+  </ItemGroup>
+
+  <!--
+    FFmpeg is shipped as a native library so it lands in the native library directory, the
+    only place Android will execute a binary from. See AndroidFFmpegInitializer for why.
+    Only the two architectures in current use are bundled; each adds ~20 MB to the APK.
+
+    No AndroidNativeLibrary items are declared: the SDK already picks up lib*.so from
+    folders named after an ABI. Declaring them explicitly as well packaged each library
+    twice (warning XA4301).
+  -->
+
+  <!--
+    Fetch the FFmpeg binaries on first build. The condition must test the same file the
+    script actually writes (libffmpeg.so) - testing for a differently named file made this
+    target re-run on every single build.
+
+    PowerShell 7 is not present on every machine, so fall back to Windows PowerShell. The
+    script only needs Invoke-WebRequest and tar, both of which 5.1 on Windows 10+ provides.
+  -->
+  <Target
+    Name="DownloadFFmpegAndroid"
+    BeforeTargets="BeforeBuild"
+    Condition="'$(DownloadFFmpegAndroid)' != 'false' AND (!Exists('$(MSBuildProjectDirectory)/arm64-v8a/libffmpeg.so') OR !Exists('$(MSBuildProjectDirectory)/x86_64/libffmpeg.so'))"
+  >
+    <PropertyGroup>
+      <_FFmpegPwsh Condition="'$(OS)' == 'Windows_NT'">powershell</_FFmpegPwsh>
+      <_FFmpegPwsh Condition="'$(OS)' != 'Windows_NT'">pwsh</_FFmpegPwsh>
+    </PropertyGroup>
+    <Exec
+      Command="$(_FFmpegPwsh) -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)/Download-FFmpeg-Android.ps1&quot; -DownloadAll -OutputPath &quot;$(MSBuildProjectDirectory)&quot;"
+      LogStandardErrorAsError="true"
+      ContinueOnError="false"
+    />
+    <!--
+      Register what was just downloaded. The SDK's default AndroidNativeLibrary glob
+      runs during project evaluation, which is over before any target executes - so on
+      a clean checkout, where the binaries do not exist yet, the glob finds nothing and
+      the APK ships without FFmpeg. It only appeared to work because a second build on
+      the same machine evaluates with the files already on disk.
+
+      Removed first: if only one of the two was present at evaluation the glob already
+      holds it, and including it again packages that library twice (warning XA4301).
+      Both spellings are removed because the glob's item spec is relative to the
+      project while ours is absolute.
+    -->
+    <ItemGroup>
+      <AndroidNativeLibrary Remove="arm64-v8a/libffmpeg.so;$(MSBuildProjectDirectory)/arm64-v8a/libffmpeg.so" />
+      <AndroidNativeLibrary Remove="x86_64/libffmpeg.so;$(MSBuildProjectDirectory)/x86_64/libffmpeg.so" />
+      <AndroidNativeLibrary Include="$(MSBuildProjectDirectory)/arm64-v8a/libffmpeg.so" Abi="arm64-v8a" />
+      <AndroidNativeLibrary Include="$(MSBuildProjectDirectory)/x86_64/libffmpeg.so" Abi="x86_64" />
+    </ItemGroup>
+  </Target>
+</Project>

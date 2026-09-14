@@ -1,0 +1,151 @@
+<UserControl
+    x:Class="YoutubeDownloader.Views.MainSingleView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+    xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
+    x:DataType="viewModels:MainViewModel"
+    RenderOptions.BitmapInterpolationMode="HighQuality">
+    <!--
+        Single-view root for platforms without windows (Android). Mirrors the content of
+        MainView, which supplies the same tree inside a Window on desktop. Keep the two in
+        sync: this is deliberately only the chrome-less content, not a second layout.
+
+        The bars live here rather than in DashboardView because DashboardView is shared with
+        the desktop build, which has a window title bar and a pointer to reach the top of it.
+        A phone has neither, so the actions belong within thumb reach at the bottom.
+    -->
+    <!--  Hack: dialog host animations mess up webview positioning, so need to disable them  -->
+    <dialogHostAvalonia:DialogHost
+        x:Name="DialogHost"
+        CloseOnClickAway="False"
+        DisableOpeningAnimation="True">
+        <materialStyles:SnackbarHost HostName="Root" SnackbarMaxCounts="3">
+            <DockPanel>
+                <!--  Top bar  -->
+                <Border Background="{DynamicResource MaterialDarkBackgroundBrush}" DockPanel.Dock="Top">
+                    <Grid Margin="16,10,8,10" ColumnDefinitions="*,Auto">
+                        <TextBlock
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            FontSize="19"
+                            FontWeight="Light"
+                            Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                            Text="YouTube Downloader"
+                            TextTrimming="CharacterEllipsis" />
+
+                        <!--
+                            The same statement the readme opens with, and the same link. The
+                            flag is drawn from two rectangles rather than an emoji or an image
+                            so it renders identically regardless of the device's emoji font.
+                        -->
+                        <Button
+                            Grid.Column="1"
+                            Padding="8,4"
+                            VerticalAlignment="Center"
+                            Click="UkraineButton_OnClick"
+                            Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                            Theme="{DynamicResource MaterialFlatButton}"
+                            ToolTip.Tip="https://tyrrrz.me/ukraine">
+                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                <StackPanel
+                                    Width="26"
+                                    VerticalAlignment="Center"
+                                    Orientation="Vertical">
+                                    <Border Height="9" Background="#0057B7" />
+                                    <Border Height="9" Background="#FFD700" />
+                                </StackPanel>
+
+                                <TextBlock
+                                    MaxWidth="86"
+                                    VerticalAlignment="Center"
+                                    FontSize="11"
+                                    LineHeight="13"
+                                    Text="We stand with Ukraine"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--
+                    Bottom bar. Icon-only on purpose: the labels these commands already carry
+                    are full sentences ("Remove completed downloads"), which do not fit under
+                    an icon on a phone, and inventing shorter ones would mean inventing them
+                    in all six translations too.
+                -->
+                <Border
+                    Background="{DynamicResource MaterialDarkBackgroundBrush}"
+                    BorderBrush="{DynamicResource MaterialDividerBrush}"
+                    BorderThickness="0,1,0,0"
+                    DockPanel.Dock="Bottom">
+                    <UniformGrid Columns="4">
+                        <!--  Authentication  -->
+                        <Button
+                            Padding="0,10"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding Dashboard.ShowAuthSetupCommand}"
+                            Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                            Theme="{DynamicResource MaterialFlatButton}"
+                            ToolTip.Tip="{Binding Dashboard.LocalizationManager.AuthTooltip}">
+                            <materialIcons:MaterialIcon
+                                Width="26"
+                                Height="26"
+                                Kind="AccountKey" />
+                        </Button>
+
+                        <!--  Settings  -->
+                        <Button
+                            Padding="0,10"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding Dashboard.ShowSettingsCommand}"
+                            Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                            Theme="{DynamicResource MaterialFlatButton}"
+                            ToolTip.Tip="{Binding Dashboard.LocalizationManager.SettingsTooltip}">
+                            <materialIcons:MaterialIcon
+                                Width="26"
+                                Height="26"
+                                Kind="Settings" />
+                        </Button>
+
+                        <!--  Restart failed downloads  -->
+                        <Button
+                            Padding="0,10"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding Dashboard.RestartFailedDownloadsCommand}"
+                            Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                            Theme="{DynamicResource MaterialFlatButton}"
+                            ToolTip.Tip="{Binding Dashboard.LocalizationManager.ContextMenuRestartFailed}">
+                            <materialIcons:MaterialIcon
+                                Width="26"
+                                Height="26"
+                                Kind="Restart" />
+                        </Button>
+
+                        <!--  Remove completed downloads  -->
+                        <Button
+                            Padding="0,10"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding Dashboard.RemoveSuccessfulDownloadsCommand}"
+                            Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                            Theme="{DynamicResource MaterialFlatButton}"
+                            ToolTip.Tip="{Binding Dashboard.LocalizationManager.ContextMenuRemoveSuccessful}">
+                            <materialIcons:MaterialIcon
+                                Width="26"
+                                Height="26"
+                                Kind="DeleteSweep" />
+                        </Button>
+                    </UniformGrid>
+                </Border>
+
+                <ContentControl Content="{Binding Dashboard}" />
+            </DockPanel>
+        </materialStyles:SnackbarHost>
+    </dialogHostAvalonia:DialogHost>
+</UserControl>

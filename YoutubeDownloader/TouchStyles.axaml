@@ -1,0 +1,46 @@
+<!--
+    Sizing for a touch screen, loaded by App.Initialize only where there is one.
+
+    It lives in its own file rather than as conditional values inside App.axaml because a
+    style Setter does not convert its value: an {OnPlatform} there yields the string "17"
+    and throws "Setter value '17' is not a valid value for property 'FontSize'" the moment
+    the style is applied. As a direct property assignment - Height, Width, IsVisible -
+    OnPlatform is fine, because there the target type is known at compile time.
+
+    The desktop sizes stay deliberately compact: this app fits a lot of rows into a small
+    dialog, which suits a pointer. A finger is blunter, and a 22px-tall combo box is below
+    every touch-target guideline there is.
+-->
+<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.Views.Dialogs"
+    x:Class="YoutubeDownloader.TouchStyles">
+    <!--  Combo box  -->
+    <Style Selector="ComboBox">
+        <Setter Property="FontSize" Value="17" />
+
+        <Style Selector="^ /template/ Panel#PART_RootPanel">
+            <Setter Property="Height" Value="36" />
+        </Style>
+    </Style>
+
+    <!--  Text box  -->
+    <Style Selector="TextBox">
+        <Setter Property="FontSize" Value="17" />
+    </Style>
+
+    <!--
+        The settings dialog's text boxes use the CompactTextBox theme, which pins them to
+        22px - too short to hold the larger type above without clipping it.
+    -->
+    <Style Selector="dialogs|SettingsView TextBox">
+        <Setter Property="Height" Value="36" />
+    </Style>
+
+    <!--  Row labels  -->
+    <Style Selector="DockPanel &gt; TextBlock">
+        <Setter Property="FontSize" Value="17" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+</Styles>

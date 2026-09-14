@@ -19,6 +19,14 @@ public static class FFmpeg
     public static string CliFileName { get; } =
         OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg";
 
+    /// <summary>
+    /// Explicit path to the FFmpeg binary, for platforms where probing cannot find it.
+    /// Android ships FFmpeg as a native library (libffmpeg.so) inside the APK rather than
+    /// as an executable named <see cref="CliFileName" /> on a probe path, so the Android
+    /// head resolves it at startup and assigns it here.
+    /// </summary>
+    public static string? CustomCliFilePath { get; set; }
+
     public static IEnumerable<string> GetProbeDirectoryPaths()
     {
         yield return AppContext.BaseDirectory;
@@ -67,10 +75,12 @@ public static class FFmpeg
     }
 
     public static string? TryGetCliFilePath() =>
-        GetProbeDirectoryPaths()
-            .Distinct(StringComparer.Ordinal)
-            .Select(dirPath => Path.Combine(dirPath, CliFileName))
-            .FirstOrDefault(File.Exists);
+        !string.IsNullOrWhiteSpace(CustomCliFilePath) && File.Exists(CustomCliFilePath)
+            ? CustomCliFilePath
+            : GetProbeDirectoryPaths()
+                .Distinct(StringComparer.Ordinal)
+                .Select(dirPath => Path.Combine(dirPath, CliFileName))
+                .FirstOrDefault(File.Exists);
 
     private static string GetDownloadUrl()
     {

@@ -5,6 +5,7 @@
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     Width="500"
+    MaxWidth="{Binding $parent[TopLevel].Bounds.Width}"
     x:DataType="dialogs:MessageBoxViewModel">
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Title  -->
