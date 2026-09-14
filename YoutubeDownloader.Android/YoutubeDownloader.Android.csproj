@@ -63,7 +63,7 @@
   <Target
     Name="DownloadFFmpegAndroid"
     BeforeTargets="BeforeBuild"
-    Condition="'$(DownloadFFmpegAndroid)' != 'false' AND !Exists('arm64-v8a\libffmpeg.so') AND !Exists('x86_64\libffmpeg.so')"
+    Condition="'$(DownloadFFmpegAndroid)' != 'false' AND (!Exists('$(MSBuildProjectDirectory)/arm64-v8a/libffmpeg.so') OR !Exists('$(MSBuildProjectDirectory)/x86_64/libffmpeg.so'))"
   >
     <PropertyGroup>
       <_FFmpegPwsh Condition="'$(OS)' == 'Windows_NT'">powershell</_FFmpegPwsh>
@@ -74,5 +74,23 @@
       LogStandardErrorAsError="true"
       ContinueOnError="false"
     />
+    <!--
+      Register what was just downloaded. The SDK's default AndroidNativeLibrary glob
+      runs during project evaluation, which is over before any target executes - so on
+      a clean checkout, where the binaries do not exist yet, the glob finds nothing and
+      the APK ships without FFmpeg. It only appeared to work because a second build on
+      the same machine evaluates with the files already on disk.
+
+      Removed first: if only one of the two was present at evaluation the glob already
+      holds it, and including it again packages that library twice (warning XA4301).
+      Both spellings are removed because the glob's item spec is relative to the
+      project while ours is absolute.
+    -->
+    <ItemGroup>
+      <AndroidNativeLibrary Remove="arm64-v8a/libffmpeg.so;$(MSBuildProjectDirectory)/arm64-v8a/libffmpeg.so" />
+      <AndroidNativeLibrary Remove="x86_64/libffmpeg.so;$(MSBuildProjectDirectory)/x86_64/libffmpeg.so" />
+      <AndroidNativeLibrary Include="$(MSBuildProjectDirectory)/arm64-v8a/libffmpeg.so" Abi="arm64-v8a" />
+      <AndroidNativeLibrary Include="$(MSBuildProjectDirectory)/x86_64/libffmpeg.so" Abi="x86_64" />
+    </ItemGroup>
   </Target>
 </Project>
