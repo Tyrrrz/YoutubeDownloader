@@ -21,6 +21,10 @@ public static class Program
 
     public static string ProjectReleasesUrl { get; } = $"{ProjectUrl}/releases";
 
+    // The members above are app metadata and are consumed on every platform. Everything
+    // below is the desktop entry point: it depends on Avalonia.Desktop, which has no
+    // Android target, so the Android head supplies its own entry point instead.
+#if !ANDROID
     public static AppBuilder BuildAvaloniaApp() =>
         AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace();
 
@@ -48,4 +52,5 @@ public static class Program
                 disposableApp.Dispose();
         }
     }
+#endif
 }

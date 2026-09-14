@@ -1,0 +1,24 @@
+<UserControl
+    x:Class="YoutubeDownloader.Views.MainSingleView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+    xmlns:materialStyles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+    xmlns:viewModels="clr-namespace:YoutubeDownloader.ViewModels"
+    x:DataType="viewModels:MainViewModel"
+    RenderOptions.BitmapInterpolationMode="HighQuality">
+    <!--
+        Single-view root for platforms without windows (Android). Mirrors the content of
+        MainView, which supplies the same tree inside a Window on desktop. Keep the two in
+        sync: this is deliberately only the chrome-less content, not a second layout.
+    -->
+    <!--  Hack: dialog host animations mess up webview positioning, so need to disable them  -->
+    <dialogHostAvalonia:DialogHost
+        x:Name="DialogHost"
+        CloseOnClickAway="False"
+        DisableOpeningAnimation="True">
+        <materialStyles:SnackbarHost HostName="Root" SnackbarMaxCounts="3">
+            <ContentControl Content="{Binding Dashboard}" />
+        </materialStyles:SnackbarHost>
+    </dialogHostAvalonia:DialogHost>
+</UserControl>

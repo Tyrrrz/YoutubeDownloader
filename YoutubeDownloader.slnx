@@ -10,4 +10,5 @@
 
   <Project Path="YoutubeDownloader/YoutubeDownloader.csproj" />
   <Project Path="YoutubeDownloader.Core/YoutubeDownloader.Core.csproj" />
+  <Project Path="YoutubeDownloader.Android/YoutubeDownloader.Android.csproj" />
 </Solution>

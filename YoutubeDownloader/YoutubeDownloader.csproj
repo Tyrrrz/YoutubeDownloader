@@ -1,19 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <!--
+      Directory.Build.props pins a single TargetFramework; blank it so this project can
+      multi-target instead. The same source tree backs both heads: the desktop app builds
+      from net10.0, and YoutubeDownloader.Android references the net10.0-android target.
+    -->
+    <TargetFramework />
+    <TargetFrameworks>net10.0;net10.0-android</TargetFrameworks>
+  </PropertyGroup>
+
+  <!-- Desktop-only: on Android the entry point, icon and packaging come from the Android head. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>../favicon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <!-- Trimmed builds break support for Windows 10 for some reason -->
     <!-- https://github.com/Tyrrrz/YoutubeDownloader/issues/496 -->
     <PublishTrimmed>false</PublishTrimmed>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <MacOSBundleIdentifier>me.tyrrrz.youtubedownloader</MacOSBundleIdentifier>
     <MacOSBundleName>YTD</MacOSBundleName>
     <MacOSBundleDisplayName>YoutubeDownloader</MacOSBundleDisplayName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+    <!-- Android 6.0; must match the Android head, whose AndroidX deps require minSdk 23. -->
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -34,25 +50,48 @@
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Controls.DataGrid" />
     <PackageReference Include="Avalonia.Controls.WebView" />
-    <PackageReference Include="Avalonia.Desktop" />
     <PackageReference Include="Cogwheel" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
     <PackageReference Include="Deorcify" />
     <PackageReference Include="DialogHost.Avalonia" />
     <PackageReference Include="Gress" />
-    <PackageReference Include="MacBundle" />
     <PackageReference Include="Markdig" />
     <PackageReference Include="Material.Avalonia" />
     <PackageReference Include="Material.Avalonia.DataGrid" />
     <PackageReference Include="Material.Icons.Avalonia" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <!--
+      Onova resolves its netstandard2.0 asset on Android. UpdateService already gates the
+      update manager behind OperatingSystem.IsWindows(), so it is inert there and the
+      package needs no platform condition.
+    -->
     <PackageReference Include="Onova" />
     <PackageReference Include="PowerKit" />
     <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- Desktop-only packages: neither ships an Android target. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="MacBundle" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="../YoutubeDownloader.Core/YoutubeDownloader.Core.csproj" />
   </ItemGroup>
+
+  <!--
+    CSharpier.MsBuild only defines CSharpierFormat in the inner, per-framework build. Since
+    this project multi-targets, the outer build has no such target and CI's
+    `dotnet build -t:CSharpierFormat` fails with MSB4057. Forward it to a single inner
+    build: formatting is framework-independent, so one pass covers the whole project.
+  -->
+  <Target Name="CSharpierFormat" Condition="'$(TargetFramework)' == ''">
+    <MSBuild
+      Projects="$(MSBuildProjectFullPath)"
+      Targets="CSharpierFormat"
+      Properties="TargetFramework=net10.0"
+    />
+  </Target>
 </Project>

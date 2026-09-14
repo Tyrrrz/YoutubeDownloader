@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto">
+  <!-- Basic permissions -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <!-- Storage permissions for Android 10 and below -->
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <!-- Storage permission for Android 11+ (API 30+) -->
+  <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+  <!--
+		extractNativeLibs must stay true: FFmpeg ships as libffmpeg.so and is executed as a
+		CLI binary, which only works when it is unpacked to the native library directory as
+		a real, executable file. With the modern default (false) it stays mapped inside the
+		APK and FFmpeg silently resolves to nothing.
+	-->
+  <application
+    android:label="YoutubeDownloader"
+    android:icon="@drawable/Icon"
+    android:requestLegacyExternalStorage="true"
+    android:extractNativeLibs="true"
+  />
+</manifest>
