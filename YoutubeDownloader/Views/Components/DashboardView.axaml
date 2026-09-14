@@ -54,12 +54,16 @@
                     </TextBox>
                 </materialStyles:Card>
 
-                <!--  Auth button  -->
+                <!--
+                    Auth button. Hidden on Android, where it lives in the bottom bar instead -
+                    the top corner of a phone is the hardest place on the screen to reach.
+                -->
                 <Button
                     Grid.Column="1"
                     Margin="8,0,0,0"
                     Padding="8"
                     VerticalAlignment="Center"
+                    IsVisible="{OnPlatform True, Android=False}"
                     Command="{Binding ShowAuthSetupCommand}"
                     Foreground="{DynamicResource MaterialDarkForegroundBrush}"
                     Theme="{DynamicResource MaterialFlatButton}"
@@ -70,12 +74,13 @@
                         Kind="AccountKey" />
                 </Button>
 
-                <!--  Settings button  -->
+                <!--  Settings button. Also in the bottom bar on Android; see above.  -->
                 <Button
                     Grid.Column="2"
                     Margin="8,0,0,0"
                     Padding="8"
                     VerticalAlignment="Center"
+                    IsVisible="{OnPlatform True, Android=False}"
                     Command="{Binding ShowSettingsCommand}"
                     Foreground="{DynamicResource MaterialDarkForegroundBrush}"
                     Theme="{DynamicResource MaterialFlatButton}"

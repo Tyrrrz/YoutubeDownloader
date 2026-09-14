@@ -2,19 +2,20 @@
     x:Class="YoutubeDownloader.Views.Dialogs.AuthSetupView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     Height="{OnPlatform 450, Android=10000}"
-    MaxHeight="{Binding $parent[TopLevel].Bounds.Height}"
+    MaxHeight="{Binding $parent[TopLevel].Bounds.Height, Converter={x:Static converters:FractionOfConverter.Instance}, ConverterParameter=0.7}"
     Width="450"
     MaxWidth="{Binding $parent[TopLevel].Bounds.Width}"
     x:DataType="dialogs:AuthSetupViewModel">
     <!--
-        The Android height above is deliberately larger than any display: MaxHeight clamps
-        it to the window, so the dialog fills the screen on a phone while staying 450 on
-        desktop. Google's sign-in page does not fit in 450 on a phone - the form was cut off
-        below the fold - and the page is hosted in a native web view that does not scroll
-        the surrounding dialog.
+        The Android height above is deliberately larger than any display, so that MaxHeight
+        decides it: the dialog takes 70% of the window, which on a phone is room enough for
+        Google's sign-in form (450 cut it off below the fold, and it is hosted in a native
+        web view that does not scroll the dialog around it) while leaving the page behind it
+        visible. On desktop the 450 still wins in any window taller than ~640.
     -->
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Title  -->

@@ -13,6 +13,24 @@
     <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <!--
+      Use .NET's own HTTP stack instead of Android's Java one.
+
+      The native handler wraps an OkHttp response in a Java InputStream, and closing that
+      stream drains the rest of the connection - a blocking network read. HttpClient
+      disposes responses on whichever thread the await resumed on, which for work started
+      from a command is the UI thread, and Android's StrictMode kills network I/O there:
+
+        android.os.NetworkOnMainThreadException
+          at Java.IO.InputStream.Close()
+          at System.Net.Http.HttpResponseMessage.Dispose()
+          at YoutubeExplode...StreamClient.TryGetContentLengthAsync
+
+      That made every download fail before it started. SocketsHttpHandler does its I/O on
+      .NET sockets, which StrictMode does not police and which do not block on close, and
+      it is the same stack the desktop build already uses.
+    -->
+    <UseNativeHttpHandler>false</UseNativeHttpHandler>
+    <!--
       Every APK this project produces is meant to be sideloaded, so the managed
       assemblies have to be inside it. Fast Deployment - on by default for Debug -
       leaves them out and pushes them over adb instead, which makes a hand-installed
