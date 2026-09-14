@@ -35,8 +35,11 @@ param (
 
 $ErrorActionPreference = 'Stop'
 
-# Keep in sync with the release the build workflow publishes.
-$Repository = 'leobischof/YoutubeDownloader'
+# Keep in sync with the release the build workflow publishes. The release does not exist
+# until .github/workflows/build-ffmpeg-android.yml has been run once from the Actions tab;
+# until then this download fails with a clear message rather than packaging an HTML error
+# page as if it were FFmpeg.
+$Repository = 'Tyrrrz/YoutubeDownloader'
 $ReleaseTag = 'ffmpeg-8.1.2-android.2'
 
 $Architectures = @('arm64-v8a', 'x86_64')
