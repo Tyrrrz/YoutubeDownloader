@@ -1,0 +1,255 @@
+# Builds the FFmpeg binary the Android app ships.
+#
+# Why this exists: the app needs an FFmpeg *executable* for Android with the encoders
+# YoutubeDownloader offers (MP3, Vorbis, Opus). No maintained prebuilt provides that
+# combination - the only current one is an LGPL build with no external encoders at all,
+# which would break "Download as MP3", and the builds that do carry the encoders were
+# last published in 2018. So we build it ourselves.
+#
+# Run it from the Actions tab (Run workflow). The binaries are published as a release,
+# which YoutubeDownloader.Android/Download-FFmpeg-Android.ps1 then downloads.
+name: build-ffmpeg-android
+
+on:
+  workflow_dispatch:
+    inputs:
+      ffmpeg_version:
+        description: "FFmpeg release to build (tag without the leading 'n')"
+        default: "8.1.2"
+        required: true
+      release_tag:
+        description: "Tag to publish the built binaries under"
+        default: "ffmpeg-8.1.2-android"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  NDK_VERSION: r28c
+  # Must not exceed SupportedOSPlatformVersion in the Android projects. A binary built
+  # against a higher API can fail to load on devices the app still claims to support.
+  ANDROID_API: "23"
+  LAME_VERSION: "3.100"
+  OGG_VERSION: "1.3.5"
+  VORBIS_VERSION: "1.3.7"
+  OPUS_VERSION: "1.5.2"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - abi: arm64-v8a
+            triple: aarch64-linux-android
+            arch: aarch64
+          - abi: x86_64
+            triple: x86_64-linux-android
+            arch: x86_64
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Install host build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool pkg-config nasm yasm
+
+      - name: Download Android NDK
+        run: |
+          set -eux
+          curl -fsSL -o ndk.zip \
+            "https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux.zip"
+          unzip -q ndk.zip -d "$HOME"
+          echo "NDK=$HOME/android-ndk-${NDK_VERSION}" >> "$GITHUB_ENV"
+
+      - name: Configure toolchain
+        run: |
+          set -eux
+          TOOLCHAIN="$NDK/toolchains/llvm/prebuilt/linux-x86_64"
+          {
+            echo "TOOLCHAIN=$TOOLCHAIN"
+            echo "PREFIX=$HOME/ffmpeg-prefix"
+            echo "CC=$TOOLCHAIN/bin/${{ matrix.triple }}$ANDROID_API-clang"
+            echo "CXX=$TOOLCHAIN/bin/${{ matrix.triple }}$ANDROID_API-clang++"
+            echo "AR=$TOOLCHAIN/bin/llvm-ar"
+            echo "RANLIB=$TOOLCHAIN/bin/llvm-ranlib"
+            echo "STRIP=$TOOLCHAIN/bin/llvm-strip"
+            echo "NM=$TOOLCHAIN/bin/llvm-nm"
+            # 16 KB page alignment is required by Android 16; it is a link-time property,
+            # so every artefact that ends up in the executable is built with it.
+            echo "PAGE_FLAGS=-Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384"
+          } >> "$GITHUB_ENV"
+          mkdir -p "$HOME/ffmpeg-prefix"
+
+      - name: Build libmp3lame
+        run: |
+          set -eux
+          curl -fsSL -o lame.tar.gz \
+            "https://downloads.sourceforge.net/project/lame/lame/${LAME_VERSION}/lame-${LAME_VERSION}.tar.gz"
+          tar xf lame.tar.gz && cd "lame-${LAME_VERSION}"
+          # lame 3.100 exports a symbol its own source no longer defines, which breaks
+          # the link when cross-compiling.
+          sed -i '/lame_init_old/d' include/libmp3lame.sym
+          ./configure --host=${{ matrix.triple }} --prefix="$PREFIX" \
+            --disable-shared --enable-static --disable-frontend
+          make -j"$(nproc)" && make install
+
+      - name: Build libogg and libvorbis
+        run: |
+          set -eux
+          curl -fsSL -o ogg.tar.gz \
+            "https://downloads.xiph.org/releases/ogg/libogg-${OGG_VERSION}.tar.gz"
+          tar xf ogg.tar.gz && cd "libogg-${OGG_VERSION}"
+          ./configure --host=${{ matrix.triple }} --prefix="$PREFIX" \
+            --disable-shared --enable-static
+          make -j"$(nproc)" && make install
+          cd ..
+
+          curl -fsSL -o vorbis.tar.gz \
+            "https://downloads.xiph.org/releases/vorbis/libvorbis-${VORBIS_VERSION}.tar.gz"
+          tar xf vorbis.tar.gz && cd "libvorbis-${VORBIS_VERSION}"
+          ./configure --host=${{ matrix.triple }} --prefix="$PREFIX" \
+            --disable-shared --enable-static --with-ogg="$PREFIX"
+          make -j"$(nproc)" && make install
+
+      - name: Build libopus
+        run: |
+          set -eux
+          curl -fsSL -o opus.tar.gz \
+            "https://downloads.xiph.org/releases/opus/opus-${OPUS_VERSION}.tar.gz"
+          tar xf opus.tar.gz && cd "opus-${OPUS_VERSION}"
+          ./configure --host=${{ matrix.triple }} --prefix="$PREFIX" \
+            --disable-shared --enable-static --disable-doc --disable-extra-programs
+          make -j"$(nproc)" && make install
+
+      - name: Build FFmpeg
+        run: |
+          set -eux
+          git clone --depth 1 --branch "n${{ github.event.inputs.ffmpeg_version }}" \
+            https://github.com/FFmpeg/FFmpeg.git ffmpeg
+          cd ffmpeg
+
+          export PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig"
+
+          # LGPL build: libmp3lame, libvorbis and libopus are all LGPL/BSD, so the GPL
+          # is not needed for the encoders this app actually uses.
+          ./configure \
+            --prefix="$PREFIX" \
+            --target-os=android \
+            --arch=${{ matrix.arch }} \
+            --enable-cross-compile \
+            --cc="$CC" \
+            --cxx="$CXX" \
+            --ar="$AR" \
+            --ranlib="$RANLIB" \
+            --nm="$NM" \
+            --strip="$STRIP" \
+            --pkg-config=pkg-config \
+            --pkg-config-flags=--static \
+            --enable-static \
+            --disable-shared \
+            --enable-pic \
+            --enable-libmp3lame \
+            --enable-libvorbis \
+            --enable-libopus \
+            --disable-doc \
+            --disable-debug \
+            --disable-ffplay \
+            --disable-ffprobe \
+            --disable-symver \
+            --extra-cflags="-I$PREFIX/include -O2 -fPIE" \
+            --extra-ldflags="-L$PREFIX/lib -pie $PAGE_FLAGS"
+
+          make -j"$(nproc)"
+          "$STRIP" ffmpeg
+
+      - name: Verify the binary
+        run: |
+          set -eux
+          cd ffmpeg
+          file ffmpeg
+
+          # Every PT_LOAD segment must be at least 16 KB aligned, or Android 16 refuses it.
+          python3 - <<'PY'
+          import struct, sys
+          d = open('ffmpeg', 'rb').read()
+          assert d[:4] == b'\x7fELF', 'not an ELF binary'
+          phoff = struct.unpack_from('<Q', d, 0x20)[0]
+          phentsize = struct.unpack_from('<H', d, 0x36)[0]
+          phnum = struct.unpack_from('<H', d, 0x38)[0]
+          aligns = []
+          for i in range(phnum):
+              off = phoff + i * phentsize
+              if struct.unpack_from('<I', d, off)[0] == 1:  # PT_LOAD
+                  aligns.append(struct.unpack_from('<Q', d, off + 0x30)[0])
+          print('PT_LOAD alignments:', [hex(a) for a in aligns])
+          bad = [a for a in aligns if a < 16384]
+          if bad:
+              sys.exit(f'segments below 16 KB alignment: {[hex(a) for a in bad]}')
+          print('16 KB alignment OK')
+          PY
+
+          # The encoders are the whole point of building this ourselves - fail loudly if
+          # any of them is missing rather than shipping a binary that cannot make an MP3.
+          for enc in libmp3lame libvorbis libopus; do
+            if ! grep -qa "$enc" ffmpeg; then
+              echo "encoder $enc missing from the build" >&2
+              exit 1
+            fi
+          done
+          echo "libmp3lame, libvorbis and libopus are all present"
+
+      - name: Stage the binary
+        run: |
+          set -eux
+          mkdir -p out
+          # Shipped as libffmpeg.so: Android only grants execute permission inside the
+          # native library directory, and only lib*.so files are placed there.
+          cp ffmpeg/ffmpeg "out/libffmpeg.so"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-${{ matrix.abi }}
+          path: out/libffmpeg.so
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Lay out the release assets
+        run: |
+          set -eux
+          mkdir -p release
+          # Named by ABI so the download script can pick the right one.
+          cp artifacts/ffmpeg-arm64-v8a/libffmpeg.so release/libffmpeg-arm64-v8a.so
+          cp artifacts/ffmpeg-x86_64/libffmpeg.so release/libffmpeg-x86_64.so
+          ls -l release
+
+      - name: Publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.release_tag }}
+          FFMPEG_VERSION: ${{ github.event.inputs.ffmpeg_version }}
+        run: |
+          set -eux
+          gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
+          gh release create "$TAG" release/*.so \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "FFmpeg $FFMPEG_VERSION for Android" \
+            --notes "FFmpeg $FFMPEG_VERSION built for Android with libmp3lame, libvorbis and libopus, for arm64-v8a and x86_64.
+
+          Built against API $ANDROID_API with NDK $NDK_VERSION and linked with 16 KB page alignment, so it loads on Android 16 while still supporting the minSdk the app targets.
+
+          Consumed by \`YoutubeDownloader.Android/Download-FFmpeg-Android.ps1\`; not intended for direct use."

@@ -1,147 +1,102 @@
-﻿param (
-    [Parameter(Mandatory=$false)]
+<#
+.SYNOPSIS
+    Downloads the FFmpeg binaries the Android app bundles.
+
+.DESCRIPTION
+    Fetches prebuilt FFmpeg executables from this repository's own release, produced by
+    .github/workflows/build-ffmpeg-android.yml.
+
+    They are built here rather than taken from a third party because no maintained
+    prebuilt carries the encoders this app needs: the only current one is a pure-LGPL
+    build with no external encoders at all, which cannot produce MP3, and the builds that
+    do carry them were last published in 2018.
+
+    Each file is an FFmpeg *executable* despite the .so name. Android only grants execute
+    permission inside the native library directory, and only lib*.so files are placed
+    there, so that is how a CLI binary has to be shipped.
+
+.EXAMPLE
+    ./Download-FFmpeg-Android.ps1 -DownloadAll -OutputPath .
+#>
+
+param (
+    # Single ABI to fetch; ignored when -DownloadAll is given.
+    [Parameter(Mandatory = $false)]
+    [ValidateSet('arm64-v8a', 'x86_64')]
     [string]$Architecture,
 
-    [Parameter(Mandatory=$false)]
+    # Directory to write <abi>/libffmpeg.so into. Defaults to this script's directory.
+    [Parameter(Mandatory = $false)]
     [string]$OutputPath,
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [switch]$DownloadAll
 )
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 
-# Android architecture mappings
-$AndroidArchitectures = @{
-    # "arm" = "arm-full.tar.bz2"
-    # "arm-v7n" = "arm-v7n-full.tar.bz2" Remove for now, as these architectures are not commonly used in Android development anymore
-    "arm64-v8a" = "arm64-v8a-full.tar.bz2"
-    # "armv7-a" = "armv7-a-full.tar.bz2" Remove for now, as these architectures are not commonly used in Android development anymore
-    # "i686" = "i686-full.tar.bz2" 
-    "x86_64" = "x86_64-full.tar.bz2"
-}
+# Keep in sync with the release the build workflow publishes.
+$Repository = 'leobischof/YoutubeDownloader'
+$ReleaseTag = 'ffmpeg-8.1.2-android'
 
-# GitHub repository information
-$GitHubRepo = "Khang-NT/ffmpeg-binary-android"
-$ReleaseTag = "2018-07-31"  # You can modify this to use "latest" if needed
-$BaseUrl = "https://github.com/$GitHubRepo/releases/download/$ReleaseTag"
+$Architectures = @('arm64-v8a', 'x86_64')
 
-# If output path is not specified, use the current directory
-if (-not $OutputPath) {
-    $OutputPath = $PSScriptRoot
-}
+if (-not $OutputPath) { $OutputPath = $PSScriptRoot }
 
-# Ensure output directory exists
-if (-not (Test-Path $OutputPath)) {
-    New-Item -ItemType Directory -Path $OutputPath -Force | Out-Null
-}
-
-function Download-And-Extract-FFmpeg {
+function Get-FFmpegBinary {
     param(
-        [string]$ArchName,
-        [string]$FileName,
-        [string]$TargetPath
+        [Parameter(Mandatory)][string]$Abi,
+        [Parameter(Mandatory)][string]$TargetPath
     )
-    
-    $downloadUrl = "$BaseUrl/$FileName"
-    $tempArchive = Join-Path $env:TEMP $FileName
-    $tempExtractDir = Join-Path $env:TEMP "ffmpeg_extract_$ArchName"
-    $finalOutputDir = Join-Path $TargetPath $ArchName
-    
+
+    $url = "https://github.com/$Repository/releases/download/$ReleaseTag/libffmpeg-$Abi.so"
+    $destinationDir = Join-Path $TargetPath $Abi
+    $destination = Join-Path $destinationDir 'libffmpeg.so'
+
+    if (-not (Test-Path $destinationDir)) {
+        New-Item -ItemType Directory -Path $destinationDir -Force | Out-Null
+    }
+
+    Write-Host "Downloading FFmpeg for $Abi..."
+
+    # Download beside the target and move into place, so an interrupted download cannot
+    # leave a truncated binary that later looks like a valid cached one.
+    $temporary = "$destination.download"
     try {
-        Write-Host "Downloading FFmpeg for Android ($ArchName)..."
-        
-        # Download the archive
-        $webClient = New-Object System.Net.WebClient
+        # Invoke-WebRequest's progress bar makes large downloads dramatically slower in
+        # Windows PowerShell.
+        $previousProgress = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'
         try {
-            $webClient.DownloadFile($downloadUrl, $tempArchive)
+            Invoke-WebRequest -Uri $url -OutFile $temporary -UseBasicParsing
         } finally {
-            $webClient.Dispose()
+            $ProgressPreference = $previousProgress
         }
-        
-        # Create extraction directory
-        if (Test-Path $tempExtractDir) {
-            Remove-Item $tempExtractDir -Recurse -Force
+
+        # A stray HTML error page would otherwise be packaged as if it were FFmpeg.
+        $header = [System.IO.File]::ReadAllBytes($temporary)[0..3]
+        if ($header[0] -ne 0x7F -or $header[1] -ne 0x45 -or $header[2] -ne 0x4C -or $header[3] -ne 0x46) {
+            throw "Downloaded file for $Abi is not an ELF binary. Has release '$ReleaseTag' been published?"
         }
-        New-Item -ItemType Directory -Path $tempExtractDir -Force | Out-Null
-        
-        # Extract the tar.bz2 file
-        Write-Host "Extracting $FileName..."
-        
-        # Use 7-Zip if available, otherwise use PowerShell with tar command
-        $sevenZipPath = Get-Command "7z.exe" -ErrorAction SilentlyContinue
-        if ($sevenZipPath) {
-            # Extract using 7-Zip (handles tar.bz2 directly)
-            & $sevenZipPath.Source x $tempArchive "-o$tempExtractDir" -y | Out-Null
-            
-            # If it's a tar file inside, extract that too
-            $tarFile = Get-ChildItem $tempExtractDir -Filter "*.tar" | Select-Object -First 1
-            if ($tarFile) {
-                & $sevenZipPath.Source x $tarFile.FullName "-o$tempExtractDir" -y | Out-Null
-                Remove-Item $tarFile.FullName -Force
-            }
-        } else {
-            # Try using tar command (available in Windows 10+)
-            try {
-                & tar -xjf $tempArchive -C $tempExtractDir
-            } catch {
-                Write-Warning "Could not extract $FileName. Please install 7-Zip or use Windows 10+ with built-in tar support."
-                return
-            }
-        }
-        
-        # Find the ffmpeg binary in the extracted files
-        $ffmpegBinary = Get-ChildItem $tempExtractDir -Name "ffmpeg" -Recurse | Select-Object -First 1
-        if ($ffmpegBinary) {
-            $ffmpegPath = Join-Path $tempExtractDir $ffmpegBinary
-            
-            # Create architecture-specific output directory
-            if (-not (Test-Path $finalOutputDir)) {
-                New-Item -ItemType Directory -Path $finalOutputDir -Force | Out-Null
-            }
-            
-            # Copy ffmpeg binary to final location with new name
-            $finalFFmpegPath = Join-Path $finalOutputDir "libffmpeg.so"
-            Copy-Item $ffmpegPath $finalFFmpegPath -Force
-            
-            Write-Host "FFmpeg for $ArchName extracted and renamed to: $finalFFmpegPath"
-        } else {
-            Write-Warning "Could not find ffmpeg binary in extracted archive for $ArchName"
-        }
-        
-    } catch {
-        Write-Error "Failed to download or extract FFmpeg for $ArchName`: $($_.Exception.Message)"
+
+        Move-Item -Path $temporary -Destination $destination -Force
+        $sizeMb = [math]::Round((Get-Item $destination).Length / 1MB, 1)
+        Write-Host "FFmpeg for $Abi saved to $destination ($sizeMb MB)"
     } finally {
-        # Clean up temporary files
-        if (Test-Path $tempArchive) {
-            Remove-Item $tempArchive -Force -ErrorAction SilentlyContinue
-        }
-        if (Test-Path $tempExtractDir) {
-            Remove-Item $tempExtractDir -Recurse -Force -ErrorAction SilentlyContinue
-        }
+        if (Test-Path $temporary) { Remove-Item $temporary -Force -ErrorAction SilentlyContinue }
     }
 }
 
 if ($DownloadAll) {
-    Write-Host "Downloading all Android FFmpeg architectures..."
-    foreach ($arch in $AndroidArchitectures.Keys) {
-        Download-And-Extract-FFmpeg -ArchName $arch -FileName $AndroidArchitectures[$arch] -TargetPath $OutputPath
+    Write-Host "Downloading FFmpeg $ReleaseTag for: $($Architectures -join ', ')"
+    foreach ($abi in $Architectures) {
+        Get-FFmpegBinary -Abi $abi -TargetPath $OutputPath
     }
 } elseif ($Architecture) {
-    if ($AndroidArchitectures.ContainsKey($Architecture)) {
-        Download-And-Extract-FFmpeg -ArchName $Architecture -FileName $AndroidArchitectures[$Architecture] -TargetPath $OutputPath
-    } else {
-        Write-Error "Unsupported architecture: $Architecture. Available architectures: $($AndroidArchitectures.Keys -join ', ')"
-        exit 1
-    }
+    Get-FFmpegBinary -Abi $Architecture -TargetPath $OutputPath
 } else {
-    Write-Host "Available Android architectures:"
-    foreach ($arch in $AndroidArchitectures.Keys) {
-        Write-Host "  - $arch"
-    }
-    Write-Host ""
-    Write-Host "Usage examples:"
-    Write-Host "  .\Download-FFmpeg-Android.ps1 -Architecture arm64-v8a"
-    Write-Host "  .\Download-FFmpeg-Android.ps1 -DownloadAll"
-    Write-Host "  .\Download-FFmpeg-Android.ps1 -Architecture arm64-v8a -OutputPath ./android-assets"
+    Write-Host 'Available architectures:'
+    foreach ($abi in $Architectures) { Write-Host "  - $abi" }
+    Write-Host ''
+    Write-Host 'Pass -DownloadAll, or -Architecture <abi>.'
 }
