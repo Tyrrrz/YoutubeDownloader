@@ -26,12 +26,48 @@
             <DockPanel>
                 <!--  Top bar  -->
                 <Border Background="{DynamicResource MaterialDarkBackgroundBrush}" DockPanel.Dock="Top">
-                    <TextBlock
-                        Margin="16,14,16,12"
-                        FontSize="20"
-                        FontWeight="Light"
-                        Foreground="{DynamicResource MaterialDarkForegroundBrush}"
-                        Text="YouTube Downloader" />
+                    <Grid Margin="16,10,8,10" ColumnDefinitions="*,Auto">
+                        <TextBlock
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            FontSize="19"
+                            FontWeight="Light"
+                            Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                            Text="YouTube Downloader"
+                            TextTrimming="CharacterEllipsis" />
+
+                        <!--
+                            The same statement the readme opens with, and the same link. The
+                            flag is drawn from two rectangles rather than an emoji or an image
+                            so it renders identically regardless of the device's emoji font.
+                        -->
+                        <Button
+                            Grid.Column="1"
+                            Padding="8,4"
+                            VerticalAlignment="Center"
+                            Click="UkraineButton_OnClick"
+                            Foreground="{DynamicResource MaterialDarkForegroundBrush}"
+                            Theme="{DynamicResource MaterialFlatButton}"
+                            ToolTip.Tip="https://tyrrrz.me/ukraine">
+                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                <StackPanel
+                                    Width="26"
+                                    VerticalAlignment="Center"
+                                    Orientation="Vertical">
+                                    <Border Height="9" Background="#0057B7" />
+                                    <Border Height="9" Background="#FFD700" />
+                                </StackPanel>
+
+                                <TextBlock
+                                    MaxWidth="86"
+                                    VerticalAlignment="Center"
+                                    FontSize="11"
+                                    LineHeight="13"
+                                    Text="We stand with Ukraine"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </Border>
 
                 <!--

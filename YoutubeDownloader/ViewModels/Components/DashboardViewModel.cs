@@ -218,8 +218,23 @@ public partial class DashboardViewModel : ViewModelBase
             download.Status =
                 ex is OperationCanceledException ? DownloadStatus.Canceled : DownloadStatus.Failed;
 
-            // Short error message for YouTube-related errors, full for others
-            download.ErrorMessage = ex is YoutubeExplodeException ? ex.Message : ex.ToString();
+            // Short error message for YouTube-related errors, full for others.
+            //
+            // Anything unexpected also gets the app's own inputs appended. A bare HTTP status
+            // from YouTube says nothing about which of them produced it, and on a phone there
+            // is no debugger to attach and no log to read - a screenshot of the error dialog
+            // is the whole diagnostic channel, so it has to carry the context itself.
+            download.ErrorMessage =
+                ex is YoutubeExplodeException
+                    ? ex.Message
+                    : ex
+                        + Environment.NewLine
+                        + Environment.NewLine
+                        + "--- Context ---"
+                        + Environment.NewLine
+                        + $"Auth cookies: {_settingsService.LastAuthCookies?.Count ?? 0}"
+                        + Environment.NewLine
+                        + $"FFmpeg: {FFmpeg.TryGetCliFilePath() ?? "not found"}";
         }
         finally
         {

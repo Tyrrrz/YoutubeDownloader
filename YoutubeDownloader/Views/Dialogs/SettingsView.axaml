@@ -5,14 +5,27 @@
     xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
     xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
     xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-    Width="380"
+    Width="{OnPlatform 380, Android=10000}"
     MaxWidth="{Binding $parent[TopLevel].Bounds.Width}"
     x:DataType="dialogs:SettingsViewModel">
+    <!--
+        This dialog packs a lot of rows into a small space, which suits a desktop and a mouse.
+        On Android it takes the full window width and every row is taller and set in larger
+        type, because a finger is a much blunter instrument than a pointer. The Android width
+        is deliberately larger than any display so MaxWidth decides it.
+    -->
+    <UserControl.Styles>
+        <Style Selector="DockPanel &gt; TextBlock">
+            <Setter Property="FontSize" Value="{OnPlatform 14, Android=17}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Styles>
+
     <Grid RowDefinitions="Auto,*,Auto">
         <TextBlock
             Grid.Row="0"
             Margin="16"
-            FontSize="19"
+            FontSize="{OnPlatform 19, Android=22}"
             FontWeight="Light"
             Text="{Binding LocalizationManager.SettingsTitle}" />
 
@@ -25,12 +38,12 @@
                 <StackPanel Orientation="Vertical">
                     <!--  Theme  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         LastChildFill="False"
                         ToolTip.Tip="{Binding LocalizationManager.ThemeTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.ThemeLabel}" />
                         <ComboBox
-                            Width="160"
+                            Width="{OnPlatform 160, Android=195}"
                             DockPanel.Dock="Right"
                             ItemsSource="{Binding AvailableThemes}"
                             SelectedItem="{Binding Theme}" />
@@ -38,12 +51,12 @@
 
                     <!--  Language  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         LastChildFill="False"
                         ToolTip.Tip="{Binding LocalizationManager.LanguageTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.LanguageLabel}" />
                         <ComboBox
-                            Width="160"
+                            Width="{OnPlatform 160, Android=195}"
                             DockPanel.Dock="Right"
                             ItemsSource="{Binding AvailableLanguages}"
                             SelectedItem="{Binding Language}">
@@ -57,7 +70,7 @@
 
                     <!--  Auto-updates  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         IsVisible="{Binding IsAutoUpdateAvailable}"
                         LastChildFill="False">
                         <ToolTip.Tip>
@@ -73,18 +86,18 @@
                             <TextBlock Inlines="{Binding LocalizationManager.PersistAuthTooltip, Converter={x:Static converters:MarkdownToInlinesConverter.Instance}}" />
                         </ToolTip.Tip>
                         <TextBlock
-                            Margin="16,8"
+                            Margin="{OnPlatform '16,8', Android='16,14'}"
                             DockPanel.Dock="Left"
                             Text="{Binding LocalizationManager.PersistAuthLabel}" />
                         <ToggleSwitch
-                            Margin="16,8"
+                            Margin="{OnPlatform '16,8', Android='16,14'}"
                             DockPanel.Dock="Right"
                             IsChecked="{Binding IsAuthPersisted}" />
                     </DockPanel>
 
                     <!--  FFmpeg path  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         LastChildFill="False"
                         ToolTip.Tip="{Binding LocalizationManager.FFmpegPathTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.FFmpegPathLabel}" />
@@ -126,7 +139,7 @@
 
                     <!--  Inject language-specific audio streams  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         LastChildFill="False"
                         ToolTip.Tip="{Binding LocalizationManager.InjectAltLanguagesTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.InjectAltLanguagesLabel}" />
@@ -135,7 +148,7 @@
 
                     <!--  Inject subtitles  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         LastChildFill="False"
                         ToolTip.Tip="{Binding LocalizationManager.InjectSubtitlesTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.InjectSubtitlesLabel}" />
@@ -144,7 +157,7 @@
 
                     <!--  Inject tags  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         LastChildFill="False"
                         ToolTip.Tip="{Binding LocalizationManager.InjectTagsTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.InjectTagsLabel}" />
@@ -153,7 +166,7 @@
 
                     <!--  Skip existing files  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         LastChildFill="False"
                         ToolTip.Tip="{Binding LocalizationManager.SkipExistingFilesTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.SkipExistingFilesLabel}" />
@@ -161,7 +174,7 @@
                     </DockPanel>
 
                     <!--  File name template  -->
-                    <DockPanel Margin="16,8" LastChildFill="False">
+                    <DockPanel Margin="{OnPlatform '16,8', Android='16,14'}" LastChildFill="False">
                         <ToolTip.Tip>
                             <TextBlock Inlines="{Binding LocalizationManager.FileNameTemplateTooltip, Converter={x:Static converters:MarkdownToInlinesConverter.Instance}}" />
                         </ToolTip.Tip>
@@ -177,7 +190,7 @@
 
                     <!--  Parallel limit  -->
                     <DockPanel
-                        Margin="16,8"
+                        Margin="{OnPlatform '16,8', Android='16,14'}"
                         LastChildFill="False"
                         ToolTip.Tip="{Binding LocalizationManager.ParallelLimitTooltip}">
                         <TextBlock DockPanel.Dock="Left" Text="{Binding LocalizationManager.ParallelLimitLabel}" />
@@ -187,7 +200,7 @@
                             Spacing="10">
                             <TextBlock Text="{Binding ParallelLimit}" />
                             <Slider
-                                Width="150"
+                                Width="{OnPlatform 150, Android=175}"
                                 IsSnapToTickEnabled="True"
                                 Maximum="10"
                                 Minimum="1"
