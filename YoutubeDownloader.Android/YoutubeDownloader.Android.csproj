@@ -12,6 +12,14 @@
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <!--
+      Every APK this project produces is meant to be sideloaded, so the managed
+      assemblies have to be inside it. Fast Deployment - on by default for Debug -
+      leaves them out and pushes them over adb instead, which makes a hand-installed
+      Debug APK abort on launch with "No assemblies found in .../.__override__/...".
+    -->
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidUseFastDeployment>false</AndroidUseFastDeployment>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
   </PropertyGroup>
 

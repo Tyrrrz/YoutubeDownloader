@@ -1,0 +1,117 @@
+# Builds the installable Android APK.
+#
+# Why this exists rather than just building locally: the Release build runs the
+# trimmer and r8, which needs more memory than the dev machine reliably has spare -
+# it was OOM-killed twice. Debug is not a substitute: see EmbedAssembliesIntoApk in
+# YoutubeDownloader.Android.csproj for why a Debug APK cannot be sideloaded.
+#
+# The APK this uploads is signed with the *runner's* throwaway debug key, which is not
+# the key that signed the published releases. Re-sign it before publishing, or Android
+# refuses to install it over an existing copy (INSTALL_FAILED_UPDATE_INCOMPATIBLE).
+name: build-android-apk
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version shown in the app (versionName)"
+        default: "1.17.4"
+        required: true
+      version_code:
+        description: "versionCode - must exceed every version already published"
+        default: "4"
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install the JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Install the Android workload
+        run: dotnet workload install android
+
+      # Adds whatever platform and build-tools the project asks for but the runner
+      # image does not already carry.
+      - name: Provision the Android SDK
+        run: >
+          dotnet build YoutubeDownloader.Android/YoutubeDownloader.Android.csproj
+          -t:InstallAndroidDependencies
+          -p:AndroidSdkDirectory=$ANDROID_HOME
+          -p:JavaSdkDirectory=$JAVA_HOME
+          -p:AcceptAndroidSDKLicenses=true
+          -p:CSharpier_Bypass=true
+
+      # Version defaults to 999.9.9-dev in Directory.Build.props, which is deliberate -
+      # it makes an unstamped build obvious. Stamp it here.
+      - name: Build the APK
+        run: >
+          dotnet publish YoutubeDownloader.Android/YoutubeDownloader.Android.csproj
+          --configuration Release
+          -p:Version=${{ inputs.version }}
+          -p:ApplicationVersion=${{ inputs.version_code }}
+          -p:CSharpier_Bypass=true
+
+      - name: Locate the APK
+        id: apk
+        run: |
+          set -eux
+          apk=$(find YoutubeDownloader.Android/bin/Release -name '*-Signed.apk' | head -1)
+          test -n "$apk"
+          echo "path=$apk" >> "$GITHUB_OUTPUT"
+
+      - name: Verify the APK
+        run: |
+          set -eux
+          apk="${{ steps.apk.outputs.path }}"
+          aapt2=$(find "$ANDROID_HOME/build-tools" -name aapt2 | sort | tail -1)
+          "$aapt2" dump badging "$apk" | head -3
+
+          python3 - "$apk" <<'PY'
+          import re, sys, zipfile
+          names = zipfile.ZipFile(sys.argv[1]).namelist()
+
+          # A Debug build silently omits the managed assemblies (Fast Deployment expects
+          # to push them over adb), and the app then aborts on launch with
+          # "No assemblies found". An APK meant for a human must carry them.
+          managed = [n for n in names if n.startswith('assemblies/')
+                     or re.fullmatch(r'lib/[^/]+/.*\.dll\.so', n)]
+          if not managed:
+              sys.exit('no managed assemblies in the APK - it would abort on launch')
+          print(f'{len(managed)} managed assembly entries')
+
+          # FFmpeg is what mux and MP3 conversion run; without it the app installs and
+          # then fails at the last step of every download.
+          ffmpeg = [n for n in names if n.endswith('libffmpeg.so')]
+          if not ffmpeg:
+              sys.exit('libffmpeg.so is missing from the APK')
+          print('ffmpeg:', ffmpeg)
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: youtubedownloader-android-${{ inputs.version }}
+          path: ${{ steps.apk.outputs.path }}
+          if-no-files-found: error
