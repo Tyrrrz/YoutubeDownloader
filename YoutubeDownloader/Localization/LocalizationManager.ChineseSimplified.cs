@@ -97,6 +97,7 @@ public partial class LocalizationManager
             // Download Multiple Setup
             [nameof(ContainerLabel)] = "封装格式",
             [nameof(VideoQualityLabel)] = "视频质量",
+            [nameof(SortByLabel)] = "排序方式",
             // Common buttons
             [nameof(CloseButton)] = "关闭",
             [nameof(DownloadButton)] = "下载",
