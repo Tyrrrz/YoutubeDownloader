@@ -1,0 +1,46 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/dotnet",
+  "updateRemoteUserUID": false,
+  // CSharpier needs to be separately installed as a tool for the extension to work
+  "postCreateCommand": "(dotnet tool install -g csharpier; dotnet restore) || exit 0",
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "webPort": "6080",
+      "vncPort": "5901",
+      "password": "noPassword"
+    }
+  },
+  "forwardPorts": [
+    6080,
+    5901
+  ],
+  "portsAttributes": {
+    "6080": {
+      "label": "Desktop (Web browser)",
+      "protocol": "http"
+    },
+    "5901": {
+      "label": "Desktop (VNC Viewer)",
+      "onAutoForward": "ignore"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "csharpier.csharpier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "dabbinavo.xamlstyler"
+      ],
+      "settings": {
+        "[csharp][xml]": {
+          "editor.defaultFormatter": "csharpier.csharpier-vscode"
+        },
+        "files.associations": {
+          "*.axaml": "xaml"
+        }
+      }
+    }
+  }
+}
