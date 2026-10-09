@@ -1,29 +1,29 @@
 {
   "image": "mcr.microsoft.com/devcontainers/dotnet",
-  "updateRemoteUserUID": false,
-  // CSharpier needs to be separately installed as a tool for the extension to work
-  "postCreateCommand": "(dotnet tool install -g csharpier; dotnet restore) || exit 0",
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {
-      "webPort": "6080",
-      "vncPort": "5901",
-      "password": "noPassword"
+      "webPort": "6080"
+    },
+    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+      "packages": [
+        "xfce4"
+      ]
     }
   },
+  "updateRemoteUserUID": false,
   "forwardPorts": [
-    6080,
-    5901
+    6080
   ],
   "portsAttributes": {
     "6080": {
-      "label": "Desktop (Web browser)",
-      "protocol": "http"
-    },
-    "5901": {
-      "label": "Desktop (VNC Viewer)",
-      "onAutoForward": "ignore"
+      "label": "Desktop",
+      "protocol": "http",
+      "onAutoForward": "openPreview"
     }
   },
+  "onCreateCommand": "sh .devcontainer/onCreateCommand.sh",
+  "updateContentCommand": "sh .devcontainer/updateContentCommand.sh",
+  "postCreateCommand": "sh .devcontainer/postCreateCommand.sh",
   "customizations": {
     "vscode": {
       "extensions": [
