@@ -40,13 +40,24 @@ public class AuthSetupViewModel : DialogViewModelBase
         set => _settingsService.LastAuthCookies = value;
     }
 
-    public bool IsAuthenticated =>
-        Cookies?.Any() == true
-        &&
-        // None of the '__SECURE' cookies should be expired
-        Cookies
-            .Where(c => c.Name.StartsWith("__SECURE", StringComparison.OrdinalIgnoreCase))
-            .All(c => !c.Expired && c.Expires.ToUniversalTime() > DateTime.UtcNow);
+    public bool IsAuthenticated
+    {
+        get
+        {
+            if (Cookies is null)
+                return false;
+
+            // Leftover YouTube cookies are not a login session; require a '__SECURE' cookie.
+            var loginCookies = Cookies.Where(c =>
+                c.Name.StartsWith("__SECURE", StringComparison.OrdinalIgnoreCase)
+            );
+
+            return loginCookies.Any()
+                && loginCookies.All(c =>
+                    !c.Expired && c.Expires.ToUniversalTime() > DateTime.UtcNow
+                );
+        }
+    }
 
     protected override void Dispose(bool disposing)
     {
