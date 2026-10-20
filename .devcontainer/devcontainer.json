@@ -30,8 +30,9 @@
         "ms-dotnettools.csharp",
         "ms-dotnettools.csdevkit",
         "csharpier.csharpier-vscode",
-        "streetsidesoftware.code-spell-checker",
-        "dabbinavo.xamlstyler"
+        "icsharpcode.ilspy-vscode",
+        "dabbinavo.xamlstyler",
+        "streetsidesoftware.code-spell-checker"
       ],
       "settings": {
         "[csharp][xml]": {
