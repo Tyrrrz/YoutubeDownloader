@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cogwheel;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -14,7 +12,7 @@ namespace YoutubeDownloader.Services;
 
 [ObservableObject]
 public partial class SettingsService()
-    : SettingsBase(StartOptions.Current.SettingsPath, SerializerContext.Default)
+    : SettingsBase(StartOptions.Current.SettingsPath, SettingsSerializerContext.Default)
 {
     [ObservableProperty]
     public partial bool IsUkraineSupportMessageEnabled { get; set; } = true;
@@ -57,7 +55,7 @@ public partial class SettingsService()
     public partial IReadOnlyList<Cookie>? LastAuthCookies { get; set; }
 
     [ObservableProperty]
-    [JsonConverter(typeof(ContainerJsonConverter))]
+    [JsonConverter(typeof(ContainerConverter))]
     public partial Container LastContainer { get; set; } = Container.Mp4;
 
     [ObservableProperty]
@@ -79,55 +77,7 @@ public partial class SettingsService()
 
 public partial class SettingsService
 {
-    private class ContainerJsonConverter : JsonConverter<Container>
-    {
-        public override Container Read(
-            ref Utf8JsonReader reader,
-            Type typeToConvert,
-            JsonSerializerOptions options
-        )
-        {
-            Container? result = null;
-
-            if (reader.TokenType == JsonTokenType.StartObject)
-            {
-                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
-                {
-                    if (
-                        reader.TokenType == JsonTokenType.PropertyName
-                        && reader.GetString() == "Name"
-                        && reader.Read()
-                        && reader.TokenType == JsonTokenType.String
-                    )
-                    {
-                        var name = reader.GetString();
-                        if (!string.IsNullOrWhiteSpace(name))
-                            result = new Container(name);
-                    }
-                }
-            }
-
-            return result
-                ?? throw new InvalidOperationException(
-                    $"Invalid JSON for type '{typeToConvert.FullName}'."
-                );
-        }
-
-        public override void Write(
-            Utf8JsonWriter writer,
-            Container value,
-            JsonSerializerOptions options
-        )
-        {
-            writer.WriteStartObject();
-            writer.WriteString("Name", value.Name);
-            writer.WriteEndObject();
-        }
-    }
-}
-
-public partial class SettingsService
-{
     [JsonSerializable(typeof(SettingsService))]
-    private partial class SerializerContext : JsonSerializerContext;
+    [JsonSourceGenerationOptions(UseStringEnumConverter = true)]
+    private partial class SettingsSerializerContext : JsonSerializerContext;
 }
