@@ -98,6 +98,7 @@ public partial class LocalizationManager
             // Download Multiple Setup
             [nameof(ContainerLabel)] = "Konténer",
             [nameof(VideoQualityLabel)] = "Videó minőség",
+            [nameof(SortByLabel)] = "Rendezés",
             // Common buttons
             [nameof(CloseButton)] = "BEZÁRÁS",
             [nameof(DownloadButton)] = "LETÖLTÉS",
