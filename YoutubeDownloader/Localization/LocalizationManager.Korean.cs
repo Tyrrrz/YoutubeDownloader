@@ -55,8 +55,7 @@ public partial class LocalizationManager
         [nameof(InjectAltLanguagesTooltip)] =
             "대체 언어의 오디오 트랙 (사용 가능하면)을 다운로드한 파일에 삽입",
         [nameof(InjectSubtitlesLabel)] = "자막 삽입",
-        [nameof(InjectSubtitlesTooltip)] =
-            "다운로드한 파일에 자막 (사용 가능하면) 삽입",
+        [nameof(InjectSubtitlesTooltip)] = "다운로드한 파일에 자막 (사용 가능하면) 삽입",
         [nameof(InjectTagsLabel)] = "미디어 태그 삽입",
         [nameof(InjectTagsTooltip)] = "다운로드한 파일에 미디어 태그 (사용 가능하면) 삽입",
         [nameof(SkipExistingFilesLabel)] = "기존 파일 건너뛰기",
