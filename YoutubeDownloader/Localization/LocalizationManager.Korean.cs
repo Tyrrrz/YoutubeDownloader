@@ -134,8 +134,7 @@ public partial class LocalizationManager
             "입력하신 쿼리 또는 URL을 기준으로 동영상을 찾을 수 없습니다",
         [nameof(ErrorTitle)] = "오류",
         [nameof(UpdateDownloadingMessage)] = "{0} v{1}에 대한 업데이트 다운로드 중...",
-        [nameof(UpdateReadyMessage)] =
-            "업데이트가 다운로드되었습니다. 종료하시면 설치됩니다",
+        [nameof(UpdateReadyMessage)] = "업데이트가 다운로드되었습니다. 종료하시면 설치됩니다",
         [nameof(UpdateInstallNowButton)] = "지금 설치",
         [nameof(UpdateFailedMessage)] = "응용 프로그램 업데이트를 수행하지 못했습니다",
     };
