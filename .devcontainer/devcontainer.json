@@ -10,7 +10,11 @@
       ]
     }
   },
-  "updateRemoteUserUID": false,
+  "runArgs": [
+    "--userns=keep-id:uid=1000,gid=1000"
+  ],
+  "containerUser": "vscode",
+  "updateRemoteUserUID": true,
   "forwardPorts": [
     6080
   ],
