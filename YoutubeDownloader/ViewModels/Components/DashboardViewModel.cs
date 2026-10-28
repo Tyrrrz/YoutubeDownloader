@@ -309,7 +309,8 @@ public partial class DashboardViewModel : ViewModelBase
                         // Pre-select videos if they come from a single query and not from search
                         queryResult.Kind
                             is not QueryResultKind.Search
-                                and not QueryResultKind.Aggregate
+                                and not QueryResultKind.Aggregate,
+                        queryResult.Playlists
                     )
                 );
 

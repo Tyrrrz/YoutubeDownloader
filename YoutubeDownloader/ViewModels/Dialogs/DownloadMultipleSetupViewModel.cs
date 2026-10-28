@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PowerKit.Extensions;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
@@ -44,6 +45,8 @@ public partial class DownloadMultipleSetupViewModel(
 
     public ObservableCollection<IVideo> SelectedVideos { get; } = [];
 
+    public IReadOnlyList<ResolvedPlaylist> Playlists { get; set; } = [];
+
     public IReadOnlyList<Container> AvailableContainers { get; } =
     [Container.Mp4, Container.WebM, Container.Mp3, new("ogg")];
 
@@ -77,6 +80,7 @@ public partial class DownloadMultipleSetupViewModel(
             return;
 
         var downloads = new List<DownloadViewModel>();
+        var videoFilePaths = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var (i, video) in SelectedVideos.Index())
         {
             var baseFilePath = Path.Combine(
@@ -90,9 +94,13 @@ public partial class DownloadMultipleSetupViewModel(
             );
 
             if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
+            {
+                videoFilePaths[video.Id.Value] = baseFilePath;
                 continue;
+            }
 
             var filePath = Path.EnsureUniqueFilePath(baseFilePath);
+            videoFilePaths[video.Id.Value] = filePath;
 
             // Download does not start immediately, so lock in the file path to avoid conflicts
             Directory.CreateForFile(filePath);
@@ -105,6 +113,19 @@ public partial class DownloadMultipleSetupViewModel(
                     filePath
                 )
             );
+        }
+
+        foreach (var playlist in Playlists)
+        {
+            try
+            {
+                await PlaylistXmlWriter.WriteAsync(
+                    Path.Combine(dirPath, PlaylistXmlWriter.GetFileName(playlist)),
+                    playlist,
+                    videoFilePaths
+                );
+            }
+            catch { }
         }
 
         settingsService.LastContainer = SelectedContainer;

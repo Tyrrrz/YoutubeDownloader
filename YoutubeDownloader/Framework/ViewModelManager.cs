@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using PowerKit.Extensions;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Core.Resolving;
 using YoutubeDownloader.Localization;
 using YoutubeDownloader.ViewModels;
 using YoutubeDownloader.ViewModels.Components;
@@ -54,13 +55,15 @@ public class ViewModelManager(IServiceProvider services, LocalizationManager loc
     public DownloadMultipleSetupViewModel GetDownloadMultipleSetupViewModel(
         string title,
         IReadOnlyList<IVideo> availableVideos,
-        bool preselectVideos = true
+        bool preselectVideos = true,
+        IReadOnlyList<ResolvedPlaylist>? playlists = null
     )
     {
         var viewModel = services.GetRequiredService<DownloadMultipleSetupViewModel>();
 
         viewModel.Title = title;
         viewModel.AvailableVideos = availableVideos;
+        viewModel.Playlists = playlists ?? [];
 
         if (preselectVideos)
             viewModel.SelectedVideos.AddRange(availableVideos);
