@@ -7,6 +7,8 @@ namespace YoutubeDownloader.Core.Resolving;
 
 public record QueryResult(QueryResultKind Kind, string Title, IReadOnlyList<IVideo> Videos)
 {
+    public IReadOnlyList<ResolvedPlaylist> Playlists { get; init; } = [];
+
     public static QueryResult Aggregate(IReadOnlyList<QueryResult> results)
     {
         if (!results.Any())
@@ -23,6 +25,9 @@ public record QueryResult(QueryResultKind Kind, string Title, IReadOnlyList<IVid
                 : $"{results.Count} queries",
             // Combine all videos, deduplicate by ID
             results.SelectMany(q => q.Videos).DistinctBy(v => v.Id).ToArray()
-        );
+        )
+        {
+            Playlists = results.SelectMany(q => q.Playlists).ToArray(),
+        };
     }
 }
