@@ -1,20 +1,16 @@
 {
   "image": "mcr.microsoft.com/devcontainers/dotnet",
   "features": {
+    "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:1": {},
     "ghcr.io/devcontainers/features/desktop-lite:1": {
       "webPort": "6080"
     },
-    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+    "ghcr.io/devcontainers-extra/features/apt-get-packages:1": {
       "packages": [
         "xfce4"
       ]
     }
   },
-  "runArgs": [
-    "--userns=keep-id:uid=1000,gid=1000"
-  ],
-  "containerUser": "vscode",
-  "updateRemoteUserUID": true,
   "forwardPorts": [
     6080
   ],
@@ -25,9 +21,7 @@
       "onAutoForward": "openPreview"
     }
   },
-  "onCreateCommand": "sh .devcontainer/onCreateCommand.sh",
-  "updateContentCommand": "sh .devcontainer/updateContentCommand.sh",
-  "postCreateCommand": "sh .devcontainer/postCreateCommand.sh",
+  "onCreateCommand": ".devcontainer/onCreateCommand.sh",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -35,8 +29,7 @@
         "ms-dotnettools.csdevkit",
         "csharpier.csharpier-vscode",
         "icsharpcode.ilspy-vscode",
-        "dabbinavo.xamlstyler",
-        "streetsidesoftware.code-spell-checker"
+        "dabbinavo.xamlstyler"
       ],
       "settings": {
         "[csharp][xml]": {
