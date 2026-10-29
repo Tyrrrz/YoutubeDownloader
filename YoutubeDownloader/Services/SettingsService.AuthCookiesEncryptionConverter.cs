@@ -53,7 +53,10 @@ public partial class SettingsService
 
                 return JsonSerializer
                     .Deserialize<IReadOnlyList<CookieData>>(cookieData)
-                    ?.Select(c => new Cookie(c.Name, c.Value, c.Path, c.Domain))
+                    ?.Select(c => new Cookie(c.Name, c.Value, c.Path, c.Domain)
+                    {
+                        Expires = c.Expires ?? default,
+                    })
                     .ToArray();
             }
             catch (Exception ex)
@@ -83,7 +86,13 @@ public partial class SettingsService
 
             var cookieData = Encoding.UTF8.GetBytes(
                 JsonSerializer.Serialize(
-                    value.Select(c => new CookieData(c.Name, c.Value, c.Path, c.Domain))
+                    value.Select(c => new CookieData(
+                        c.Name,
+                        c.Value,
+                        c.Path,
+                        c.Domain,
+                        c.Expires != default ? c.Expires : null
+                    ))
                 )
             );
 
@@ -104,6 +113,12 @@ public partial class SettingsService
             writer.WriteStringValue(Convert.ToHexStringLower(encryptedData));
         }
 
-        private record CookieData(string Name, string Value, string Path, string Domain);
+        private record CookieData(
+            string Name,
+            string Value,
+            string Path,
+            string Domain,
+            DateTime? Expires = null
+        );
     }
 }
