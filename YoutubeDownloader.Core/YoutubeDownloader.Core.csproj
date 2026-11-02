@@ -2,8 +2,8 @@
   <ItemGroup>
     <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
     <PackageReference Include="Gress" />
-    <PackageReference Include="JsonExtensions" />
     <PackageReference Include="PowerKit" />
+    <PackageReference Include="PowerKit.Json" />
     <PackageReference Include="TagLibSharp" />
     <PackageReference Include="YoutubeExplode" />
     <PackageReference Include="YoutubeExplode.Converter" />
