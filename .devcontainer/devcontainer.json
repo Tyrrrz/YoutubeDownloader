@@ -1,7 +1,7 @@
 {
   "image": "mcr.microsoft.com/devcontainers/dotnet",
   "features": {
-    "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:1": {},
+    "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:2": {},
     "ghcr.io/devcontainers/features/desktop-lite:1": {
       "webPort": "6080"
     },

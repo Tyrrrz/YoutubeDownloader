@@ -10,18 +10,10 @@
       "resolved": "ghcr.io/devcontainers/features/desktop-lite@sha256:3cfd1ed97b027614f3a56d53183d20ebf29e9c36ac58a3d669edf39890e3aec3",
       "integrity": "sha256:3cfd1ed97b027614f3a56d53183d20ebf29e9c36ac58a3d669edf39890e3aec3"
     },
-    "ghcr.io/devcontainers/features/dotnet": {
-      "version": "2.5.0",
-      "resolved": "ghcr.io/devcontainers/features/dotnet@sha256:0fc16547ed4db6d7ff2a9f5981d2b93eb314e568affb9958029ad794f1f9a093",
-      "integrity": "sha256:0fc16547ed4db6d7ff2a9f5981d2b93eb314e568affb9958029ad794f1f9a093"
-    },
-    "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:1": {
-      "version": "1.0.0",
-      "resolved": "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier@sha256:e9938510ef18155c356480544dcb8b4fcb61e259099a917f09280dced3a756e4",
-      "integrity": "sha256:e9938510ef18155c356480544dcb8b4fcb61e259099a917f09280dced3a756e4",
-      "dependsOn": [
-        "ghcr.io/devcontainers/features/dotnet"
-      ]
+    "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:2": {
+      "version": "2.0.1",
+      "resolved": "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier@sha256:099eca59290769a6b97d9e2b604fb71d7726afc195ec4ea9b093641c79cedefb",
+      "integrity": "sha256:099eca59290769a6b97d9e2b604fb71d7726afc195ec4ea9b093641c79cedefb"
     }
   }
 }
