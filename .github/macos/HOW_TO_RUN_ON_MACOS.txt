@@ -1,0 +1,9 @@
+macOS blocks apps downloaded from the internet that are not notarized.
+
+To run YoutubeDownloader:
+1. Right-click "Run.command" and choose "Open" (confirm if prompted).
+   It removes the app from quarantine and launches it.
+
+Or manually, in Terminal from this folder:
+   xattr -rd com.apple.quarantine YoutubeDownloader.app
+   open YoutubeDownloader.app

@@ -36,7 +36,7 @@ You can copy-paste the URL of any video, playlist, or channel and download it di
 
 > [!IMPORTANT]
 > To launch the app on MacOS, you may need to first remove the downloaded file from quarantine.
-> You can do that by running the following command in the terminal: `xattr -rd com.apple.quarantine YoutubeDownloader.app`.
+> The macOS archive includes a `Run.command` script that does this and launches the app (see `HOW_TO_RUN_ON_MACOS.txt`), or you can run the following command in the terminal: `xattr -rd com.apple.quarantine YoutubeDownloader.app`.
 
 > [!NOTE]
 > Community-maintained packages are published independently from this repository and may not always be up to date with the latest release.
