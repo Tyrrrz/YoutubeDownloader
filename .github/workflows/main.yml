@@ -93,6 +93,18 @@ jobs:
         if: ${{ startsWith(matrix.rid, 'osx-') }}
         run: mv YoutubeDownloader/bin/publish/YTD.app YoutubeDownloader/bin/publish/YoutubeDownloader.app
 
+      - name: Add macOS instructions
+        if: ${{ startsWith(matrix.rid, 'osx-') }}
+        run: |
+          cat > YoutubeDownloader/bin/publish/HOW_TO_RUN_ON_MACOS.txt <<'EOF'
+          macOS blocks apps downloaded from the internet that are not notarized.
+
+          To allow YoutubeDownloader, open the Terminal in this directory and run:
+             xattr -rd com.apple.quarantine YoutubeDownloader.app
+
+          After that, run the app normally.
+          EOF
+
       - name: Upload app binaries
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -163,18 +175,6 @@ jobs:
           # macOS bundle
           [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader || true
           [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg || true
-
-      - name: Add macOS instructions
-        if: ${{ startsWith(matrix.rid, 'osx-') }}
-        run: |
-          cat > YoutubeDownloader/HOW_TO_RUN_ON_MACOS.txt <<'EOF'
-          macOS blocks apps downloaded from the internet that are not notarized.
-
-          To allow YoutubeDownloader, open the Terminal in this directory and run:
-             xattr -rd com.apple.quarantine YoutubeDownloader.app
-          
-          After that, run the app normally.
-          EOF
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
