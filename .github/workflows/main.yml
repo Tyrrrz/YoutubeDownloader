@@ -170,7 +170,7 @@ jobs:
           cat > YoutubeDownloader/HOW_TO_RUN_ON_MACOS.txt <<'EOF'
           macOS blocks apps downloaded from the internet that are not notarized.
 
-          To allow YoutubeDownloader, open the Terminal in this folder and run:
+          To allow YoutubeDownloader, open the Terminal in this directory and run:
              xattr -rd com.apple.quarantine YoutubeDownloader.app
           
           After that, run the app normally.
