@@ -164,15 +164,16 @@ jobs:
           [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader || true
           [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg || true
 
-      - name: Add macOS helper files
+      - name: Add macOS instructions
         if: ${{ startsWith(matrix.rid, 'osx-') }}
         run: |
           cat > YoutubeDownloader/HOW_TO_RUN_ON_MACOS.txt <<'EOF'
           macOS blocks apps downloaded from the internet that are not notarized.
 
-          To run YoutubeDownloader, open Terminal in this folder and run:
+          To allow YoutubeDownloader, open the Terminal in this folder and run:
              xattr -rd com.apple.quarantine YoutubeDownloader.app
-             open YoutubeDownloader.app
+          
+          After that, run the app normally.
           EOF
 
       - name: Create package
