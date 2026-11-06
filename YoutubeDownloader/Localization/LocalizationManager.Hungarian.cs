@@ -89,6 +89,9 @@ public partial class LocalizationManager
                 - macOS: telepítsd a legújabb rendszerfrissítéseket.
                 - Linux: telepítsd a GTK 3-at, a WebKitGTK 4.1-et és a libsoup 3-at.
                 """,
+            // Download Multiple Setup
+            [nameof(SelectAllMenuItem)] = "Összes kijelölése",
+            [nameof(DeselectAllMenuItem)] = "Kijelölés megszüntetése",
             // Download Single Setup
             [nameof(CopyMenuItem)] = "Másolás",
             [nameof(LiveLabel)] = "Élő",

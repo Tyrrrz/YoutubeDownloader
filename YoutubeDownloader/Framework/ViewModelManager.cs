@@ -63,7 +63,7 @@ public class ViewModelManager(IServiceProvider services, LocalizationManager loc
         viewModel.AvailableVideos = availableVideos;
 
         if (preselectVideos)
-            viewModel.SelectedVideos.AddRange(availableVideos);
+            viewModel.SelectAll();
 
         return viewModel;
     }

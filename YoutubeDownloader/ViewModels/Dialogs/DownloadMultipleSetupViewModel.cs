@@ -68,17 +68,16 @@ public partial class DownloadMultipleSetupViewModel(
     }
 
     [RelayCommand]
-    private void SelectAll()
+    public void SelectAll()
     {
-        foreach (var video in AvailableVideos ?? [])
-        {
-            if (!SelectedVideos.Contains(video))
-                SelectedVideos.Add(video);
-        }
+        DeselectAll();
+
+        if (AvailableVideos is not null)
+            SelectedVideos.AddRange(AvailableVideos);
     }
 
     [RelayCommand]
-    private void DeselectAll() => SelectedVideos.Clear();
+    public void DeselectAll() => SelectedVideos.Clear();
 
     private bool CanConfirm() => SelectedVideos.Any();
 

@@ -90,10 +90,11 @@ public partial class LocalizationManager
                 - macOS: install the latest system updates.
                 - Linux: install GTK 3, WebKitGTK 4.1, and libsoup 3.
                 """,
-            // Download Single Setup
-            [nameof(CopyMenuItem)] = "Copy",
+            // Download Multiple Setup
             [nameof(SelectAllMenuItem)] = "Select all",
             [nameof(DeselectAllMenuItem)] = "Deselect all",
+            // Download Single Setup
+            [nameof(CopyMenuItem)] = "Copy",
             [nameof(LiveLabel)] = "Live",
             [nameof(AudioLabel)] = "Audio",
             [nameof(UpscaledLabel)] = "Upscaled",

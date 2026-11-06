@@ -94,6 +94,9 @@ public partial class LocalizationManager
             - macOS : installez les dernières mises à jour du système.
             - Linux : installez GTK 3, WebKitGTK 4.1 et libsoup 3.
             """,
+        // Download Multiple Setup
+        [nameof(SelectAllMenuItem)] = "Tout sélectionner",
+        [nameof(DeselectAllMenuItem)] = "Tout désélectionner",
         // Download Single Setup
         [nameof(CopyMenuItem)] = "Copier",
         [nameof(LiveLabel)] = "En direct",
