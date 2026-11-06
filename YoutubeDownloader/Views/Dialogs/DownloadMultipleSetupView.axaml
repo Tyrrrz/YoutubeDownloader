@@ -35,6 +35,12 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 SelectedItems="{Binding SelectedVideos}"
                 SelectionMode="Multiple,Toggle">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding SelectAllCommand}" Header="{Binding LocalizationManager.SelectAllMenuItem}" />
+                        <MenuItem Command="{Binding DeselectAllCommand}" Header="{Binding LocalizationManager.DeselectAllMenuItem}" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
                 <ListBox.Styles>
                     <Style Selector="ListBox">
                         <Style Selector="^ ListBoxItem">

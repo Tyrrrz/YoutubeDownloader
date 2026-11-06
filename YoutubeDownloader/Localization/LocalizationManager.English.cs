@@ -92,6 +92,8 @@ public partial class LocalizationManager
                 """,
             // Download Single Setup
             [nameof(CopyMenuItem)] = "Copy",
+            [nameof(SelectAllMenuItem)] = "Select all",
+            [nameof(DeselectAllMenuItem)] = "Deselect all",
             [nameof(LiveLabel)] = "Live",
             [nameof(AudioLabel)] = "Audio",
             [nameof(UpscaledLabel)] = "Upscaled",
