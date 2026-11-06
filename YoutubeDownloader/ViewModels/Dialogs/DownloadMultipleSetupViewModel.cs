@@ -27,6 +27,9 @@ public partial class DownloadMultipleSetupViewModel(
     SettingsService settingsService
 ) : DialogViewModelBase<IReadOnlyList<DownloadViewModel>>
 {
+    private IReadOnlyList<IVideo> _initialVideos = [];
+    private bool _isSorting;
+
     public LocalizationManager LocalizationManager { get; } = localizationManager;
 
     [ObservableProperty]
@@ -42,6 +45,9 @@ public partial class DownloadMultipleSetupViewModel(
     public partial VideoQualityPreference SelectedVideoQualityPreference { get; set; } =
         VideoQualityPreference.Highest;
 
+    [ObservableProperty]
+    public partial VideoSortOption SelectedSortOption { get; set; } = VideoSortOption.Default;
+
     public ObservableCollection<IVideo> SelectedVideos { get; } = [];
 
     public IReadOnlyList<Container> AvailableContainers { get; } =
@@ -50,6 +56,57 @@ public partial class DownloadMultipleSetupViewModel(
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         // Without .AsEnumerable(), the below line throws a compile-time error starting with .NET SDK v9.0.200
         Enum.GetValues<VideoQualityPreference>().AsEnumerable().Reverse().ToArray();
+
+    public IReadOnlyList<VideoSortOption> AvailableVideoSortOptions { get; } =
+        Enum.GetValues<VideoSortOption>();
+
+    partial void OnAvailableVideosChanged(
+        IReadOnlyList<IVideo>? oldValue,
+        IReadOnlyList<IVideo>? newValue
+    )
+    {
+        if (!_isSorting && newValue is not null)
+        {
+            _initialVideos = newValue;
+            if (SelectedSortOption != VideoSortOption.Default)
+                ApplySort();
+        }
+    }
+
+    partial void OnSelectedSortOptionChanged(VideoSortOption value) => ApplySort();
+
+    private void ApplySort()
+    {
+        if (_initialVideos.Count == 0)
+            return;
+
+        var sorted = SelectedSortOption switch
+        {
+            VideoSortOption.TitleAscending => _initialVideos
+                .OrderBy(v => v.Title, StringComparer.CurrentCultureIgnoreCase)
+                .ToArray(),
+            VideoSortOption.TitleDescending => _initialVideos
+                .OrderByDescending(v => v.Title, StringComparer.CurrentCultureIgnoreCase)
+                .ToArray(),
+            VideoSortOption.DurationAscending => _initialVideos
+                .OrderBy(v => v.Duration ?? TimeSpan.Zero)
+                .ToArray(),
+            VideoSortOption.DurationDescending => _initialVideos
+                .OrderByDescending(v => v.Duration ?? TimeSpan.Zero)
+                .ToArray(),
+            _ => _initialVideos,
+        };
+
+        _isSorting = true;
+        try
+        {
+            AvailableVideos = sorted;
+        }
+        finally
+        {
+            _isSorting = false;
+        }
+    }
 
     public override Task InitializeAsync()
     {
@@ -76,8 +133,11 @@ public partial class DownloadMultipleSetupViewModel(
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 
+        // Maintain the sorted display order for downloaded files and their numeric index
+        var selectedVideos = (AvailableVideos ?? []).Where(SelectedVideos.Contains).ToArray();
+
         var downloads = new List<DownloadViewModel>();
-        foreach (var (i, video) in SelectedVideos.Index())
+        foreach (var (i, video) in selectedVideos.Index())
         {
             var baseFilePath = Path.Combine(
                 dirPath,
@@ -85,7 +145,7 @@ public partial class DownloadMultipleSetupViewModel(
                     settingsService.FileNameTemplate,
                     video,
                     SelectedContainer,
-                    (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
+                    (i + 1).ToString().PadLeft(selectedVideos.Length.ToString().Length, '0')
                 )
             );
 
