@@ -154,7 +154,6 @@ public partial class LocalizationManager
 
     public string ContainerLabel => Get();
     public string VideoQualityLabel => Get();
-    public string SortByLabel => Get();
 
     // ---- Common buttons ----
 
