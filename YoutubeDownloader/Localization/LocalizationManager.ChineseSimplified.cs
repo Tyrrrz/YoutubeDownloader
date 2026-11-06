@@ -88,6 +88,9 @@ public partial class LocalizationManager
                 - macOS：安装最新的系统更新。
                 - Linux：安装 GTK 3、WebKitGTK 4.1 和 libsoup 3。
                 """,
+            // Download Multiple Setup
+            [nameof(SelectAllMenuItem)] = "全选",
+            [nameof(DeselectAllMenuItem)] = "取消全选",
             // Download Single Setup
             [nameof(CopyMenuItem)] = "复制",
             [nameof(LiveLabel)] = "直播",

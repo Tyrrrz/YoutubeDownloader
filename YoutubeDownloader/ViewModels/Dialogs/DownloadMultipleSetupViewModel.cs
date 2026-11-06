@@ -67,6 +67,18 @@ public partial class DownloadMultipleSetupViewModel(
             await clipboard.SetTextAsync(Title);
     }
 
+    [RelayCommand]
+    public void SelectAll()
+    {
+        DeselectAll();
+
+        if (AvailableVideos is not null)
+            SelectedVideos.AddRange(AvailableVideos);
+    }
+
+    [RelayCommand]
+    public void DeselectAll() => SelectedVideos.Clear();
+
     private bool CanConfirm() => SelectedVideos.Any();
 
     [RelayCommand(CanExecute = nameof(CanConfirm))]

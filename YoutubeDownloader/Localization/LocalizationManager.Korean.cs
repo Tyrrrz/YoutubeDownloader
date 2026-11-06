@@ -91,6 +91,9 @@ public partial class LocalizationManager
             - macOS: 최신 시스템 업데이트를 설치하세요.
             - Linux: GTK 3, WebKitGTK 4.1, libsoup 3을 설치하세요.
             """,
+        // Download Multiple Setup
+        [nameof(SelectAllMenuItem)] = "모두 선택",
+        [nameof(DeselectAllMenuItem)] = "모두 선택 해제",
         // Download Single Setup
         [nameof(CopyMenuItem)] = "복사",
         [nameof(LiveLabel)] = "라이브",

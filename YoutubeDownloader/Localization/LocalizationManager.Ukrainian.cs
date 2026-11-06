@@ -90,6 +90,9 @@ public partial class LocalizationManager
                 - macOS: встановіть останні оновлення системи.
                 - Linux: встановіть GTK 3, WebKitGTK 4.1 і libsoup 3.
                 """,
+            // Download Multiple Setup
+            [nameof(SelectAllMenuItem)] = "Вибрати все",
+            [nameof(DeselectAllMenuItem)] = "Скасувати вибір усіх",
             // Download Single Setup
             [nameof(CopyMenuItem)] = "Копіювати",
             [nameof(LiveLabel)] = "Живе",

@@ -142,6 +142,11 @@ public partial class LocalizationManager
     public string LogOutButton => Get();
     public string AuthenticationPlaceholderText => Get();
 
+    // ---- Download Multiple Setup ----
+
+    public string SelectAllMenuItem => Get();
+    public string DeselectAllMenuItem => Get();
+
     // ---- Download Single Setup ----
 
     public string CopyMenuItem => Get();
