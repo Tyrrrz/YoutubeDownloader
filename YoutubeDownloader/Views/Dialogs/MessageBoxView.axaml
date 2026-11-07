@@ -1,0 +1,72 @@
+<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.MessageBoxView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    Width="500"
+    x:DataType="dialogs:MessageBoxViewModel">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="16"
+            FontSize="19"
+            FontWeight="Light"
+            Text="{Binding Title}"
+            TextTrimming="CharacterEllipsis"
+            ToolTip.Tip="{Binding Title}" />
+
+        <!--  Message  -->
+        <Border
+            Grid.Row="1"
+            Padding="0,8"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
+            BorderThickness="0,1">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <TextBlock
+                    Margin="16,8"
+                    Text="{Binding Message}"
+                    TextWrapping="Wrap" />
+            </ScrollViewer>
+        </Border>
+
+        <UniformGrid
+            Grid.Row="2"
+            Margin="8"
+            Columns="{Binding ButtonsCount}">
+            <!--  OK  -->
+            <Button
+                Margin="8"
+                HorizontalContentAlignment="Stretch"
+                Command="{Binding CloseCommand}"
+                IsDefault="True"
+                IsVisible="{Binding IsDefaultButtonVisible}"
+                Theme="{DynamicResource MaterialOutlineButton}"
+                ToolTip.Tip="{Binding DefaultButtonText}">
+                <Button.CommandParameter>
+                    <system:Boolean>True</system:Boolean>
+                </Button.CommandParameter>
+                <TextBlock
+                    Text="{Binding DefaultButtonText}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis" />
+            </Button>
+
+            <!--  Cancel  -->
+            <Button
+                Margin="8"
+                HorizontalContentAlignment="Stretch"
+                Command="{Binding CloseCommand}"
+                IsCancel="True"
+                IsVisible="{Binding IsCancelButtonVisible}"
+                Theme="{DynamicResource MaterialOutlineButton}"
+                ToolTip.Tip="{Binding CancelButtonText}">
+                <TextBlock
+                    Text="{Binding CancelButtonText}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis" />
+            </Button>
+        </UniformGrid>
+    </Grid>
+</UserControl>

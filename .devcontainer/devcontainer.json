@@ -1,0 +1,44 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/dotnet",
+  "features": {
+    "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:2": {},
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "webPort": "6080"
+    },
+    "ghcr.io/devcontainers-extra/features/apt-get-packages:1": {
+      "packages": [
+        "xfce4"
+      ]
+    }
+  },
+  "forwardPorts": [
+    6080
+  ],
+  "portsAttributes": {
+    "6080": {
+      "label": "Desktop",
+      "protocol": "http",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "onCreateCommand": ".devcontainer/onCreateCommand.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "csharpier.csharpier-vscode",
+        "icsharpcode.ilspy-vscode",
+        "dabbinavo.xamlstyler"
+      ],
+      "settings": {
+        "[csharp][xml]": {
+          "editor.defaultFormatter": "csharpier.csharpier-vscode"
+        },
+        "files.associations": {
+          "*.axaml": "xaml"
+        }
+      }
+    }
+  }
+}

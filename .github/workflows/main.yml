@@ -1,78 +1,213 @@
 name: main
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - prime
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - prime
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  package:
-    runs-on: windows-latest
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-    env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-      DOTNET_NOLOGO: true
-      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 7.0.x
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
 
-      - name: Publish
-        run: dotnet publish YoutubeDownloader/ -o YoutubeDownloader/bin/Publish --configuration Release
+      # Build the project separately to discern between build and format errors
+      - name: Build
+        run: >
+          dotnet build
+          -p:CSharpier_Bypass=true
+          --configuration Release
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: YoutubeDownloader
-          path: YoutubeDownloader/bin/Publish
+      - name: Verify formatting
+        id: verify
+        run: >
+          dotnet build
+          -t:CSharpierFormat
+          --configuration Release
+          --no-restore
 
-  deploy:
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-    needs: package
-    runs-on: ubuntu-latest
+      - name: Report issues
+        if: ${{ failure() && steps.verify.outcome == 'failure' }}
+        run: echo "::error title=Bad formatting::Formatting issues detected. Please build the solution locally to fix them."
+
+  pack:
+    strategy:
+      matrix:
+        rid:
+          - win-arm64
+          - win-x86
+          - win-x64
+          - linux-arm64
+          # Linux x86 is not supported by .NET
+          # - linux-x86
+          - linux-x64
+          - osx-arm64
+          - osx-x64
+
+    runs-on: ${{ startsWith(matrix.rid, 'win-') && 'windows-latest' || startsWith(matrix.rid, 'osx-') && 'macos-latest' || 'ubuntu-latest' }}
+    timeout-minutes: 10
+
+    permissions:
+      actions: write
+      contents: read
 
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+
+      - name: Publish app
+        run: >
+          dotnet publish YoutubeDownloader
+          -p:Version=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
+          -p:CSharpier_Bypass=true
+          -p:EncryptionSalt=${{ secrets.ENCRYPTION_SALT || 'HimalayanPinkSalt' }}
+          --output YoutubeDownloader/bin/publish
+          --configuration Release
+          --runtime ${{ matrix.rid }}
+          --self-contained
+
+      - name: Rename macOS bundle
+        if: ${{ startsWith(matrix.rid, 'osx-') }}
+        run: mv YoutubeDownloader/bin/publish/YTD.app YoutubeDownloader/bin/publish/YoutubeDownloader.app
+
+      - name: Add macOS instructions
+        if: ${{ startsWith(matrix.rid, 'osx-') }}
+        run: |
+          cat > YoutubeDownloader/bin/publish/HOW_TO_RUN_ON_MACOS.txt <<'EOF'
+          macOS blocks apps downloaded from the internet that are not notarized.
+
+          To allow YoutubeDownloader, open the Terminal in this directory and run:
+             xattr -rd com.apple.quarantine YoutubeDownloader.app
+
+          After that, run the app normally.
+          EOF
+
+      - name: Upload app binaries
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: YoutubeDownloader
-          path: YoutubeDownloader
+          name: YoutubeDownloader.${{ matrix.rid }}
+          path: YoutubeDownloader/bin/publish
+          if-no-files-found: error
 
-      - name: Create package
-        run: Compress-Archive -Path YoutubeDownloader/* -DestinationPath YoutubeDownloader.zip -Force
-        shell: pwsh
+  release:
+    if: ${{ github.ref_type == 'tag' }}
 
+    needs:
+      - format
+      - pack
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+
+    steps:
       - name: Create release
-        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create ${{ github.ref_name }}
+          --repo ${{ github.event.repository.full_name }}
+          --title ${{ github.ref_name }}
+          --generate-notes
+          --verify-tag
+
+  deploy:
+    needs: release
+
+    strategy:
+      matrix:
+        rid:
+          - win-arm64
+          - win-x86
+          - win-x64
+          - linux-arm64
+          # Linux x86 is not supported by .NET
+          # - linux-x86
+          - linux-x64
+          - osx-arm64
+          - osx-x64
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      actions: read
+      contents: write
+
+    steps:
+      - name: Download app binaries
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          files: YoutubeDownloader.zip
-          body: |
-            [Changelog](https://github.com/Tyrrrz/YoutubeDownloader/blob/master/Changelog.md)
+          name: YoutubeDownloader.${{ matrix.rid }}
+          path: YoutubeDownloader/
+
+      - name: Set permissions
+        if: ${{ !startsWith(matrix.rid, 'win-') }}
+        run: |
+          [ -f YoutubeDownloader/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader || true
+          [ -f YoutubeDownloader/ffmpeg ] && chmod +x YoutubeDownloader/ffmpeg || true
+
+          # macOS bundle
+          [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/YoutubeDownloader || true
+          [ -f YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg ] && chmod +x YoutubeDownloader/YoutubeDownloader.app/Contents/MacOS/ffmpeg || true
+
+      - name: Create package
+        # Change into the artifacts directory to avoid including the directory itself in the zip archive
+        working-directory: YoutubeDownloader/
+        run: zip -r ../YoutubeDownloader.${{ matrix.rid }}.zip .
+
+      - name: Upload release asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release upload ${{ github.ref_name }}
+          YoutubeDownloader.${{ matrix.rid }}.zip
+          --repo ${{ github.event.repository.full_name }}
 
   notify:
     needs: deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
 
     steps:
-      - name: Get release version
-        id: get_version
-        uses: dawidd6/action-get-tag@v1
-
       - name: Notify Discord
-        uses: satak/webrequest-action@v1.2.4
+        uses: tyrrrz/action-http-request@110f1a0f0f7e91c3b2de349539249f4573c243fa # 1.1.5
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: POST
           headers: |
+            Content-Type: application/json; charset=UTF-8
+          body: |
             {
-              "ContentType": "application/json; charset=UTF-8"
+              "avatar_url": "https://raw.githubusercontent.com/${{ github.event.repository.full_name }}/${{ github.ref_name }}/favicon.png",
+              "content": "[**${{ github.event.repository.name }}**](<${{ github.event.repository.html_url }}>) v${{ github.ref_name }} has been released!"
             }
-          payload: |
-            {
-              "content": "**YoutubeDownloader** new version released!\nVersion: `${{ steps.get_version.outputs.tag }}`\nChangelog: <https://github.com/Tyrrrz/YoutubeDownloader/blob/${{ steps.get_version.outputs.tag }}/Changelog.md>"
-            }
+          retry-count: 5

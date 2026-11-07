@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Onova;
 using Onova.Exceptions;
@@ -6,27 +7,34 @@ using Onova.Services;
 
 namespace YoutubeDownloader.Services;
 
-public class UpdateService : IDisposable
+public class UpdateService(SettingsService settingsService) : IDisposable
 {
-    private readonly IUpdateManager _updateManager = new UpdateManager(
-        new GithubPackageResolver("Tyrrrz", "YoutubeDownloader", "YoutubeDownloader.zip"),
-        new ZipPackageExtractor()
-    );
-
-    private readonly SettingsService _settingsService;
+    private readonly IUpdateManager? _updateManager =
+        OperatingSystem.IsWindows() && StartOptions.Current.IsAutoUpdateAllowed
+            ? new UpdateManager(
+                new GithubPackageResolver(
+                    "Tyrrrz",
+                    "YoutubeDownloader",
+                    // Examples:
+                    // YoutubeDownloader.win-arm64.zip
+                    // YoutubeDownloader.win-x64.zip
+                    // YoutubeDownloader.linux-x64.zip
+                    $"YoutubeDownloader.{RuntimeInformation.RuntimeIdentifier}.zip"
+                ),
+                new ZipPackageExtractor()
+            )
+            : null;
 
     private Version? _updateVersion;
-    private bool _updatePrepared;
-    private bool _updaterLaunched;
-
-    public UpdateService(SettingsService settingsService)
-    {
-        _settingsService = settingsService;
-    }
+    private bool _isUpdatePrepared;
+    private bool _isUpdaterLaunched;
 
     public async Task<Version?> CheckForUpdatesAsync()
     {
-        if (!_settingsService.IsAutoUpdateEnabled)
+        if (_updateManager is null)
+            return null;
+
+        if (!settingsService.IsAutoUpdateEnabled)
             return null;
 
         var check = await _updateManager.CheckForUpdatesAsync();
@@ -35,13 +43,16 @@ public class UpdateService : IDisposable
 
     public async Task PrepareUpdateAsync(Version version)
     {
-        if (!_settingsService.IsAutoUpdateEnabled)
+        if (_updateManager is null)
+            return;
+
+        if (!settingsService.IsAutoUpdateEnabled)
             return;
 
         try
         {
             await _updateManager.PrepareUpdateAsync(_updateVersion = version);
-            _updatePrepared = true;
+            _isUpdatePrepared = true;
         }
         catch (UpdaterAlreadyLaunchedException)
         {
@@ -55,16 +66,19 @@ public class UpdateService : IDisposable
 
     public void FinalizeUpdate(bool needRestart)
     {
-        if (!_settingsService.IsAutoUpdateEnabled)
+        if (_updateManager is null)
             return;
 
-        if (_updateVersion is null || !_updatePrepared || _updaterLaunched)
+        if (!settingsService.IsAutoUpdateEnabled)
+            return;
+
+        if (_updateVersion is null || !_isUpdatePrepared || _isUpdaterLaunched)
             return;
 
         try
         {
             _updateManager.LaunchUpdater(_updateVersion, needRestart);
-            _updaterLaunched = true;
+            _isUpdaterLaunched = true;
         }
         catch (UpdaterAlreadyLaunchedException)
         {
@@ -76,5 +90,5 @@ public class UpdateService : IDisposable
         }
     }
 
-    public void Dispose() => _updateManager.Dispose();
+    public void Dispose() => _updateManager?.Dispose();
 }

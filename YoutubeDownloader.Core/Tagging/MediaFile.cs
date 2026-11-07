@@ -1,45 +1,36 @@
-﻿using System;
+using System;
 using TagLib;
 using TagFile = TagLib.File;
 
 namespace YoutubeDownloader.Core.Tagging;
 
-internal partial class MediaFile : IDisposable
+internal partial class MediaFile(TagFile file) : IDisposable
 {
-    private readonly TagFile _file;
-
-    public MediaFile(TagFile file) => _file = file;
-
     public void SetThumbnail(byte[] thumbnailData) =>
-        _file.Tag.Pictures = new IPicture[] { new Picture(thumbnailData) };
+        file.Tag.Pictures = [new Picture(thumbnailData)];
 
-    public void SetArtist(string artist) =>
-        _file.Tag.Performers = new[] { artist };
+    public void SetArtist(string artist) => file.Tag.Performers = [artist];
 
-    public void SetArtistSort(string artistSort) =>
-        _file.Tag.PerformersSort = new[] { artistSort };
+    public void SetArtistSort(string artistSort) => file.Tag.PerformersSort = [artistSort];
 
-    public void SetTitle(string title) =>
-        _file.Tag.Title = title;
+    public void SetTitle(string title) => file.Tag.Title = title;
 
-    public void SetAlbum(string album) =>
-        _file.Tag.Album = album;
+    public void SetAlbum(string album) => file.Tag.Album = album;
 
-    public void SetDescription(string description) =>
-        _file.Tag.Description = description;
+    public void SetDescription(string description) => file.Tag.Description = description;
 
-    public void SetComment(string comment) =>
-        _file.Tag.Comment = comment;
+    public void SetComment(string comment) => file.Tag.Comment = comment;
 
-    public void Dispose()
+    public void Save()
     {
-        _file.Tag.DateTagged = DateTime.Now;
-        _file.Save();
-        _file.Dispose();
+        file.Tag.DateTagged = DateTime.Now;
+        file.Save();
     }
+
+    public void Dispose() => file.Dispose();
 }
 
 internal partial class MediaFile
 {
-    public static MediaFile Create(string filePath) => new(TagFile.Create(filePath));
+    public static MediaFile Open(string filePath) => new(TagFile.Create(filePath));
 }

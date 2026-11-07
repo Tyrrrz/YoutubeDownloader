@@ -1,0 +1,139 @@
+<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.DownloadSingleSetupView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    x:Name="UserControl"
+    Width="500"
+    x:DataType="dialogs:DownloadSingleSetupViewModel">
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        <!--  Info  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="16"
+            Orientation="Vertical"
+            Spacing="8">
+            <!--  Title  -->
+            <TextBlock
+                FontSize="19"
+                Text="{Binding Video.Title}"
+                TextTrimming="CharacterEllipsis"
+                ToolTip.Tip="{Binding Video.Title}">
+                <TextBlock.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding CopyTitleCommand}" Header="{Binding LocalizationManager.CopyMenuItem}" />
+                    </ContextMenu>
+                </TextBlock.ContextMenu>
+            </TextBlock>
+
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <!--  Author  -->
+                <StackPanel Orientation="Horizontal" Spacing="3">
+                    <materialIcons:MaterialIcon
+                        Width="16"
+                        Height="16"
+                        BorderThickness="1"
+                        Kind="UserOutline" />
+                    <TextBlock
+                        FontWeight="Light"
+                        Text="{Binding Video.Author.Title}"
+                        TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+
+                <!--  Duration  -->
+                <StackPanel Orientation="Horizontal" Spacing="3">
+                    <materialIcons:MaterialIcon
+                        Width="16"
+                        Height="16"
+                        BorderThickness="1"
+                        Kind="ClockOutline" />
+                    <TextBlock
+                        FontWeight="Light"
+                        Text="{Binding Video.Duration, TargetNullValue=Live}"
+                        TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <!--  Thumbnail  -->
+        <Border
+            Grid.Row="1"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
+            BorderThickness="0,1">
+            <Image asyncImageLoader:ImageLoader.Source="{Binding Video, Converter={x:Static converters:VideoToHighestQualityThumbnailUrlStringConverter.Instance}}" />
+        </Border>
+
+        <!--  Download options  -->
+        <ComboBox
+            Grid.Row="2"
+            Margin="16"
+            materialAssists:ComboBoxAssist.Label="{Binding LocalizationManager.FormatLabel}"
+            DockPanel.Dock="Left"
+            ItemsSource="{Binding AvailableDownloadOptions}"
+            SelectedItem="{Binding SelectedDownloadOption}"
+            Theme="{DynamicResource MaterialFilledComboBox}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Spacing="2">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <!--  Video quality / audio-only label  -->
+                            <TextBlock Classes.audioOnly="{Binding IsAudioOnly}" FontWeight="SemiBold">
+                                <TextBlock.Styles>
+                                    <Style Selector="TextBlock">
+                                        <Setter Property="Text" Value="{Binding VideoQuality, Mode=OneWay}" />
+
+                                        <Style Selector="^.audioOnly">
+                                            <Setter Property="Text" Value="{Binding #UserControl.DataContext.LocalizationManager.AudioLabel}" />
+                                        </Style>
+                                    </Style>
+                                </TextBlock.Styles>
+                            </TextBlock>
+
+                            <!--  Upscaled badge  -->
+                            <Border
+                                Padding="6,1"
+                                BorderBrush="{DynamicResource MaterialDividerBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                IsVisible="{Binding IsVideoUpscaled}">
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="Medium"
+                                    Text="{Binding #UserControl.DataContext.LocalizationManager.UpscaledLabel}" />
+                            </Border>
+                        </StackPanel>
+
+                        <!--  Container  -->
+                        <TextBlock FontWeight="Light" Text="{Binding Container, Mode=OneWay}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <!--  Buttons  -->
+        <UniformGrid
+            Grid.Row="3"
+            Margin="8"
+            Columns="2">
+            <!--  Download  -->
+            <Button
+                Margin="8"
+                Command="{Binding ConfirmCommand}"
+                Content="{Binding LocalizationManager.DownloadButton}"
+                IsDefault="True"
+                Theme="{DynamicResource MaterialOutlineButton}" />
+
+            <!--  Cancel  -->
+            <Button
+                Margin="8"
+                Command="{Binding CloseCommand}"
+                Content="{Binding LocalizationManager.CancelButton}"
+                IsCancel="True"
+                Theme="{DynamicResource MaterialOutlineButton}" />
+        </UniformGrid>
+    </Grid>
+</UserControl>

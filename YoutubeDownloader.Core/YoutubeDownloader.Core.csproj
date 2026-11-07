@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
-    <PackageReference Include="Gress" Version="2.1.0" />
-    <PackageReference Include="JsonExtensions" Version="1.2.0" />
-    <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="YoutubeExplode" Version="6.2.8" />
-    <PackageReference Include="YoutubeExplode.Converter" Version="6.2.8" />
+    <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
+    <PackageReference Include="Gress" />
+    <PackageReference Include="PowerKit" />
+    <PackageReference Include="PowerKit.Json" />
+    <PackageReference Include="TagLibSharp" />
+    <PackageReference Include="YoutubeExplode" />
+    <PackageReference Include="YoutubeExplode.Converter" />
   </ItemGroup>
-
 </Project>

@@ -1,0 +1,174 @@
+<UserControl
+    x:Class="YoutubeDownloader.Views.Dialogs.DownloadMultipleSetupView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:converters="clr-namespace:YoutubeDownloader.Converters"
+    xmlns:dialogs="clr-namespace:YoutubeDownloader.ViewModels.Dialogs"
+    xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    x:Name="UserControl"
+    Width="500"
+    x:DataType="dialogs:DownloadMultipleSetupViewModel">
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="16"
+            FontSize="19"
+            Text="{Binding Title}"
+            TextTrimming="CharacterEllipsis">
+            <TextBlock.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="{Binding CopyTitleCommand}" Header="{Binding LocalizationManager.CopyMenuItem}" />
+                </ContextMenu>
+            </TextBlock.ContextMenu>
+        </TextBlock>
+
+        <!--  Videos  -->
+        <Border
+            Grid.Row="1"
+            BorderBrush="{DynamicResource MaterialDividerBrush}"
+            BorderThickness="0,1">
+            <ListBox
+                ItemsSource="{Binding AvailableVideos}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectedItems="{Binding SelectedVideos}"
+                SelectionMode="Multiple,Toggle">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding SelectAllCommand}" Header="{Binding LocalizationManager.SelectAllMenuItem}" />
+                        <MenuItem Command="{Binding DeselectAllCommand}" Header="{Binding LocalizationManager.DeselectAllMenuItem}" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.Styles>
+                    <Style Selector="ListBox">
+                        <Style Selector="^ ListBoxItem">
+                            <Setter Property="Padding" Value="8" />
+                        </Style>
+                    </Style>
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,8,0" ColumnDefinitions="Auto,*,Auto">
+                            <!--  Thumbnail  -->
+                            <Image
+                                Grid.Column="0"
+                                Width="48"
+                                Height="48"
+                                asyncImageLoader:ImageLoader.Source="{Binding Converter={x:Static converters:VideoToLowestQualityThumbnailUrlStringConverter.Instance}}" />
+
+                            <!--  Info  -->
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                Orientation="Vertical"
+                                Spacing="8">
+                                <!--  Title  -->
+                                <TextBlock
+                                    FontSize="16"
+                                    Text="{Binding Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip.Tip="{Binding Title}" />
+
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <!--  Author  -->
+                                    <StackPanel Orientation="Horizontal" Spacing="3">
+                                        <materialIcons:MaterialIcon
+                                            Width="16"
+                                            Height="16"
+                                            BorderThickness="1"
+                                            Kind="UserOutline" />
+                                        <TextBlock
+                                            FontWeight="Light"
+                                            Text="{Binding Author.Title}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+
+                                    <!--  Duration  -->
+                                    <StackPanel Orientation="Horizontal" Spacing="3">
+                                        <materialIcons:MaterialIcon
+                                            Width="16"
+                                            Height="16"
+                                            BorderThickness="1"
+                                            Kind="ClockOutline" />
+                                        <TextBlock
+                                            FontWeight="Light"
+                                            Text="{Binding Duration, TargetNullValue=Live}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!--  Checkmark  -->
+                            <materialIcons:MaterialIcon
+                                Grid.Column="2"
+                                Width="24"
+                                Height="24"
+                                Margin="8,0,0,0"
+                                IsVisible="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
+                                Kind="Check" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!--  Preferences  -->
+        <UniformGrid
+            Grid.Row="2"
+            Margin="8"
+            Columns="2">
+            <!--  Container preference  -->
+            <ComboBox
+                Margin="8"
+                materialAssists:ComboBoxAssist.Label="{Binding LocalizationManager.ContainerLabel}"
+                ItemsSource="{Binding AvailableContainers}"
+                SelectedItem="{Binding SelectedContainer}"
+                Theme="{DynamicResource MaterialFilledComboBox}" />
+
+            <!--  Video quality preference  -->
+            <ComboBox
+                Margin="8"
+                materialAssists:ComboBoxAssist.Label="{Binding LocalizationManager.VideoQualityLabel}"
+                IsEnabled="{Binding !SelectedContainer.IsAudioOnly}"
+                ItemsSource="{Binding AvailableVideoQualityPreferences}"
+                SelectedItem="{Binding SelectedVideoQualityPreference}"
+                Theme="{DynamicResource MaterialFilledComboBox}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={x:Static converters:VideoQualityPreferenceToStringConverter.Instance}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </UniformGrid>
+
+        <!--  Buttons  -->
+        <UniformGrid
+            Grid.Row="3"
+            Margin="8"
+            Columns="2">
+            <!--  Download  -->
+            <Button
+                Margin="8"
+                Command="{Binding ConfirmCommand}"
+                IsDefault="True"
+                Theme="{DynamicResource MaterialOutlineButton}">
+                <Button.Content>
+                    <TextBlock>
+                        <Run Text="{Binding LocalizationManager.DownloadButton}" />
+                        <Run Text="(" /><Run Text="{Binding SelectedVideos.Count, FallbackValue=0, Mode=OneWay}" /><Run Text=")" />
+                    </TextBlock>
+                </Button.Content>
+            </Button>
+
+            <!--  Cancel  -->
+            <Button
+                Margin="8"
+                Command="{Binding CloseCommand}"
+                Content="{Binding LocalizationManager.CancelButton}"
+                IsCancel="True"
+                Theme="{DynamicResource MaterialOutlineButton}" />
+        </UniformGrid>
+    </Grid>
+</UserControl>

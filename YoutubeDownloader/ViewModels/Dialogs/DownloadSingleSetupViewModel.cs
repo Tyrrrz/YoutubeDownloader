@@ -1,88 +1,84 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Input.Platform;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using PowerKit.Extensions;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
-using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Videos;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
+public partial class DownloadSingleSetupViewModel(
+    ViewModelManager viewModelManager,
+    DialogManager dialogManager,
+    LocalizationManager localizationManager,
+    SettingsService settingsService
+) : DialogViewModelBase<DownloadViewModel>
 {
-    private readonly IViewModelFactory _viewModelFactory;
-    private readonly DialogManager _dialogManager;
-    private readonly SettingsService _settingsService;
+    public LocalizationManager LocalizationManager { get; } = localizationManager;
 
-    public IVideo? Video { get; set; }
+    [ObservableProperty]
+    public partial IVideo? Video { get; set; }
 
-    public IReadOnlyList<VideoDownloadOption>? AvailableDownloadOptions { get; set; }
+    [ObservableProperty]
+    public partial IReadOnlyList<VideoDownloadOption>? AvailableDownloadOptions { get; set; }
 
-    public VideoDownloadOption? SelectedDownloadOption { get; set; }
+    [ObservableProperty]
+    public partial VideoDownloadOption? SelectedDownloadOption { get; set; }
 
-    public DownloadSingleSetupViewModel(
-        IViewModelFactory viewModelFactory,
-        DialogManager dialogManager,
-        SettingsService settingsService)
-    {
-        _viewModelFactory = viewModelFactory;
-        _dialogManager = dialogManager;
-        _settingsService = settingsService;
-    }
-
-    public void OnViewLoaded()
+    public override Task InitializeAsync()
     {
         SelectedDownloadOption = AvailableDownloadOptions?.FirstOrDefault(o =>
-            o.Container == _settingsService.LastContainer
+            o.Container == settingsService.LastContainer
         );
+
+        return Task.CompletedTask;
     }
 
-    public void CopyTitle() => Clipboard.SetText(Video!.Title);
-
-    public void Confirm()
+    [RelayCommand]
+    private async Task CopyTitleAsync()
     {
-        var container = SelectedDownloadOption!.Container;
+        if (Application.Current?.ApplicationLifetime?.TryGetTopLevel()?.Clipboard is { } clipboard)
+            await clipboard.SetTextAsync(Video?.Title);
+    }
 
-        var filePath = _dialogManager.PromptSaveFilePath(
-            $"{container.Name} file|*.{container.Name}",
-            FileNameTemplate.Apply(
-                _settingsService.FileNameTemplate,
-                Video!,
-                container
-            )
+    [RelayCommand]
+    private async Task ConfirmAsync()
+    {
+        if (Video is null || SelectedDownloadOption is null)
+            return;
+
+        var container = SelectedDownloadOption.Container;
+
+        var filePath = await dialogManager.PromptSaveFilePathAsync(
+            [
+                new FilePickerFileType($"{container.Name} file")
+                {
+                    Patterns = [$"*.{container.Name}"],
+                },
+            ],
+            FileNameTemplate.Apply(settingsService.FileNameTemplate, Video, container)
         );
 
         if (string.IsNullOrWhiteSpace(filePath))
             return;
 
         // Download does not start immediately, so lock in the file path to avoid conflicts
-        DirectoryEx.CreateDirectoryForFile(filePath);
-        File.WriteAllBytes(filePath, Array.Empty<byte>());
+        Directory.CreateForFile(filePath);
+        await File.WriteAllBytesAsync(filePath, []);
 
-        _settingsService.LastContainer = container;
+        settingsService.LastContainer = container;
 
-        Close(
-            _viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath)
-        );
-    }
-}
-
-public static class DownloadSingleSetupViewModelExtensions
-{
-    public static DownloadSingleSetupViewModel CreateDownloadSingleSetupViewModel(
-        this IViewModelFactory factory,
-        IVideo video,
-        IReadOnlyList<VideoDownloadOption> availableDownloadOptions)
-    {
-        var viewModel = factory.CreateDownloadSingleSetupViewModel();
-
-        viewModel.Video = video;
-        viewModel.AvailableDownloadOptions = availableDownloadOptions;
-
-        return viewModel;
+        Close(viewModelManager.GetDownloadViewModel(Video, SelectedDownloadOption, filePath));
     }
 }

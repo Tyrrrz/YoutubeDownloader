@@ -1,50 +1,29 @@
-﻿using YoutubeDownloader.ViewModels.Framework;
+using CommunityToolkit.Mvvm.ComponentModel;
+using YoutubeDownloader.Framework;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class MessageBoxViewModel : DialogScreen
+public partial class MessageBoxViewModel : DialogViewModelBase
 {
-    public string? Title { get; set; }
+    [ObservableProperty]
+    public partial string? Title { get; set; }
 
-    public string? Message { get; set; }
+    [ObservableProperty]
+    public partial string? Message { get; set; }
 
-    public bool IsOkButtonVisible { get; set; } = true;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDefaultButtonVisible))]
+    [NotifyPropertyChangedFor(nameof(ButtonsCount))]
+    public partial string? DefaultButtonText { get; set; }
 
-    public string? OkButtonText { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsCancelButtonVisible))]
+    [NotifyPropertyChangedFor(nameof(ButtonsCount))]
+    public partial string? CancelButtonText { get; set; }
 
-    public bool IsCancelButtonVisible { get; set; }
+    public bool IsDefaultButtonVisible => !string.IsNullOrWhiteSpace(DefaultButtonText);
 
-    public string? CancelButtonText { get; set; }
+    public bool IsCancelButtonVisible => !string.IsNullOrWhiteSpace(CancelButtonText);
 
-    public int ButtonsCount =>
-        (IsOkButtonVisible ? 1 : 0) +
-        (IsCancelButtonVisible ? 1 : 0);
-}
-
-public static class MessageBoxViewModelExtensions
-{
-    public static MessageBoxViewModel CreateMessageBoxViewModel(
-        this IViewModelFactory factory,
-        string title,
-        string message,
-        string? okButtonText,
-        string? cancelButtonText)
-    {
-        var viewModel = factory.CreateMessageBoxViewModel();
-        viewModel.Title = title;
-        viewModel.Message = message;
-
-        viewModel.IsOkButtonVisible = !string.IsNullOrWhiteSpace(okButtonText);
-        viewModel.OkButtonText = okButtonText;
-        viewModel.IsCancelButtonVisible = !string.IsNullOrWhiteSpace(cancelButtonText);
-        viewModel.CancelButtonText = cancelButtonText;
-
-        return viewModel;
-    }
-
-    public static MessageBoxViewModel CreateMessageBoxViewModel(
-        this IViewModelFactory factory,
-        string title,
-        string message) =>
-        factory.CreateMessageBoxViewModel(title, message, "CLOSE", null);
+    public int ButtonsCount => (IsDefaultButtonVisible ? 1 : 0) + (IsCancelButtonVisible ? 1 : 0);
 }

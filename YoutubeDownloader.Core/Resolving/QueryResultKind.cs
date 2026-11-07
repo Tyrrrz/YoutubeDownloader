@@ -1,4 +1,4 @@
-﻿namespace YoutubeDownloader.Core.Resolving;
+namespace YoutubeDownloader.Core.Resolving;
 
 public enum QueryResultKind
 {
@@ -6,5 +6,5 @@ public enum QueryResultKind
     Playlist,
     Channel,
     Search,
-    Aggregate
+    Aggregate,
 }

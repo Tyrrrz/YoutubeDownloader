@@ -1,97 +1,117 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Input.Platform;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using PowerKit.Extensions;
 using YoutubeDownloader.Core.Downloading;
+using YoutubeDownloader.Framework;
+using YoutubeDownloader.Localization;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
+using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
-using YoutubeDownloader.ViewModels.Framework;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.ViewModels.Dialogs;
 
-public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<DownloadViewModel>>
+public partial class DownloadMultipleSetupViewModel(
+    ViewModelManager viewModelManager,
+    DialogManager dialogManager,
+    LocalizationManager localizationManager,
+    SettingsService settingsService
+) : DialogViewModelBase<IReadOnlyList<DownloadViewModel>>
 {
-    private readonly IViewModelFactory _viewModelFactory;
-    private readonly DialogManager _dialogManager;
-    private readonly SettingsService _settingsService;
+    public LocalizationManager LocalizationManager { get; } = localizationManager;
 
-    public string? Title { get; set; }
+    [ObservableProperty]
+    public partial string? Title { get; set; }
 
-    public IReadOnlyList<IVideo>? AvailableVideos { get; set; }
+    [ObservableProperty]
+    public partial IReadOnlyList<IVideo>? AvailableVideos { get; set; }
 
-    public IReadOnlyList<IVideo>? SelectedVideos { get; set; }
+    [ObservableProperty]
+    public partial Container SelectedContainer { get; set; } = Container.Mp4;
 
-    public IReadOnlyList<Container> AvailableContainers { get; } = new[]
-    {
-        Container.Mp4,
-        Container.WebM,
-        Container.Mp3,
-        new Container("ogg")
-    };
+    [ObservableProperty]
+    public partial VideoQualityPreference SelectedVideoQualityPreference { get; set; } =
+        VideoQualityPreference.Highest;
 
-    public Container SelectedContainer { get; set; } = Container.Mp4;
+    public ObservableCollection<IVideo> SelectedVideos { get; } = [];
+
+    public IReadOnlyList<Container> AvailableContainers { get; } =
+    [Container.Mp4, Container.WebM, Container.Mp3, new("ogg")];
 
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
-        Enum.GetValues<VideoQualityPreference>().Reverse().ToArray();
+        // Without .AsEnumerable(), the below line throws a compile-time error starting with .NET SDK v9.0.200
+        Enum.GetValues<VideoQualityPreference>().AsEnumerable().Reverse().ToArray();
 
-    public VideoQualityPreference SelectedVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
-
-    public DownloadMultipleSetupViewModel(
-        IViewModelFactory viewModelFactory,
-        DialogManager dialogManager,
-        SettingsService settingsService)
+    public override Task InitializeAsync()
     {
-        _viewModelFactory = viewModelFactory;
-        _dialogManager = dialogManager;
-        _settingsService = settingsService;
+        SelectedContainer = settingsService.LastContainer;
+        SelectedVideoQualityPreference = settingsService.LastVideoQualityPreference;
+        SelectedVideos.CollectionChanged += (_, _) => ConfirmCommand.NotifyCanExecuteChanged();
+
+        return Task.CompletedTask;
     }
 
-    public void OnViewLoaded()
+    [RelayCommand]
+    private async Task CopyTitleAsync()
     {
-        SelectedContainer = _settingsService.LastContainer;
-        SelectedVideoQualityPreference = _settingsService.LastVideoQualityPreference;
+        if (Application.Current?.ApplicationLifetime?.TryGetTopLevel()?.Clipboard is { } clipboard)
+            await clipboard.SetTextAsync(Title);
     }
 
-    public void CopyTitle() => Clipboard.SetText(Title!);
-
-    public bool CanConfirm => SelectedVideos!.Any();
-
-    public void Confirm()
+    [RelayCommand]
+    public void SelectAll()
     {
-        var dirPath = _dialogManager.PromptDirectoryPath();
+        DeselectAll();
+
+        if (AvailableVideos is not null)
+            SelectedVideos.AddRange(AvailableVideos);
+    }
+
+    [RelayCommand]
+    public void DeselectAll() => SelectedVideos.Clear();
+
+    private bool CanConfirm() => SelectedVideos.Any();
+
+    [RelayCommand(CanExecute = nameof(CanConfirm))]
+    private async Task ConfirmAsync()
+    {
+        var dirPath = await dialogManager.PromptDirectoryPathAsync();
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
 
         var downloads = new List<DownloadViewModel>();
-        for (var i = 0; i < SelectedVideos!.Count; i++)
+        foreach (var (i, video) in SelectedVideos.Index())
         {
-            var video = SelectedVideos[i];
-
             var baseFilePath = Path.Combine(
                 dirPath,
                 FileNameTemplate.Apply(
-                    _settingsService.FileNameTemplate,
+                    settingsService.FileNameTemplate,
                     video,
                     SelectedContainer,
                     (i + 1).ToString().PadLeft(SelectedVideos.Count.ToString().Length, '0')
                 )
             );
 
-            if (_settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
+            if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
                 continue;
 
-            var filePath = PathEx.EnsureUniquePath(baseFilePath);
+            var filePath = Path.EnsureUniqueFilePath(baseFilePath);
 
             // Download does not start immediately, so lock in the file path to avoid conflicts
-            DirectoryEx.CreateDirectoryForFile(filePath);
-            File.WriteAllBytes(filePath, Array.Empty<byte>());
+            Directory.CreateForFile(filePath);
+            await File.WriteAllBytesAsync(filePath, []);
 
             downloads.Add(
-                _viewModelFactory.CreateDownloadViewModel(
+                viewModelManager.GetDownloadViewModel(
                     video,
                     new VideoDownloadPreference(SelectedContainer, SelectedVideoQualityPreference),
                     filePath
@@ -99,29 +119,9 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             );
         }
 
-        _settingsService.LastContainer = SelectedContainer;
-        _settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
+        settingsService.LastContainer = SelectedContainer;
+        settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
 
         Close(downloads);
-    }
-}
-
-public static class DownloadMultipleSetupViewModelExtensions
-{
-    public static DownloadMultipleSetupViewModel CreateDownloadMultipleSetupViewModel(
-        this IViewModelFactory factory,
-        string title,
-        IReadOnlyList<IVideo> availableVideos,
-        bool preselectVideos = true)
-    {
-        var viewModel = factory.CreateDownloadMultipleSetupViewModel();
-
-        viewModel.Title = title;
-        viewModel.AvailableVideos = availableVideos;
-        viewModel.SelectedVideos = preselectVideos
-            ? availableVideos
-            : Array.Empty<IVideo>();
-
-        return viewModel;
     }
 }

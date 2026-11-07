@@ -1,25 +1,16 @@
 # User-specific files
+.vs/
+.idea/
 *.suo
 *.user
-*.userosscache
-*.sln.docstates
-.idea/
 
 # Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-[Xx]64/
-[Xx]86/
-[Bb]uild/
-bld/
-[Bb]in/
-[Oo]bj/
+bin/
+obj/
 
-# Coverage
-*.opencover.xml
+# Avalonia
+.avalonia-build-tasks/
 
-# FFmpeg binary
-ffmpeg.exe
-/.vs/YoutubeDownloader/FileContentIndex
+
+# Test results
+TestResults/

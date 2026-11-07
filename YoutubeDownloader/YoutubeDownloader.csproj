@@ -1,43 +1,52 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <UseWPF>true</UseWPF>
     <ApplicationIcon>../favicon.ico</ApplicationIcon>
-    <BaseOutputPath>D:\02.Ca_Nhan\03.DuAn\12.YouTubeDownloader\02.Resources\01.SourseCode\03.Build</BaseOutputPath>
+
+
+  <PropertyGroup>
+    <MacOSBundleIdentifier>me.tyrrrz.youtubedownloader</MacOSBundleIdentifier>
+    <MacOSBundleName>YTD</MacOSBundleName>
+    <MacOSBundleDisplayName>YoutubeDownloader</MacOSBundleDisplayName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EncryptionSalt>HimalayanPinkSalt</EncryptionSalt>
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="../favicon.ico" />
+    <!-- Expose this property in code -->
+    <ProjectProperty Include="EncryptionSalt" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cogwheel" Version="2.0.1" />
-    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.4.0" PrivateAssets="all" />
-    <PackageReference Include="FuckRussia" Version="1.0.1" PrivateAssets="all" />
-    <PackageReference Include="Gress" Version="2.1.0" />
-    <PackageReference Include="MaterialDesignColors" Version="2.1.1" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.7.1" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    <PackageReference Include="Onova" Version="2.6.6" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
-    <PackageReference Include="Stylet" Version="1.3.6" />
-    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
+    <AvaloniaResource Include="../favicon.ico" Link="favicon.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YoutubeDownloader.Core\YoutubeDownloader.Core.csproj" />
+    <PackageReference Include="AsyncImageLoader.Avalonia" />
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" />
+    <PackageReference Include="Avalonia.Controls.WebView" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Cogwheel" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
+    <PackageReference Include="Deorcify" />
+    <PackageReference Include="DialogHost.Avalonia" />
+    <PackageReference Include="Gress" />
+    <PackageReference Include="MacBundle" />
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="Material.Avalonia" />
+    <PackageReference Include="Material.Avalonia.DataGrid" />
+    <PackageReference Include="Material.Icons.Avalonia" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Onova" />
+    <PackageReference Include="PowerKit" />
+    <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- This downloads FFmpeg and copies it to output directory-->
-  <Target Name="Download FFmpeg before build" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot;" />
-    <Copy SourceFiles="$(ProjectDir)/ffmpeg.exe" DestinationFiles="$(OutDir)/ffmpeg.exe" />
-  </Target>
-
-  <Target Name="Download FFmpeg before publish" BeforeTargets="PrepareForPublish">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)/DownloadFFmpeg.ps1&quot;" />
-    <Copy SourceFiles="$(ProjectDir)/ffmpeg.exe" DestinationFiles="$(PublishDir)/ffmpeg.exe" />
-  </Target>
-
+  <ItemGroup>
+    <ProjectReference Include="../YoutubeDownloader.Core/YoutubeDownloader.Core.csproj" />
+  </ItemGroup>
 </Project>

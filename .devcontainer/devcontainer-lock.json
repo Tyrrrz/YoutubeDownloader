@@ -1,0 +1,19 @@
+{
+  "features": {
+    "ghcr.io/devcontainers-extra/features/apt-get-packages:1": {
+      "version": "1.0.8",
+      "resolved": "ghcr.io/devcontainers-extra/features/apt-get-packages@sha256:776fa11c30c50fa91d5e1bf050444b0f130827457109c349db92e8e126b750ec",
+      "integrity": "sha256:776fa11c30c50fa91d5e1bf050444b0f130827457109c349db92e8e126b750ec"
+    },
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "version": "1.2.10",
+      "resolved": "ghcr.io/devcontainers/features/desktop-lite@sha256:3cfd1ed97b027614f3a56d53183d20ebf29e9c36ac58a3d669edf39890e3aec3",
+      "integrity": "sha256:3cfd1ed97b027614f3a56d53183d20ebf29e9c36ac58a3d669edf39890e3aec3"
+    },
+    "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:2": {
+      "version": "2.0.1",
+      "resolved": "ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier@sha256:099eca59290769a6b97d9e2b604fb71d7726afc195ec4ea9b093641c79cedefb",
+      "integrity": "sha256:099eca59290769a6b97d9e2b604fb71d7726afc195ec4ea9b093641c79cedefb"
+    }
+  }
+}

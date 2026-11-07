@@ -1,4 +1,4 @@
-﻿namespace YoutubeDownloader.ViewModels.Components;
+namespace YoutubeDownloader.ViewModels.Components;
 
 public enum DownloadStatus
 {
@@ -6,5 +6,5 @@ public enum DownloadStatus
     Started,
     Completed,
     Failed,
-    Canceled
+    Canceled,
 }
